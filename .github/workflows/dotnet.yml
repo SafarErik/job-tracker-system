@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: src/Backend/
+        working-directory: ./src/Backend/
     
     steps:
     - uses: actions/checkout@v4

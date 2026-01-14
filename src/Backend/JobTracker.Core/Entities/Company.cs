@@ -16,6 +16,9 @@ public class Company
     // The ? means nullable, so Website can be null
     public string? Website {get; set;}
 
-    public ICollection<JobApplication> jobApplications {get; set;} = new List<JobApplication> ();
+    // Navigation property
+    // This defines a connection, 
+    // it means that one company can have many different applications
+    public ICollection<JobApplication> JobApplications {get; set;} = new List<JobApplication> ();
 
 }

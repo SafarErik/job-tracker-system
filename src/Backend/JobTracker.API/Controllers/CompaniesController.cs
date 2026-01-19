@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
+using JobTracker.API.DTOs;
 
 namespace JobTracker.API.Controllers;
 
@@ -17,14 +18,26 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Company>>> GetAll()
+    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
     {
-        return Ok(await _repository.GetAllAsync());
+        var companies = await _repository.GetAllAsync();
+        
+        // Mapping --> Entity => DTO
+        // projection => We project the data by hand
+        var dtos = companies.Select(c => new CompanyDto
+        {
+            Id = c.Id,
+            Name = c.Name,
+            Website = c.Website,
+            ContactPerson = c.ContactPerson
+        });
+
+        return Ok(dtos);
 
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Company>> Get(int id)
+    public async Task<ActionResult<CompanyDto>> Get(int id)
     {
         var company = await _repository.GetByIdAsync(id);
 
@@ -34,33 +47,51 @@ public class CompaniesController : ControllerBase
 
         }
 
-        return Ok(company);
+        var dto = new CompanyDto
+        {
+            Id = company.Id,
+            Name = company.Name,
+            Website = company.Website,
+            ContactPerson = company.ContactPerson
+        };
+
+        return Ok(dto);
 
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create(Company company) {
+    public async Task<ActionResult<int>> Create(CreateCompanyDto createDto) {
+        var company = new Company
+        {
+            Name = createDto.Name,
+            Website = createDto.Website,
+            ContactPerson = createDto.ContactPerson
+        };
+
         var id = await _repository.AddAsync(company);
-        return CreatedAtAction(nameof(GetAll), new { id }, company);
+        
+        return CreatedAtAction(nameof(Get), new { id }, company);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Company company)
+    public async Task<IActionResult> Update(int id, CreateCompanyDto updateDto)
     {
-        if (id != company.Id)
-        {
-            return BadRequest("ID mismatch URL - BODY");
-
-        }
-
         var existingCompany = await _repository.GetByIdAsync(id);
+
         if(existingCompany == null)
         {
             return NotFound();
         }
 
-        await _repository.UpdateAsync(company);
-        return NoContent(); // 204 - Everything is fine
+        //Mapping   
+        // Here we don't need to create a new object, just update the existing one.
+        existingCompany.Name = updateDto.Name;
+        existingCompany.Website = updateDto.Website;
+        existingCompany.ContactPerson = updateDto.ContactPerson;
+
+        await _repository.UpdateAsync(existingCompany);
+
+        return NoContent(); // 204
 
     }
 

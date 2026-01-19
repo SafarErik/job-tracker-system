@@ -1,0 +1,174 @@
+/* Job List Component Styles */
+
+/* 
+  Why separate CSS file?
+  - Keeps template clean and focused on structure
+  - Easier to maintain styles
+  - Can be reused if needed
+*/
+
+/* ============================================
+   Animations
+   ============================================ */
+
+/* Fade in animation for the entire component */
+:host {
+  display: block;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   Card Enhancements
+   ============================================ */
+
+/* 
+  Card hover effect - subtle lift on hover
+  Makes the UI feel more interactive
+*/
+.shadow-md:hover {
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+/* Card header gradient animation */
+.bg-gradient-to-r {
+  background-size: 200% 100%;
+  transition: background-position 0.3s ease;
+}
+
+.bg-gradient-to-r:hover {
+  background-position: 100% 0;
+}
+
+/* ============================================
+   Loading Spinner
+   ============================================ */
+
+/* 
+  Custom spinner animation
+  Already handled by Tailwind's animate-spin,
+  but we can add custom timings if needed
+*/
+.animate-spin {
+  animation-duration: 1s;
+}
+
+/* ============================================
+   Status Badge Animations
+   ============================================ */
+
+/* Subtle pulse for active statuses */
+.bg-indigo-100,
+.bg-purple-100,
+.bg-yellow-100 {
+  animation: subtlePulse 2s infinite;
+}
+
+@keyframes subtlePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* ============================================
+   Button Interactions
+   ============================================ */
+
+/* Delete button - smooth color transition */
+button:hover:not(:disabled) {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Disabled button - visual feedback */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+/* 
+  Mobile-first approach
+  Base styles are for mobile,
+  then we add overrides for larger screens
+*/
+
+/* Extra small screens (< 640px) */
+@media (max-width: 639px) {
+  /* Reduce padding on mobile for more content space */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Tablet and up (>= 768px) */
+@media (min-width: 768px) {
+  /* Increase card hover effect on larger screens */
+  .shadow-md:hover {
+    transform: translateY(-6px);
+  }
+}
+
+/* ============================================
+   Accessibility Improvements
+   ============================================ */
+
+/* 
+  Focus states for keyboard navigation
+  Important for accessibility!
+*/
+button:focus,
+a:focus {
+  outline: 2px solid #4f46e5; /* Indigo color */
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+
+/* Remove default focus outline on mouse click, keep for keyboard */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================
+   Print Styles (Bonus)
+   ============================================ */
+
+/* 
+  Hide interactive elements when printing
+  Useful if users want to print their application list
+*/
+@media print {
+  button,
+  a[routerLink] {
+    display: none;
+  }
+
+  .shadow-md {
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+}

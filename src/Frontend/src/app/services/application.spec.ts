@@ -1,0 +1,20 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { ApplicationService } from './application';
+
+describe('ApplicationService', () => {
+  let service: ApplicationService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [ApplicationService],
+    });
+    service = TestBed.inject(ApplicationService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

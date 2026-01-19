@@ -15,11 +15,21 @@ builder.Services.AddDbContext<JobTracker.Infrastructure.Data.ApplicationDbContex
 // We register the repositories here
 builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+   options.AddPolicy("AllowAngular", policy =>
+   {
+      policy.WithOrigins("http://localhost:4200") // Angular app URL
+              .AllowAnyMethod() // GET, POST, PUT, DELETE
+              .AllowAnyHeader(); 
+   });
+});
 
 var app = builder.Build();
 
@@ -28,6 +38,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowAngular"); // Now The frontend can request data from the backend!
 }
 
 app.UseHttpsRedirection();

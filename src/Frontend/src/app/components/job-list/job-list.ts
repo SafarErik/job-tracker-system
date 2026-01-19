@@ -9,16 +9,32 @@ import { ApplicationService } from '../../services/application';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Components
+import { KanbanBoardComponent } from '../kanban-board/kanban-board';
+import { CalendarViewComponent } from '../calendar-view/calendar-view';
+
+/**
+ * View Mode Enum
+ * Defines the available view modes for displaying job applications
+ */
+export enum ViewMode {
+  Grid = 'grid',
+  Kanban = 'kanban',
+  Calendar = 'calendar',
+}
+
 /**
  * JobList Component
  *
- * This component displays all job applications in a responsive card grid.
+ * This component displays all job applications with multiple view modes.
+ * Users can switch between Grid, Kanban, and Calendar views.
  *
  * Key Angular Concepts Used:
  * 1. OnInit lifecycle hook - runs after component initialization
  * 2. Dependency Injection - ApplicationService is injected via constructor
  * 3. Observables - async data streams from HTTP requests
  * 4. Two-way data flow - TypeScript class <-> HTML template
+ * 5. Component composition - uses child components for different views
  */
 @Component({
   selector: 'app-job-list',
@@ -26,6 +42,8 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
   imports: [
     CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
     RouterLink, // Enables [routerLink] directive
+    KanbanBoardComponent, // Kanban view
+    CalendarViewComponent, // Calendar view
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',
@@ -54,12 +72,23 @@ export class JobList implements OnInit {
    */
   errorMessage: string | null = null;
 
+  /**
+   * Current view mode
+   * Controls which view (Grid, Kanban, Calendar) is displayed
+   */
+  currentView: ViewMode = ViewMode.Grid;
+
   // ============================================
-  // Enum for HTML Template Access
+  // Enums for HTML Template Access
   // ============================================
 
   /**
-   * Make the enum available to the HTML template
+   * Make the view mode enum available to the HTML template
+   */
+  ViewMode = ViewMode;
+
+  /**
+   * Make the status enum available to the HTML template
    * This allows us to use JobApplicationStatus.Applied in the template
    */
   Status = JobApplicationStatus;
@@ -209,6 +238,41 @@ export class JobList implements OnInit {
       default:
         return 'Unknown';
     }
+  }
+
+  /**
+   * Format date string to human-readable format
+   *
+
+  // ============================================
+  // View Switching Methods
+  // ============================================
+
+  /**
+   * Switch to a different view mode
+   *
+   * @param mode - The view mode to switch to
+   */
+  switchView(mode: ViewMode): void {
+    this.currentView = mode;
+  }
+
+  /**
+   * Check if a view mode is currently active
+   *
+   * @param mode - The view mode to check
+   * @returns true if the mode is active, false otherwise
+   */
+  isViewActive(mode: ViewMode): boolean {
+    return this.currentView === mode;
+  }
+
+  /**
+   * Handle application updates from child components
+   * Reloads the applications list to ensure data consistency
+   */
+  onApplicationUpdated(): void {
+    this.loadApplications();
   }
 
   /**

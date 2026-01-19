@@ -26,4 +26,9 @@ export class ApplicationService {
   deleteApplication(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // 4. Update application (for status changes in Kanban board)
+  updateApplication(id: number, application: Partial<JobApplication>): Observable<JobApplication> {
+    return this.http.put<JobApplication>(`${this.apiUrl}/${id}`, application);
+  }
 }

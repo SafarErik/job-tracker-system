@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 // Services
@@ -14,6 +14,27 @@ import { Company } from '../../models/company.model';
 import { Skill } from '../../models/skill.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+/**
+ * JobFormComponent - Dual-purpose form for creating and editing job applications
+ *
+ * This component operates in two modes:
+ *
+ * 1. CREATE MODE (route: /new)
+ *    - Empty form with default values
+ *    - Submits POST request to create new application
+ *
+ * 2. EDIT MODE (route: /edit/:id)
+ *    - Pre-populated form with existing data
+ *    - Submits PUT request to update application
+ *
+ * The mode is determined by checking if an 'id' parameter exists in the route.
+ *
+ * Key Angular Concepts:
+ * - Reactive Forms: Form validation and state management
+ * - Route Parameters: Reading :id from URL using ActivatedRoute
+ * - Conditional Rendering: Dynamic UI based on isEditMode flag
+ * - HTTP Methods: POST for create, PUT for update
+ */
 @Component({
   selector: 'app-job-form',
   standalone: true,
@@ -22,15 +43,61 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
   styleUrl: './job-form.css',
 })
 export class JobFormComponent implements OnInit {
+  // ============================================
+  // Form and Data Properties
+  // ============================================
+
+  /**
+   * Reactive form instance with validation rules
+   * Provides form state tracking and validation
+   */
   jobForm: FormGroup;
+
+  /**
+   * Dropdown data loaded from backend
+   */
   companies: Company[] = [];
   skills: Skill[] = [];
 
-  // UI States
+  // ============================================
+  // UI State Indicators
+  // ============================================
+
+  /**
+   * Loading state for initial data fetch
+   * Shows spinner while loading companies and application data
+   */
   isLoading = false;
+
+  /**
+   * Submitting state during form save
+   * Disables submit button and shows "Saving..." text
+   */
   isSubmitting = false;
 
-  // Enums for HTML access
+  // ============================================
+  // Edit Mode Tracking
+  // ============================================
+
+  /**
+   * Determines if we're editing (true) or creating (false)
+   * Affects: form title, submit button text, API call method
+   */
+  isEditMode = false;
+
+  /**
+   * ID of the application being edited (null in create mode)
+   * Used to construct the PUT endpoint: /api/applications/{id}
+   */
+  applicationId: number | null = null;
+
+  // ============================================
+  // Template-accessible Enums
+  // ============================================
+
+  /**
+   * Expose status enum to template for dropdown binding
+   */
   Status = JobApplicationStatus;
 
   // Dropdown options for Status (ALL enum values)
@@ -44,12 +111,21 @@ export class JobFormComponent implements OnInit {
     { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
   ];
 
+  /**
+   * Constructor with Dependency Injection
+   *
+   * All services are marked 'readonly' because:
+   * 1. We never reassign these service instances
+   * 2. It's a best practice to prevent accidental mutations
+   * 3. Makes code more predictable and easier to debug
+   */
   constructor(
-    private fb: FormBuilder,
-    private applicationService: ApplicationService,
-    private companyService: CompanyService,
-    private skillService: SkillService,
-    private router: Router,
+    private readonly fb: FormBuilder,
+    private readonly applicationService: ApplicationService,
+    private readonly companyService: CompanyService,
+    private readonly skillService: SkillService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute, // For reading URL parameters
   ) {
     // Initialize the form structure and validation rules
     this.jobForm = this.fb.group({
@@ -61,11 +137,31 @@ export class JobFormComponent implements OnInit {
     });
   }
 
-  // Lifecycle hook: Runs when component initializes
+  /**
+   * Lifecycle hook: Runs when component initializes
+   * Checks if we're in edit mode by looking for :id in the route
+   */
   ngOnInit(): void {
-    this.loadData();
+    // Check if we have an ID parameter in the route (e.g., /edit/5)
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      // Edit mode: we have an ID
+      this.isEditMode = true;
+      this.applicationId = Number(id);
+      this.loadData(); // Load dropdown data first
+      this.loadApplication(); // Then load the application to edit
+    } else {
+      // Create mode: no ID
+      this.isEditMode = false;
+      this.loadData(); // Just load dropdown data
+    }
   }
 
+  /**
+   * Load dropdown data (companies and skills)
+   * Called on both create and edit modes
+   */
   loadData() {
     this.isLoading = true;
     // Fetch data for dropdowns using forkJoin to coordinate both requests
@@ -85,8 +181,41 @@ export class JobFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Load existing application data for editing
+   * Only called in edit mode
+   */
+  loadApplication() {
+    if (!this.applicationId) return;
+
+    this.isLoading = true;
+    this.applicationService.getApplicationById(this.applicationId).subscribe({
+      next: (application) => {
+        // Populate the form with existing data
+        this.jobForm.patchValue({
+          position: application.position,
+          companyId: application.companyId,
+          status: application.status,
+          jobUrl: application.jobUrl || '',
+          description: application.description || '',
+        });
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load application', err);
+        alert('Failed to load application data. Redirecting to home.');
+        this.router.navigate(['/']);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /**
+   * Handle form submission
+   * Determines whether to create or update based on isEditMode
+   */
   onSubmit() {
-    // 1. Check if form is valid
+    // 1. Validate form
     if (this.jobForm.invalid) {
       this.jobForm.markAllAsTouched(); // Triggers error messages in UI
       return;
@@ -99,15 +228,22 @@ export class JobFormComponent implements OnInit {
     formData.companyId = Number(formData.companyId);
     formData.status = Number(formData.status);
 
-    // 2. Send data to Backend
-    this.applicationService.createApplication(formData).subscribe({
+    // 2. Determine operation: create or update
+    const operation =
+      this.isEditMode && this.applicationId
+        ? this.applicationService.updateApplication(this.applicationId, formData)
+        : this.applicationService.createApplication(formData);
+
+    // 3. Execute the operation
+    operation.subscribe({
       next: () => {
         // Success: Redirect to list
         this.router.navigate(['/']);
       },
       error: (err) => {
-        console.error(err);
-        alert('Failed to save application. Please try again.');
+        console.error('Failed to save application:', err);
+        const action = this.isEditMode ? 'update' : 'create';
+        alert(`Failed to ${action} application. Please try again.`);
         this.isSubmitting = false;
       },
     });

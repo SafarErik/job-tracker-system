@@ -1,7 +1,12 @@
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <!-- Form Header - Dynamic title based on mode -->
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Add New Application</h2>
-    <p class="mt-2 text-center text-sm text-gray-600">Track your job hunting progress.</p>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      {{ isEditMode ? 'Edit Application' : 'Add New Application' }}
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+      {{ isEditMode ? 'Update your application details' : 'Track your job hunting progress' }}
+    </p>
   </div>
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -116,8 +121,11 @@
             [disabled]="jobForm.invalid || isSubmitting"
             class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            <span *ngIf="isSubmitting">Saving...</span>
-            <span *ngIf="!isSubmitting">Save Application</span>
+            <!-- Dynamic button text based on mode and state -->
+            <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
+            <span *ngIf="!isSubmitting">{{
+              isEditMode ? 'Update Application' : 'Save Application'
+            }}</span>
           </button>
         </div>
       </form>

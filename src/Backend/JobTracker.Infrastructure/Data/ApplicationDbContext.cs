@@ -21,7 +21,7 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
 
-        // Here we set, that the JobbApplication table-s AppliedDate column will
+        // Here we set, that the JobbApplication table-s AppliedAt column will
         // receive the latest timestamp in the database automatically 
         modelBuilder.Entity<JobApplication>()
         .Property(j => j.AppliedAt)

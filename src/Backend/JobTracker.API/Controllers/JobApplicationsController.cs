@@ -62,7 +62,7 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name
+            CompanyName = app.Company?.Name ?? "Unknown Company" // Null check, just to be safe
         };
 
         return Ok(dto);
@@ -72,7 +72,7 @@ public class JobApplicationsController : ControllerBase
 
     // POST: api/jobapplications
     [HttpPost]
-    public async Task<ActionResult<CreateJobApplicationDto>> Create(CreateJobApplicationDto createDto)
+    public async Task<ActionResult<JobApplicationDto>> Create(CreateJobApplicationDto createDto)
     {
        // MAPPING: DTO -> Entity
         var application = new JobApplication
@@ -88,7 +88,19 @@ public class JobApplicationsController : ControllerBase
         await _repository.AddAsync(application);
 
         // We return with the created object
-        return CreatedAtAction(nameof(Get), new { id = application.Id }, application);
+        var dto = new JobApplicationDto
+        {
+            Id = application.Id,
+            Position = application.Position,
+            JobUrl = application.JobUrl,
+            Description = application.Description,
+            AppliedAt = application.AppliedAt,
+            Status = application.Status,
+            CompanyId = application.CompanyId,
+            CompanyName = application.Company?.Name ?? "Unknown Company"
+        };
+
+        return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
 
     }
 

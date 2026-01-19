@@ -60,7 +60,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create(CreateCompanyDto createDto) {
+    public async Task<ActionResult<CompanyDto>> Create(CreateCompanyDto createDto) {
         var company = new Company
         {
             Name = createDto.Name,
@@ -70,7 +70,15 @@ public class CompaniesController : ControllerBase
 
         var id = await _repository.AddAsync(company);
         
-        return CreatedAtAction(nameof(Get), new { id }, company);
+        var dto = new CompanyDto
+        {
+            Id = id,
+            Name = company.Name,
+            Website = company.Website,
+            ContactPerson = company.ContactPerson
+        };
+    
+        return CreatedAtAction(nameof(Get), new { id }, dto);
     }
 
     [HttpPut("{id}")]

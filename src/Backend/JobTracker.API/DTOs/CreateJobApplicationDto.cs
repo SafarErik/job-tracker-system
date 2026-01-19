@@ -9,6 +9,7 @@ public class CreateJobApplicationDto
     public string Position { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Selecting a company is mandatory!")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please select a valid company.")]
     public int CompanyId { get; set; }
 
     public string? JobUrl { get; set; }

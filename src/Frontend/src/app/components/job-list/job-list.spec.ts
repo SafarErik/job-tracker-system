@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { JobList } from './job-list';
 
 describe('JobList', () => {
@@ -8,7 +9,7 @@ describe('JobList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JobList, HttpClientTestingModule],
+      imports: [JobList, HttpClientTestingModule, RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(JobList);

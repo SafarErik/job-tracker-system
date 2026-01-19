@@ -5,5 +5,8 @@ public enum ApplicationStatus
     Applied,
     Interviewing,
     Rejected,
-    Offer
+    Offer,
+    PhoneScreen,
+    Ghosted,
+    TechnicalTask
 }

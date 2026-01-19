@@ -14,6 +14,7 @@ builder.Services.AddDbContext<JobTracker.Infrastructure.Data.ApplicationDbContex
 
 // We register the repositories here
 builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddControllers();
 
 // Add services to the container.

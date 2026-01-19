@@ -25,8 +25,8 @@
 
         <!-- Drop Zone for Cards -->
         <div
-          [id]="column.id"
           cdkDropList
+          [id]="column.id"
           [cdkDropListData]="column.applications"
           [cdkDropListConnectedTo]="getConnectedLists()"
           (cdkDropListDropped)="onCardDropped($event)"

@@ -168,12 +168,15 @@ export class KanbanBoardComponent {
     const movedApplication = previousColumn[event.previousIndex];
     const newStatus = this.getStatusFromColumn(event.container.id);
 
-    if (newStatus !== undefined) {
+    if (newStatus !== undefined && movedApplication) {
+      // Save old status for potential rollback
+      const oldStatus = movedApplication.status;
+
       // Optimistically update UI first
       transferArrayItem(previousColumn, currentColumn, event.previousIndex, event.currentIndex);
 
       // Update backend
-      this.updateApplicationStatus(movedApplication, newStatus);
+      this.updateApplicationStatus(movedApplication, newStatus, oldStatus);
     }
   }
 
@@ -196,19 +199,29 @@ export class KanbanBoardComponent {
    *
    * @param application - The application to update
    * @param newStatus - The new status to apply
+   * @param oldStatus - The previous status for rollback
    */
   private updateApplicationStatus(
     application: JobApplication,
     newStatus: JobApplicationStatus,
+    oldStatus: JobApplicationStatus,
   ): void {
     this.isUpdating = true;
     const statusLabel = this.getStatusLabel(newStatus);
-    const oldStatus = application.status;
 
     // Optimistically update the local application object
     application.status = newStatus;
 
-    this.applicationService.updateApplication(application.id, { status: newStatus }).subscribe({
+    // Create update payload with all required fields
+    const updatePayload = {
+      position: application.position,
+      companyId: application.companyId,
+      jobUrl: application.jobUrl,
+      description: application.description,
+      status: newStatus,
+    };
+
+    this.applicationService.updateApplication(application.id, updatePayload).subscribe({
       next: () => {
         this.isUpdating = false;
 

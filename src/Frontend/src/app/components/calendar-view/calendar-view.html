@@ -98,7 +98,7 @@
               @for (app of day.applications.slice(0, 3); track app.id) {
                 <div
                   class="w-2 h-2 rounded-full"
-                  [ngClass]="getStatusColor(app.status)"
+                  [ngClass]="getStatusDotColor(app.status)"
                   [title]="app.position + ' - ' + app.companyName"
                 ></div>
               }

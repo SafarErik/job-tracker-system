@@ -184,7 +184,7 @@ export class CalendarViewComponent implements OnChanges {
   }
 
   /**
-   * Get status badge color
+   * Get status badge color (for badges with text)
    */
   getStatusColor(status: JobApplicationStatus): string {
     switch (status) {
@@ -204,6 +204,30 @@ export class CalendarViewComponent implements OnChanges {
         return 'bg-gray-100 text-gray-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  }
+
+  /**
+   * Get status dot color (for calendar indicators)
+   */
+  getStatusDotColor(status: JobApplicationStatus): string {
+    switch (status) {
+      case JobApplicationStatus.Applied:
+        return 'bg-blue-400';
+      case JobApplicationStatus.PhoneScreen:
+        return 'bg-purple-400';
+      case JobApplicationStatus.TechnicalTask:
+        return 'bg-indigo-400';
+      case JobApplicationStatus.Interviewing:
+        return 'bg-yellow-400';
+      case JobApplicationStatus.Offer:
+        return 'bg-green-400';
+      case JobApplicationStatus.Rejected:
+        return 'bg-red-400';
+      case JobApplicationStatus.Ghosted:
+        return 'bg-gray-400';
+      default:
+        return 'bg-gray-400';
     }
   }
 

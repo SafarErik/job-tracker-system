@@ -189,13 +189,14 @@ export class JobList implements OnInit {
       return; // User cancelled, do nothing
     }
 
+    // Optimistically remove from UI immediately
+    const originalApplications = [...this.applications];
+    this.applications = this.applications.filter((app) => app.id !== id);
+
     // Call the delete endpoint
     this.applicationService.deleteApplication(id).subscribe({
       next: () => {
-        // Success: Remove the deleted item from the local array
-        this.applications = this.applications.filter((app) => app.id !== id);
-
-        // Show success notification
+        // Success: Show notification
         this.notificationService.success(
           `${positionName} has been deleted successfully.`,
           'Application Deleted',
@@ -203,6 +204,8 @@ export class JobList implements OnInit {
       },
       error: (err) => {
         console.error('Failed to delete application:', err);
+        // Revert the optimistic update on error
+        this.applications = originalApplications;
         this.notificationService.error(
           'Unable to delete the application. Please try again.',
           'Delete Failed',

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApplicationService {
-  private readonly apiUrl = 'http://localhost:5433/api/JobApplications';
+  private readonly apiUrl = `${environment.apiBaseUrl}/JobApplications`;
 
   constructor(private readonly http: HttpClient) {}
 

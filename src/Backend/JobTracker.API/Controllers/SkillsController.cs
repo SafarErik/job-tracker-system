@@ -24,17 +24,34 @@ public class SkillsController : ControllerBase
         return Ok(dtos);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<SkillDto>> GetById(int id)
+    {
+        var skill = await _repository.GetByIdAsync(id);
+        if (skill == null)
+        {
+            return NotFound();
+        }
+        return Ok(new SkillDto { Id = skill.Id, Name = skill.Name });
+    }
+
     [HttpPost]
-    public async Task<ActionResult<int>> Create(CreateSkillDto dto)
+    public async Task<ActionResult<SkillDto>> Create(CreateSkillDto dto)
     {
         var skill = new Skill { Name = dto.Name };
         var id = await _repository.AddAsync(skill);
-        return CreatedAtAction(nameof(GetAll), new { id }, skill);
+        var createdSkill = new SkillDto { Id = id, Name = skill.Name };
+        return CreatedAtAction(nameof(GetById), new { id }, createdSkill);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        var skill = await _repository.GetByIdAsync(id);
+        if (skill == null)
+        {
+            return NotFound();
+        }
         await _repository.DeleteAsync(id);
         return NoContent();
     }

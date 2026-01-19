@@ -18,7 +18,7 @@ public class JobApplication
     // The application date
     public DateTime AppliedAt {get; set;} = DateTime.UtcNow;
 
-    public ApplicationStatus Status {get; set;} = ApplicationStatus.Applied;
+    public JobApplicationStatus Status {get; set;} = JobApplicationStatus.Applied;
 
     public decimal? SalaryOffer {get; set;} // Nullable
 

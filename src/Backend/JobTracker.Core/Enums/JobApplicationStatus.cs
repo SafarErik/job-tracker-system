@@ -1,6 +1,6 @@
 namespace JobTracker.Core.Enums;
 
-public enum ApplicationStatus
+public enum JobApplicationStatus
 {
     Applied,
     Interviewing,

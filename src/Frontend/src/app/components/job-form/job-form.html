@@ -1,1 +1,126 @@
-<p>job-form works!</p>
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Add New Application</h2>
+    <p class="mt-2 text-center text-sm text-gray-600">Track your job hunting progress.</p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div>
+          <label for="position" class="block text-sm font-medium text-gray-700">
+            Position Title *
+          </label>
+          <div class="mt-1">
+            <input
+              id="position"
+              type="text"
+              formControlName="position"
+              placeholder="e.g. Senior Backend Developer"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="
+                jobForm.get('position')?.invalid && jobForm.get('position')?.touched
+              "
+            />
+          </div>
+          <div
+            *ngIf="jobForm.get('position')?.invalid && jobForm.get('position')?.touched"
+            class="text-red-500 text-xs mt-1"
+          >
+            Position title is required (min 3 chars).
+          </div>
+        </div>
+
+        <div>
+          <label for="company" class="block text-sm font-medium text-gray-700"> Company * </label>
+          <div class="mt-1">
+            <select
+              id="company"
+              formControlName="companyId"
+              class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option [ngValue]="null" disabled>Select a company...</option>
+              <option *ngFor="let company of companies" [value]="company.id">
+                {{ company.name }}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="companies.length === 0 && !isLoading" class="text-xs text-gray-500 mt-1">
+            ⚠️ No companies found. Please add one first.
+          </div>
+          <div
+            *ngIf="jobForm.get('companyId')?.invalid && jobForm.get('companyId')?.touched"
+            class="text-red-500 text-xs mt-1"
+          >
+            Please select a company.
+          </div>
+        </div>
+
+        <div>
+          <label for="jobUrl" class="block text-sm font-medium text-gray-700">
+            Job Posting URL
+          </label>
+          <div class="mt-1">
+            <input
+              id="jobUrl"
+              type="url"
+              formControlName="jobUrl"
+              placeholder="https://linkedin.com/jobs/..."
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="status" class="block text-sm font-medium text-gray-700">
+            Current Status
+          </label>
+          <div class="mt-1">
+            <select
+              id="status"
+              formControlName="status"
+              class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option *ngFor="let option of statusOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-700">
+            Notes / Description
+          </label>
+          <div class="mt-1">
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="3"
+              placeholder="Salary range, tech stack, thoughts..."
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4">
+          <a
+            routerLink="/"
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer transition"
+          >
+            ← Back to List
+          </a>
+
+          <button
+            type="submit"
+            [disabled]="jobForm.invalid || isSubmitting"
+            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            <span *ngIf="isSubmitting">Saving...</span>
+            <span *ngIf="!isSubmitting">Save Application</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

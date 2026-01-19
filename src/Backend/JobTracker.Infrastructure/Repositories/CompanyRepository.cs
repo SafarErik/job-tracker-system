@@ -18,28 +18,27 @@ public class CompanyRepository : ICompanyRepository
 
     public async Task<IEnumerable<Company>> GetAllAsync()
     {
-        return await _context.Companies
-        .AsNoTracking()
-        .ToListAsync();
+        return await _context.Companies.ToListAsync();
     }
 
     public async Task<Company?> GetByIdAsync(int id)
     {
-        return await _context.Companies.FindAsync(id);
+        return await _context.Companies
+            .Include(c => c.JobApplications)
+            .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task AddAsync(Company company)
+    public async Task<int> AddAsync(Company company)
     {
         await _context.Companies.AddAsync(company);
         await _context.SaveChangesAsync();
-
+        return company.Id;
     }
 
     public async Task UpdateAsync(Company company)
     {
         _context.Companies.Update(company);
         await _context.SaveChangesAsync();
-
     }
 
     public async Task DeleteAsync(int id)
@@ -49,9 +48,7 @@ public class CompanyRepository : ICompanyRepository
         {
             _context.Companies.Remove(company);
             await _context.SaveChangesAsync();
-
         }
-
     }
 
 }

@@ -8,12 +8,11 @@ public class JobApplication
     // Primary key
     public int Id {get; set;}
 
-    public  required string Position  {get; set;} // For example: Junior Developer
+    public required string Position  {get; set;} // For example: Junior Developer
 
     public string? JobUrl {get; set;}
 
     public string? Description {get; set;}
-
 
     // The application date
     public DateTime AppliedAt {get; set;} = DateTime.UtcNow;
@@ -22,17 +21,15 @@ public class JobApplication
 
     public decimal? SalaryOffer {get; set;} // Nullable
 
-    // Connections to the company class
-
-    // Foreign key
+    // Foreign key - references Company
     public int CompanyId {get; set;}
 
-    // Navigation Property
-    // When we request the date from the database, The EF core can automatically load up
-    // the appropriate company
+    // Navigation property
+    // When requesting data from the database, EF Core can automatically load
+    // the related company
     public Company? Company {get; set;}
 
-    // Many to many connection
+    // Many-to-many relationship with Skills
     public ICollection<Skill> Skills {get; set;} = new List<Skill>();
 
 }

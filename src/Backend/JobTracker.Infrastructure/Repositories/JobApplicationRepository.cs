@@ -24,11 +24,11 @@ public class JobApplicationRepository : IJobApplicationRepository
             .ToListAsync();
     }
 
-    public async Task<JobApplication> GetByIdAsync(int id)
+    public async Task<JobApplication?> GetByIdAsync(int id)
     {
         return await _context.JobApplications
             .Include(j => j.Company)
-            .Include(j => j.Company)
+            .Include(j => j.Skills)
             .FirstOrDefaultAsync(j => j.Id == id);
 
     }

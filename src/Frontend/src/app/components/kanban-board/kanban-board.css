@@ -1,0 +1,107 @@
+/* Kanban Board Styles */
+
+.kanban-board-container {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Column Scrolling */
+.column-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.column-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.column-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.column-content::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+/* Card Drag Effects */
+.job-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  opacity: 0.9;
+  transform: rotate(3deg);
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .job-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Drag Placeholder */
+.drag-placeholder {
+  background: rgba(156, 163, 175, 0.2);
+  border: 2px dashed rgba(156, 163, 175, 0.5);
+  border-radius: 0.5rem;
+  min-height: 100px;
+  transition: all 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Drop Zone Highlight */
+.cdk-drop-list-receiving {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1536px) {
+  .kanban-column {
+    width: 18rem; /* w-72 */
+  }
+}
+
+@media (max-width: 1280px) {
+  .kanban-column {
+    width: 16rem; /* w-64 */
+  }
+}
+
+@media (max-width: 1024px) {
+  .kanban-board {
+    padding-bottom: 2rem;
+  }
+
+  .kanban-column {
+    width: 20rem; /* w-80 - Better for tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .kanban-board-container {
+    padding: 0.5rem;
+  }
+
+  .kanban-board {
+    gap: 0.5rem;
+  }
+
+  .kanban-column {
+    width: 18rem; /* w-72 */
+  }
+}
+
+/* Line Clamp Support (for older browsers) */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}

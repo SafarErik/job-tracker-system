@@ -1,12 +1,232 @@
+<!-- 
+  Job List Page Container
+  
+  Angular Template Syntax Guide:
+  - *ngIf="condition" - Conditionally show/hide elements
+  - *ngFor="let item of array" - Loop over arrays
+  - [class.active]="isActive" - Conditionally add CSS classes
+  - (click)="method()" - Handle click events
+  - {{ variable }} - Display data (interpolation)
+-->
+
 <div class="container mx-auto px-4 py-8">
-  <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-    <h1 class="text-4xl font-bold text-indigo-600 mb-4">🎯 JobTracker</h1>
-    <p class="text-gray-600 mb-6">Your job applications will appear here.</p>
+  <!-- Page Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">My Job Applications</h1>
+      <p class="mt-2 text-sm text-gray-600">Track and manage your job search progress</p>
+    </div>
+
+    <!-- Add New Button -->
     <a
       routerLink="/new"
-      class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-md font-medium transition"
+      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+    >
+      <span class="mr-2">➕</span>
+      Add New Application
+    </a>
+  </div>
+
+  <!-- Loading Spinner -->
+  <!-- 
+    *ngIf - Only render this div when isLoading is true
+    Angular removes it completely from the DOM when false
+  -->
+  <div *ngIf="isLoading" class="text-center py-12">
+    <div
+      class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"
+    ></div>
+    <p class="mt-4 text-gray-600">Loading applications...</p>
+  </div>
+
+  <!-- Error Message -->
+  <!-- Only shown when errorMessage has a value (not null) -->
+  <div
+    *ngIf="errorMessage && !isLoading"
+    class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
+  >
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <span class="text-red-400">⚠️</span>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-red-800">Error</h3>
+        <p class="mt-2 text-sm text-red-700">{{ errorMessage }}</p>
+        <button
+          (click)="loadApplications()"
+          class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+        >
+          Try Again →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <!-- Shown when: not loading, no error, and applications array is empty -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length === 0"
+    class="bg-white rounded-lg shadow-lg p-12 text-center"
+  >
+    <div class="text-6xl mb-4">📭</div>
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">No Applications Yet</h2>
+    <p class="text-gray-600 mb-6">
+      Start tracking your job search journey by adding your first application.
+    </p>
+    <a
+      routerLink="/new"
+      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition"
     >
       ➕ Add Your First Application
     </a>
+  </div>
+
+  <!-- Applications Grid -->
+  <!-- 
+    *ngIf - Only show when we have data
+    Grid Layout:
+    - grid: Enable CSS Grid
+    - grid-cols-1: 1 column on mobile
+    - md:grid-cols-2: 2 columns on medium screens (tablets)
+    - lg:grid-cols-3: 3 columns on large screens (desktops)
+    - gap-6: Space between grid items
+    
+    Responsive Design Strategy:
+    Mobile → 1 column (easier to scroll vertically)
+    Tablet → 2 columns (utilize more screen space)
+    Desktop → 3 columns (maximize content display)
+  -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length > 0"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+  >
+    <!-- 
+      *ngFor - Loop through each application
+      Syntax: "let app of applications"
+      - 'app' is the loop variable (current item)
+      - 'applications' is the array we're looping over
+      
+      For each iteration, Angular creates a new card with the current app's data
+    -->
+    <div
+      *ngFor="let app of applications"
+      class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+    >
+      <!-- Card Header -->
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+        <h3 class="text-xl font-bold text-white truncate" [title]="app.position">
+          {{ app.position }}
+        </h3>
+        <p class="text-indigo-100 text-sm mt-1">
+          {{ app.companyName || 'Unknown Company' }}
+        </p>
+      </div>
+
+      <!-- Card Body -->
+      <div class="px-6 py-4">
+        <!-- Status Badge -->
+        <!-- 
+          [ngClass] - Dynamically set CSS classes based on status
+          getStatusClass() returns different Tailwind classes for each status
+        -->
+        <div class="mb-4">
+          <span
+            [ngClass]="getStatusClass(app.status)"
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+          >
+            {{ getStatusLabel(app.status) }}
+          </span>
+        </div>
+
+        <!-- Application Details -->
+        <div class="space-y-3 text-sm">
+          <!-- Applied Date -->
+          <div class="flex items-start">
+            <span class="text-gray-400 mr-2">📅</span>
+            <div>
+              <p class="text-gray-500">Applied</p>
+              <p class="text-gray-900 font-medium">{{ formatDate(app.appliedAt) }}</p>
+            </div>
+          </div>
+
+          <!-- Description (if exists) -->
+          <!-- 
+            *ngIf="app.description" - Only show if description has a value
+            Optional chaining (?.) is already handled by TypeScript interface
+          -->
+          <div *ngIf="app.description" class="flex items-start">
+            <span class="text-gray-400 mr-2">📝</span>
+            <div class="flex-1">
+              <p class="text-gray-500">Notes</p>
+              <!-- 
+                Truncate long descriptions:
+                - line-clamp-2: Show max 2 lines
+                - Tailwind automatically adds "..." at the end
+              -->
+              <p class="text-gray-700 line-clamp-2">{{ app.description }}</p>
+            </div>
+          </div>
+
+          <!-- Job URL (if exists) -->
+          <div *ngIf="app.jobUrl" class="flex items-start">
+            <span class="text-gray-400 mr-2">🔗</span>
+            <div class="flex-1">
+              <p class="text-gray-500">Job Posting</p>
+              <!-- 
+                External link with best practices:
+                - target="_blank": Open in new tab
+                - rel="noopener noreferrer": Security best practice for external links
+              -->
+              <a
+                [href]="app.jobUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-indigo-600 hover:text-indigo-800 hover:underline truncate block"
+              >
+                View Posting →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Footer - Actions -->
+      <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end space-x-3">
+        <!-- Edit Button (Future feature) -->
+        <button
+          disabled
+          class="px-3 py-1 text-sm text-gray-400 bg-gray-200 rounded-md cursor-not-allowed"
+          title="Edit feature coming soon"
+        >
+          ✏️ Edit
+        </button>
+
+        <!-- Delete Button -->
+        <!-- 
+          (click)="deleteApplication(app.id)"
+          - (event) syntax for event binding
+          - Calls the TypeScript method when clicked
+          - Passes the application ID as parameter
+        -->
+        <button
+          (click)="deleteApplication(app.id)"
+          class="px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition"
+        >
+          🗑️ Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Summary (Optional enhancement) -->
+  <div *ngIf="!isLoading && applications.length > 0" class="mt-8 bg-white rounded-lg shadow p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="text-center">
+        <p class="text-3xl font-bold text-indigo-600">{{ applications.length }}</p>
+        <p class="text-sm text-gray-600">Total Applications</p>
+      </div>
+      <!-- Add more statistics here in the future -->
+    </div>
   </div>
 </div>

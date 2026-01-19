@@ -1,4 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using JobTracker.Infrastructure.Data;
+using JobTracker.Infrastructure.Repositories;
+using JobTracker.Core.Interfaces;
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Read the coonection string from the appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// We register The DBContext to the postgresql here
+builder.Services.AddDbContext<JobTracker.Infrastructure.Data.ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
+// We register the repositories here
+builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
@@ -14,5 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();

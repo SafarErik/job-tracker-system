@@ -10,10 +10,15 @@ public class JobApplication
 
     public  required string Position  {get; set;} // For example: Junior Developer
 
-    // The application date
-    public DateTime AppliedDate {get; set;} = DateTime.UtcNow;
+    public string? JobUrl {get; set;}
 
-    public ApplicationStatus Status {get; set;} = ApplicationStatus.Applied;
+    public string? Description {get; set;}
+
+
+    // The application date
+    public DateTime AppliedAt {get; set;} = DateTime.UtcNow;
+
+    public JobApplicationStatus Status {get; set;} = JobApplicationStatus.Applied;
 
     public decimal? SalaryOffer {get; set;} // Nullable
 
@@ -27,6 +32,7 @@ public class JobApplication
     // the appropriate company
     public Company? Company {get; set;}
 
+    // Many to many connection
     public ICollection<Skill> Skills {get; set;} = new List<Skill>();
 
 }

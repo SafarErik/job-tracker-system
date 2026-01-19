@@ -1,27 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-  
-  <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-md w-full">
-    <h1 class="text-4xl font-bold text-blue-600 mb-4">
-      JobTracker 🚀
-    </h1>
-    
-    <p class="text-gray-600 mb-6">
-      A modern álláskereső alkalmazásod.
-    </p>
+<!-- Navigation Header -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <a
+        routerLink="/"
+        class="flex items-center space-x-2 text-xl font-bold text-indigo-600 hover:text-indigo-700 transition"
+      >
+        <span>🎯</span>
+        <span>JobTracker</span>
+      </a>
 
-    <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-      Kezdés
-    </button>
+      <!-- Navigation Links -->
+      <div class="flex items-center space-x-4">
+        <a
+          routerLink="/"
+          routerLinkActive="text-indigo-600 font-semibold"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm transition"
+        >
+          📋 My Applications
+        </a>
+        <a
+          routerLink="/new"
+          routerLinkActive="bg-indigo-600 text-white"
+          class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium transition"
+        >
+          ➕ Add New
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Main Content - Router Outlet -->
+<main class="min-h-screen bg-gray-50">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Footer -->
+<footer class="bg-white border-t border-gray-200 py-4">
+  <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
+    JobTracker © 2026 - Track Your Job Search Journey
   </div>
-
-</div>
-</body>
-</html>
+</footer>

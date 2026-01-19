@@ -24,7 +24,7 @@ public class ApplicationDbContext : DbContext
         // Here we set, that the JobbApplication table-s AppliedDate column will
         // receive the latest timestamp in the database automatically 
         modelBuilder.Entity<JobApplication>()
-        .Property(j => j.AppliedDate)
+        .Property(j => j.AppliedAt)
         .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 

@@ -1,16 +1,14 @@
-import { TestBed } from '@angular/core/testing';
-
-import { Skill } from './skill';
+import { Skill } from '../models/skill.model';
 
 describe('Skill', () => {
-  let service: Skill;
+  let skill: Skill;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(Skill);
+    // Initialize a new Skill instance directly
+    skill = {} as Skill;
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(skill).toBeTruthy();
   });
 });

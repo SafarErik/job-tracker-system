@@ -49,27 +49,29 @@ if (resetDb && !app.Environment.IsDevelopment())
 
 if (app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
+    if (resetDb)
     {
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        // Complete database reset
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("⚠️  WARNING: Database deletion in 3 seconds...");
+        Console.ResetColor();
+        await Task.Delay(3000); // 3 seconds to cancel
         
-        if (resetDb)
-        {
-            // Complete database reset
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("⚠️  WARNING: Database deletion in 3 seconds...");
-            Console.ResetColor();
-            await Task.Delay(3000); // 3 seconds to cancel
-            
-            Console.WriteLine("🗑️  Deleting database...");
-            await context.Database.EnsureDeletedAsync();
-            Console.WriteLine("✅ Database deleted!");
-        }
+        await app.ResetDatabaseAsync();
+    }
+    else
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
         // Create database if it doesn't exist
         await context.Database.EnsureCreatedAsync();
-        
-        // Seed initial data
+    }
+    
+    // Seed initial data
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await DataSeeder.SeedAsync(context);
     }
 }

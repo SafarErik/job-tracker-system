@@ -10,12 +10,13 @@ public static class DatabaseExtensions
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
-        Console.WriteLine("🗑️  Adatbázis törlése...");
+        Console.WriteLine("🗑️  Deleting database...");
         await context.Database.EnsureDeletedAsync();
+        Console.WriteLine("✅ Database deleted!");
         
-        Console.WriteLine("🔨 Adatbázis újra létrehozása...");
+        Console.WriteLine("🔨 Recreating database...");
         await context.Database.EnsureCreatedAsync();
         
-        Console.WriteLine("✅ Adatbázis sikeresen törölve és újra létrehozva!");
+        Console.WriteLine("✅ Database successfully reset!");
     }
 }

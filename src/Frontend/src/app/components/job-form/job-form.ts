@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 // Services
 import { ApplicationService } from '../../services/application';
@@ -67,18 +68,20 @@ export class JobFormComponent implements OnInit {
 
   loadData() {
     this.isLoading = true;
-    // Fetch data for dropdowns
-    this.companyService.getCompanies().subscribe({
-      next: (data) => {
-        this.companies = data;
+    // Fetch data for dropdowns using forkJoin to coordinate both requests
+    forkJoin({
+      companies: this.companyService.getCompanies(),
+      skills: this.skillService.getSkills(),
+    }).subscribe({
+      next: (result) => {
+        this.companies = result.companies;
+        this.skills = result.skills;
         this.isLoading = false;
       },
-      error: (err) => console.error('Failed to load companies', err),
-    });
-
-    this.skillService.getSkills().subscribe({
-      next: (data) => (this.skills = data),
-      error: (err) => console.error('Failed to load skills', err),
+      error: (err) => {
+        console.error('Failed to load data', err);
+        this.isLoading = false;
+      },
     });
   }
 

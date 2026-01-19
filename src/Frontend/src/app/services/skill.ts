@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SkillService {
-  private readonly apiUrl = `${environment.apiBaseUrl}/JobApplications`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/Skills`;
 
   constructor(private readonly http: HttpClient) {}
 

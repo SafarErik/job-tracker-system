@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 
 // Services
 import { ApplicationService } from '../../services/application';
+import { NotificationService } from '../../services/notification';
 
 // Models
 import { JobApplication } from '../../models/job-application.model';
@@ -98,11 +99,13 @@ export class JobList implements OnInit {
   // ============================================
 
   /**
-   * Angular's Dependency Injection automatically provides the ApplicationService
-   * We declare it as 'private' so it's only accessible within this class
-   * 'readonly' ensures we don't accidentally reassign the service
+   * Angular's Dependency Injection automatically provides services
+   * We declare them as 'private readonly' for immutability and encapsulation
    */
-  constructor(private readonly applicationService: ApplicationService) {}
+  constructor(
+    private readonly applicationService: ApplicationService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   // ============================================
   // Lifecycle Hooks
@@ -149,7 +152,12 @@ export class JobList implements OnInit {
       // Error callback - runs when HTTP request fails
       error: (err) => {
         console.error('Failed to load applications:', err);
-        this.errorMessage = 'Failed to load job applications. Please try again.';
+        this.errorMessage =
+          'Unable to load your job applications. Please check your connection and try again.';
+        this.notificationService.error(
+          'Failed to load applications. Please try again.',
+          'Connection Error',
+        );
         this.isLoading = false; // Hide loading spinner even on error
       },
     });
@@ -159,12 +167,23 @@ export class JobList implements OnInit {
    * Delete a job application
    *
    * @param id - The unique identifier of the application to delete
+   * @param event - Mouse event to prevent propagation
    *
-   * Best Practice: Always confirm before deleting!
+   * Best Practice: Always confirm before destructive actions!
    */
-  deleteApplication(id: number): void {
-    // Native browser confirmation dialog
-    const confirmed = confirm('Are you sure you want to delete this application?');
+  async deleteApplication(id: number, event?: Event): Promise<void> {
+    // Prevent event bubbling if called from nested elements
+    event?.stopPropagation();
+
+    // Find the application to get details for confirmation message
+    const app = this.applications.find((a) => a.id === id);
+    const positionName = app ? `"${app.position}" at ${app.companyName}` : 'this application';
+
+    // Improved confirmation dialog
+    const confirmed = await this.notificationService.confirm(
+      `This will permanently delete ${positionName}. This action cannot be undone.`,
+      'Delete Application?',
+    );
 
     if (!confirmed) {
       return; // User cancelled, do nothing
@@ -174,12 +193,20 @@ export class JobList implements OnInit {
     this.applicationService.deleteApplication(id).subscribe({
       next: () => {
         // Success: Remove the deleted item from the local array
-        // This updates the UI without reloading all data
         this.applications = this.applications.filter((app) => app.id !== id);
+
+        // Show success notification
+        this.notificationService.success(
+          `${positionName} has been deleted successfully.`,
+          'Application Deleted',
+        );
       },
       error: (err) => {
         console.error('Failed to delete application:', err);
-        alert('Failed to delete the application. Please try again.');
+        this.notificationService.error(
+          'Unable to delete the application. Please try again.',
+          'Delete Failed',
+        );
       },
     });
   }

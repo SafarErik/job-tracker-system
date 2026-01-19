@@ -13,6 +13,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Services
 import { ApplicationService } from '../../services/application';
+import { NotificationService } from '../../services/notification';
 
 /**
  * Status Column Configuration
@@ -126,7 +127,10 @@ export class KanbanBoardComponent {
    */
   isUpdating = false;
 
-  constructor(private readonly applicationService: ApplicationService) {}
+  constructor(
+    private readonly applicationService: ApplicationService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   /**
    * Organize applications into their respective status columns
@@ -187,29 +191,80 @@ export class KanbanBoardComponent {
    * @param application - The application to update
    * @param newStatus - The new status to apply
    */
+  /**
+   * Update application status in the backend
+   *
+   * @param application - The application to update
+   * @param newStatus - The new status to apply
+   */
   private updateApplicationStatus(
     application: JobApplication,
     newStatus: JobApplicationStatus,
   ): void {
     this.isUpdating = true;
+    const statusLabel = this.getStatusLabel(newStatus);
+    const oldStatus = application.status;
+
+    // Optimistically update the local application object
+    application.status = newStatus;
 
     this.applicationService.updateApplication(application.id, { status: newStatus }).subscribe({
       next: () => {
-        // Update the local application object
-        application.status = newStatus;
         this.isUpdating = false;
+
+        // Show success notification
+        this.notificationService.success(
+          `${application.position} moved to ${statusLabel}`,
+          'Status Updated',
+        );
+
+        // Emit update event so parent can refresh if needed
         this.applicationUpdated.emit();
       },
       error: (error) => {
         console.error('Failed to update application status:', error);
         this.isUpdating = false;
-        // TODO: Show error toast notification
-        // TODO: Revert optimistic update
-        alert('Failed to update application status. Please try again.');
-        // Reload applications to ensure consistency
+
+        // Revert the optimistic update
+        application.status = oldStatus;
+
+        // Show error notification
+        this.notificationService.error(
+          'Unable to update application status. The change has been reverted.',
+          'Update Failed',
+        );
+
+        // Re-organize columns to revert the UI change
+        this.organizeApplicationsByStatus();
+
+        // Still emit update to ensure parent is aware
         this.applicationUpdated.emit();
       },
     });
+  }
+
+  /**
+   * Get human-readable status label
+   */
+  private getStatusLabel(status: JobApplicationStatus): string {
+    switch (status) {
+      case JobApplicationStatus.Applied:
+        return 'Applied';
+      case JobApplicationStatus.PhoneScreen:
+        return 'Phone Screen';
+      case JobApplicationStatus.TechnicalTask:
+        return 'Technical Task';
+      case JobApplicationStatus.Interviewing:
+        return 'Interviewing';
+      case JobApplicationStatus.Offer:
+        return 'Offer';
+      case JobApplicationStatus.Rejected:
+        return 'Rejected';
+      case JobApplicationStatus.Ghosted:
+        return 'Ghosted';
+      default:
+        return 'Unknown';
+    }
   }
 
   /**

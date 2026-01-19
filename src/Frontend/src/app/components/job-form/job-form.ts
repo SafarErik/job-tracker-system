@@ -8,6 +8,7 @@ import { forkJoin } from 'rxjs';
 import { ApplicationService } from '../../services/application';
 import { CompanyService } from '../../services/company';
 import { SkillService } from '../../services/skill';
+import { NotificationService } from '../../services/notification';
 
 // Models
 import { Company } from '../../models/company.model';
@@ -125,7 +126,8 @@ export class JobFormComponent implements OnInit {
     private readonly companyService: CompanyService,
     private readonly skillService: SkillService,
     private readonly router: Router,
-    private readonly route: ActivatedRoute, // For reading URL parameters
+    private readonly route: ActivatedRoute,
+    private readonly notificationService: NotificationService,
   ) {
     // Initialize the form structure and validation rules
     this.jobForm = this.fb.group({
@@ -175,7 +177,11 @@ export class JobFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load data', err);
+        console.error('Failed to load form data:', err);
+        this.notificationService.error(
+          'Unable to load companies and skills. Please refresh the page.',
+          'Load Error',
+        );
         this.isLoading = false;
       },
     });
@@ -202,9 +208,12 @@ export class JobFormComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load application', err);
-        alert('Failed to load application data. Redirecting to home.');
-        this.router.navigate(['/']);
+        console.error('Failed to load application:', err);
+        this.notificationService.error(
+          'Unable to load application data. Redirecting to home page.',
+          'Load Error',
+        );
+        setTimeout(() => this.router.navigate(['/']), 2000);
         this.isLoading = false;
       },
     });
@@ -237,13 +246,22 @@ export class JobFormComponent implements OnInit {
     // 3. Execute the operation
     operation.subscribe({
       next: () => {
-        // Success: Redirect to list
-        this.router.navigate(['/']);
+        // Success: Show notification and redirect
+        const action = this.isEditMode ? 'updated' : 'created';
+        const message = `Your job application has been ${action} successfully.`;
+
+        this.notificationService.success(message, 'Success!');
+
+        // Redirect after short delay to let user see the notification
+        setTimeout(() => this.router.navigate(['/']), 1000);
       },
       error: (err) => {
         console.error('Failed to save application:', err);
-        const action = this.isEditMode ? 'update' : 'create';
-        alert(`Failed to ${action} application. Please try again.`);
+        const action = this.isEditMode ? 'update' : 'save';
+        this.notificationService.error(
+          `Unable to ${action} your application. Please check your input and try again.`,
+          `Failed to ${action.charAt(0).toUpperCase() + action.slice(1)}`,
+        );
         this.isSubmitting = false;
       },
     });

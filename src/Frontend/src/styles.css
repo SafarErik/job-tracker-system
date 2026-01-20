@@ -90,11 +90,11 @@
  * DARK THEME VARIABLES
  * ============================================================================ */
 .dark {
-  /* Background colors - Dark palette */
-  --color-bg-primary: #0f172a;
-  --color-bg-secondary: #1e293b;
-  --color-bg-tertiary: #334155;
-  --color-bg-elevated: #1e293b;
+  /* Background colors - Modern slate palette */
+  --color-bg-primary: #0a0e1a;
+  --color-bg-secondary: #111827;
+  --color-bg-tertiary: #1f2937;
+  --color-bg-elevated: #1f2937;
   --color-bg-overlay: rgba(0, 0, 0, 0.75);
 
   /* Text colors - Adjusted for dark backgrounds */
@@ -104,16 +104,16 @@
   --color-text-inverse: #0f172a;
 
   /* Border colors - Subtle in dark mode */
-  --color-border-primary: #334155;
-  --color-border-secondary: #475569;
-  --color-border-focus: #818cf8;
+  --color-border-primary: #374151;
+  --color-border-secondary: #4b5563;
+  --color-border-focus: #6366f1;
 
-  /* Brand colors - Slightly adjusted for dark mode */
-  --color-primary-start: #818cf8;
-  --color-primary-end: #9333ea;
-  --color-primary: #818cf8;
-  --color-primary-hover: #a5b4fc;
-  --color-primary-light: rgba(129, 140, 248, 0.15);
+  /* Brand colors - Modern indigo accent for dark mode */
+  --color-primary-start: #6366f1;
+  --color-primary-end: #8b5cf6;
+  --color-primary: #6366f1;
+  --color-primary-hover: #818cf8;
+  --color-primary-light: rgba(99, 102, 241, 0.15);
 
   /* Semantic colors - Dark mode variants */
   --color-success: #34d399;
@@ -137,15 +137,15 @@
   --status-rejected: #f87171;
   --status-rejected-bg: rgba(248, 113, 113, 0.15);
 
-  /* Shadow colors - More prominent in dark mode */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  /* Shadow colors - Strong elevation for dark mode */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.6), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.7), 0 4px 10px -2px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 35px -5px rgba(0, 0, 0, 0.8), 0 10px 15px -5px rgba(0, 0, 0, 0.6);
 
-  /* Navigation specific - Dark mode gradient */
-  --nav-bg-gradient-start: #1e293b;
-  --nav-bg-gradient-end: #0f172a;
+  /* Navigation specific - Modern dark gradient */
+  --nav-bg-gradient-start: #1f2937;
+  --nav-bg-gradient-end: #111827;
   --nav-text-color: rgba(241, 245, 249, 0.9);
   --nav-text-hover: #ffffff;
   --nav-link-active-bg: rgba(129, 140, 248, 0.2);
@@ -276,6 +276,34 @@ app-root {
 .dark .text-gray-600,
 .dark .text-gray-700 {
   color: var(--color-text-secondary) !important;
+}
+
+.dark .text-gray-400,
+.dark .text-gray-500 {
+  color: var(--color-text-tertiary) !important;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+  border-color: var(--color-border-primary) !important;
+}
+
+/* Card shadows in dark mode - stronger for elevation */
+.dark .shadow-md {
+  box-shadow: var(--shadow-md) !important;
+}
+
+.dark .shadow-lg {
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.dark .shadow-xl {
+  box-shadow: var(--shadow-xl) !important;
+}
+
+/* Hover shadows enhanced */
+.dark .hover\:shadow-xl:hover {
+  box-shadow: var(--shadow-xl) !important;
 }
 
 .dark .text-gray-500 {

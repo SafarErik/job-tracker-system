@@ -79,10 +79,14 @@ export class CompanyDetailsComponent implements OnInit {
   getStatusClass(status: string): string {
     const statusMap: Record<string, string> = {
       Applied: 'status-applied',
+      PhoneScreen: 'status-phonescreen',
+      TechnicalTask: 'status-technicaltask',
+      Interviewing: 'status-interviewing',
       Interview: 'status-interview',
       Offer: 'status-offer',
       Rejected: 'status-rejected',
       Accepted: 'status-accepted',
+      Ghosted: 'status-ghosted',
     };
 
     return statusMap[status] || 'status-unknown';

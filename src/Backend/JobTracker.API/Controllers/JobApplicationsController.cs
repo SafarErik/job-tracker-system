@@ -10,11 +10,13 @@ namespace JobTracker.API.Controllers;
 public class JobApplicationsController : ControllerBase
 {
     private readonly IJobApplicationRepository _repository;
+    private readonly IDocumentRepository _documentRepository;
 
     // Dependency Injection
-    public JobApplicationsController(IJobApplicationRepository repository)
+    public JobApplicationsController(IJobApplicationRepository repository, IDocumentRepository documentRepository)
     {
         _repository = repository;
+        _documentRepository = documentRepository;
     }
 
     // GET: api/jobapplications
@@ -92,6 +94,14 @@ public class JobApplicationsController : ControllerBase
 
         await _repository.AddAsync(application);
 
+        // Populate DocumentName if a document was associated
+        string? documentName = null;
+        if (application.DocumentId.HasValue)
+        {
+            var document = await _documentRepository.GetByIdAsync(application.DocumentId.Value);
+            documentName = document?.OriginalFileName;
+        }
+
         // We return with the created object
         var dto = new JobApplicationDto
         {
@@ -104,7 +114,7 @@ public class JobApplicationsController : ControllerBase
             CompanyId = application.CompanyId,
             CompanyName = application.Company?.Name ?? "Unknown Company",
             DocumentId = application.DocumentId,
-            DocumentName = application.Document?.OriginalFileName
+            DocumentName = documentName
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -141,8 +151,8 @@ public class JobApplicationsController : ControllerBase
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
         
-        if (updateDto.DocumentId.HasValue)
-            existingApp.DocumentId = updateDto.DocumentId.Value;
+        if (updateDto.DocumentIdProvided)
+            existingApp.DocumentId = updateDto.DocumentId;
         
         // Note: We do not allow modifying the AppliedAt date
 

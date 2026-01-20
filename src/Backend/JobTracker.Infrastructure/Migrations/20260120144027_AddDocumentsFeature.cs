@@ -54,12 +54,12 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "FK_JobApplications_Documents_DocumentId",
                 table: "JobApplications");
 
-            migrationBuilder.DropTable(
-                name: "Documents");
-
             migrationBuilder.DropIndex(
                 name: "IX_JobApplications_DocumentId",
                 table: "JobApplications");
+
+            migrationBuilder.DropTable(
+                name: "Documents");
 
             migrationBuilder.DropColumn(
                 name: "DocumentId",

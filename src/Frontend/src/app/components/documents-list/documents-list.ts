@@ -64,29 +64,37 @@ export class DocumentsListComponent implements OnInit {
     // Validate file type
     if (file.type !== 'application/pdf') {
       alert('Only PDF files are allowed');
+      input.value = ''; // Clear input on validation error
       return;
     }
 
     // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
       alert('File size must not exceed 10MB');
+      input.value = ''; // Clear input on validation error
       return;
     }
 
     this.uploadProgress.set(0);
 
-    this.documentService.uploadDocument(file).subscribe({
-      next: (doc) => {
-        this.uploadProgress.set(null);
-        this.loadDocuments(); // Reload list
-        input.value = ''; // Reset input
-        alert('Document uploaded successfully!');
+    this.documentService.uploadDocumentWithProgress(file).subscribe({
+      next: (result) => {
+        if (typeof result === 'number') {
+          // Progress update
+          this.uploadProgress.set(result);
+        } else {
+          // Upload complete, result is Document
+          this.uploadProgress.set(null);
+          this.loadDocuments(); // Reload list
+          input.value = ''; // Reset input
+          alert('Document uploaded successfully!');
+        }
       },
       error: (err) => {
         this.uploadProgress.set(null);
         alert('Failed to upload document');
         console.error(err);
-        input.value = '';
+        input.value = ''; // Clear input on error
       },
     });
   }

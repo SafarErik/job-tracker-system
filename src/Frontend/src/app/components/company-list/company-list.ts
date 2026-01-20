@@ -99,4 +99,14 @@ export class CompanyListComponent implements OnInit {
       'Add Company feature coming soon! 🚀\n\nFor now, companies are automatically created when you add job applications.',
     );
   }
+
+  /**
+   * Handle keyboard navigation for table rows
+   */
+  onRowKeyDown(event: KeyboardEvent, companyId: number): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault(); // Prevent default scrolling for Space key
+      this.viewCompanyDetails(companyId);
+    }
+  }
 }

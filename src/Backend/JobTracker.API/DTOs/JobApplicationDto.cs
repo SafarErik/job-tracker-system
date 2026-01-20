@@ -15,5 +15,7 @@ public class JobApplicationDto
     public int CompanyId { get; set; }
     public string? CompanyName { get; set; } // This will be very handy for the frontend
 
+    public Guid? DocumentId { get; set; }
+    public string? DocumentName { get; set; } // Original filename of the CV
 
 }

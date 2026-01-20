@@ -29,6 +29,11 @@ public class UpdateJobApplicationDto
     public string? Description { get; set; }
 
     /// <summary>
+    /// Reference to the CV/Resume document
+    /// </summary>
+    public Guid? DocumentId { get; set; }
+
+    /// <summary>
     /// Application status
     /// </summary>
     public JobApplicationStatus? Status { get; set; }

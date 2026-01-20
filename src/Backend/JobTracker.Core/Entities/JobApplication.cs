@@ -29,6 +29,12 @@ public class JobApplication
     // the related company
     public Company? Company {get; set;}
 
+    // Foreign key - references Document (CV/Resume)
+    public Guid? DocumentId { get; set; }
+
+    // Navigation property
+    public Document? Document { get; set; }
+
     // Many-to-many relationship with Skills
     public ICollection<Skill> Skills {get; set;} = new List<Skill>();
 

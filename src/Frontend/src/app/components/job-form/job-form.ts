@@ -9,11 +9,13 @@ import { ApplicationService } from '../../services/application';
 import { CompanyService } from '../../services/company';
 import { SkillService } from '../../services/skill';
 import { NotificationService } from '../../services/notification';
+import { DocumentService } from '../../services/document.service';
 
 // Models
 import { Company } from '../../models/company.model';
 import { Skill } from '../../models/skill.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { Document } from '../../models/document.model';
 
 /**
  * JobFormComponent - Dual-purpose form for creating and editing job applications
@@ -59,6 +61,7 @@ export class JobFormComponent implements OnInit {
    */
   companies: Company[] = [];
   skills: Skill[] = [];
+  documents: Document[] = [];
 
   // ============================================
   // UI State Indicators
@@ -125,6 +128,7 @@ export class JobFormComponent implements OnInit {
     private readonly applicationService: ApplicationService,
     private readonly companyService: CompanyService,
     private readonly skillService: SkillService,
+    private readonly documentService: DocumentService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly notificationService: NotificationService,
@@ -136,6 +140,7 @@ export class JobFormComponent implements OnInit {
       status: [JobApplicationStatus.Applied, [Validators.required]],
       jobUrl: ['', []], // Optional
       description: ['', []], // Optional
+      documentId: [null, []], // Optional - CV selection
     });
   }
 
@@ -170,10 +175,12 @@ export class JobFormComponent implements OnInit {
     forkJoin({
       companies: this.companyService.getCompanies(),
       skills: this.skillService.getSkills(),
+      documents: this.documentService.getAllDocuments(),
     }).subscribe({
       next: (result) => {
         this.companies = result.companies;
         this.skills = result.skills;
+        this.documents = result.documents;
         this.isLoading = false;
       },
       error: (err) => {
@@ -204,6 +211,7 @@ export class JobFormComponent implements OnInit {
           status: application.status,
           jobUrl: application.jobUrl || '',
           description: application.description || '',
+          documentId: application.documentId || null,
         });
         this.isLoading = false;
       },

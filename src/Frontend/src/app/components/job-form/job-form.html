@@ -108,6 +108,32 @@
           </div>
         </div>
 
+        <!-- CV / Resume Selection -->
+        <div>
+          <label for="documentId" class="block text-sm font-medium text-gray-700">
+            CV / Resume Used
+            <span class="text-gray-500 text-xs ml-1">(Optional)</span>
+          </label>
+          <div class="mt-1">
+            <select
+              id="documentId"
+              formControlName="documentId"
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              <option [ngValue]="null">-- No CV selected --</option>
+              <option *ngFor="let doc of documents" [ngValue]="doc.id">
+                {{ doc.originalFileName }}
+              </option>
+            </select>
+          </div>
+          <p class="mt-1 text-xs text-gray-500">
+            Select which version of your CV you submitted with this application.
+            <a routerLink="/documents" class="text-indigo-600 hover:text-indigo-500"
+              >Upload new CV</a
+            >
+          </p>
+        </div>
+
         <div class="flex items-center justify-between pt-4">
           <a
             routerLink="/"

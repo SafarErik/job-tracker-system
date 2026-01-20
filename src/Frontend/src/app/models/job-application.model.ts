@@ -9,6 +9,8 @@ export interface JobApplication {
   status: JobApplicationStatus;
   companyId: number;
   companyName?: string;
+  documentId?: string | null;
+  documentName?: string | null;
 }
 
 export interface CreateJobApplication {
@@ -17,4 +19,5 @@ export interface CreateJobApplication {
   jobUrl?: string;
   description?: string;
   status: JobApplicationStatus;
+  documentId?: string | null;
 }

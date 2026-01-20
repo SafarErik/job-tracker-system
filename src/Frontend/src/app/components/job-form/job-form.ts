@@ -9,7 +9,7 @@ import { ApplicationService } from '../../services/application';
 import { CompanyService } from '../../services/company';
 import { SkillService } from '../../services/skill';
 import { NotificationService } from '../../services/notification';
-import { DocumentService } from '../../services/document.service';
+import { DocumentService } from '../../services/document';
 
 // Models
 import { Company } from '../../models/company.model';

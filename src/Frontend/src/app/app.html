@@ -1,25 +1,54 @@
-<!-- Navigation Header -->
-<header class="bg-white shadow-sm sticky top-0 z-50">
-  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-16">
-      <!-- Logo -->
-      <a
-        routerLink="/"
-        class="flex items-center space-x-2 text-xl font-bold text-indigo-600 hover:text-indigo-700 transition"
-      >
-        <span>🎯</span>
-        <span>JobTracker</span>
+<!-- Modern Navigation Header -->
+<header class="modern-nav">
+  <nav class="nav-container">
+    <div class="nav-content">
+      <!-- Logo with gradient -->
+      <a routerLink="/" class="logo-link">
+        <div class="logo-icon">🎯</div>
+        <span class="logo-text">JobTracker</span>
       </a>
 
-      <!-- Navigation Links -->
-      <div class="flex items-center space-x-4">
+      <!-- Navigation Links with modern design -->
+      <div class="nav-links">
         <a
           routerLink="/"
-          routerLinkActive="text-indigo-600 font-semibold"
+          routerLinkActive="nav-link-active"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm transition"
+          class="nav-link"
         >
-          📋 My Applications
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            />
+          </svg>
+          <span>Applications</span>
+        </a>
+
+        <a routerLink="/companies" routerLinkActive="nav-link-active" class="nav-link">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            />
+          </svg>
+          <span>Companies</span>
+        </a>
+
+        <a routerLink="/new" class="nav-link nav-link-primary">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span>Add New</span>
         </a>
       </div>
     </div>

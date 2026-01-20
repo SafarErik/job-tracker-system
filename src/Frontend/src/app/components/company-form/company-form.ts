@@ -9,7 +9,7 @@ import { Company, CreateCompany, UpdateCompany } from '../../models/company.mode
   selector: 'app-company-form',
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './company-form.html',
-  styleUrl: './company-form.css'
+  styleUrl: './company-form.css',
 })
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup;
@@ -23,7 +23,7 @@ export class CompanyFormComponent implements OnInit {
     private fb: FormBuilder,
     private companyService: CompanyService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.companyForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -31,7 +31,7 @@ export class CompanyFormComponent implements OnInit {
       address: ['', []],
       hrContactName: ['', []],
       hrContactEmail: ['', [Validators.email]],
-      hrContactLinkedIn: ['', []]
+      hrContactLinkedIn: ['', []],
     });
   }
 
@@ -59,7 +59,7 @@ export class CompanyFormComponent implements OnInit {
           address: company.address || '',
           hrContactName: company.hrContactName || '',
           hrContactEmail: company.hrContactEmail || '',
-          hrContactLinkedIn: company.hrContactLinkedIn || ''
+          hrContactLinkedIn: company.hrContactLinkedIn || '',
         });
         this.isLoading.set(false);
       },
@@ -67,7 +67,7 @@ export class CompanyFormComponent implements OnInit {
         this.error.set('Failed to load company data');
         this.isLoading.set(false);
         console.error(err);
-      }
+      },
     });
   }
 
@@ -96,7 +96,7 @@ export class CompanyFormComponent implements OnInit {
           this.error.set('Failed to update company');
           this.isSubmitting.set(false);
           console.error(err);
-        }
+        },
       });
     } else {
       // Create new company
@@ -110,7 +110,7 @@ export class CompanyFormComponent implements OnInit {
           this.error.set('Failed to create company');
           this.isSubmitting.set(false);
           console.error(err);
-        }
+        },
       });
     }
   }
@@ -119,6 +119,10 @@ export class CompanyFormComponent implements OnInit {
     this.router.navigate(['/companies']);
   }
 
-  get name() { return this.companyForm.get('name'); }
-  get hrContactEmail() { return this.companyForm.get('hrContactEmail'); }
+  get name() {
+    return this.companyForm.get('name');
+  }
+  get hrContactEmail() {
+    return this.companyForm.get('hrContactEmail');
+  }
 }

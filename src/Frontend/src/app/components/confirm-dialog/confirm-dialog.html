@@ -8,18 +8,24 @@
 >
   <!-- Simple Dialog Container -->
   <div
+    #dialogElement
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirmDialogTitle"
+    aria-describedby="confirmDialogMessage"
+    tabindex="-1"
     class="confirm-dialog bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all"
     (click)="$event.stopPropagation()"
   >
     <!-- Content Section -->
     <div class="p-6">
       <!-- Title -->
-      <h3 class="text-lg font-bold text-gray-900 mb-3">
+      <h3 id="confirmDialogTitle" class="text-lg font-bold text-gray-900 mb-3">
         {{ title }}
       </h3>
 
       <!-- Message -->
-      <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+      <p id="confirmDialogMessage" class="text-gray-600 leading-relaxed whitespace-pre-line">
         {{ message }}
       </p>
     </div>

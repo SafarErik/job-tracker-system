@@ -67,11 +67,17 @@ describe('CalendarViewComponent', () => {
   });
 
   it('should go to today', () => {
+    jasmine.clock().install();
+    const fixedDate = new Date(2026, 0, 20); // January 20, 2026
+    jasmine.clock().mockDate(fixedDate);
+
     component.currentDate = new Date(2025, 0, 1); // January 2025
     component.goToToday();
-    const today = new Date();
-    expect(component.currentDate.getMonth()).toBe(today.getMonth());
-    expect(component.currentDate.getFullYear()).toBe(today.getFullYear());
+
+    expect(component.currentDate.getMonth()).toBe(0); // January
+    expect(component.currentDate.getFullYear()).toBe(2026);
+
+    jasmine.clock().uninstall();
   });
 
   it('should format month and year correctly', () => {

@@ -33,7 +33,7 @@ export class ApplicationService {
   }
 
   // 5. Update application (for editing and status changes)
-  updateApplication(id: number, application: Partial<JobApplication>): Observable<JobApplication> {
-    return this.http.put<JobApplication>(`${this.apiUrl}/${id}`, application);
+  updateApplication(id: number, application: Partial<JobApplication>): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, application);
   }
 }

@@ -94,17 +94,17 @@
   Provides smooth transitions and hover states
 */
 
-/* Edit and Delete button containers */
-.bg-indigo-50:hover,
-.bg-red-50:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Action button class for interactive elements */
+.action-button {
   transition: all 0.2s ease;
 }
 
-/* Smooth press effect */
-.bg-indigo-50:active,
-.bg-red-50:active {
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:active {
   transform: translateY(0);
   box-shadow: none;
 }

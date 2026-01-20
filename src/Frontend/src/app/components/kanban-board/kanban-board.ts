@@ -231,8 +231,8 @@ export class KanbanBoardComponent {
           'Status Updated',
         );
 
-        // Emit update event so parent can refresh if needed
-        this.applicationUpdated.emit();
+        // No need to emit update - component state is already correct
+        // Parent doesn't need to reload since we've already updated locally
       },
       error: (error) => {
         console.error('Failed to update application status:', error);

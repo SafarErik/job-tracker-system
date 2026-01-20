@@ -5,6 +5,22 @@
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* Non-blocking update indicator */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.2s ease-out;
+}
+
 /* Column Scrolling */
 .column-content {
   scrollbar-width: thin;
@@ -27,9 +43,10 @@
 /* Card Drag Effects */
 .job-card {
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.15s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.15s cubic-bezier(0.2, 0, 0, 1);
   cursor: grab; /* Show grab cursor to indicate draggability */
+  will-change: transform; /* Performance optimization for frequent transforms */
 }
 
 /* Active dragging cursor */
@@ -49,11 +66,11 @@
 }
 
 .cdk-drag-animating {
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .cdk-drop-list-dragging .job-card:not(.cdk-drag-placeholder) {
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* Drag Placeholder - Visual feedback where card will be dropped */
@@ -62,9 +79,9 @@
   border: 2px dashed rgba(99, 102, 241, 0.5);
   border-radius: 0.5rem;
   min-height: 100px;
-  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 150ms cubic-bezier(0.2, 0, 0, 1);
   /* Pulsing animation to draw attention */
-  animation: placeholderPulse 1.5s ease-in-out infinite;
+  animation: placeholderPulse 1.2s ease-in-out infinite;
 }
 
 @keyframes placeholderPulse {
@@ -85,7 +102,7 @@
   border-color: rgba(59, 130, 246, 0.5) !important;
   /* Add subtle shadow to indicate active drop zone */
   box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.2);
-  transition: all 200ms ease;
+  transition: all 100ms ease;
 }
 
 /* Responsive Design */

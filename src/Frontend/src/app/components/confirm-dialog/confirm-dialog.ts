@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -41,6 +41,11 @@ export class ConfirmDialogComponent {
   private resolver?: (value: boolean) => void;
 
   /**
+   * Reference to dialog element for focus management
+   */
+  @ViewChild('dialogElement') dialogElement?: ElementRef;
+
+  /**
    * Show the confirmation dialog
    * Returns a promise that resolves to true if confirmed, false if cancelled
    */
@@ -51,12 +56,23 @@ export class ConfirmDialogComponent {
     cancelText?: string;
     isDangerous?: boolean;
   }): Promise<boolean> {
+    // Resolve previous promise if exists
+    if (this.resolver) {
+      this.resolver(false);
+      this.resolver = undefined;
+    }
+
     this.title = config.title;
     this.message = config.message;
     this.confirmText = config.confirmText || 'OK';
     this.cancelText = config.cancelText || 'Cancel';
     this.confirmButtonClass = config.isDangerous ? 'btn-danger' : 'btn-primary';
     this.isVisible = true;
+
+    // Focus dialog after it renders
+    setTimeout(() => {
+      this.dialogElement?.nativeElement.focus();
+    }, 0);
 
     return new Promise<boolean>((resolve) => {
       this.resolver = resolve;
@@ -69,6 +85,7 @@ export class ConfirmDialogComponent {
   confirm(): void {
     this.isVisible = false;
     this.resolver?.(true);
+    this.resolver = undefined;
   }
 
   /**
@@ -77,6 +94,7 @@ export class ConfirmDialogComponent {
   cancel(): void {
     this.isVisible = false;
     this.resolver?.(false);
+    this.resolver = undefined;
   }
 
   /**

@@ -62,6 +62,10 @@
       @for (day of calendarDays; track day.date.getTime()) {
         <div
           (click)="onDayClick(day)"
+          (keydown.enter)="onDayClick(day)"
+          (keydown.space)="onDayClick(day); $event.preventDefault()"
+          [attr.tabindex]="day.applications.length > 0 ? 0 : -1"
+          [attr.role]="day.applications.length > 0 ? 'button' : null"
           class="calendar-day bg-white min-h-[100px] p-2 relative transition-colors"
           [class.opacity-50]="!day.isCurrentMonth"
           [class.ring-2]="day.isToday"
@@ -225,6 +229,7 @@
                   <a
                     [href]="app.jobUrl"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 underline"
                   >
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

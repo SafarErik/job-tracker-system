@@ -18,6 +18,15 @@ export interface CreateCompany {
   hrContactLinkedIn?: string;
 }
 
+export interface UpdateCompany {
+  name?: string;
+  website?: string;
+  address?: string;
+  hrContactName?: string;
+  hrContactEmail?: string;
+  hrContactLinkedIn?: string;
+}
+
 export interface CompanyDetail {
   id: number;
   name: string;

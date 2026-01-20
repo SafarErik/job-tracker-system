@@ -91,13 +91,10 @@ export class CompanyListComponent implements OnInit {
   }
 
   /**
-   * Navigate to add new company (for now, shows alert - can be implemented later)
+   * Navigate to add new company
    */
   addNewCompany(): void {
-    // TODO: Implement company creation form
-    alert(
-      'Add Company feature coming soon! 🚀\n\nFor now, companies are automatically created when you add job applications.',
-    );
+    this.router.navigate(['/companies/new']);
   }
 
   /**

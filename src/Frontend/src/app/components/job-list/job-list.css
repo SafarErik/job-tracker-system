@@ -402,6 +402,15 @@ button:disabled {
   }
 }
 
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .bg-indigo-100,
+  .bg-purple-100,
+  .bg-yellow-100 {
+    animation: none;
+  }
+}
+
 /* ============================================
    Responsive Adjustments
    ============================================ */

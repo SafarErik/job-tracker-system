@@ -42,7 +42,7 @@ export interface CompanyDetail {
 export interface JobApplicationHistory {
   id: number;
   position: string;
-  appliedAt: Date;
+  appliedAt: string;
   status: string;
   salaryOffer?: number;
 }

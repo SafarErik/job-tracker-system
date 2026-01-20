@@ -90,6 +90,7 @@ export class CompanyFormComponent implements OnInit {
       const updateData: UpdateCompany = formValue;
       this.companyService.updateCompany(id, updateData).subscribe({
         next: () => {
+          this.isSubmitting.set(false);
           this.router.navigate(['/company', id]);
         },
         error: (err: Error) => {
@@ -104,6 +105,7 @@ export class CompanyFormComponent implements OnInit {
 
       this.companyService.createCompany(newCompany).subscribe({
         next: (company: Company) => {
+          this.isSubmitting.set(false);
           this.router.navigate(['/company', company.id]);
         },
         error: (err: Error) => {

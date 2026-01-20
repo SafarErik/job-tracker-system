@@ -77,6 +77,14 @@
   border-radius: 50%;
 }
 
+.hero-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
 .btn-back-modern {
   display: inline-flex;
   align-items: center;
@@ -89,13 +97,33 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 2rem;
   backdrop-filter: blur(10px);
 }
 
 .btn-back-modern:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateX(-4px);
+}
+
+.btn-edit-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #6366f1;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-edit-modern:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn-back-modern .icon {

@@ -67,10 +67,20 @@ export class CompanyDetailsComponent implements OnInit {
   }
 
   /**
-   * Navigate back to the main view
+   * Navigate back to the company list
    */
   goBack(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/companies']);
+  }
+
+  /**
+   * Navigate to edit company
+   */
+  editCompany(): void {
+    const details = this.companyDetails();
+    if (details) {
+      this.router.navigate(['/companies/edit', details.id]);
+    }
   }
 
   /**

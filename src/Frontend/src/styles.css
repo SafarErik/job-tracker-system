@@ -1,2 +1,243 @@
 /* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/*
+ * ============================================================================
+ * THEME SYSTEM - CSS Custom Properties
+ * ============================================================================
+ * 
+ * Modern theme system using CSS custom properties (CSS variables)
+ * Supports light and dark modes with smooth transitions
+ * 
+ * Best practices:
+ * - Uses semantic color names (background, text, primary, etc.)
+ * - Provides consistent color palette across the application
+ * - Enables easy theme switching without JavaScript
+ * - Follows WCAG contrast guidelines for accessibility
+ */
+
+/* ============================================================================
+ * ROOT VARIABLES - Light Theme (Default)
+ * ============================================================================ */
+:root {
+  /* Background colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text colors */
+  --color-text-primary: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-text-inverse: #ffffff;
+
+  /* Border colors */
+  --color-border-primary: #e5e7eb;
+  --color-border-secondary: #d1d5db;
+  --color-border-focus: #667eea;
+
+  /* Brand colors - Gradient */
+  --color-primary-start: #667eea;
+  --color-primary-end: #764ba2;
+  --color-primary: #667eea;
+  --color-primary-hover: #5568d3;
+  --color-primary-light: rgba(102, 126, 234, 0.1);
+
+  /* Semantic colors */
+  --color-success: #10b981;
+  --color-success-light: #d1fae5;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-error: #ef4444;
+  --color-error-light: #fee2e2;
+  --color-info: #3b82f6;
+  --color-info-light: #dbeafe;
+
+  /* Shadow colors */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Navigation specific */
+  --nav-bg-gradient-start: #667eea;
+  --nav-bg-gradient-end: #764ba2;
+  --nav-text-color: rgba(255, 255, 255, 0.9);
+  --nav-text-hover: #ffffff;
+  --nav-link-active-bg: rgba(255, 255, 255, 0.2);
+
+  /* Transition durations */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 350ms;
+}
+
+/* ============================================================================
+ * DARK THEME VARIABLES
+ * ============================================================================ */
+.dark {
+  /* Background colors - Dark palette */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-bg-elevated: #1e293b;
+  --color-bg-overlay: rgba(0, 0, 0, 0.75);
+
+  /* Text colors - Adjusted for dark backgrounds */
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  --color-text-inverse: #0f172a;
+
+  /* Border colors - Subtle in dark mode */
+  --color-border-primary: #334155;
+  --color-border-secondary: #475569;
+  --color-border-focus: #818cf8;
+
+  /* Brand colors - Slightly adjusted for dark mode */
+  --color-primary-start: #818cf8;
+  --color-primary-end: #9333ea;
+  --color-primary: #818cf8;
+  --color-primary-hover: #a5b4fc;
+  --color-primary-light: rgba(129, 140, 248, 0.15);
+
+  /* Semantic colors - Dark mode variants */
+  --color-success: #34d399;
+  --color-success-light: rgba(52, 211, 153, 0.15);
+  --color-warning: #fbbf24;
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+  --color-error: #f87171;
+  --color-error-light: rgba(248, 113, 113, 0.15);
+  --color-info: #60a5fa;
+  --color-info-light: rgba(96, 165, 250, 0.15);
+
+  /* Shadow colors - More prominent in dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+
+  /* Navigation specific - Dark mode gradient */
+  --nav-bg-gradient-start: #1e293b;
+  --nav-bg-gradient-end: #0f172a;
+  --nav-text-color: rgba(241, 245, 249, 0.9);
+  --nav-text-hover: #ffffff;
+  --nav-link-active-bg: rgba(129, 140, 248, 0.2);
+}
+
+/* ============================================================================
+ * GLOBAL THEME STYLES
+ * ============================================================================ */
+
+/* Smooth color transitions when switching themes - only for specific properties */
+:root,
+body,
+.modern-nav,
+.main-content,
+.app-footer,
+[class*='bg-'],
+[class*='text-'],
+[class*='border-'] {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: var(--transition-normal);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Body and root element theming */
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* App root should also stretch */
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* ============================================================================
+ * UTILITY CLASSES FOR THEME-AWARE COMPONENTS
+ * ============================================================================ */
+
+/* Background utilities */
+.bg-primary {
+  background-color: var(--color-bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--color-bg-tertiary);
+}
+
+.bg-elevated {
+  background-color: var(--color-bg-elevated);
+}
+
+/* Text utilities */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-tertiary {
+  color: var(--color-text-tertiary);
+}
+
+/* Border utilities */
+.border-primary {
+  border-color: var(--color-border-primary);
+}
+
+.border-secondary {
+  border-color: var(--color-border-secondary);
+}
+
+/* Shadow utilities */
+.shadow-theme-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow-theme-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-theme-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-theme-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+/* ============================================================================
+ * ACCESSIBILITY - Reduced Motion Support
+ * ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

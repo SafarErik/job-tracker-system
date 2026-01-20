@@ -1,13 +1,29 @@
-/* Modern Navigation Styles */
+/* 
+ * ============================================================================
+ * MODERN NAVIGATION STYLES - Theme Aware
+ * ============================================================================
+ * 
+ * Modern, responsive navigation with gradient background and theme support
+ * Features:
+ * - Gradient background that adapts to theme
+ * - Smooth transitions and hover effects
+ * - Mobile-responsive design
+ * - Accessible focus states
+ */
+
+/* Modern Navigation Container */
 .modern-nav {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(
+    135deg,
+    var(--nav-bg-gradient-start) 0%,
+    var(--nav-bg-gradient-end) 100%
+  );
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 50;
   backdrop-filter: blur(10px);
+  transition: all var(--transition-normal) ease;
 }
 
 .nav-container {
@@ -23,13 +39,15 @@
   height: 4.5rem;
 }
 
-/* Logo Styles */
+/* ============================================================================
+ * LOGO STYLES
+ * ============================================================================ */
 .logo-link {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  transition: transform 0.2s;
+  transition: transform var(--transition-fast) ease;
 }
 
 .logo-link:hover {
@@ -49,7 +67,9 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Navigation Links */
+/* ============================================================================
+ * NAVIGATION LINKS
+ * ============================================================================ */
 .nav-links {
   display: flex;
   align-items: center;
@@ -61,16 +81,17 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--nav-text-color);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.9375rem;
   border-radius: 12px;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast) ease;
   position: relative;
   overflow: hidden;
 }
 
+/* Hover effect overlay */
 .nav-link::before {
   content: '';
   position: absolute;
@@ -81,7 +102,7 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   opacity: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--transition-fast) ease;
 }
 
 .nav-link:hover::before {
@@ -89,8 +110,14 @@
 }
 
 .nav-link:hover {
-  color: white;
+  color: var(--nav-text-hover);
   transform: translateY(-1px);
+}
+
+/* Focus state for accessibility */
+.nav-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
 }
 
 .nav-icon {
@@ -99,9 +126,9 @@
   flex-shrink: 0;
 }
 
-/* Active Link */
+/* Active Link Styles */
 .nav-link-active {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--nav-link-active-bg);
   color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
@@ -110,25 +137,57 @@
   opacity: 0;
 }
 
-/* Primary Action Button */
+/* Primary Action Button (if needed) */
 .nav-link-primary {
   background: white;
-  color: #667eea;
+  color: var(--color-primary);
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .nav-link-primary::before {
-  background: rgba(102, 126, 234, 0.1);
+  background: var(--color-primary-light);
 }
 
 .nav-link-primary:hover {
-  color: #667eea;
+  color: var(--color-primary-hover);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transform: translateY(-2px);
 }
 
-/* Responsive Design */
+/* ============================================================================
+ * MAIN CONTENT AREA
+ * ============================================================================ */
+.main-content {
+  min-height: calc(100vh - 4.5rem - 4rem); /* Subtract header and footer height */
+  background-color: var(--color-bg-secondary);
+  transition: background-color var(--transition-normal) ease;
+}
+
+/* ============================================================================
+ * FOOTER STYLES
+ * ============================================================================ */
+.app-footer {
+  background-color: var(--color-bg-elevated);
+  border-top: 1px solid var(--color-border-primary);
+  padding: 1rem 0;
+  transition: all var(--transition-normal) ease;
+}
+
+.footer-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================================
+ * RESPONSIVE DESIGN
+ * ============================================================================ */
+
+/* Tablet screens */
 @media (max-width: 768px) {
   .nav-content {
     height: 4rem;
@@ -151,6 +210,7 @@
     font-size: 0.875rem;
   }
 
+  /* Hide text labels on tablet, show only icons */
   .nav-link span {
     display: none;
   }
@@ -161,8 +221,73 @@
   }
 }
 
+/* Mobile screens */
 @media (max-width: 480px) {
   .nav-container {
     padding: 0 1rem;
+  }
+
+  .nav-content {
+    height: 3.5rem;
+  }
+
+  .logo-text {
+    font-size: 1.125rem;
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .nav-links {
+    gap: 0.125rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem;
+  }
+}
+
+/* ============================================================================
+ * DARK MODE SPECIFIC ADJUSTMENTS
+ * ============================================================================ */
+
+/* Dark mode shadow enhancement */
+.dark .modern-nav {
+  box-shadow: var(--shadow-lg);
+}
+
+.dark .nav-link-active {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================================
+ * ACCESSIBILITY - REDUCED MOTION
+ * ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .modern-nav,
+  .nav-link,
+  .logo-link,
+  .main-content,
+  .app-footer {
+    transition: none;
+  }
+
+  .nav-link:hover {
+    transform: none;
+  }
+}
+
+/* ============================================================================
+ * PRINT STYLES
+ * ============================================================================ */
+@media print {
+  .modern-nav,
+  .app-footer {
+    display: none;
+  }
+
+  .main-content {
+    min-height: auto;
   }
 }

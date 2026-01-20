@@ -11,20 +11,181 @@
 
 <div class="container mx-auto px-4 py-8">
   <!-- Page Header -->
-  <div class="flex justify-between items-center mb-8">
+  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
     <div>
       <h1 class="text-3xl font-bold text-gray-900">My Job Applications</h1>
       <p class="mt-2 text-sm text-gray-600">Track and manage your job search progress</p>
     </div>
 
-    <!-- Add New Button -->
-    <a
-      routerLink="/new"
-      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
-    >
-      <span class="mr-2">➕</span>
-      Add New Application
-    </a>
+    <div class="flex flex-col sm:flex-row gap-3">
+      <!-- View Switcher -->
+      <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
+        <!-- Grid View Button -->
+        <button
+          (click)="switchView(ViewMode.Grid)"
+          [class.bg-indigo-600]="isViewActive(ViewMode.Grid)"
+          [class.text-white]="isViewActive(ViewMode.Grid)"
+          [class.text-gray-600]="!isViewActive(ViewMode.Grid)"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
+          title="Grid View"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+            />
+          </svg>
+          Grid
+        </button>
+
+        <!-- Kanban View Button -->
+        <button
+          (click)="switchView(ViewMode.Kanban)"
+          [class.bg-indigo-600]="isViewActive(ViewMode.Kanban)"
+          [class.text-white]="isViewActive(ViewMode.Kanban)"
+          [class.text-gray-600]="!isViewActive(ViewMode.Kanban)"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
+          title="Kanban Board View"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+            />
+          </svg>
+          Kanban
+        </button>
+
+        <!-- Calendar View Button -->
+        <button
+          (click)="switchView(ViewMode.Calendar)"
+          [class.bg-indigo-600]="isViewActive(ViewMode.Calendar)"
+          [class.text-white]="isViewActive(ViewMode.Calendar)"
+          [class.text-gray-600]="!isViewActive(ViewMode.Calendar)"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
+          title="Calendar View"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          Calendar
+        </button>
+      </div>
+
+      <!-- Add New Button -->
+      <a
+        routerLink="/new"
+        class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        Add New
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Stats Dashboard - Enhanced -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length > 0"
+    class="mb-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-6"
+  >
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">📊 Quick Stats</h2>
+      <span class="text-sm text-gray-600">Real-time insights</span>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <!-- Total Applications -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">📝</span>
+          <span class="text-xs font-medium text-gray-500 uppercase">Total</span>
+        </div>
+        <p class="text-3xl font-bold text-gray-900">{{ applications.length }}</p>
+        <p class="text-xs text-gray-600 mt-1">Applications</p>
+      </div>
+
+      <!-- Active Applications -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">⚡</span>
+          <span class="text-xs font-medium text-indigo-500 uppercase">Active</span>
+        </div>
+        <p class="text-3xl font-bold text-indigo-600">{{ getActiveCount() }}</p>
+        <p class="text-xs text-gray-600 mt-1">In Progress</p>
+      </div>
+
+      <!-- Interviewing -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">💼</span>
+          <span class="text-xs font-medium text-yellow-500 uppercase">Interview</span>
+        </div>
+        <p class="text-3xl font-bold text-yellow-600">
+          {{
+            getStatusCount(Status.Interviewing) +
+              getStatusCount(Status.PhoneScreen) +
+              getStatusCount(Status.TechnicalTask)
+          }}
+        </p>
+        <p class="text-xs text-gray-600 mt-1">Stages</p>
+      </div>
+
+      <!-- Offers -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">🎉</span>
+          <span class="text-xs font-medium text-green-500 uppercase">Offers</span>
+        </div>
+        <p class="text-3xl font-bold text-green-600">{{ getStatusCount(Status.Offer) }}</p>
+        <p class="text-xs text-gray-600 mt-1">Received</p>
+      </div>
+
+      <!-- Rejected -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">❌</span>
+          <span class="text-xs font-medium text-red-500 uppercase">Rejected</span>
+        </div>
+        <p class="text-3xl font-bold text-red-600">{{ getStatusCount(Status.Rejected) }}</p>
+        <p class="text-xs text-gray-600 mt-1">Declined</p>
+      </div>
+
+      <!-- Response Rate -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">📈</span>
+          <span class="text-xs font-medium text-blue-500 uppercase">Response</span>
+        </div>
+        <p class="text-3xl font-bold text-blue-600">{{ getResponseRate() }}%</p>
+        <p class="text-xs text-gray-600 mt-1">Reply Rate</p>
+      </div>
+
+      <!-- Success Rate -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">🏆</span>
+          <span class="text-xs font-medium text-purple-500 uppercase">Success</span>
+        </div>
+        <p class="text-3xl font-bold text-purple-600">{{ getSuccessRate() }}%</p>
+        <p class="text-xs text-gray-600 mt-1">Offer Rate</p>
+      </div>
+    </div>
   </div>
 
   <!-- Loading Spinner -->
@@ -77,159 +238,179 @@
       routerLink="/new"
       class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition"
     >
-      ➕ Add Your First Application
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Add Your First Application
     </a>
   </div>
 
-  <!-- Applications Grid -->
-  <!-- 
-    *ngIf - Only show when we have data
-    Grid Layout:
-    - grid: Enable CSS Grid
-    - grid-cols-1: 1 column on mobile
-    - md:grid-cols-2: 2 columns on medium screens (tablets)
-    - lg:grid-cols-3: 3 columns on large screens (desktops)
-    - gap-6: Space between grid items
-    
-    Responsive Design Strategy:
-    Mobile → 1 column (easier to scroll vertically)
-    Tablet → 2 columns (utilize more screen space)
-    Desktop → 3 columns (maximize content display)
-  -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length > 0"
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-  >
-    <!-- 
-      *ngFor - Loop through each application
-      Syntax: "let app of applications"
-      - 'app' is the loop variable (current item)
-      - 'applications' is the array we're looping over
-      
-      For each iteration, Angular creates a new card with the current app's data
-    -->
-    <div
-      *ngFor="let app of applications"
-      class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-    >
-      <!-- Card Header -->
-      <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
-        <h3 class="text-xl font-bold text-white truncate" [title]="app.position">
-          {{ app.position }}
-        </h3>
-        <p class="text-indigo-100 text-sm mt-1">
-          {{ app.companyName || 'Unknown Company' }}
-        </p>
-      </div>
-
-      <!-- Card Body -->
-      <div class="px-6 py-4">
-        <!-- Status Badge -->
-        <!-- 
-          [ngClass] - Dynamically set CSS classes based on status
-          getStatusClass() returns different Tailwind classes for each status
-        -->
-        <div class="mb-4">
-          <span
-            [ngClass]="getStatusClass(app.status)"
-            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-          >
-            {{ getStatusLabel(app.status) }}
-          </span>
-        </div>
-
-        <!-- Application Details -->
-        <div class="space-y-3 text-sm">
-          <!-- Applied Date -->
-          <div class="flex items-start">
-            <span class="text-gray-400 mr-2">📅</span>
-            <div>
-              <p class="text-gray-500">Applied</p>
-              <p class="text-gray-900 font-medium">{{ formatDate(app.appliedAt) }}</p>
-            </div>
+  <!-- View Content -->
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0">
+    <!-- Grid View -->
+    <div *ngIf="currentView === ViewMode.Grid">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          *ngFor="let app of applications"
+          class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+        >
+          <!-- Card Header -->
+          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
+            <h3 class="text-xl font-bold text-white truncate" [title]="app.position">
+              {{ app.position }}
+            </h3>
+            <p class="text-indigo-100 text-sm mt-1">
+              {{ app.companyName || 'Unknown Company' }}
+            </p>
           </div>
 
-          <!-- Description (if exists) -->
-          <!-- 
-            *ngIf="app.description" - Only show if description has a value
-            Optional chaining (?.) is already handled by TypeScript interface
-          -->
-          <div *ngIf="app.description" class="flex items-start">
-            <span class="text-gray-400 mr-2">📝</span>
-            <div class="flex-1">
-              <p class="text-gray-500">Notes</p>
-              <!-- 
-                Truncate long descriptions:
-                - line-clamp-2: Show max 2 lines
-                - Tailwind automatically adds "..." at the end
-              -->
-              <p class="text-gray-700 line-clamp-2">{{ app.description }}</p>
-            </div>
-          </div>
-
-          <!-- Job URL (if exists) -->
-          <div *ngIf="app.jobUrl" class="flex items-start">
-            <span class="text-gray-400 mr-2">🔗</span>
-            <div class="flex-1">
-              <p class="text-gray-500">Job Posting</p>
-              <!-- 
-                External link with best practices:
-                - target="_blank": Open in new tab
-                - rel="noopener noreferrer": Security best practice for external links
-              -->
-              <a
-                [href]="app.jobUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-indigo-600 hover:text-indigo-800 hover:underline truncate block"
+          <!-- Card Body -->
+          <div class="px-6 py-4">
+            <!-- Status Badge -->
+            <div class="mb-4">
+              <span
+                [ngClass]="getStatusClass(app.status)"
+                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
               >
-                View Posting →
-              </a>
+                {{ getStatusLabel(app.status) }}
+              </span>
+            </div>
+
+            <!-- Application Details -->
+            <div class="space-y-3 text-sm">
+              <!-- Applied Date -->
+              <div class="flex items-start">
+                <svg
+                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <div>
+                  <p class="text-gray-500">Applied</p>
+                  <p class="text-gray-900 font-medium">{{ formatDate(app.appliedAt) }}</p>
+                </div>
+              </div>
+
+              <!-- Description (if exists) -->
+              <div *ngIf="app.description" class="flex items-start">
+                <svg
+                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <div class="flex-1">
+                  <p class="text-gray-500">Notes</p>
+                  <p class="text-gray-700 line-clamp-2">{{ app.description }}</p>
+                </div>
+              </div>
+
+              <!-- Job URL (if exists) -->
+              <div *ngIf="app.jobUrl" class="flex items-start">
+                <svg
+                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  />
+                </svg>
+                <div class="flex-1">
+                  <p class="text-gray-500">Job Posting</p>
+                  <a
+                    [href]="app.jobUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-indigo-600 hover:text-indigo-800 hover:underline truncate block"
+                  >
+                    View Posting →
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- 
+            Card Footer - Action Buttons
+            
+            Edit Button: Uses routerLink to navigate to /edit/:id
+            - [routerLink]="['/edit', app.id]" creates dynamic route like /edit/5
+            - Uses <a> tag for better accessibility and SEO
+            
+            Delete Button: Calls component method with confirmation
+            - (click) event binding to deleteApplication method
+            - Uses <button> since it's an action, not navigation
+          -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end space-x-3">
+            <!-- Edit Button - Navigate to edit page -->
+            <a
+              [routerLink]="['/edit', app.id]"
+              class="action-button inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors duration-200"
+              title="Edit this application"
+            >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Edit
+            </a>
+
+            <!-- Delete Button -->
+            <button
+              (click)="deleteApplication(app.id)"
+              class="action-button inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors duration-200"
+              title="Delete this application"
+            >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-
-      <!-- Card Footer - Actions -->
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end space-x-3">
-        <!-- Edit Button (Future feature) -->
-        <button
-          disabled
-          class="px-3 py-1 text-sm text-gray-400 bg-gray-200 rounded-md cursor-not-allowed"
-          title="Edit feature coming soon"
-        >
-          ✏️ Edit
-        </button>
-
-        <!-- Delete Button -->
-        <!-- 
-          (click)="deleteApplication(app.id)"
-          - (event) syntax for event binding
-          - Calls the TypeScript method when clicked
-          - Passes the application ID as parameter
-        -->
-        <button
-          (click)="deleteApplication(app.id)"
-          class="px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition"
-        >
-          🗑️ Delete
-        </button>
       </div>
     </div>
-  </div>
 
-  <!-- Statistics Summary (Optional enhancement) -->
-  <div
-    *ngIf="!isLoading && applications.length > 0 && !errorMessage"
-    class="mt-8 bg-white rounded-lg shadow p-6"
-  >
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="text-center">
-        <p class="text-3xl font-bold text-indigo-600">{{ applications.length }}</p>
-        <p class="text-sm text-gray-600">Total Applications</p>
-      </div>
-      <!-- Add more statistics here in the future -->
+    <!-- Kanban View -->
+    <div *ngIf="currentView === ViewMode.Kanban">
+      <app-kanban-board
+        [applications]="applications"
+        (applicationUpdated)="onApplicationUpdated()"
+      ></app-kanban-board>
+    </div>
+
+    <!-- Calendar View -->
+    <div *ngIf="currentView === ViewMode.Calendar">
+      <app-calendar-view [applications]="applications"></app-calendar-view>
     </div>
   </div>
 </div>

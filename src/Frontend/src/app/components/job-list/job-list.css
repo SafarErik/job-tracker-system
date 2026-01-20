@@ -89,9 +89,29 @@
    Button Interactions
    ============================================ */
 
-/* Delete button - smooth color transition */
-button:hover:not(:disabled) {
-  transform: scale(1.05);
+/* 
+  Enhanced button interactions for Edit and Delete
+  Provides smooth transitions and hover states
+*/
+
+/* Action button class for interactive elements */
+.action-button {
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Generic button hover effects */
+button:hover:not(:disabled),
+a:hover {
   transition: all 0.2s ease;
 }
 

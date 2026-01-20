@@ -105,22 +105,36 @@ public class JobApplicationsController : ControllerBase
     }
 
     // PUT: api/jobapplications/5
+    /// <summary>
+    /// Update a job application. Supports partial updates.
+    /// </summary>
+    /// <param name="id">Application ID</param>
+    /// <param name="updateDto">Fields to update (only non-null fields will be updated)</param>
+    /// <returns>NoContent if successful, NotFound if application doesn't exist</returns>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CreateJobApplicationDto updateDto)
+    public async Task<IActionResult> Update(int id, UpdateJobApplicationDto updateDto)
     {
         var existingApp = await _repository.GetByIdAsync(id);
 
         if (existingApp == null) return NotFound();
 
-        // Manual update (Mapping)
-        existingApp.Position = updateDto.Position;
-        existingApp.CompanyId = updateDto.CompanyId; // We can even move it to another company
-        existingApp.JobUrl = updateDto.JobUrl;
-        existingApp.Description = updateDto.Description;
-        existingApp.Status = updateDto.Status;
+        // Partial update - only update fields that are provided
+        if (updateDto.Position != null)
+            existingApp.Position = updateDto.Position;
         
-        // Note: We usually do not allow modifying the AppliedAt date here,
-        // so we left it out of the copying (it remains the original).
+        if (updateDto.CompanyId.HasValue)
+            existingApp.CompanyId = updateDto.CompanyId.Value;
+        
+        if (updateDto.JobUrl != null)
+            existingApp.JobUrl = updateDto.JobUrl;
+        
+        if (updateDto.Description != null)
+            existingApp.Description = updateDto.Description;
+        
+        if (updateDto.Status.HasValue)
+            existingApp.Status = updateDto.Status.Value;
+        
+        // Note: We do not allow modifying the AppliedAt date
 
         await _repository.UpdateAsync(existingApp);
 

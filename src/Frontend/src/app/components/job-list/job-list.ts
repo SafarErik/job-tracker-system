@@ -4,21 +4,38 @@ import { RouterLink } from '@angular/router';
 
 // Services
 import { ApplicationService } from '../../services/application';
+import { NotificationService } from '../../services/notification';
 
 // Models
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Components
+import { KanbanBoardComponent } from '../kanban-board/kanban-board';
+import { CalendarViewComponent } from '../calendar-view/calendar-view';
+
+/**
+ * View Mode Enum
+ * Defines the available view modes for displaying job applications
+ */
+export enum ViewMode {
+  Grid = 'grid',
+  Kanban = 'kanban',
+  Calendar = 'calendar',
+}
+
 /**
  * JobList Component
  *
- * This component displays all job applications in a responsive card grid.
+ * This component displays all job applications with multiple view modes.
+ * Users can switch between Grid, Kanban, and Calendar views.
  *
  * Key Angular Concepts Used:
  * 1. OnInit lifecycle hook - runs after component initialization
  * 2. Dependency Injection - ApplicationService is injected via constructor
  * 3. Observables - async data streams from HTTP requests
  * 4. Two-way data flow - TypeScript class <-> HTML template
+ * 5. Component composition - uses child components for different views
  */
 @Component({
   selector: 'app-job-list',
@@ -26,6 +43,8 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
   imports: [
     CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
     RouterLink, // Enables [routerLink] directive
+    KanbanBoardComponent, // Kanban view
+    CalendarViewComponent, // Calendar view
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',
@@ -54,12 +73,23 @@ export class JobList implements OnInit {
    */
   errorMessage: string | null = null;
 
+  /**
+   * Current view mode
+   * Controls which view (Grid, Kanban, Calendar) is displayed
+   */
+  currentView: ViewMode = ViewMode.Grid;
+
   // ============================================
-  // Enum for HTML Template Access
+  // Enums for HTML Template Access
   // ============================================
 
   /**
-   * Make the enum available to the HTML template
+   * Make the view mode enum available to the HTML template
+   */
+  ViewMode = ViewMode;
+
+  /**
+   * Make the status enum available to the HTML template
    * This allows us to use JobApplicationStatus.Applied in the template
    */
   Status = JobApplicationStatus;
@@ -69,11 +99,13 @@ export class JobList implements OnInit {
   // ============================================
 
   /**
-   * Angular's Dependency Injection automatically provides the ApplicationService
-   * We declare it as 'private' so it's only accessible within this class
-   * 'readonly' ensures we don't accidentally reassign the service
+   * Angular's Dependency Injection automatically provides services
+   * We declare them as 'private readonly' for immutability and encapsulation
    */
-  constructor(private readonly applicationService: ApplicationService) {}
+  constructor(
+    private readonly applicationService: ApplicationService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   // ============================================
   // Lifecycle Hooks
@@ -120,7 +152,12 @@ export class JobList implements OnInit {
       // Error callback - runs when HTTP request fails
       error: (err) => {
         console.error('Failed to load applications:', err);
-        this.errorMessage = 'Failed to load job applications. Please try again.';
+        this.errorMessage =
+          'Unable to load your job applications. Please check your connection and try again.';
+        this.notificationService.error(
+          'Failed to load applications. Please try again.',
+          'Connection Error',
+        );
         this.isLoading = false; // Hide loading spinner even on error
       },
     });
@@ -130,27 +167,52 @@ export class JobList implements OnInit {
    * Delete a job application
    *
    * @param id - The unique identifier of the application to delete
+   * @param event - Mouse event to prevent propagation
    *
-   * Best Practice: Always confirm before deleting!
+   * Best Practice: Always confirm before destructive actions!
    */
-  deleteApplication(id: number): void {
-    // Native browser confirmation dialog
-    const confirmed = confirm('Are you sure you want to delete this application?');
+  async deleteApplication(id: number, event?: Event): Promise<void> {
+    // Prevent event bubbling if called from nested elements
+    event?.stopPropagation();
+
+    // Find the application to get details for confirmation message
+    const app = this.applications.find((a) => a.id === id);
+    const positionName = app ? `"${app.position}" at ${app.companyName}` : 'this application';
+
+    // Improved confirmation dialog
+    const confirmed = await this.notificationService.confirm(
+      `This will permanently delete ${positionName}. This action cannot be undone.`,
+      'Delete Application?',
+    );
 
     if (!confirmed) {
       return; // User cancelled, do nothing
     }
 
+    // Capture only the removed application
+    const removedApp = this.applications.find((a) => a.id === id);
+    // Optimistically remove from UI immediately
+    this.applications = this.applications.filter((app) => app.id !== id);
+
     // Call the delete endpoint
     this.applicationService.deleteApplication(id).subscribe({
       next: () => {
-        // Success: Remove the deleted item from the local array
-        // This updates the UI without reloading all data
-        this.applications = this.applications.filter((app) => app.id !== id);
+        // Success: Show notification
+        this.notificationService.success(
+          `${positionName} has been deleted successfully.`,
+          'Application Deleted',
+        );
       },
       error: (err) => {
         console.error('Failed to delete application:', err);
-        alert('Failed to delete the application. Please try again.');
+        // Revert the optimistic update on error - only reinsert if not already present
+        if (removedApp && !this.applications.some((a) => a.id === id)) {
+          this.applications = [...this.applications, removedApp].sort((a, b) => b.id - a.id);
+        }
+        this.notificationService.error(
+          'Unable to delete the application. Please try again.',
+          'Delete Failed',
+        );
       },
     });
   }
@@ -209,6 +271,85 @@ export class JobList implements OnInit {
       default:
         return 'Unknown';
     }
+  }
+
+  /**
+   * Format date string to human-readable format
+   */
+
+  // ============================================
+  // View Switching Methods
+  // ============================================
+
+  /**
+   * Switch to a different view mode
+   *
+   * @param mode - The view mode to switch to
+   */
+  switchView(mode: ViewMode): void {
+    this.currentView = mode;
+  }
+
+  /**
+   * Check if a view mode is currently active
+   *
+   * @param mode - The view mode to check
+   * @returns true if the mode is active, false otherwise
+   */
+  isViewActive(mode: ViewMode): boolean {
+    return this.currentView === mode;
+  }
+
+  /**
+   * Handle application updates from child components
+   * Reloads the applications list to ensure data consistency
+   */
+  onApplicationUpdated(): void {
+    this.loadApplications();
+  }
+
+  // ============================================
+  // Statistics Calculation Methods
+  // ============================================
+
+  /**
+   * Get count of applications by status
+   */
+  getStatusCount(status: JobApplicationStatus): number {
+    return this.applications.filter((app) => app.status === status).length;
+  }
+
+  /**
+   * Get count of active applications (not rejected or ghosted)
+   */
+  getActiveCount(): number {
+    return this.applications.filter(
+      (app) =>
+        app.status !== JobApplicationStatus.Rejected && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+  }
+
+  /**
+   * Get response rate percentage
+   * Responses = everything except Applied and Ghosted
+   */
+  getResponseRate(): number {
+    if (this.applications.length === 0) return 0;
+    const responses = this.applications.filter(
+      (app) =>
+        app.status !== JobApplicationStatus.Applied && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+    return Math.round((responses / this.applications.length) * 100);
+  }
+
+  /**
+   * Get success rate percentage
+   * Success = offers received / total applications
+   */
+  getSuccessRate(): number {
+    if (this.applications.length === 0) return 0;
+    const offers = this.getStatusCount(JobApplicationStatus.Offer);
+    return Math.round((offers / this.applications.length) * 100);
   }
 
   /**

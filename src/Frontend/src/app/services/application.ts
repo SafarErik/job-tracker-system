@@ -26,4 +26,14 @@ export class ApplicationService {
   deleteApplication(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  // 4. Get single application by ID (for editing)
+  getApplicationById(id: number): Observable<JobApplication> {
+    return this.http.get<JobApplication>(`${this.apiUrl}/${id}`);
+  }
+
+  // 5. Update application (for editing and status changes)
+  updateApplication(id: number, application: Partial<JobApplication>): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, application);
+  }
 }

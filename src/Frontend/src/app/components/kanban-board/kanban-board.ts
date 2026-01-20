@@ -118,7 +118,7 @@ export class KanbanBoardComponent {
       id: 'ghosted',
       title: 'Ghosted',
       status: JobApplicationStatus.Ghosted,
-      color: 'bg-gray-50 border-gray-200',
+      color: 'bg-orange-50 border-orange-200',
       applications: [],
     },
   ];

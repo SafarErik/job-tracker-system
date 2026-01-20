@@ -403,6 +403,17 @@
   color: var(--status-applied);
 }
 
+.status-phonescreen {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.status-technicaltask {
+  background: #eef2ff;
+  color: #6366f1;
+}
+
+.status-interviewing,
 .status-interview {
   background: var(--status-pending-bg);
   color: var(--status-pending);
@@ -416,6 +427,11 @@
 .status-rejected {
   background: var(--color-error-light);
   color: var(--color-error);
+}
+
+.status-ghosted {
+  background: #ffedd5;
+  color: #ea580c;
 }
 
 .status-accepted {
@@ -471,6 +487,53 @@
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Dark mode status badge colors */
+.dark .status-applied {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.dark .status-phonescreen {
+  background: rgba(124, 58, 237, 0.2);
+  color: #a78bfa;
+}
+
+.dark .status-technicaltask {
+  background: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+}
+
+.dark .status-interviewing,
+.dark .status-interview {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fbbf24;
+}
+
+.dark .status-offer {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+.dark .status-rejected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.dark .status-ghosted {
+  background: rgba(251, 146, 60, 0.2);
+  color: #fb923c;
+}
+
+.dark .status-accepted {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+.dark .status-unknown {
+  background: rgba(156, 163, 175, 0.2);
+  color: #9ca3af;
 }
 
 /* Responsive Design */

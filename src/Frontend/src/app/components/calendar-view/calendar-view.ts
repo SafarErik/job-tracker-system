@@ -201,7 +201,7 @@ export class CalendarViewComponent implements OnChanges {
       case JobApplicationStatus.Rejected:
         return 'bg-red-100 text-red-800';
       case JobApplicationStatus.Ghosted:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-orange-100 text-orange-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -225,7 +225,7 @@ export class CalendarViewComponent implements OnChanges {
       case JobApplicationStatus.Rejected:
         return 'bg-red-400';
       case JobApplicationStatus.Ghosted:
-        return 'bg-gray-400';
+        return 'bg-orange-500';
       default:
         return 'bg-gray-400';
     }

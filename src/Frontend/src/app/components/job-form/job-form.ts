@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 // Services
@@ -39,7 +39,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 @Component({
   selector: 'app-job-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './job-form.html',
   styleUrl: './job-form.css',
 })

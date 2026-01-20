@@ -1,0 +1,141 @@
+<div class="company-details-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading company details...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-message">
+      <p>{{ error() }}</p>
+      <button (click)="goBack()" class="btn-back">Go Back</button>
+    </div>
+  }
+
+  <!-- Company Details -->
+  @if (companyDetails() && !isLoading() && !error()) {
+    <div class="company-details">
+      <!-- Header Section -->
+      <div class="details-header">
+        <button (click)="goBack()" class="btn-back">← Back to Applications</button>
+        <h1 class="company-name">{{ companyDetails()!.name }}</h1>
+        <p class="application-count">
+          Total Applications: <strong>{{ companyDetails()!.totalApplications }}</strong>
+        </p>
+      </div>
+
+      <!-- Company Information Card -->
+      <div class="info-card">
+        <h2>Company Information</h2>
+
+        <div class="info-grid">
+          <!-- Website -->
+          @if (companyDetails()!.website) {
+            <div class="info-item">
+              <span class="info-label">🌐 Website:</span>
+              <a
+                [href]="companyDetails()!.website"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="info-link"
+              >
+                {{ companyDetails()!.website }}
+              </a>
+            </div>
+          }
+
+          <!-- Address -->
+          @if (companyDetails()!.address) {
+            <div class="info-item">
+              <span class="info-label">📍 Address:</span>
+              <span class="info-value">{{ companyDetails()!.address }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- HR Contact Section -->
+        @if (
+          companyDetails()!.hrContactName ||
+          companyDetails()!.hrContactEmail ||
+          companyDetails()!.hrContactLinkedIn
+        ) {
+          <div class="hr-contact-section">
+            <h3>HR Contact</h3>
+
+            <div class="hr-contact-grid">
+              @if (companyDetails()!.hrContactName) {
+                <div class="info-item">
+                  <span class="info-label">👤 Name:</span>
+                  <span class="info-value">{{ companyDetails()!.hrContactName }}</span>
+                </div>
+              }
+
+              @if (companyDetails()!.hrContactEmail) {
+                <div class="info-item">
+                  <span class="info-label">✉️ Email:</span>
+                  <a [href]="'mailto:' + companyDetails()!.hrContactEmail" class="info-link">
+                    {{ companyDetails()!.hrContactEmail }}
+                  </a>
+                </div>
+              }
+
+              @if (companyDetails()!.hrContactLinkedIn) {
+                <div class="info-item">
+                  <span class="info-label">💼 LinkedIn:</span>
+                  <a
+                    [href]="companyDetails()!.hrContactLinkedIn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="info-link"
+                  >
+                    View Profile
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Application History Section -->
+      <div class="history-card">
+        <h2>Application History</h2>
+
+        @if (companyDetails()!.applicationHistory.length === 0) {
+          <p class="no-applications">No applications found for this company.</p>
+        } @else {
+          <div class="history-list">
+            @for (app of companyDetails()!.applicationHistory; track app.id) {
+              <button
+                type="button"
+                class="history-item"
+                (click)="viewApplication(app.id)"
+                [attr.aria-label]="'View application for ' + app.position"
+              >
+                <div class="history-header">
+                  <h3 class="position-title">{{ app.position }}</h3>
+                  <span [class]="'status-badge ' + getStatusClass(app.status)">
+                    {{ app.status }}
+                  </span>
+                </div>
+
+                <div class="history-details">
+                  <span class="detail-item"> 📅 Applied: {{ formatDate(app.appliedAt) }} </span>
+
+                  @if (app.salaryOffer) {
+                    <span class="detail-item">
+                      💰 Salary: {{ formatSalary(app.salaryOffer) }}
+                    </span>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

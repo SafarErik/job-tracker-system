@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Company } from '../models/company.model';
+import { Company, CompanyDetail } from '../models/company.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,26 @@ export class CompanyService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /**
+   * Get all companies with basic information
+   */
   getCompanies(): Observable<Company[]> {
     return this.http.get<Company[]>(this.apiUrl);
+  }
+
+  /**
+   * Get detailed company information including application history
+   * @param id Company ID
+   */
+  getCompanyDetails(id: number): Observable<CompanyDetail> {
+    return this.http.get<CompanyDetail>(`${this.apiUrl}/${id}/details`);
+  }
+
+  /**
+   * Get basic company information by ID
+   * @param id Company ID
+   */
+  getCompanyById(id: number): Observable<Company> {
+    return this.http.get<Company>(`${this.apiUrl}/${id}`);
   }
 }

@@ -10,11 +10,13 @@ namespace JobTracker.API.Controllers;
 public class JobApplicationsController : ControllerBase
 {
     private readonly IJobApplicationRepository _repository;
+    private readonly IDocumentRepository _documentRepository;
 
     // Dependency Injection
-    public JobApplicationsController(IJobApplicationRepository repository)
+    public JobApplicationsController(IJobApplicationRepository repository, IDocumentRepository documentRepository)
     {
         _repository = repository;
+        _documentRepository = documentRepository;
     }
 
     // GET: api/jobapplications
@@ -34,7 +36,9 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company" // Null check, just to be safe
+            CompanyName = app.Company?.Name ?? "Unknown Company", // Null check, just to be safe
+            DocumentId = app.DocumentId,
+            DocumentName = app.Document?.OriginalFileName
         });
 
         return Ok(dtos); // 200: OK
@@ -62,7 +66,9 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company" // Null check, just to be safe
+            CompanyName = app.Company?.Name ?? "Unknown Company", // Null check, just to be safe
+            DocumentId = app.DocumentId,
+            DocumentName = app.Document?.OriginalFileName
         };
 
         return Ok(dto);
@@ -82,10 +88,19 @@ public class JobApplicationsController : ControllerBase
             JobUrl = createDto.JobUrl,
             Description = createDto.Description,
             Status = createDto.Status,
+            DocumentId = createDto.DocumentId,
             AppliedAt = DateTime.UtcNow // This is set by the server
         };
 
         await _repository.AddAsync(application);
+
+        // Populate DocumentName if a document was associated
+        string? documentName = null;
+        if (application.DocumentId.HasValue)
+        {
+            var document = await _documentRepository.GetByIdAsync(application.DocumentId.Value);
+            documentName = document?.OriginalFileName;
+        }
 
         // We return with the created object
         var dto = new JobApplicationDto
@@ -97,7 +112,9 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = application.AppliedAt,
             Status = application.Status,
             CompanyId = application.CompanyId,
-            CompanyName = application.Company?.Name ?? "Unknown Company"
+            CompanyName = application.Company?.Name ?? "Unknown Company",
+            DocumentId = application.DocumentId,
+            DocumentName = documentName
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -133,6 +150,9 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
+        
+        if (updateDto.DocumentIdProvided)
+            existingApp.DocumentId = updateDto.DocumentId;
         
         // Note: We do not allow modifying the AppliedAt date
 

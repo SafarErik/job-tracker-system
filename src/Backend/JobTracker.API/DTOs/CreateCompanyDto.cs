@@ -9,5 +9,12 @@ public class CreateCompanyDto
     public string Name { get; set; } = string.Empty;
 
     public string? Website { get; set; }
-    public string? ContactPerson { get; set; }
+    public string? Address { get; set; }
+    public string? HRContactName { get; set; }
+    
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    public string? HRContactEmail { get; set; }
+    
+    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
+    public string? HRContactLinkedIn { get; set; }
 }

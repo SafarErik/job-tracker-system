@@ -15,6 +15,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<JobApplication> JobApplications {get; set;}
 
+    public DbSet<Document> Documents { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +27,13 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<JobApplication>()
         .Property(j => j.AppliedAt)
         .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        // Configure Document to JobApplication relationship
+        modelBuilder.Entity<JobApplication>()
+            .HasOne(j => j.Document)
+            .WithMany(d => d.JobApplications)
+            .HasForeignKey(j => j.DocumentId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
 

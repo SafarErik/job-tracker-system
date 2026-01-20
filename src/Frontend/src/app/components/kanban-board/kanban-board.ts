@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -130,6 +131,7 @@ export class KanbanBoardComponent {
   constructor(
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   /**
@@ -290,6 +292,15 @@ export class KanbanBoardComponent {
       day: 'numeric',
       year: 'numeric',
     });
+  }
+
+  /**
+   * Navigate to company details page
+   */
+  navigateToCompany(event: Event, companyId: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.router.navigate(['/company', companyId]);
   }
 
   /**

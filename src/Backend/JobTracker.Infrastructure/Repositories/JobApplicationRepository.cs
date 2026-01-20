@@ -21,6 +21,7 @@ public class JobApplicationRepository : IJobApplicationRepository
         return await _context.JobApplications
             .Include(j => j.Company)
             .Include(j => j.Skills)
+            .Include(j => j.Document)
             .ToListAsync();
     }
 
@@ -29,6 +30,7 @@ public class JobApplicationRepository : IJobApplicationRepository
         return await _context.JobApplications
             .Include(j => j.Company)
             .Include(j => j.Skills)
+            .Include(j => j.Document)
             .FirstOrDefaultAsync(j => j.Id == id);
 
     }

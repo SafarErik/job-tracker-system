@@ -29,7 +29,11 @@ public class CompaniesController : ControllerBase
             Id = c.Id,
             Name = c.Name,
             Website = c.Website,
-            ContactPerson = c.ContactPerson
+            Address = c.Address,
+            HRContactName = c.HRContactName,
+            HRContactEmail = c.HRContactEmail,
+            HRContactLinkedIn = c.HRContactLinkedIn,
+            TotalApplications = c.JobApplications?.Count ?? 0
         });
 
         return Ok(dtos);
@@ -52,11 +56,56 @@ public class CompaniesController : ControllerBase
             Id = company.Id,
             Name = company.Name,
             Website = company.Website,
-            ContactPerson = company.ContactPerson
+            Address = company.Address,
+            HRContactName = company.HRContactName,
+            HRContactEmail = company.HRContactEmail,
+            HRContactLinkedIn = company.HRContactLinkedIn,
+            TotalApplications = company.JobApplications?.Count ?? 0
         };
 
         return Ok(dto);
 
+    }
+
+    /// <summary>
+    /// Get detailed company information including application history
+    /// </summary>
+    /// <param name="id">Company ID</param>
+    /// <returns>Detailed company information with all job applications</returns>
+    [HttpGet("{id}/details")]
+    public async Task<ActionResult<CompanyDetailDto>> GetDetails(int id)
+    {
+        var company = await _repository.GetByIdAsync(id);
+
+        if (company == null)
+        {
+            return NotFound();
+        }
+
+        var detailDto = new CompanyDetailDto
+        {
+            Id = company.Id,
+            Name = company.Name,
+            Website = company.Website,
+            Address = company.Address,
+            HRContactName = company.HRContactName,
+            HRContactEmail = company.HRContactEmail,
+            HRContactLinkedIn = company.HRContactLinkedIn,
+            TotalApplications = company.JobApplications?.Count ?? 0,
+            ApplicationHistory = company.JobApplications?
+                .OrderByDescending(ja => ja.AppliedAt)
+                .Select(ja => new JobApplicationHistoryDto
+                {
+                    Id = ja.Id,
+                    Position = ja.Position,
+                    AppliedAt = ja.AppliedAt,
+                    Status = ja.Status.ToString(),
+                    SalaryOffer = ja.SalaryOffer
+                })
+                .ToList() ?? new List<JobApplicationHistoryDto>()
+        };
+
+        return Ok(detailDto);
     }
 
     [HttpPost]
@@ -65,7 +114,10 @@ public class CompaniesController : ControllerBase
         {
             Name = createDto.Name,
             Website = createDto.Website,
-            ContactPerson = createDto.ContactPerson
+            Address = createDto.Address,
+            HRContactName = createDto.HRContactName,
+            HRContactEmail = createDto.HRContactEmail,
+            HRContactLinkedIn = createDto.HRContactLinkedIn
         };
 
         var id = await _repository.AddAsync(company);
@@ -75,7 +127,11 @@ public class CompaniesController : ControllerBase
             Id = id,
             Name = company.Name,
             Website = company.Website,
-            ContactPerson = company.ContactPerson
+            Address = company.Address,
+            HRContactName = company.HRContactName,
+            HRContactEmail = company.HRContactEmail,
+            HRContactLinkedIn = company.HRContactLinkedIn,
+            TotalApplications = 0
         };
     
         return CreatedAtAction(nameof(Get), new { id }, dto);
@@ -91,11 +147,13 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
 
-        //Mapping   
-        // Here we don't need to create a new object, just update the existing one.
+        // Mapping: update existing entity with new values  
         existingCompany.Name = updateDto.Name;
         existingCompany.Website = updateDto.Website;
-        existingCompany.ContactPerson = updateDto.ContactPerson;
+        existingCompany.Address = updateDto.Address;
+        existingCompany.HRContactName = updateDto.HRContactName;
+        existingCompany.HRContactEmail = updateDto.HRContactEmail;
+        existingCompany.HRContactLinkedIn = updateDto.HRContactLinkedIn;
 
         await _repository.UpdateAsync(existingCompany);
 

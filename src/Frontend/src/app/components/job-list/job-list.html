@@ -9,181 +9,233 @@
   - {{ variable }} - Display data (interpolation)
 -->
 
-<div class="container mx-auto px-4 py-8">
-  <!-- Page Header -->
-  <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center mb-8 gap-4">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900">My Job Applications</h1>
-      <p class="mt-2 text-sm text-gray-600">Track and manage your job search progress</p>
-    </div>
-
-    <div class="flex flex-col sm:flex-row gap-3">
-      <!-- View Switcher -->
-      <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
-        <!-- Grid View Button -->
-        <button
-          (click)="switchView(ViewMode.Grid)"
-          [class.bg-indigo-600]="isViewActive(ViewMode.Grid)"
-          [class.text-white]="isViewActive(ViewMode.Grid)"
-          [class.text-gray-600]="!isViewActive(ViewMode.Grid)"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
-          title="Grid View"
-        >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            />
-          </svg>
-          Grid
-        </button>
-
-        <!-- Kanban View Button -->
-        <button
-          (click)="switchView(ViewMode.Kanban)"
-          [class.bg-indigo-600]="isViewActive(ViewMode.Kanban)"
-          [class.text-white]="isViewActive(ViewMode.Kanban)"
-          [class.text-gray-600]="!isViewActive(ViewMode.Kanban)"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
-          title="Kanban Board View"
-        >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-            />
-          </svg>
-          Kanban
-        </button>
-
-        <!-- Calendar View Button -->
-        <button
-          (click)="switchView(ViewMode.Calendar)"
-          [class.bg-indigo-600]="isViewActive(ViewMode.Calendar)"
-          [class.text-white]="isViewActive(ViewMode.Calendar)"
-          [class.text-gray-600]="!isViewActive(ViewMode.Calendar)"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors"
-          title="Calendar View"
-        >
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          Calendar
-        </button>
+<div class="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+  <!-- Modern Page Header with Gradient -->
+  <div class="modern-header mb-8">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+      <div class="header-content">
+        <h1 class="text-4xl font-bold text-white mb-2">My Job Applications</h1>
+        <p class="text-white text-opacity-90">Track and manage your job search progress</p>
       </div>
 
-      <!-- Add New Button -->
-      <a
-        routerLink="/new"
-        class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
-      >
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <!-- Modern View Switcher with Gradient -->
+        <div class="modern-view-switcher">
+          <!-- Grid View Button -->
+          <button
+            (click)="switchView(ViewMode.Grid)"
+            [class.active]="isViewActive(ViewMode.Grid)"
+            class="view-btn"
+            title="Grid View"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+              />
+            </svg>
+            Grid
+          </button>
+
+          <!-- Kanban View Button -->
+          <button
+            (click)="switchView(ViewMode.Kanban)"
+            [class.active]="isViewActive(ViewMode.Kanban)"
+            class="view-btn"
+            title="Kanban Board View"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
+              />
+            </svg>
+            Kanban
+          </button>
+
+          <!-- Calendar View Button -->
+          <button
+            (click)="switchView(ViewMode.Calendar)"
+            [class.active]="isViewActive(ViewMode.Calendar)"
+            class="view-btn"
+            title="Calendar View"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            Calendar
+          </button>
+        </div>
+
+        <!-- Modern Add New Button -->
+        <a routerLink="/new" class="modern-add-btn">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add New
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Quick Stats Dashboard -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length > 0"
+    class="modern-stats-container mb-8"
+  >
+    <div class="stats-header">
+      <h2 class="stats-title">
+        <svg class="stats-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M12 4v16m8-8H4"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
-        Add New
-      </a>
-    </div>
-  </div>
-
-  <!-- Quick Stats Dashboard - Enhanced -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length > 0"
-    class="mb-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-6"
-  >
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-2xl font-bold text-gray-900">📊 Quick Stats</h2>
-      <span class="text-sm text-gray-600">Real-time insights</span>
+        Quick Stats
+      </h2>
+      <span class="stats-subtitle">Real-time insights</span>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+    <div class="stats-grid">
       <!-- Total Applications -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">📝</span>
-          <span class="text-xs font-medium text-gray-500 uppercase">Total</span>
+      <div class="stat-card">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <span class="stat-label">Total</span>
         </div>
-        <p class="text-3xl font-bold text-gray-900">{{ applications.length }}</p>
-        <p class="text-xs text-gray-600 mt-1">Applications</p>
+        <p class="stat-value">{{ applications.length }}</p>
+        <p class="stat-description">Applications</p>
       </div>
 
       <!-- Active Applications -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">⚡</span>
-          <span class="text-xs font-medium text-indigo-500 uppercase">Active</span>
+      <div class="stat-card stat-active">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
+          </svg>
+          <span class="stat-label stat-label-active">Active</span>
         </div>
-        <p class="text-3xl font-bold text-indigo-600">{{ getActiveCount() }}</p>
-        <p class="text-xs text-gray-600 mt-1">In Progress</p>
+        <p class="stat-value stat-value-active">{{ getActiveCount() }}</p>
+        <p class="stat-description">In Progress</p>
       </div>
 
       <!-- Interviewing -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">💼</span>
-          <span class="text-xs font-medium text-yellow-500 uppercase">Interview</span>
+      <div class="stat-card stat-interview">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          <span class="stat-label stat-label-interview">Interview</span>
         </div>
-        <p class="text-3xl font-bold text-yellow-600">
+        <p class="stat-value stat-value-interview">
           {{
             getStatusCount(Status.Interviewing) +
               getStatusCount(Status.PhoneScreen) +
               getStatusCount(Status.TechnicalTask)
           }}
         </p>
-        <p class="text-xs text-gray-600 mt-1">Stages</p>
+        <p class="stat-description">Stages</p>
       </div>
 
       <!-- Offers -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">🎉</span>
-          <span class="text-xs font-medium text-green-500 uppercase">Offers</span>
+      <div class="stat-card stat-offers">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+            />
+          </svg>
+          <span class="stat-label stat-label-offers">Offers</span>
         </div>
-        <p class="text-3xl font-bold text-green-600">{{ getStatusCount(Status.Offer) }}</p>
-        <p class="text-xs text-gray-600 mt-1">Received</p>
+        <p class="stat-value stat-value-offers">{{ getStatusCount(Status.Offer) }}</p>
+        <p class="stat-description">Received</p>
       </div>
 
       <!-- Rejected -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">❌</span>
-          <span class="text-xs font-medium text-red-500 uppercase">Rejected</span>
+      <div class="stat-card stat-rejected">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+          <span class="stat-label stat-label-rejected">Rejected</span>
         </div>
-        <p class="text-3xl font-bold text-red-600">{{ getStatusCount(Status.Rejected) }}</p>
-        <p class="text-xs text-gray-600 mt-1">Declined</p>
+        <p class="stat-value stat-value-rejected">{{ getStatusCount(Status.Rejected) }}</p>
+        <p class="stat-description">Declined</p>
       </div>
 
       <!-- Response Rate -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">📈</span>
-          <span class="text-xs font-medium text-blue-500 uppercase">Response</span>
+      <div class="stat-card stat-response">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+            />
+          </svg>
+          <span class="stat-label stat-label-response">Response</span>
         </div>
-        <p class="text-3xl font-bold text-blue-600">{{ getResponseRate() }}%</p>
-        <p class="text-xs text-gray-600 mt-1">Reply Rate</p>
+        <p class="stat-value stat-value-response">{{ getResponseRate() }}%</p>
+        <p class="stat-description">Reply Rate</p>
       </div>
 
       <!-- Success Rate -->
-      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-3xl">🏆</span>
-          <span class="text-xs font-medium text-purple-500 uppercase">Success</span>
+      <div class="stat-card stat-success">
+        <div class="stat-header">
+          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+            />
+          </svg>
+          <span class="stat-label stat-label-success">Success</span>
         </div>
-        <p class="text-3xl font-bold text-purple-600">{{ getSuccessRate() }}%</p>
-        <p class="text-xs text-gray-600 mt-1">Offer Rate</p>
+        <p class="stat-value stat-value-success">{{ getSuccessRate() }}%</p>
+        <p class="stat-description">Offer Rate</p>
       </div>
     </div>
   </div>

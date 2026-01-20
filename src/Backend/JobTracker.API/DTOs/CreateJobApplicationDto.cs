@@ -17,4 +17,6 @@ public class CreateJobApplicationDto
     
     public JobApplicationStatus Status { get; set; } = JobApplicationStatus.Applied;
 
+    public Guid? DocumentId { get; set; } // Reference to the CV/Resume used
+
 }

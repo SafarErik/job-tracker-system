@@ -29,6 +29,18 @@ public class UpdateJobApplicationDto
     public string? Description { get; set; }
 
     /// <summary>
+    /// Reference to the CV/Resume document
+    /// </summary>
+    public Guid? DocumentId { get; set; }
+
+    /// <summary>
+    /// Indicates whether DocumentId was explicitly provided in the request.
+    /// When true, DocumentId will be updated (even if null to clear the association).
+    /// When false, DocumentId will remain unchanged.
+    /// </summary>
+    public bool DocumentIdProvided { get; set; }
+
+    /// <summary>
     /// Application status
     /// </summary>
     public JobApplicationStatus? Status { get; set; }

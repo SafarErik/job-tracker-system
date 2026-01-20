@@ -305,6 +305,50 @@ export class JobList implements OnInit {
     this.loadApplications();
   }
 
+  // ============================================
+  // Statistics Calculation Methods
+  // ============================================
+
+  /**
+   * Get count of applications by status
+   */
+  getStatusCount(status: JobApplicationStatus): number {
+    return this.applications.filter((app) => app.status === status).length;
+  }
+
+  /**
+   * Get count of active applications (not rejected or ghosted)
+   */
+  getActiveCount(): number {
+    return this.applications.filter(
+      (app) =>
+        app.status !== JobApplicationStatus.Rejected && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+  }
+
+  /**
+   * Get response rate percentage
+   * Responses = everything except Applied and Ghosted
+   */
+  getResponseRate(): number {
+    if (this.applications.length === 0) return 0;
+    const responses = this.applications.filter(
+      (app) =>
+        app.status !== JobApplicationStatus.Applied && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+    return Math.round((responses / this.applications.length) * 100);
+  }
+
+  /**
+   * Get success rate percentage
+   * Success = offers received / total applications
+   */
+  getSuccessRate(): number {
+    if (this.applications.length === 0) return 0;
+    const offers = this.getStatusCount(JobApplicationStatus.Offer);
+    return Math.round((offers / this.applications.length) * 100);
+  }
+
   /**
    * Format date string to human-readable format
    *

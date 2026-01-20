@@ -99,6 +99,95 @@
     </div>
   </div>
 
+  <!-- Quick Stats Dashboard - Enhanced -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length > 0"
+    class="mb-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-6"
+  >
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">📊 Quick Stats</h2>
+      <span class="text-sm text-gray-600">Real-time insights</span>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <!-- Total Applications -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">📝</span>
+          <span class="text-xs font-medium text-gray-500 uppercase">Total</span>
+        </div>
+        <p class="text-3xl font-bold text-gray-900">{{ applications.length }}</p>
+        <p class="text-xs text-gray-600 mt-1">Applications</p>
+      </div>
+
+      <!-- Active Applications -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">⚡</span>
+          <span class="text-xs font-medium text-indigo-500 uppercase">Active</span>
+        </div>
+        <p class="text-3xl font-bold text-indigo-600">{{ getActiveCount() }}</p>
+        <p class="text-xs text-gray-600 mt-1">In Progress</p>
+      </div>
+
+      <!-- Interviewing -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">💼</span>
+          <span class="text-xs font-medium text-yellow-500 uppercase">Interview</span>
+        </div>
+        <p class="text-3xl font-bold text-yellow-600">
+          {{
+            getStatusCount(Status.Interviewing) +
+              getStatusCount(Status.PhoneScreen) +
+              getStatusCount(Status.TechnicalTask)
+          }}
+        </p>
+        <p class="text-xs text-gray-600 mt-1">Stages</p>
+      </div>
+
+      <!-- Offers -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">🎉</span>
+          <span class="text-xs font-medium text-green-500 uppercase">Offers</span>
+        </div>
+        <p class="text-3xl font-bold text-green-600">{{ getStatusCount(Status.Offer) }}</p>
+        <p class="text-xs text-gray-600 mt-1">Received</p>
+      </div>
+
+      <!-- Rejected -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">❌</span>
+          <span class="text-xs font-medium text-red-500 uppercase">Rejected</span>
+        </div>
+        <p class="text-3xl font-bold text-red-600">{{ getStatusCount(Status.Rejected) }}</p>
+        <p class="text-xs text-gray-600 mt-1">Declined</p>
+      </div>
+
+      <!-- Response Rate -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">📈</span>
+          <span class="text-xs font-medium text-blue-500 uppercase">Response</span>
+        </div>
+        <p class="text-3xl font-bold text-blue-600">{{ getResponseRate() }}%</p>
+        <p class="text-xs text-gray-600 mt-1">Reply Rate</p>
+      </div>
+
+      <!-- Success Rate -->
+      <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-3xl">🏆</span>
+          <span class="text-xs font-medium text-purple-500 uppercase">Success</span>
+        </div>
+        <p class="text-3xl font-bold text-purple-600">{{ getSuccessRate() }}%</p>
+        <p class="text-xs text-gray-600 mt-1">Offer Rate</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Loading Spinner -->
   <!-- 
     *ngIf - Only render this div when isLoading is true
@@ -306,17 +395,6 @@
               </svg>
               Delete
             </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Statistics Summary -->
-      <div class="mt-8 bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="text-center">
-            <p class="text-3xl font-bold text-indigo-600">{{ applications.length }}</p>
-            <p class="text-sm text-gray-600">Total Applications</p>
           </div>
         </div>
       </div>

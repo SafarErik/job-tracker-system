@@ -42,7 +42,7 @@
 
 /* Primary Button (Blue) */
 .btn-primary {
-  background-color: #4f46e5;
+  background-color: var(--color-primary-hover);
   color: white;
   border: 2px solid #4f46e5;
 }
@@ -63,7 +63,7 @@
 
 /* Danger Button (Red) */
 .btn-danger {
-  background-color: #dc2626;
+  background-color: var(--color-error);
   color: white;
   border: 2px solid #dc2626;
 }
@@ -74,8 +74,8 @@
 }
 
 .btn-danger:active {
-  background-color: #991b1b;
-  border-color: #991b1b;
+  background-color: var(--color-error);
+  border-color: var(--color-error);
 }
 
 .btn-danger:focus {

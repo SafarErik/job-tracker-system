@@ -55,6 +55,18 @@
   --color-info: #3b82f6;
   --color-info-light: #dbeafe;
 
+  /* Status badge colors */
+  --status-pending: #f59e0b;
+  --status-pending-bg: #fef3c7;
+  --status-applied: #3b82f6;
+  --status-applied-bg: #dbeafe;
+  --status-interview: #8b5cf6;
+  --status-interview-bg: #ede9fe;
+  --status-offer: #10b981;
+  --status-offer-bg: #d1fae5;
+  --status-rejected: #ef4444;
+  --status-rejected-bg: #fee2e2;
+
   /* Shadow colors */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -112,6 +124,18 @@
   --color-error-light: rgba(248, 113, 113, 0.15);
   --color-info: #60a5fa;
   --color-info-light: rgba(96, 165, 250, 0.15);
+
+  /* Status badge colors - Dark mode */
+  --status-pending: #fbbf24;
+  --status-pending-bg: rgba(251, 191, 36, 0.15);
+  --status-applied: #60a5fa;
+  --status-applied-bg: rgba(96, 165, 250, 0.15);
+  --status-interview: #a78bfa;
+  --status-interview-bg: rgba(167, 139, 250, 0.15);
+  --status-offer: #34d399;
+  --status-offer-bg: rgba(52, 211, 153, 0.15);
+  --status-rejected: #f87171;
+  --status-rejected-bg: rgba(248, 113, 113, 0.15);
 
   /* Shadow colors - More prominent in dark mode */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
@@ -226,6 +250,41 @@ app-root {
 
 .shadow-theme-xl {
   box-shadow: var(--shadow-xl);
+}
+
+/* ============================================================================
+ * TAILWIND DARK MODE OVERRIDES
+ * ============================================================================ */
+
+/* Override Tailwind's default colors to respect our theme */
+.dark .bg-gray-50 {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.dark .bg-white {
+  background-color: var(--color-bg-elevated) !important;
+}
+
+.dark .bg-gray-100 {
+  background-color: var(--color-bg-tertiary) !important;
+}
+
+.dark .text-gray-900 {
+  color: var(--color-text-primary) !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-700 {
+  color: var(--color-text-secondary) !important;
+}
+
+.dark .text-gray-500 {
+  color: var(--color-text-tertiary) !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: var(--color-border-primary) !important;
 }
 
 /* ============================================================================

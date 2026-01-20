@@ -3,7 +3,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
   min-height: 100vh;
 }
 
@@ -21,7 +21,7 @@
   width: 60px;
   height: 60px;
   border: 4px solid #e5e7eb;
-  border-top-color: #6366f1;
+  border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -34,7 +34,7 @@
 
 .loading-text {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .error-text {
-  color: #dc2626;
+  color: var(--color-error);
   font-size: 1.125rem;
   margin-bottom: 2rem;
 }
@@ -110,8 +110,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  background: rgba(255, 255, 255, 0.95);
-  color: #6366f1;
+  background: var(--color-bg-elevated);
+  color: var(--color-primary);
   border: none;
   border-radius: 12px;
   font-weight: 600;
@@ -121,7 +121,7 @@
 }
 
 .btn-edit-modern:hover {
-  background: white;
+  background: var(--color-bg-elevated);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
@@ -165,12 +165,12 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-bg-elevated);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   font-weight: 600;
   font-size: 1.125rem;
-  color: #6366f1;
+  color: var(--color-primary);
 }
 
 .badge-icon {
@@ -188,7 +188,7 @@
 
 /* Modern Cards */
 .modern-card {
-  background: white;
+  background: var(--color-bg-elevated);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -213,14 +213,14 @@
 .card-icon {
   width: 2rem;
   height: 2rem;
-  color: #6366f1;
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
 .card-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -245,7 +245,7 @@
 }
 
 .info-icon svg {
-  color: #6366f1;
+  color: var(--color-primary);
 }
 
 .info-content {
@@ -255,7 +255,7 @@
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.375rem;
@@ -263,7 +263,7 @@
 
 .info-text {
   font-size: 1.125rem;
-  color: #1f2937;
+  color: var(--color-text-primary);
   font-weight: 500;
 }
 
@@ -272,14 +272,14 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 1.125rem;
-  color: #6366f1;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s;
 }
 
 .info-link-modern:hover {
-  color: #4f46e5;
+  color: var(--color-primary-hover);
   gap: 0.625rem;
 }
 
@@ -290,7 +290,7 @@
 
 /* History Section */
 .history-section {
-  background: white;
+  background: var(--color-bg-elevated);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -308,13 +308,13 @@
 .section-icon {
   width: 2rem;
   height: 2rem;
-  color: #6366f1;
+  color: var(--color-primary);
 }
 
 .section-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -332,12 +332,12 @@
 }
 
 .empty-icon svg {
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .empty-text {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 /* History Grid */
@@ -350,7 +350,7 @@
 /* History Card Modern */
 .history-card-modern {
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border: 2px solid #e5e7eb;
+  border: 2px solid var(--color-border-primary);
   border-radius: 16px;
   padding: 1.5rem;
   cursor: pointer;
@@ -362,7 +362,7 @@
 .history-card-modern:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
-  border-color: #6366f1;
+  border-color: var(--color-primary);
 }
 
 .history-card-modern:focus {
@@ -381,7 +381,7 @@
 .history-position {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-text-primary);
   margin: 0;
   line-height: 1.3;
 }
@@ -399,23 +399,23 @@
 }
 
 .status-applied {
-  background: #dbeafe;
+  background: var(--status-applied-bg);
   color: #1e40af;
 }
 
 .status-interview {
-  background: #fef3c7;
+  background: var(--status-pending-bg);
   color: #92400e;
 }
 
 .status-offer {
-  background: #d1fae5;
+  background: var(--color-success-light);
   color: #065f46;
 }
 
 .status-rejected {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-error-light);
+  color: var(--color-error);
 }
 
 .status-accepted {
@@ -424,8 +424,8 @@
 }
 
 .status-unknown {
-  background: #f3f4f6;
-  color: #4b5563;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
 }
 
 /* History Card Details */
@@ -444,13 +444,13 @@
 .detail-icon {
   width: 1.125rem;
   height: 1.125rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .detail-text {
   font-size: 0.9375rem;
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 

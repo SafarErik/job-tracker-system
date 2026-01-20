@@ -89,4 +89,14 @@ export class CompanyListComponent implements OnInit {
   retry(): void {
     this.loadCompanies();
   }
+
+  /**
+   * Navigate to add new company (for now, shows alert - can be implemented later)
+   */
+  addNewCompany(): void {
+    // TODO: Implement company creation form
+    alert(
+      'Add Company feature coming soon! 🚀\n\nFor now, companies are automatically created when you add job applications.',
+    );
+  }
 }

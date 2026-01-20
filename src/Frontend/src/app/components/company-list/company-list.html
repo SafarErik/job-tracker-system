@@ -2,7 +2,20 @@
   <!-- Header -->
   <div class="header-section">
     <div class="header-content">
-      <h1 class="page-title">🏢 Companies Database</h1>
+      <div class="title-wrapper">
+        <h1 class="page-title">🏢 Companies Database</h1>
+        <button class="add-company-btn" (click)="addNewCompany()" type="button">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add Company
+        </button>
+      </div>
       <p class="page-subtitle">Manage and track all companies you've applied to</p>
     </div>
   </div>

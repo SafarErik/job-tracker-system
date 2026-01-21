@@ -335,8 +335,8 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public IActionResult GoogleLogin([FromQuery] string? returnUrl = null)
     {
-        // Use configured frontend URL if no return URL specified
-        returnUrl ??= _frontendBaseUrl;
+        // Sanitize return URL to prevent open-redirect vulnerabilities
+        var sanitizedReturnUrl = SanitizeReturnUrl(returnUrl);
 
         // Check if Google authentication is configured
         var googleClientId = _configuration["Authentication:Google:ClientId"];
@@ -356,7 +356,7 @@ public class AuthController : ControllerBase
             RedirectUri = Url.Action(nameof(GoogleCallback)),
             Items =
             {
-                { "returnUrl", returnUrl }
+                { "returnUrl", sanitizedReturnUrl }
             }
         };
 
@@ -453,9 +453,8 @@ public class AuthController : ControllerBase
         // Generate JWT token
         var token = GenerateJwtToken(user);
 
-        // Get return URL from auth properties
-        var returnUrl = authenticateResult.Properties?.Items["returnUrl"] 
-            ?? _frontendBaseUrl;
+        // Get return URL from auth properties and sanitize it again for safety
+        var returnUrl = SanitizeReturnUrl(authenticateResult.Properties?.Items["returnUrl"]);
 
         // Redirect to frontend with token
         // The frontend will extract the token from the URL and store it
@@ -576,6 +575,54 @@ public class AuthController : ControllerBase
                 Message = "An error occurred during authentication"
             });
         }
+    }
+
+    // ============================================
+    // SECURITY HELPERS
+    // ============================================
+
+    /// <summary>
+    /// Sanitizes the return URL to prevent open-redirect vulnerabilities.
+    /// Only allows URLs that match the configured frontend base URL's scheme and host.
+    /// </summary>
+    /// <param name="returnUrl">The return URL to validate</param>
+    /// <returns>The sanitized URL or the frontend base URL if invalid</returns>
+    private string SanitizeReturnUrl(string? returnUrl)
+    {
+        // Return default if null or empty
+        if (string.IsNullOrWhiteSpace(returnUrl))
+        {
+            return _frontendBaseUrl;
+        }
+
+        // Try to parse the return URL
+        if (!Uri.TryCreate(returnUrl, UriKind.Absolute, out var returnUri))
+        {
+            _logger.LogWarning("Invalid return URL format: {ReturnUrl}", returnUrl);
+            return _frontendBaseUrl;
+        }
+
+        // Parse the frontend base URL for comparison
+        if (!Uri.TryCreate(_frontendBaseUrl, UriKind.Absolute, out var frontendUri))
+        {
+            _logger.LogError("Invalid frontend base URL configuration: {FrontendBaseUrl}", _frontendBaseUrl);
+            return _frontendBaseUrl;
+        }
+
+        // Validate scheme and host match the frontend base URL
+        if (!string.Equals(returnUri.Scheme, frontendUri.Scheme, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(returnUri.Host, frontendUri.Host, StringComparison.OrdinalIgnoreCase) ||
+            returnUri.Port != frontendUri.Port)
+        {
+            _logger.LogWarning(
+                "Return URL host mismatch. Expected: {ExpectedHost}, Got: {ActualHost}",
+                frontendUri.Host,
+                returnUri.Host);
+            return _frontendBaseUrl;
+        }
+
+        // URL is valid and matches frontend host
+        return returnUrl;
     }
 }
 

@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyDetail } from '../../models/company.model';
 
 @Component({
@@ -25,6 +26,7 @@ export class CompanyDetailsComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly companyService: CompanyService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +83,38 @@ export class CompanyDetailsComponent implements OnInit {
     if (details) {
       this.router.navigate(['/companies/edit', details.id]);
     }
+  }
+
+  /**
+   * Delete current company
+   */
+  async deleteCompany(): Promise<void> {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const confirmed = await this.notificationService.confirm(
+      `This will permanently delete "${details.name}". This action cannot be undone.`,
+      'Delete Company?',
+    );
+
+    if (!confirmed) return;
+
+    this.companyService.deleteCompany(details.id).subscribe({
+      next: () => {
+        this.notificationService.success(
+          `${details.name} has been deleted successfully.`,
+          'Company Deleted',
+        );
+        this.router.navigate(['/companies']);
+      },
+      error: (err) => {
+        console.error('Failed to delete company:', err);
+        this.notificationService.error(
+          'Unable to delete the company. Please try again.',
+          'Delete Failed',
+        );
+      },
+    });
   }
 
   /**

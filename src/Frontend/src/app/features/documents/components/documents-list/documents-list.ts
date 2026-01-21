@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-documents-list',
@@ -12,6 +13,7 @@ import { Document } from '../../models/document.model';
 })
 export class DocumentsListComponent implements OnInit {
   private documentService = inject(DocumentService);
+  private notificationService = inject(NotificationService);
 
   documents = signal<Document[]>([]);
   filteredDocuments = signal<Document[]>([]);
@@ -19,6 +21,7 @@ export class DocumentsListComponent implements OnInit {
   error = signal<string | null>(null);
   searchTerm = signal('');
   uploadProgress = signal<number | null>(null);
+  isDragging = signal(false);
 
   ngOnInit(): void {
     this.loadDocuments();
@@ -60,18 +63,29 @@ export class DocumentsListComponent implements OnInit {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    this.processFile(file, () => {
+      input.value = ''; // Reset input
+    });
+  }
 
+  processFile(file: File, callback?: () => void): void {
     // Validate file type
     if (file.type !== 'application/pdf') {
-      alert('Only PDF files are allowed');
-      input.value = ''; // Clear input on validation error
+      this.notificationService.error(
+        'Please select a PDF file. Other file types are not supported.',
+        'Invalid File Type',
+      );
+      callback?.();
       return;
     }
 
     // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      alert('File size must not exceed 10MB');
-      input.value = ''; // Clear input on validation error
+      this.notificationService.error(
+        'The file size exceeds the 10MB limit. Please choose a smaller file.',
+        'File Too Large',
+      );
+      callback?.();
       return;
     }
 
@@ -86,35 +100,76 @@ export class DocumentsListComponent implements OnInit {
           // Upload complete, result is Document
           this.uploadProgress.set(null);
           this.loadDocuments(); // Reload list
-          input.value = ''; // Reset input
-          alert('Document uploaded successfully!');
+          callback?.();
+          this.notificationService.success(
+            `${file.name} has been uploaded successfully!`,
+            'Upload Complete',
+          );
         }
       },
       error: (err) => {
         this.uploadProgress.set(null);
-        alert('Failed to upload document');
+        this.notificationService.error(
+          'An error occurred while uploading the document. Please try again.',
+          'Upload Failed',
+        );
         console.error(err);
-        input.value = ''; // Clear input on error
+        callback?.();
       },
     });
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(true);
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging.set(false);
+
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    this.processFile(file);
   }
 
   downloadDocument(doc: Document): void {
     this.documentService.downloadDocument(doc.id, doc.originalFileName);
   }
 
-  deleteDocument(doc: Document): void {
-    if (!confirm(`Are you sure you want to delete "${doc.originalFileName}"?`)) {
+  async deleteDocument(doc: Document): Promise<void> {
+    const confirmed = await this.notificationService.confirm(
+      `Are you sure you want to delete "${doc.originalFileName}"? This action cannot be undone.`,
+      'Delete Document',
+    );
+
+    if (!confirmed) {
       return;
     }
 
     this.documentService.deleteDocument(doc.id).subscribe({
       next: () => {
         this.loadDocuments();
-        alert('Document deleted successfully');
+        this.notificationService.success(
+          `${doc.originalFileName} has been deleted successfully.`,
+          'Document Deleted',
+        );
       },
       error: (err) => {
-        alert('Failed to delete document');
+        this.notificationService.error(
+          'An error occurred while deleting the document. Please try again.',
+          'Delete Failed',
+        );
         console.error(err);
       },
     });

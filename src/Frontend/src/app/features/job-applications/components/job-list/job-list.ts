@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 // Services
 import { ApplicationService } from '../../services/application.service';
@@ -125,6 +125,7 @@ export class JobList implements OnInit {
   constructor(
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   // ============================================
@@ -493,5 +494,13 @@ export class JobList implements OnInit {
       month: 'short',
       day: 'numeric',
     });
+  }
+
+  /**
+   * Navigate to job application detail modal
+   * @param id - Application ID
+   */
+  viewApplicationDetail(id: number): void {
+    this.router.navigate(['/view', id]);
   }
 }

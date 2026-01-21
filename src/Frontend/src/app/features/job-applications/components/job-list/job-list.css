@@ -588,6 +588,35 @@ a:focus:not(:focus-visible) {
 }
 
 /* ============================================
+   Grid Card Button Styles
+   ============================================ */
+
+.grid-card-clickable {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.grid-card-clickable:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+}
+
+.grid-card-clickable:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.grid-card-clickable:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* ============================================
    Print Styles (Bonus)
    ============================================ */
 

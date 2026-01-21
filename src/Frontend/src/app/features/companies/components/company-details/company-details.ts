@@ -65,7 +65,13 @@ export class CompanyDetailsComponent implements OnInit {
    * Navigate to job application details
    */
   viewApplication(applicationId: number): void {
-    this.router.navigate(['/edit', applicationId]);
+    const companyId = this.companyDetails()?.id;
+    this.router.navigate(['/view', applicationId], {
+      queryParams: {
+        from: 'company',
+        companyId: companyId,
+      },
+    });
   }
 
   /**

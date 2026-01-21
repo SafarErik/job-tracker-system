@@ -10,13 +10,18 @@
 import { Component, signal, ViewChild, AfterViewInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { ToastNotificationComponent } from './components/toast-notification/toast-notification';
-import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog';
-import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
-import { ClickOutsideDirective } from './directives/click-outside.directive';
-import { NotificationService } from './services/notification';
-import { ThemeService } from './services/theme';
-import { AuthService } from './services/auth.service';
+
+// Core services
+import { AuthService } from './core/auth';
+import { NotificationService, ThemeService } from './core/services';
+
+// Shared components & directives
+import {
+  ToastNotificationComponent,
+  ConfirmDialogComponent,
+  ThemeToggleComponent,
+} from './shared/components';
+import { ClickOutsideDirective } from './shared/directives';
 
 @Component({
   selector: 'app-root',

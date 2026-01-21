@@ -59,12 +59,16 @@
                 type="text"
                 formControlName="position"
                 placeholder="e.g. Senior Backend Developer"
+                list="position-suggestions"
                 class="form-input with-icon"
                 [class.input-error]="
                   jobForm.get('position')?.invalid && jobForm.get('position')?.touched
                 "
               />
             </div>
+            <datalist id="position-suggestions">
+              <option *ngFor="let position of applications" [value]="position"></option>
+            </datalist>
             <p
               *ngIf="jobForm.get('position')?.invalid && jobForm.get('position')?.touched"
               class="error-message"
@@ -87,16 +91,39 @@
                   d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                 />
               </svg>
-              <select id="company" formControlName="companyId" class="form-input with-icon">
-                <option [ngValue]="null" disabled>Select a company...</option>
-                <option *ngFor="let company of companies" [ngValue]="company.id">
-                  {{ company.name }}
-                </option>
-              </select>
+              <input
+                id="company"
+                type="text"
+                formControlName="companySearch"
+                placeholder="Start typing a company..."
+                class="form-input with-icon"
+                (input)="onCompanySearchChange($event.target.value)"
+                (focus)="openCompanyDropdown()"
+                (blur)="closeCompanyDropdown()"
+              />
             </div>
-            <p *ngIf="companies.length === 0 && !isLoading" class="text-xs text-gray-500 mt-1">
-              ⚠️ No companies found. Please add one first.
-            </p>
+            <div
+              class="company-dropdown"
+              *ngIf="isCompanyDropdownOpen && (filteredCompanies.length > 0 || canCreateCompany)"
+            >
+              <button
+                type="button"
+                class="company-option"
+                *ngFor="let company of filteredCompanies"
+                (click)="selectCompany(company)"
+              >
+                <span>{{ company.name }}</span>
+                <span class="company-meta">{{ company.totalApplications }} applications</span>
+              </button>
+              <button
+                type="button"
+                class="company-option create"
+                *ngIf="canCreateCompany"
+                (click)="createCompanyFromSearch()"
+              >
+                + Add "{{ companySearchTerm }}" to companies
+              </button>
+            </div>
             <p
               *ngIf="jobForm.get('companyId')?.invalid && jobForm.get('companyId')?.touched"
               class="error-message"
@@ -187,12 +214,26 @@
                 </option>
               </select>
             </div>
-            <p class="mt-1 text-xs text-gray-500">
-              Select which version of your CV you submitted.
-              <a routerLink="/documents" class="text-indigo-600 hover:text-indigo-500"
-                >Upload new CV</a
-              >
-            </p>
+            <div class="upload-box">
+              <label class="upload-label" for="documentUpload">
+                <input
+                  id="documentUpload"
+                  type="file"
+                  class="upload-input"
+                  accept=".pdf,.doc,.docx"
+                  (change)="onDocumentSelected($event)"
+                />
+                <div class="upload-content">
+                  <span class="upload-title">Upload a new CV</span>
+                  <span class="upload-subtitle">PDF, DOC, DOCX • Max 10MB</span>
+                </div>
+              </label>
+              <div class="upload-progress" *ngIf="isUploadingDocument">
+                <div class="upload-bar" [style.width.%]="uploadProgress"></div>
+                <span>{{ uploadProgress }}%</span>
+              </div>
+              <p class="upload-error" *ngIf="uploadError">{{ uploadError }}</p>
+            </div>
           </div>
 
           <!-- Description -->

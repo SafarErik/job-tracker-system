@@ -64,6 +64,13 @@ export class JobFormComponent implements OnInit {
   companies: Company[] = [];
   skills: Skill[] = [];
   documents: Document[] = [];
+  applications: string[] = [];
+  filteredCompanies: Company[] = [];
+  isCompanyDropdownOpen = false;
+  companySearchTerm = '';
+  isUploadingDocument = false;
+  uploadProgress = 0;
+  uploadError = '';
 
   // ============================================
   // UI State Indicators
@@ -139,6 +146,7 @@ export class JobFormComponent implements OnInit {
     this.jobForm = this.fb.group({
       position: ['', [Validators.required, Validators.minLength(3)]],
       companyId: [null, [Validators.required]],
+      companySearch: [''],
       status: [JobApplicationStatus.Applied, [Validators.required]],
       jobUrl: ['', []], // Optional
       description: ['', []], // Optional
@@ -178,11 +186,15 @@ export class JobFormComponent implements OnInit {
       companies: this.companyService.getCompanies(),
       skills: this.skillService.getSkills(),
       documents: this.documentService.getAllDocuments(),
+      applications: this.applicationService.getApplications(),
     }).subscribe({
       next: (result) => {
         this.companies = result.companies;
         this.skills = result.skills;
         this.documents = result.documents;
+        this.applications = this.getUniquePositions(result.applications);
+        this.filteredCompanies = this.companies.slice(0, 6);
+        this.syncCompanySearch();
         this.isLoading = false;
       },
       error: (err) => {
@@ -215,6 +227,7 @@ export class JobFormComponent implements OnInit {
           description: application.description || '',
           documentId: application.documentId || null,
         });
+        this.syncCompanySearch();
         this.isLoading = false;
       },
       error: (err) => {
@@ -241,7 +254,9 @@ export class JobFormComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    const formData = this.jobForm.value;
+    const formData = { ...this.jobForm.value };
+
+    delete formData.companySearch;
 
     // Convert string inputs to numbers if necessary (HTML selects can be tricky)
     formData.companyId = Number(formData.companyId);
@@ -275,5 +290,126 @@ export class JobFormComponent implements OnInit {
         this.isSubmitting = false;
       },
     });
+  }
+
+  onCompanySearchChange(value: string) {
+    this.companySearchTerm = value;
+    const normalized = value.trim().toLowerCase();
+
+    this.filteredCompanies = this.companies.filter((company) =>
+      company.name.toLowerCase().includes(normalized),
+    );
+
+    if (!normalized) {
+      this.jobForm.patchValue({ companyId: null });
+      return;
+    }
+
+    const exactMatch = this.companies.find(
+      (company) => company.name.toLowerCase() === normalized,
+    );
+
+    if (exactMatch) {
+      this.jobForm.patchValue({ companyId: exactMatch.id });
+    } else {
+      this.jobForm.patchValue({ companyId: null });
+    }
+  }
+
+  openCompanyDropdown() {
+    this.isCompanyDropdownOpen = true;
+  }
+
+  closeCompanyDropdown() {
+    setTimeout(() => {
+      this.isCompanyDropdownOpen = false;
+    }, 150);
+  }
+
+  selectCompany(company: Company) {
+    this.jobForm.patchValue({
+      companyId: company.id,
+      companySearch: company.name,
+    });
+    this.companySearchTerm = company.name;
+    this.isCompanyDropdownOpen = false;
+  }
+
+  get canCreateCompany(): boolean {
+    const normalized = this.companySearchTerm.trim().toLowerCase();
+    if (!normalized) return false;
+    return !this.companies.some((company) => company.name.toLowerCase() === normalized);
+  }
+
+  createCompanyFromSearch() {
+    const name = this.companySearchTerm.trim();
+    if (!name) return;
+
+    this.companyService.createCompany({ name }).subscribe({
+      next: (company) => {
+        this.companies = [company, ...this.companies];
+        this.selectCompany(company);
+        this.notificationService.success(
+          'Company added and selected for this application.',
+          'Company created',
+        );
+      },
+      error: (err) => {
+        console.error('Failed to create company:', err);
+        this.notificationService.error(
+          'Unable to create company right now. Please try again.',
+          'Create Company Failed',
+        );
+      },
+    });
+  }
+
+  onDocumentSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.isUploadingDocument = true;
+    this.uploadProgress = 0;
+    this.uploadError = '';
+
+    this.documentService.uploadDocumentWithProgress(file).subscribe({
+      next: (result) => {
+        if (typeof result === 'number') {
+          this.uploadProgress = result;
+        } else {
+          this.documents = [result, ...this.documents];
+          this.jobForm.patchValue({ documentId: result.id });
+          this.isUploadingDocument = false;
+          this.notificationService.success(
+            'Your CV was uploaded and selected.',
+            'Upload complete',
+          );
+        }
+      },
+      error: (err) => {
+        console.error('Failed to upload document:', err);
+        this.isUploadingDocument = false;
+        this.uploadError = 'Upload failed. Please try again.';
+      },
+    });
+  }
+
+  private syncCompanySearch() {
+    const companyId = this.jobForm.get('companyId')?.value;
+    if (!companyId || !this.companies.length) return;
+    const match = this.companies.find((company) => company.id === Number(companyId));
+    if (match) {
+      this.jobForm.patchValue({ companySearch: match.name });
+      this.companySearchTerm = match.name;
+    }
+  }
+
+  private getUniquePositions(applications: { position: string }[]): string[] {
+    const positions = applications
+      .map((application) => application.position?.trim())
+      .filter((position): position is string => Boolean(position));
+
+    return Array.from(new Set(positions)).sort((a, b) => a.localeCompare(b));
   }
 }

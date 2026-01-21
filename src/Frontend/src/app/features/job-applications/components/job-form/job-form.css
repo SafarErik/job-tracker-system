@@ -220,6 +220,47 @@
 }
 
 /* ============================================
+   Company Dropdown
+   ============================================ */
+
+.company-dropdown {
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.company-option {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.company-option:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.company-option.create {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.company-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================
    Select Dropdown
    ============================================ */
 
@@ -241,6 +282,77 @@ textarea.form-input {
   resize: vertical;
   min-height: 80px;
   max-height: 200px;
+}
+
+/* ============================================
+   Upload Box
+   ============================================ */
+
+.upload-box {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.upload-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.upload-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+.upload-progress {
+  margin-top: 0.5rem;
+  position: relative;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--color-bg-tertiary);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-bar {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.upload-progress span {
+  position: relative;
+  z-index: 1;
+  padding-left: 0.5rem;
+  font-size: 0.7rem;
+  color: white;
+}
+
+.upload-error {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-error);
 }
 
 /* ============================================

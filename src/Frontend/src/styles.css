@@ -298,12 +298,12 @@ app-root {
 }
 
 .dark .shadow-xl {
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-xl) !important;
 }
 
 /* Hover shadows enhanced */
 .dark .hover\:shadow-xl:hover {
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-xl) !important;
 }
 
 /* ============================================================================

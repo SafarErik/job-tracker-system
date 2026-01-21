@@ -19,16 +19,16 @@
       // Synchronously apply theme before first paint to prevent flash
       // Must match the key used by ThemeService: 'job-tracker-theme'
       (function () {
-        var stored = localStorage.getItem('job-tracker-theme');
+        var stored = null;
+        try {
+          stored = localStorage.getItem('job-tracker-theme');
+        } catch (error) {
+          stored = null;
+        }
         var theme = stored;
         if (!theme || (theme !== 'light' && theme !== 'dark')) {
           // Fallback to system preference
-          theme = (globalThis.matchMedia || window.matchMedia).call(
-            globalThis,
-            '(prefers-color-scheme: dark)',
-          ).matches
-            ? 'dark'
-            : 'light';
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         document.documentElement.className = theme;
       })();

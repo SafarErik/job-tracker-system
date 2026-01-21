@@ -1,11 +1,30 @@
 using JobTracker.Core.Entities;
 using JobTracker.Core.Enums;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace JobTracker.Infrastructure.Data;
 
+/// <summary>
+/// Seeds initial data into the database for development and testing purposes.
+/// Creates a demo user with companies, skills, and job applications.
+/// 
+/// IMPORTANT: This should only run in Development environment!
+/// Production data should never be seeded automatically.
+/// </summary>
 public static class DataSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context)
+    // Demo user credentials for testing
+    public const string DemoUserEmail = "demo@jobtracker.com";
+    public const string DemoUserPassword = "Demo123!";
+
+    /// <summary>
+    /// Seeds all development data including a demo user.
+    /// Requires UserManager to be passed for creating the demo user.
+    /// </summary>
+    public static async Task SeedAsync(
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager)
     {
         // Skip seeding if data already exists
         if (context.Companies.Any())
@@ -16,95 +35,197 @@ public static class DataSeeder
 
         Console.WriteLine("🌱 Starting database seeding...");
 
-        // 1. Create companies
-        var companies = new List<Company>
+        // ============================================
+        // 1. CREATE DEMO USER
+        // ============================================
+        var demoUser = await CreateDemoUserAsync(userManager);
+
+        // ============================================
+        // 2. CREATE COMPANIES
+        // ============================================
+        var companies = CreateCompanies();
+        await context.Companies.AddRangeAsync(companies);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ 10 companies created");
+
+        // ============================================
+        // 3. CREATE SKILLS
+        // ============================================
+        var skills = CreateSkills();
+        await context.Skills.AddRangeAsync(skills);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ Skills created");
+
+        // Assign some skills to the demo user
+        demoUser.Skills = skills.Take(5).ToList(); // User knows first 5 skills
+        await userManager.UpdateAsync(demoUser);
+        Console.WriteLine("✅ Demo user skills assigned");
+
+        // ============================================
+        // 4. CREATE JOB APPLICATIONS
+        // ============================================
+        var applications = CreateJobApplications(companies, skills, demoUser.Id);
+        await context.JobApplications.AddRangeAsync(applications);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ 15 job applications created");
+
+        Console.WriteLine("🎉 Database seeding completed!");
+        Console.WriteLine($"📧 Demo user: {DemoUserEmail}");
+        Console.WriteLine($"🔑 Password: {DemoUserPassword}");
+    }
+
+    /// <summary>
+    /// Creates a demo user for development testing
+    /// </summary>
+    private static async Task<ApplicationUser> CreateDemoUserAsync(
+        UserManager<ApplicationUser> userManager)
+    {
+        // Check if demo user already exists
+        var existingUser = await userManager.FindByEmailAsync(DemoUserEmail);
+        if (existingUser != null)
+        {
+            Console.WriteLine("✅ Demo user already exists");
+            return existingUser;
+        }
+
+        var demoUser = new ApplicationUser
+        {
+            UserName = DemoUserEmail,
+            Email = DemoUserEmail,
+            EmailConfirmed = true, // Skip email confirmation for demo
+            FirstName = "Demo",
+            LastName = "User",
+            CurrentJobTitle = "Software Developer",
+            YearsOfExperience = 3,
+            Bio = "A passionate developer looking for new opportunities.",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var result = await userManager.CreateAsync(demoUser, DemoUserPassword);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Failed to create demo user: {errors}");
+        }
+
+        Console.WriteLine("✅ Demo user created");
+        return demoUser;
+    }
+
+    /// <summary>
+    /// Creates sample companies for job applications
+    /// </summary>
+    private static List<Company> CreateCompanies()
+    {
+        return new List<Company>
         {
             new Company
             {
                 Name = "Google Hungary",
                 Website = "https://careers.google.com",
-                ContactPerson = "Peter Nagy"
+                HRContactName = "Peter Nagy"
             },
             new Company
             {
                 Name = "Microsoft Hungary",
                 Website = "https://careers.microsoft.com",
-                ContactPerson = "Anna Kovacs"
+                HRContactName = "Anna Kovacs"
             },
             new Company
             {
                 Name = "EPAM Systems",
                 Website = "https://www.epam.com/careers",
-                ContactPerson = "Gabor Szabo"
+                HRContactName = "Gabor Szabo"
             },
             new Company
             {
                 Name = "Morgan Stanley Budapest",
                 Website = "https://www.morganstanley.com/careers",
-                ContactPerson = "Eva Toth"
+                HRContactName = "Eva Toth"
             },
             new Company
             {
                 Name = "Ericsson Hungary",
                 Website = "https://www.ericsson.com/careers",
-                ContactPerson = "Janos Kiss"
+                HRContactName = "Janos Kiss"
             },
             new Company
             {
                 Name = "Prezi",
                 Website = "https://prezi.com/jobs",
-                ContactPerson = "Zsofia Horvath"
+                HRContactName = "Zsofia Horvath"
             },
             new Company
             {
                 Name = "LogMeIn (GoTo)",
                 Website = "https://www.goto.com/company/careers",
-                ContactPerson = "Balazs Molnar"
+                HRContactName = "Balazs Molnar"
             },
             new Company
             {
                 Name = "NNG (Sygic)",
                 Website = "https://www.nng.com/careers",
-                ContactPerson = "Katalin Varga"
+                HRContactName = "Katalin Varga"
             },
             new Company
             {
                 Name = "SAP Hungary",
                 Website = "https://jobs.sap.com",
-                ContactPerson = "Laszlo Nemeth"
+                HRContactName = "Laszlo Nemeth"
             },
             new Company
             {
                 Name = "Bitrise",
                 Website = "https://www.bitrise.io/careers",
-                ContactPerson = "Dora Farkas"
+                HRContactName = "Dora Farkas"
             }
         };
+    }
 
-        await context.Companies.AddRangeAsync(companies);
-        await context.SaveChangesAsync();
-        Console.WriteLine("✅ 10 companies created");
-
-        // 2. Create skills
-        var skills = new List<Skill>
+    /// <summary>
+    /// Creates skills with categories for better organization
+    /// </summary>
+    private static List<Skill> CreateSkills()
+    {
+        return new List<Skill>
         {
-            new Skill { Name = "C#" },
-            new Skill { Name = ".NET Core" },
-            new Skill { Name = "Angular" },
-            new Skill { Name = "React" },
-            new Skill { Name = "TypeScript" },
-            new Skill { Name = "SQL" },
-            new Skill { Name = "Docker" },
-            new Skill { Name = "Kubernetes" },
-            new Skill { Name = "Azure" },
-            new Skill { Name = "Git" }
+            // Programming Languages
+            new Skill { Name = "C#", Category = "Programming Language" },
+            new Skill { Name = "Python", Category = "Programming Language" },
+            new Skill { Name = "JavaScript", Category = "Programming Language" },
+            new Skill { Name = "TypeScript", Category = "Programming Language" },
+            new Skill { Name = "Java", Category = "Programming Language" },
+
+            // Frameworks
+            new Skill { Name = ".NET Core", Category = "Framework" },
+            new Skill { Name = "Angular", Category = "Framework" },
+            new Skill { Name = "React", Category = "Framework" },
+            new Skill { Name = "Spring Boot", Category = "Framework" },
+
+            // Databases
+            new Skill { Name = "SQL", Category = "Database" },
+            new Skill { Name = "PostgreSQL", Category = "Database" },
+            new Skill { Name = "MongoDB", Category = "Database" },
+
+            // DevOps
+            new Skill { Name = "Docker", Category = "DevOps" },
+            new Skill { Name = "Kubernetes", Category = "DevOps" },
+            new Skill { Name = "Azure", Category = "Cloud" },
+            new Skill { Name = "AWS", Category = "Cloud" },
+            new Skill { Name = "Git", Category = "Version Control" },
+            new Skill { Name = "CI/CD", Category = "DevOps" }
         };
+    }
 
-        await context.Skills.AddRangeAsync(skills);
-        await context.SaveChangesAsync();
-        Console.WriteLine("✅ 10 skills created");
-
-        // 3. Create job applications
+    /// <summary>
+    /// Creates sample job applications for the demo user
+    /// </summary>
+    private static List<JobApplication> CreateJobApplications(
+        List<Company> companies,
+        List<Skill> skills,
+        string userId)
+    {
         var positions = new[]
         {
             "Junior Backend Developer",
@@ -120,9 +241,10 @@ public static class DataSeeder
         };
 
         var statuses = Enum.GetValues<JobApplicationStatus>();
-        var random = new Random();
+        var random = new Random(42); // Fixed seed for reproducible results
 
         var applications = new List<JobApplication>();
+
         for (int i = 0; i < 15; i++)
         {
             var company = companies[random.Next(companies.Count)];
@@ -132,6 +254,7 @@ public static class DataSeeder
 
             var application = new JobApplication
             {
+                UserId = userId, // Link to the demo user
                 Position = position,
                 CompanyId = company.Id,
                 JobUrl = $"https://jobs.example.com/{company.Name.Replace(" ", "-").ToLower()}/{i}",
@@ -139,7 +262,9 @@ public static class DataSeeder
                              $"This role offers exciting opportunities for career growth.",
                 AppliedAt = DateTime.UtcNow.AddDays(-daysAgo),
                 Status = status,
-                SalaryOffer = status == JobApplicationStatus.Offer ? random.Next(600000, 1200000) : null
+                SalaryOffer = status == JobApplicationStatus.Offer 
+                    ? random.Next(600000, 1200000) 
+                    : null
             };
 
             // Add random skills (2-4 per application)
@@ -150,10 +275,6 @@ public static class DataSeeder
             applications.Add(application);
         }
 
-        await context.JobApplications.AddRangeAsync(applications);
-        await context.SaveChangesAsync();
-        Console.WriteLine("✅ 15 job applications created");
-
-        Console.WriteLine("🎉 Database seeding completed!");
+        return applications;
     }
 }

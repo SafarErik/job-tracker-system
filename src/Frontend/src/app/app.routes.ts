@@ -128,6 +128,15 @@ export const routes: Routes = [
     title: 'Documents - JobTracker',
   },
 
+  // Profile
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
+    canActivate: [authGuard],
+    title: 'Profile - JobTracker',
+  },
+
   // ============================================
   // FALLBACK ROUTES
   // ============================================

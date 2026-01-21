@@ -59,16 +59,28 @@
                 type="text"
                 formControlName="position"
                 placeholder="e.g. Senior Backend Developer"
-                list="position-suggestions"
                 class="form-input with-icon"
                 [class.input-error]="
                   jobForm.get('position')?.invalid && jobForm.get('position')?.touched
                 "
+                (input)="onPositionSearchChange($event.target.value)"
+                (focus)="openPositionDropdown()"
+                (blur)="closePositionDropdown()"
               />
             </div>
-            <datalist id="position-suggestions">
-              <option *ngFor="let position of applications" [value]="position"></option>
-            </datalist>
+            <div
+              class="position-dropdown"
+              *ngIf="isPositionDropdownOpen && filteredPositions.length > 0"
+            >
+              <button
+                type="button"
+                class="position-option"
+                *ngFor="let position of filteredPositions"
+                (click)="selectPosition(position)"
+              >
+                {{ position }}
+              </button>
+            </div>
             <p
               *ngIf="jobForm.get('position')?.invalid && jobForm.get('position')?.touched"
               class="error-message"
@@ -184,11 +196,26 @@
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <select id="status" formControlName="status" class="form-input with-icon">
-                <option *ngFor="let option of statusOptions" [value]="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
+              <button
+                id="status"
+                type="button"
+                class="form-input with-icon select-trigger"
+                (click)="openStatusDropdown()"
+                (blur)="closeStatusDropdown()"
+              >
+                <span>{{ selectedStatusLabel }}</span>
+                <span class="select-chevron">▾</span>
+              </button>
+            </div>
+            <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
+              <button
+                type="button"
+                class="select-option"
+                *ngFor="let option of statusOptions"
+                (click)="selectStatus(option.value)"
+              >
+                {{ option.label }}
+              </button>
             </div>
           </div>
 
@@ -207,12 +234,29 @@
                   d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
                 />
               </svg>
-              <select id="documentId" formControlName="documentId" class="form-input with-icon">
-                <option [ngValue]="null">-- No CV selected --</option>
-                <option *ngFor="let doc of documents" [ngValue]="doc.id">
-                  {{ doc.originalFileName }}
-                </option>
-              </select>
+              <button
+                id="documentId"
+                type="button"
+                class="form-input with-icon select-trigger"
+                (click)="openDocumentDropdown()"
+                (blur)="closeDocumentDropdown()"
+              >
+                <span>{{ selectedDocumentLabel }}</span>
+                <span class="select-chevron">▾</span>
+              </button>
+            </div>
+            <div class="select-dropdown" *ngIf="isDocumentDropdownOpen">
+              <button type="button" class="select-option" (click)="selectDocument(null)">
+                No CV selected
+              </button>
+              <button
+                type="button"
+                class="select-option"
+                *ngFor="let doc of documents"
+                (click)="selectDocument(doc.id)"
+              >
+                {{ doc.originalFileName }}
+              </button>
             </div>
             <div class="upload-box">
               <label class="upload-label" for="documentUpload">
@@ -220,12 +264,12 @@
                   id="documentUpload"
                   type="file"
                   class="upload-input"
-                  accept=".pdf,.doc,.docx"
+                  accept=".pdf"
                   (change)="onDocumentSelected($event)"
                 />
                 <div class="upload-content">
                   <span class="upload-title">Upload a new CV</span>
-                  <span class="upload-subtitle">PDF, DOC, DOCX • Max 10MB</span>
+                  <span class="upload-subtitle">PDF only • Max 10MB</span>
                 </div>
               </label>
               <div class="upload-progress" *ngIf="isUploadingDocument">

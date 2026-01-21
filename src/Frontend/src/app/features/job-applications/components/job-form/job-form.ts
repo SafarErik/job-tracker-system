@@ -65,9 +65,14 @@ export class JobFormComponent implements OnInit {
   skills: Skill[] = [];
   documents: Document[] = [];
   applications: string[] = [];
+  filteredPositions: string[] = [];
+  isPositionDropdownOpen = false;
+  positionSearchTerm = '';
   filteredCompanies: Company[] = [];
   isCompanyDropdownOpen = false;
   companySearchTerm = '';
+  isStatusDropdownOpen = false;
+  isDocumentDropdownOpen = false;
   isUploadingDocument = false;
   uploadProgress = 0;
   uploadError = '';
@@ -193,6 +198,7 @@ export class JobFormComponent implements OnInit {
         this.skills = result.skills;
         this.documents = result.documents;
         this.applications = this.getUniquePositions(result.applications);
+        this.filteredPositions = this.applications.slice(0, 6);
         this.filteredCompanies = this.companies.slice(0, 6);
         this.syncCompanySearch();
         this.isLoading = false;
@@ -312,6 +318,72 @@ export class JobFormComponent implements OnInit {
     } else {
       this.jobForm.patchValue({ companyId: null });
     }
+  }
+
+  onPositionSearchChange(value: string) {
+    this.positionSearchTerm = value;
+    const normalized = value.trim().toLowerCase();
+
+    this.filteredPositions = this.applications
+      .filter((position) => position.toLowerCase().includes(normalized))
+      .slice(0, 6);
+  }
+
+  openPositionDropdown() {
+    this.isPositionDropdownOpen = true;
+  }
+
+  closePositionDropdown() {
+    setTimeout(() => {
+      this.isPositionDropdownOpen = false;
+    }, 150);
+  }
+
+  selectPosition(position: string) {
+    this.jobForm.patchValue({ position });
+    this.positionSearchTerm = position;
+    this.isPositionDropdownOpen = false;
+  }
+
+  openStatusDropdown() {
+    this.isStatusDropdownOpen = true;
+  }
+
+  closeStatusDropdown() {
+    setTimeout(() => {
+      this.isStatusDropdownOpen = false;
+    }, 150);
+  }
+
+  selectStatus(value: number) {
+    this.jobForm.patchValue({ status: value });
+    this.isStatusDropdownOpen = false;
+  }
+
+  get selectedStatusLabel(): string {
+    const value = Number(this.jobForm.get('status')?.value);
+    return this.statusOptions.find((option) => option.value === value)?.label ?? 'Select status';
+  }
+
+  openDocumentDropdown() {
+    this.isDocumentDropdownOpen = true;
+  }
+
+  closeDocumentDropdown() {
+    setTimeout(() => {
+      this.isDocumentDropdownOpen = false;
+    }, 150);
+  }
+
+  selectDocument(documentId: string | null) {
+    this.jobForm.patchValue({ documentId });
+    this.isDocumentDropdownOpen = false;
+  }
+
+  get selectedDocumentLabel(): string {
+    const docId = this.jobForm.get('documentId')?.value as string | null;
+    if (!docId) return 'No CV selected';
+    return this.documents.find((doc) => doc.id === docId)?.originalFileName ?? 'No CV selected';
   }
 
   openCompanyDropdown() {

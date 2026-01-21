@@ -251,7 +251,13 @@
               </svg>
               Lowercase
             </span>
-            <span class="requirement" [class.met]="registerForm.get('password')?.value && getPasswordStrengthErrors()?.hasDigit !== false">
+            <span
+              class="requirement"
+              [class.met]="
+                registerForm.get('password')?.value &&
+                getPasswordStrengthErrors()?.hasDigit !== false
+              "
+            >
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"

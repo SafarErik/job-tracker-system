@@ -126,13 +126,11 @@ export class RegisterComponent {
       if (currentErrors) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { passwordMismatch, ...remainingErrors } = currentErrors;
-        confirmPassword.setErrors(
-          Object.keys(remainingErrors).length > 0 ? remainingErrors : null
-        );
+        confirmPassword.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
       }
       return null;
     }
-    
+
     // Passwords don't match - set error
     confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
     return { passwordMismatch: true };

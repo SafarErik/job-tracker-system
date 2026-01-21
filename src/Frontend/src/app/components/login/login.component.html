@@ -123,7 +123,13 @@
             placeholder="••••••••"
             autocomplete="current-password"
           />
-          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword()"
+          >
             @if (showPassword()) {
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path

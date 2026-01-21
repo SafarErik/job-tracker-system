@@ -329,11 +329,23 @@ export class AuthService {
   /**
    * Decode a JWT token to extract its payload.
    * JWT format: header.payload.signature
+   * Handles URL-safe base64 encoding used in JWTs.
    */
   private decodeToken(token: string): DecodedToken {
     try {
       // Split token and get payload (middle part)
-      const payload = token.split('.')[1];
+      let payload = token.split('.')[1];
+      
+      // Convert URL-safe base64 to standard base64
+      // Replace - with + and _ with /
+      payload = payload.replaceAll('-', '+').replaceAll('_', '/');
+      
+      // Add padding if needed (base64 strings must be divisible by 4)
+      const padding = payload.length % 4;
+      if (padding > 0) {
+        payload += '='.repeat(4 - padding);
+      }
+      
       // Base64 decode and parse JSON
       const decoded = atob(payload);
       return JSON.parse(decoded);

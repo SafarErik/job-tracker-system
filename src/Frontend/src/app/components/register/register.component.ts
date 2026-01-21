@@ -109,17 +109,33 @@ export class RegisterComponent {
 
   /**
    * Form-level validator to check if passwords match.
+   * Properly clears only passwordMismatch error when passwords match.
    */
   private passwordMatchValidator(form: FormGroup): ValidationErrors | null {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
 
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
+    if (!password || !confirmPassword) {
+      return null;
     }
 
-    return null;
+    // Check if passwords match
+    if (password.value === confirmPassword.value) {
+      // Passwords match - clear only passwordMismatch error, preserve other errors
+      const currentErrors = confirmPassword.errors;
+      if (currentErrors) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { passwordMismatch, ...remainingErrors } = currentErrors;
+        confirmPassword.setErrors(
+          Object.keys(remainingErrors).length > 0 ? remainingErrors : null
+        );
+      }
+      return null;
+    }
+    
+    // Passwords don't match - set error
+    confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
+    return { passwordMismatch: true };
   }
 
   /**

@@ -72,8 +72,8 @@
   border: 1px solid var(--color-border-primary);
 }
 
-/* Dark mode glassmorphism effect */
-:global(.dark) .login-card {
+/* Dark mode glassmorphism effect - use :host-context for proper Angular scoping */
+:host-context(.dark) .login-card {
   background: rgba(17, 24, 39, 0.9);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -134,7 +134,7 @@
   margin-bottom: 1.5rem;
 }
 
-:global(.dark) .error-alert {
+:host-context(.dark) .error-alert {
   background: rgba(239, 68, 68, 0.15);
 }
 

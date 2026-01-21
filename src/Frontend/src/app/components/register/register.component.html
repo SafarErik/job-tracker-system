@@ -170,6 +170,8 @@
             type="button"
             class="password-toggle"
             (click)="togglePasswordVisibility('password')"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword()"
           >
             @if (showPassword()) {
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +221,10 @@
             </span>
             <span
               class="requirement"
-              [class.met]="getPasswordStrengthErrors()?.hasUppercase !== false"
+              [class.met]="
+                registerForm.get('password')?.value &&
+                getPasswordStrengthErrors()?.hasUppercase !== false
+              "
             >
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -232,7 +237,10 @@
             </span>
             <span
               class="requirement"
-              [class.met]="getPasswordStrengthErrors()?.hasLowercase !== false"
+              [class.met]="
+                registerForm.get('password')?.value &&
+                getPasswordStrengthErrors()?.hasLowercase !== false
+              "
             >
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -243,7 +251,7 @@
               </svg>
               Lowercase
             </span>
-            <span class="requirement" [class.met]="getPasswordStrengthErrors()?.hasDigit !== false">
+            <span class="requirement" [class.met]="registerForm.get('password')?.value && getPasswordStrengthErrors()?.hasDigit !== false">
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fill-rule="evenodd"
@@ -255,7 +263,10 @@
             </span>
             <span
               class="requirement"
-              [class.met]="getPasswordStrengthErrors()?.hasSpecial !== false"
+              [class.met]="
+                registerForm.get('password')?.value &&
+                getPasswordStrengthErrors()?.hasSpecial !== false
+              "
             >
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path
@@ -298,6 +309,8 @@
             type="button"
             class="password-toggle"
             (click)="togglePasswordVisibility('confirm')"
+            [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showConfirmPassword()"
           >
             @if (showConfirmPassword()) {
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

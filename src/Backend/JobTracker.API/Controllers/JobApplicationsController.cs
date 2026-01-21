@@ -29,16 +29,22 @@ public class JobApplicationsController : ControllerBase
 
     /// <summary>
     /// Gets the current authenticated user's ID from the JWT token claims.
+    /// Returns null if the claim is missing (caller should handle with Unauthorized response).
     /// </summary>
-    private string GetUserId() =>
-        User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
-        ?? throw new UnauthorizedAccessException("User ID not found in token");
+    /// <returns>User ID string or null if not found in claims</returns>
+    private string? GetUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     // GET: api/jobapplications
     [HttpGet]
     public async Task<ActionResult<IEnumerable<JobApplicationDto>>> GetAll()
     {
+        // Validate user is authenticated and has valid claim
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
         
         // Only get applications belonging to the current user
         var applications = await _repository.GetAllByUserIdAsync(userId);
@@ -65,7 +71,13 @@ public class JobApplicationsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<JobApplicationDto>> Get(int id)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
         var app = await _repository.GetByIdAsync(id);
 
         if (app == null)
@@ -100,7 +112,12 @@ public class JobApplicationsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<JobApplicationDto>> Create(CreateJobApplicationDto createDto)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
 
         // MAPPING: DTO -> Entity
         var application = new JobApplication
@@ -151,7 +168,13 @@ public class JobApplicationsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateJobApplicationDto updateDto)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
         var existingApp = await _repository.GetByIdAsync(id);
 
         if (existingApp == null) return NotFound();
@@ -193,7 +216,13 @@ public class JobApplicationsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
         var app = await _repository.GetByIdAsync(id);
         
         if (app == null) return NotFound();

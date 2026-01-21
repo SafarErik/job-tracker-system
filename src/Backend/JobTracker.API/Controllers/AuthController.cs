@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
@@ -32,27 +33,25 @@ public class AuthController : ControllerBase
     // Logger for debugging and monitoring
     private readonly ILogger<AuthController> _logger;
 
-    // HttpClientFactory for making HTTP requests (best practice - reuses connections)
-    private readonly IHttpClientFactory _httpClientFactory;
-
     // Frontend base URL from configuration
     private readonly string _frontendBaseUrl;
 
     // Default frontend URL constant (used only as fallback when config is missing)
+    // SonarQube: This is intentionally hardcoded as a development fallback
+#pragma warning disable S1075 // URIs should not be hardcoded
     private const string DefaultFrontendUrl = "http://localhost:4200";
+#pragma warning restore S1075
 
     public AuthController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IConfiguration configuration,
-        ILogger<AuthController> logger,
-        IHttpClientFactory httpClientFactory)
+        ILogger<AuthController> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
         _logger = logger;
-        _httpClientFactory = httpClientFactory;
         _frontendBaseUrl = configuration["Frontend:BaseUrl"] ?? DefaultFrontendUrl;
     }
 
@@ -432,7 +431,7 @@ public class AuthController : ControllerBase
             {
                 var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
                 _logger.LogError("Failed to create user from Google login: {Errors}", errors);
-                return Redirect($"http://localhost:4200/login?error=create_failed");
+                return Redirect($"{_frontendBaseUrl}/login?error=create_failed");
             }
 
             _logger.LogInformation("New user created from Google: {Email}", email);
@@ -486,28 +485,43 @@ public class AuthController : ControllerBase
                 });
             }
 
-            // Use HttpClientFactory for proper connection reuse
-            var httpClient = _httpClientFactory.CreateClient();
-            var response = await httpClient.GetAsync(
-                $"https://oauth2.googleapis.com/tokeninfo?id_token={googleTokenDto.IdToken}");
-
-            if (!response.IsSuccessStatusCode)
+            // Validate Google ID token locally using cryptographic signature verification
+            // This is more secure than HTTP tokeninfo endpoint as it validates the signature locally
+            GoogleJsonWebSignature.Payload payload;
+            try
             {
+                var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { googleClientId }
+                };
+                payload = await GoogleJsonWebSignature.ValidateAsync(googleTokenDto.IdToken, validationSettings);
+            }
+            catch (InvalidJwtException ex)
+            {
+                _logger.LogWarning("Invalid Google token: {Message}", ex.Message);
                 return Unauthorized(new AuthResponseDto
                 {
                     Succeeded = false,
-                    Message = "Invalid Google token"
+                    Message = "Invalid or expired Google token"
                 });
             }
 
-            var tokenInfo = await response.Content.ReadFromJsonAsync<GoogleTokenInfo>();
+            // Create tokenInfo from validated payload for compatibility with existing code
+            var tokenInfo = new GoogleTokenInfo
+            {
+                Email = payload.Email,
+                Aud = payload.Audience?.ToString() ?? string.Empty,
+                GivenName = payload.GivenName,
+                FamilyName = payload.FamilyName,
+                Picture = payload.Picture
+            };
             
-            if (tokenInfo == null || tokenInfo.Aud != googleClientId)
+            if (string.IsNullOrEmpty(tokenInfo.Email))
             {
                 return Unauthorized(new AuthResponseDto
                 {
                     Succeeded = false,
-                    Message = "Token was not issued for this application"
+                    Message = "Email not provided by Google"
                 });
             }
 

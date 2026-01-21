@@ -86,9 +86,10 @@ public class PagedResponse<T>
     public int TotalCount { get; set; }
     
     /// <summary>
-    /// Total number of pages
+    /// Total number of pages.
+    /// Uses Math.Max to ensure PageSize is at least 1, preventing divide-by-zero errors.
     /// </summary>
-    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+    public int TotalPages => (int)Math.Ceiling((double)TotalCount / Math.Max(PageSize, 1));
     
     /// <summary>
     /// Whether there is a previous page
@@ -115,12 +116,14 @@ public class PaginationParams
     public int PageNumber { get; set; } = 1;
     
     /// <summary>
-    /// Items per page (default: 10, max: 100)
+    /// Items per page (default: 10, min: 1, max: 100).
+    /// Value is clamped between 1 and MaxPageSize to ensure valid pagination.
     /// </summary>
     public int PageSize
     {
         get => _pageSize;
-        set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
+        // Clamp value between 1 (minimum) and MaxPageSize (maximum) to prevent invalid pagination
+        set => _pageSize = Math.Clamp(value, 1, MaxPageSize);
     }
 }
 

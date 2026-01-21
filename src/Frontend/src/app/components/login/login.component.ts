@@ -57,10 +57,25 @@ export class LoginComponent {
     });
 
     // Get return URL from query params (set by auth guard)
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    // Validate returnUrl to prevent open redirect attacks
+    const rawReturnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.isValidReturnUrl(rawReturnUrl) ? rawReturnUrl : '/';
 
     // Clear any existing errors when component loads
     this.authService.clearError();
+  }
+
+  /**
+   * Validate returnUrl to prevent open redirect vulnerabilities.
+   * Only allows relative paths starting with a single slash.
+   */
+  private isValidReturnUrl(url: string): boolean {
+    // Must start with exactly one slash (not //) and not contain protocol
+    if (!url || typeof url !== 'string') return false;
+    if (url.startsWith('//')) return false;
+    if (url.includes('http:') || url.includes('https:')) return false;
+    if (!url.startsWith('/')) return false;
+    return true;
   }
 
   /**

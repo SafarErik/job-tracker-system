@@ -39,12 +39,13 @@ namespace JobTracker.Infrastructure.Migrations
                 type: "text",
                 nullable: true);
 
+            // STAGED MIGRATION APPROACH:
+            // Step 1: Add UserId columns as nullable first to avoid errors with existing data
             migrationBuilder.AddColumn<string>(
                 name: "UserId",
                 table: "JobApplications",
                 type: "text",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "Type",
@@ -57,8 +58,9 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "UserId",
                 table: "Documents",
                 type: "text",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
+
+            // Step 2: Create Users table first (moved before backfill SQL)
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_JobApplicationSkills",
@@ -244,6 +246,44 @@ namespace JobTracker.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            // STAGED MIGRATION Step 3: Backfill UserId columns with SQL
+            // Option A: Delete orphaned records (choose based on business requirements)
+            migrationBuilder.Sql(@"
+                -- Create a migration placeholder user if needed
+                INSERT INTO ""Users"" (""Id"", ""UserName"", ""NormalizedUserName"", ""Email"", ""NormalizedEmail"", 
+                    ""EmailConfirmed"", ""SecurityStamp"", ""ConcurrencyStamp"", ""PhoneNumberConfirmed"", 
+                    ""TwoFactorEnabled"", ""LockoutEnabled"", ""AccessFailedCount"", ""IsExternalAccount"", ""CreatedAt"")
+                SELECT 'migration-placeholder-user', 'migration@placeholder.local', 'MIGRATION@PLACEHOLDER.LOCAL',
+                    'migration@placeholder.local', 'MIGRATION@PLACEHOLDER.LOCAL', 
+                    false, gen_random_uuid()::text, gen_random_uuid()::text, false, 
+                    false, false, 0, false, NOW()
+                WHERE NOT EXISTS (SELECT 1 FROM ""Users"" WHERE ""Id"" = 'migration-placeholder-user')
+                AND (EXISTS (SELECT 1 FROM ""JobApplications"" WHERE ""UserId"" IS NULL)
+                     OR EXISTS (SELECT 1 FROM ""Documents"" WHERE ""UserId"" IS NULL));
+                
+                -- Backfill JobApplications with placeholder user
+                UPDATE ""JobApplications"" SET ""UserId"" = 'migration-placeholder-user' WHERE ""UserId"" IS NULL;
+                
+                -- Backfill Documents with placeholder user
+                UPDATE ""Documents"" SET ""UserId"" = 'migration-placeholder-user' WHERE ""UserId"" IS NULL;
+            ");
+
+            // STAGED MIGRATION Step 4: Now make UserId columns non-nullable
+            migrationBuilder.AlterColumn<string>(
+                name: "UserId",
+                table: "JobApplications",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "UserId",
+                table: "Documents",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            // STAGED MIGRATION Step 5: Create indices (before FK constraints)
             migrationBuilder.CreateIndex(
                 name: "IX_Skills_Name",
                 table: "Skills",

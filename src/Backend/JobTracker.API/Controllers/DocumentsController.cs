@@ -32,16 +32,22 @@ public class DocumentsController : ControllerBase
 
     /// <summary>
     /// Gets the current authenticated user's ID from the JWT token claims.
+    /// Returns null if the claim is missing (caller should handle with Unauthorized response).
     /// </summary>
-    private string GetUserId() =>
-        User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
-        ?? throw new UnauthorizedAccessException("User ID not found in token");
+    /// <returns>User ID string or null if not found in claims</returns>
+    private string? GetUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
     // GET: api/Documents
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
     {
+        // Validate user is authenticated and has valid claim
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
         
         // Only get documents belonging to the current user
         var documents = await _documentRepository.GetAllByUserIdAsync(userId);
@@ -62,7 +68,13 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<DocumentDto>> GetDocument(Guid id)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)
@@ -92,7 +104,13 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id}/download")]
     public async Task<IActionResult> DownloadDocument(Guid id)
     {
+        // Validate user is authenticated
         var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)
@@ -150,6 +168,12 @@ public class DocumentsController : ControllerBase
         {
             var userId = GetUserId();
             
+            // Check if user is authenticated
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            
             // Create uploads folder if it doesn't exist
             var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
             Directory.CreateDirectory(uploadsFolder);
@@ -203,6 +227,13 @@ public class DocumentsController : ControllerBase
     public async Task<IActionResult> DeleteDocument(Guid id)
     {
         var userId = GetUserId();
+        
+        // Check if user is authenticated
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+        
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)

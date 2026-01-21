@@ -20,20 +20,29 @@
     <!-- 
       ASP.NET Core Identity - provides user management, authentication, and authorization.
       This is the main package that wires up Identity with ASP.NET Core.
+      Version 10.0.2 includes important security patches.
     -->
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     
     <!-- 
       JWT Bearer Authentication - for token-based authentication.
       This allows the API to validate JWT tokens sent by the Angular frontend.
+      Version 10.0.2 includes important security patches.
     -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     
     <!-- 
       Google OAuth Authentication - for "Sign in with Google" functionality.
       Handles the OAuth 2.0 flow with Google's authentication servers.
+      Version 10.0.2 includes important security patches.
     -->
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.2" />
+    
+    <!-- 
+      Google API Auth Library - for local cryptographic validation of Google ID tokens.
+      More secure than calling external tokeninfo endpoint - validates JWT signature locally.
+    -->
+    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -125,7 +125,7 @@
                 (click)="selectCompany(company)"
               >
                 <span>{{ company.name }}</span>
-                <span class="company-meta">{{ company.totalApplications }} applications</span>
+                <span class="company-meta">{{ company.totalApplications ?? 0 }} applications</span>
               </button>
               <button
                 type="button"

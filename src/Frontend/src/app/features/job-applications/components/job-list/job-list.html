@@ -257,12 +257,21 @@
         />
       </svg>
       <input
+        #searchInput
         type="text"
         placeholder="Search by position, company, notes, or URL..."
         [value]="searchTerm"
-        (input)="onSearchChange($event.target.value)"
+        (input)="onSearchChange(searchInput.value)"
       />
-      <button *ngIf="searchTerm" class="clear-search" (click)="onSearchChange('')">×</button>
+      <button
+        *ngIf="searchTerm"
+        class="clear-search"
+        (click)="onSearchChange('')"
+        type="button"
+        aria-label="Clear search"
+      >
+        ×
+      </button>
     </div>
 
     <div class="filter-group">

@@ -17,6 +17,11 @@ public class Skill
     public required string Name { get; set; }
 
     /// <summary>
+    /// Normalized name for case-insensitive uniqueness constraint
+    /// </summary>
+    public string? NormalizedName { get; set; }
+
+    /// <summary>
     /// Optional category for grouping skills
     /// (e.g., "Programming Language", "Framework", "DevOps")
     /// </summary>

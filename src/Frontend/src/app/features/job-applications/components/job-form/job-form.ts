@@ -439,6 +439,31 @@ export class JobFormComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
+    // Client-side validation: check file type and size
+    const validMimeTypes = ['application/pdf'];
+    const maxFileSizeBytes = 10 * 1024 * 1024; // 10MB
+
+    // Check MIME type
+    if (!validMimeTypes.includes(file.type)) {
+      this.uploadError = 'Only PDF files are allowed. Please select a valid PDF file.';
+      this.isUploadingDocument = false;
+      this.uploadProgress = 0;
+      // Clear the file input so user can re-select
+      input.value = '';
+      return;
+    }
+
+    // Check file size
+    if (file.size > maxFileSizeBytes) {
+      this.uploadError = `File size exceeds 10MB limit. Your file is ${(file.size / 1024 / 1024).toFixed(2)}MB.`;
+      this.isUploadingDocument = false;
+      this.uploadProgress = 0;
+      // Clear the file input so user can re-select
+      input.value = '';
+      return;
+    }
+
+    // Validation passed, proceed with upload
     this.isUploadingDocument = true;
     this.uploadProgress = 0;
     this.uploadError = '';

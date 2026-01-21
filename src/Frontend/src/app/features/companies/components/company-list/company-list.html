@@ -156,6 +156,7 @@
                       (click)="viewCompanyDetails(company.id); $event.stopPropagation()"
                       type="button"
                       title="View Details"
+                      aria-label="View Company"
                     >
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
@@ -177,6 +178,7 @@
                       (click)="editCompany(company.id, $event)"
                       type="button"
                       title="Edit Company"
+                      aria-label="Edit Company"
                     >
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
@@ -192,6 +194,7 @@
                       (click)="deleteCompany(company, $event)"
                       type="button"
                       title="Delete Company"
+                      aria-label="Delete Company"
                     >
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path

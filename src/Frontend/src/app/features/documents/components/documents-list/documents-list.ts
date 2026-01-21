@@ -128,7 +128,21 @@ export class DocumentsListComponent implements OnInit {
   onDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging.set(false);
+
+    // Only set isDragging to false if the drag actually left the component root.
+    // This prevents flicker when the pointer moves over child elements.
+    const target = event.relatedTarget as Element | null;
+
+    // Check if the new target is outside this component's root element
+    if (!target || !this.getComponentRoot()?.contains(target)) {
+      this.isDragging.set(false);
+    }
+  }
+
+  private getComponentRoot(): Element | null {
+    // Return the component's root element (the host element)
+    // You may need to inject ElementRef if this approach doesn't work
+    return document.activeElement?.closest('.drop-zone') || null;
   }
 
   onDrop(event: DragEvent): void {

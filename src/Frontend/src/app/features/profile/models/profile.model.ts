@@ -25,7 +25,7 @@ export interface ProfileStats {
   activeApplications: number;
   interviewsScheduled: number;
   offersReceived: number;
-  averageResponseTime: number;
+  averageResponseTime: number | null;
   successRate: number;
   companiesAppliedTo: number;
   skillsCount: number;
@@ -34,5 +34,5 @@ export interface ProfileStats {
 export interface UserSkill {
   id: number;
   name: string;
-  category: string;
+  category: string | null;
 }

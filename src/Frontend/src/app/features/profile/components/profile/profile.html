@@ -69,10 +69,10 @@
 
         <div class="hero-info">
           <h1 class="profile-name">{{ profile()!.fullName || 'Your Name' }}</h1>
-          @if (profile()!.currentJobTitle) {
+          @if (profile()!.currentJobTitle != null) {
             <p class="profile-title">{{ profile()!.currentJobTitle }}</p>
           }
-          @if (profile()!.yearsOfExperience) {
+          @if (profile()!.yearsOfExperience != null) {
             <p class="profile-experience">{{ profile()!.yearsOfExperience }} years of experience</p>
           }
           <p class="profile-email">{{ profile()!.email }}</p>

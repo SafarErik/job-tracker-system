@@ -172,7 +172,7 @@ public class ProfileController : ControllerBase
             activeApplications,
             interviewsScheduled,
             offersReceived,
-            averageResponseTime = 5, // Mock data for now
+            averageResponseTime = (int?)null, // Will be computed from real data
             successRate,
             companiesAppliedTo,
             skillsCount = userSkillsCount
@@ -210,6 +210,7 @@ public class ProfileController : ControllerBase
     /// <summary>
     /// Create a new custom skill (if not exists) and add it to the current user.
     /// If a skill with the same name already exists, uses its category; otherwise uses the provided category.
+    /// Includes validation for whitespace-only names and handles race conditions via unique constraint.
     /// </summary>
     [HttpPost("skills")]
     public async Task<ActionResult<object>> AddCustomSkill([FromBody] CreateSkillDto dto)
@@ -223,6 +224,20 @@ public class ProfileController : ControllerBase
         var name = dto.Name.Trim();
         var providedCategory = string.IsNullOrWhiteSpace(dto.Category) ? null : dto.Category.Trim();
 
+        // Validate that name is not empty after trimming
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            ModelState.AddModelError(nameof(dto.Name), "Skill name cannot be empty or whitespace-only");
+            return BadRequest(ModelState);
+        }
+
+        // Validate that category (if provided) is not whitespace-only after trimming
+        if (!string.IsNullOrWhiteSpace(dto.Category) && string.IsNullOrWhiteSpace(providedCategory))
+        {
+            ModelState.AddModelError(nameof(dto.Category), "Skill category cannot be whitespace-only");
+            return BadRequest(ModelState);
+        }
+
         var user = await _context.Set<ApplicationUser>()
             .Include(u => u.Skills)
             .FirstOrDefaultAsync(u => u.Id == userId);
@@ -232,8 +247,9 @@ public class ProfileController : ControllerBase
             return NotFound("User not found");
         }
 
+        var normalizedName = name.ToLower();
         var existingSkill = await _context.Skills
-            .FirstOrDefaultAsync(s => s.Name.ToLower() == name.ToLower());
+            .FirstOrDefaultAsync(s => s.Name.ToLower() == normalizedName);
 
         Core.Entities.Skill skill;
         
@@ -245,20 +261,51 @@ public class ProfileController : ControllerBase
         else
         {
             // Create new skill with provided category (or null if not provided)
+            // Set NormalizedName to enable case-insensitive uniqueness constraint
             skill = new Core.Entities.Skill
             {
                 Name = name,
+                NormalizedName = normalizedName,
                 Category = providedCategory
             };
             _context.Skills.Add(skill);
         }
 
-        if (!user.Skills.Any(s => s.Name.ToLower() == name.ToLower()))
+        if (!user.Skills.Any(s => s.Name.ToLower() == normalizedName))
         {
             user.Skills.Add(skill);
         }
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            // Handle unique constraint violation (race condition where skill was created concurrently)
+            _logger.LogWarning($"Unique constraint violation while adding skill '{name}': {ex.Message}");
+            
+            // Re-fetch the existing skill that was created by another request
+            existingSkill = await _context.Skills
+                .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName || s.Name.ToLower() == normalizedName);
+            
+            if (existingSkill != null)
+            {
+                skill = existingSkill;
+                
+                // Add to user if not already present
+                if (!user.Skills.Any(s => s.Id == skill.Id))
+                {
+                    user.Skills.Add(skill);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                // Unexpected error, return conflict
+                return Conflict("A skill with this name already exists but could not be retrieved.");
+            }
+        }
 
         return Ok(new
         {
@@ -340,7 +387,7 @@ public class ProfileController : ControllerBase
     }
 
     /// <summary>
-    /// Upload profile picture (placeholder - implement file storage as needed)
+    /// Upload profile picture and persist the URL to the user record
     /// </summary>
     [HttpPost("upload-picture")]
     public async Task<ActionResult<object>> UploadProfilePicture(IFormFile file)
@@ -370,8 +417,25 @@ public class ProfileController : ControllerBase
         }
 
         // TODO: Implement actual file storage (Azure Blob, AWS S3, local storage, etc.)
-        // For now, return a placeholder URL
+        // For now, generate a placeholder URL
         var placeholderUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(file.FileName)}&size=150&background=667eea&color=fff";
+
+        // Fetch user and update profile picture URL
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        // Update the user's profile picture URL
+        user.ProfilePictureUrl = placeholderUrl;
+        
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            _logger.LogError($"Failed to update profile picture URL for user {userId}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            return BadRequest("Failed to save profile picture URL");
+        }
 
         return Ok(new { url = placeholderUrl });
     }

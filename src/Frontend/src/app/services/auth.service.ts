@@ -93,7 +93,7 @@ export class AuthService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     // On service initialization, check for existing token
     this.initializeAuthState();
@@ -154,7 +154,7 @@ export class AuthService {
         const message = error.error?.message || 'Login failed. Please try again.';
         this.handleAuthError(message);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -177,7 +177,7 @@ export class AuthService {
         const message = error.error?.message || 'Registration failed. Please try again.';
         this.handleAuthError(message);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -208,7 +208,7 @@ export class AuthService {
           ...this._authState(),
           user,
         });
-      })
+      }),
     );
   }
 
@@ -225,7 +225,7 @@ export class AuthService {
             this.storeUser(response.user);
           }
         }
-      })
+      }),
     );
   }
 

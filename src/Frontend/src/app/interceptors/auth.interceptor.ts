@@ -52,7 +52,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       // Handle 401 Unauthorized - token expired or invalid
       if (error.status === 401) {
         // Only handle 401 for API requests, not for login attempts
-        const isAuthEndpoint = req.url.includes('/auth/login') || req.url.includes('/auth/register');
+        const isAuthEndpoint =
+          req.url.includes('/auth/login') || req.url.includes('/auth/register');
 
         if (!isAuthEndpoint) {
           // Token is invalid/expired - logout and redirect
@@ -67,6 +68,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };

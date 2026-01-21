@@ -374,33 +374,41 @@ app-root {
   border-color: #c2410c !important;
 }
 
-/* Text color overrides for Kanban cards and UI elements */
-.dark .text-gray-500 {
-  color: var(--color-text-tertiary);
+/* Text color overrides for Kanban cards and UI elements
+ * Scoped to .kanban-board-container to avoid global conflicts */
+.dark .kanban-board-container .text-gray-500,
+.dark .column-content .text-gray-500 {
+  color: var(--color-text-tertiary) !important;
 }
 
-.dark .text-gray-600 {
-  color: #9ca3af;
+.dark .kanban-board-container .text-gray-600,
+.dark .column-content .text-gray-600 {
+  color: #9ca3af !important;
 }
 
-.dark .text-gray-700 {
-  color: #d1d5db;
+.dark .kanban-board-container .text-gray-700,
+.dark .column-content .text-gray-700 {
+  color: #d1d5db !important;
 }
 
-.dark .text-gray-900 {
-  color: #f9fafb;
+.dark .kanban-board-container .text-gray-900,
+.dark .column-content .text-gray-900 {
+  color: #f9fafb !important;
 }
 
-.dark .text-black {
-  color: #ffffff;
+.dark .kanban-board-container .text-black,
+.dark .column-content .text-black {
+  color: #ffffff !important;
 }
 
-.dark .text-blue-700 {
-  color: #60a5fa;
+.dark .kanban-board-container .text-blue-700,
+.dark .column-content .text-blue-700 {
+  color: #60a5fa !important;
 }
 
-.dark .hover\:text-blue-900:hover {
-  color: #93c5fd;
+.dark .kanban-board-container .hover\:text-blue-900:hover,
+.dark .column-content .hover\:text-blue-900:hover {
+  color: #93c5fd !important;
 }
 
 /* Status badge background and text colors - !important needed for Tailwind overrides */

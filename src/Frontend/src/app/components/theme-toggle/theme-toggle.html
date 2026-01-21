@@ -4,9 +4,11 @@
   [attr.aria-label]="themeLabel()"
   [title]="themeLabel()"
   type="button"
+  role="switch"
+  [attr.aria-checked]="themeMode() === 'dark'"
 >
-  <!-- Icon container with transition effects -->
-  <span class="theme-icon-wrapper">
+  <!-- Icon container with transition effects (decorative, hidden from AT) -->
+  <span class="theme-icon-wrapper" aria-hidden="true">
     <!-- Light mode icon -->
     <span
       class="theme-icon"
@@ -21,6 +23,7 @@
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        focusable="false"
       >
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2" />
@@ -48,6 +51,7 @@
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
+        focusable="false"
       >
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
       </svg>

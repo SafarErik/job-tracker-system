@@ -314,10 +314,12 @@ export class ProfileComponent implements OnInit {
   getSkillsByCategory(): { [key: string]: UserSkill[] } {
     const grouped: { [key: string]: UserSkill[] } = {};
     this.userSkills().forEach((skill) => {
-      if (!grouped[skill.category]) {
-        grouped[skill.category] = [];
+      // Default to 'Other' if category is null or undefined
+      const category = skill.category || 'Other';
+      if (!grouped[category]) {
+        grouped[category] = [];
       }
-      grouped[skill.category].push(skill);
+      grouped[category].push(skill);
     });
     return grouped;
   }

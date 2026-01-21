@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
     this.loadAvailableSkills();
   }
 
-  private loadProfile(): void {
+  loadProfile(): void {
     this.isLoading.set(true);
     this.profileService.getProfile().subscribe({
       next: (profile) => {
@@ -187,7 +187,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
         this.userSkills.update((skills) => [
           ...skills,
-          { id: skill.id, name: skill.name, category: skill.category || 'Other' },
+          { id: skill.id, name: skill.name, category: 'Other' },
         ]);
         this.notificationService.success(
           `${skill.name} has been added to your profile`,

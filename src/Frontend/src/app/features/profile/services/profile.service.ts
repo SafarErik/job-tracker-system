@@ -52,6 +52,13 @@ export class ProfileService {
   }
 
   /**
+   * Create and add a custom skill to user profile
+   */
+  addCustomSkill(payload: { name: string; category?: string | null }): Observable<UserSkill> {
+    return this.http.post<UserSkill>(`${this.apiUrl}/skills`, payload);
+  }
+
+  /**
    * Remove skill from user profile
    */
   removeSkill(skillId: number): Observable<void> {

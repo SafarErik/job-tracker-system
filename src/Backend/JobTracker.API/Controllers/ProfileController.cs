@@ -209,6 +209,7 @@ public class ProfileController : ControllerBase
 
     /// <summary>
     /// Create a new custom skill (if not exists) and add it to the current user.
+    /// If a skill with the same name already exists, uses its category; otherwise uses the provided category.
     /// </summary>
     [HttpPost("skills")]
     public async Task<ActionResult<object>> AddCustomSkill([FromBody] CreateSkillDto dto)
@@ -220,7 +221,7 @@ public class ProfileController : ControllerBase
         }
 
         var name = dto.Name.Trim();
-        var category = string.IsNullOrWhiteSpace(dto.Category) ? null : dto.Category.Trim();
+        var providedCategory = string.IsNullOrWhiteSpace(dto.Category) ? null : dto.Category.Trim();
 
         var user = await _context.Set<ApplicationUser>()
             .Include(u => u.Skills)
@@ -234,14 +235,21 @@ public class ProfileController : ControllerBase
         var existingSkill = await _context.Skills
             .FirstOrDefaultAsync(s => s.Name.ToLower() == name.ToLower());
 
-        var skill = existingSkill ?? new Core.Entities.Skill
+        Core.Entities.Skill skill;
+        
+        if (existingSkill != null)
         {
-            Name = name,
-            Category = category
-        };
-
-        if (existingSkill == null)
+            // Use existing skill with its original category
+            skill = existingSkill;
+        }
+        else
         {
+            // Create new skill with provided category (or null if not provided)
+            skill = new Core.Entities.Skill
+            {
+                Name = name,
+                Category = providedCategory
+            };
             _context.Skills.Add(skill);
         }
 

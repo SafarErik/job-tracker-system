@@ -1,6 +1,12 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ProfileService } from '../../services/profile.service';
 import { SkillService } from '../../../skills/services/skill.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -29,9 +35,13 @@ export class ProfileComponent implements OnInit {
   error = signal<string | null>(null);
   isEditMode = signal(false);
   isUploadingPicture = signal(false);
+  isAddingSkill = signal(false);
+  skillSearchTerm = signal('');
 
   // Form
   profileForm: FormGroup;
+  skillSearchControl = new FormControl('');
+  skillCategoryControl = new FormControl('');
 
   constructor() {
     this.profileForm = this.fb.group({
@@ -48,6 +58,10 @@ export class ProfileComponent implements OnInit {
     this.loadStats();
     this.loadSkills();
     this.loadAvailableSkills();
+
+    this.skillSearchControl.valueChanges.subscribe((term) => {
+      this.skillSearchTerm.set(term?.toString() ?? '');
+    });
   }
 
   loadProfile(): void {
@@ -182,12 +196,29 @@ export class ProfileComponent implements OnInit {
     return this.availableSkills().filter((s) => !userSkillIds.includes(s.id));
   }
 
+  get filteredSkills(): Skill[] {
+    const term = this.skillSearchTerm().trim().toLowerCase();
+    const pool = this.unassignedSkills;
+    if (!term) return pool;
+    return pool.filter((s) => s.name.toLowerCase().includes(term));
+  }
+
+  get addableSkillName(): string | null {
+    const term = this.skillSearchTerm().trim();
+    if (!term) return null;
+    const lower = term.toLowerCase();
+    const existsUser = this.userSkills().some((s) => s.name.toLowerCase() === lower);
+    const existsAvailable = this.availableSkills().some((s) => s.name.toLowerCase() === lower);
+    if (existsUser || existsAvailable) return null;
+    return term;
+  }
+
   addSkill(skill: Skill): void {
     this.profileService.addSkill(skill.id).subscribe({
       next: () => {
         this.userSkills.update((skills) => [
           ...skills,
-          { id: skill.id, name: skill.name, category: 'Other' },
+          { id: skill.id, name: skill.name, category: skill.category || 'Other' },
         ]);
         this.notificationService.success(
           `${skill.name} has been added to your profile`,
@@ -199,6 +230,62 @@ export class ProfileComponent implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  addCustomSkillFromInput(): void {
+    const name = this.skillSearchTerm().trim();
+    const category = this.skillCategoryControl.value?.toString().trim();
+
+    if (!name) {
+      this.notificationService.error('Please enter a skill name first', 'Missing Name');
+      return;
+    }
+
+    const lower = name.toLowerCase();
+    if (this.userSkills().some((s) => s.name.toLowerCase() === lower)) {
+      this.notificationService.error('You already have this skill', 'Duplicate');
+      return;
+    }
+
+    this.isAddingSkill.set(true);
+
+    this.profileService.addCustomSkill({ name, category: category || undefined }).subscribe({
+      next: (skill) => {
+        const userSkill: UserSkill = {
+          id: skill.id,
+          name: skill.name,
+          category: skill.category || 'Other',
+        };
+        this.userSkills.update((skills) => [...skills, userSkill]);
+        this.availableSkills.update((skills) => [
+          ...skills,
+          { id: skill.id, name: skill.name, category: skill.category },
+        ]);
+        this.skillSearchControl.setValue('');
+        this.skillCategoryControl.setValue('');
+        this.isAddingSkill.set(false);
+        this.notificationService.success(
+          `${userSkill.name} has been added as a new skill`,
+          'Skill Added',
+        );
+      },
+      error: (err) => {
+        this.isAddingSkill.set(false);
+        this.notificationService.error('Failed to add custom skill', 'Error');
+        console.error(err);
+      },
+    });
+  }
+
+  onSkillInputEnter(): void {
+    if (this.filteredSkills.length > 0) {
+      this.addSkill(this.filteredSkills[0]);
+      return;
+    }
+
+    if (this.addableSkillName) {
+      this.addCustomSkillFromInput();
+    }
   }
 
   async removeSkill(skill: UserSkill): Promise<void> {

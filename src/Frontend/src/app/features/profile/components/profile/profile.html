@@ -379,13 +379,48 @@
         }
 
         <!-- Add Skill Section -->
-        @if (unassignedSkills.length > 0) {
-          <div class="add-skill-section">
-            <h3 class="add-skill-title">Add Skills</h3>
+        <div class="add-skill-section">
+          <h3 class="add-skill-title">Add Skills</h3>
+          <div class="add-skill-form">
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Search or add a skill (e.g., React, Terraform)"
+              [formControl]="skillSearchControl"
+              (keyup.enter)="onSkillInputEnter()"
+            />
+            <input
+              type="text"
+              class="form-input"
+              placeholder="Category (optional)"
+              [formControl]="skillCategoryControl"
+              (keyup.enter)="onSkillInputEnter()"
+            />
+            <button
+              type="button"
+              class="btn-primary add-skill-btn"
+              (click)="addCustomSkillFromInput()"
+              [disabled]="!addableSkillName || isAddingSkill()"
+            >
+              @if (isAddingSkill()) {
+                <span class="spinner-small"></span>
+              } @else if (addableSkillName) {
+                Add "{{ addableSkillName }}"
+              } @else {
+                Add new skill
+              }
+            </button>
+          </div>
+          <p class="form-hint">Type to search existing skills. If not found, add it instantly.</p>
+
+          @if (filteredSkills.length > 0) {
             <div class="available-skills">
-              @for (skill of unassignedSkills; track skill.id) {
+              @for (skill of filteredSkills; track skill.id) {
                 <button (click)="addSkill(skill)" class="skill-tag-add">
                   <span>{{ skill.name }}</span>
+                  @if (skill.category) {
+                    <small class="skill-category">{{ skill.category }}</small>
+                  }
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
@@ -397,8 +432,26 @@
                 </button>
               }
             </div>
-          </div>
-        }
+          } @else if (skillSearchTerm().trim()) {
+            <div class="empty-skills small">
+              <p>No matches found.</p>
+              @if (addableSkillName) {
+                <button
+                  class="btn-primary"
+                  type="button"
+                  (click)="addCustomSkillFromInput()"
+                  [disabled]="isAddingSkill()"
+                >
+                  @if (isAddingSkill()) {
+                    <span class="spinner-small"></span>
+                  } @else {
+                    Add "{{ addableSkillName }}"
+                  }
+                </button>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
   }

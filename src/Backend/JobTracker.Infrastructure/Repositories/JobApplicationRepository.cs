@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobTracker.Infrastructure.Repositories;
 
+/// <summary>
+/// Repository implementation for JobApplication entities.
+/// Handles all database operations for job applications.
+/// </summary>
 public class JobApplicationRepository : IJobApplicationRepository
 {
     private readonly ApplicationDbContext _context;
@@ -12,16 +16,33 @@ public class JobApplicationRepository : IJobApplicationRepository
     public JobApplicationRepository(ApplicationDbContext context)
     {
         _context = context;
+    }
 
-    }    
-
+    /// <summary>
+    /// Gets all job applications with related entities.
+    /// Use for admin purposes only.
+    /// </summary>
     public async Task<IEnumerable<JobApplication>> GetAllAsync()
     {
-        // Include => It will load the skills and the companies besides the jobapplications
         return await _context.JobApplications
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// Gets all job applications for a specific user.
+    /// This is the primary method for user-specific data access.
+    /// </summary>
+    public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId)
+    {
+        return await _context.JobApplications
+            .Where(j => j.UserId == userId)
+            .Include(j => j.Company)
+            .Include(j => j.Skills)
+            .Include(j => j.Document)
+            .OrderByDescending(j => j.AppliedAt)
             .ToListAsync();
     }
 
@@ -32,21 +53,18 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .FirstOrDefaultAsync(j => j.Id == id);
-
     }
 
     public async Task AddAsync(JobApplication application)
     {
         await _context.JobApplications.AddAsync(application);
         await _context.SaveChangesAsync();
-
     }
 
     public async Task UpdateAsync(JobApplication application)
     {
         _context.JobApplications.Update(application);
         await _context.SaveChangesAsync();
-
     }
 
     public async Task DeleteAsync(int id)

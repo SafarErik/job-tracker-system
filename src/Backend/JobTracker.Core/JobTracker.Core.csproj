@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- 
+      Microsoft.Extensions.Identity.Stores provides base Identity classes
+      like IdentityUser without the full ASP.NET Core dependency.
+      This keeps the Core layer clean and framework-agnostic.
+    -->
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.0" />
+  </ItemGroup>
+
 </Project>

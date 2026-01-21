@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
-using JobTracker.API.DTOs;
+using JobTracker.Application.DTOs.Skills;
 
 namespace JobTracker.API.Controllers;
 

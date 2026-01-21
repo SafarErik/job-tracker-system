@@ -5,6 +5,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- 
+      EntityFramework Core Identity integration.
+      Provides IdentityDbContext and EF Core stores for Identity.
+    -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

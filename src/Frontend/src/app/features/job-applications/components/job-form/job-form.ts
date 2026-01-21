@@ -305,9 +305,7 @@ export class JobFormComponent implements OnInit {
       return;
     }
 
-    const exactMatch = this.companies.find(
-      (company) => company.name.toLowerCase() === normalized,
-    );
+    const exactMatch = this.companies.find((company) => company.name.toLowerCase() === normalized);
 
     if (exactMatch) {
       this.jobForm.patchValue({ companyId: exactMatch.id });
@@ -381,10 +379,7 @@ export class JobFormComponent implements OnInit {
           this.documents = [result, ...this.documents];
           this.jobForm.patchValue({ documentId: result.id });
           this.isUploadingDocument = false;
-          this.notificationService.success(
-            'Your CV was uploaded and selected.',
-            'Upload complete',
-          );
+          this.notificationService.success('Your CV was uploaded and selected.', 'Upload complete');
         }
       },
       error: (err) => {

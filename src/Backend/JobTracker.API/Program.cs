@@ -107,14 +107,32 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
-})
-// Google OAuth configuration - will be set up later
-.AddGoogle(options =>
-{
-    var googleSettings = builder.Configuration.GetSection("Authentication:Google");
-    options.ClientId = googleSettings["ClientId"] ?? "";
-    options.ClientSecret = googleSettings["ClientSecret"] ?? "";
 });
+
+// ============================================
+// GOOGLE OAUTH (Optional - only if configured)
+// ============================================
+// Google OAuth is only registered if ClientId is configured.
+// To enable: Add your Google OAuth credentials to appsettings.json or user secrets.
+// Get credentials from: https://console.cloud.google.com/apis/credentials
+
+var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
+{
+    builder.Services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+            options.ClientId = googleClientId;
+            options.ClientSecret = googleClientSecret;
+        });
+    Console.WriteLine("✅ Google OAuth enabled");
+}
+else
+{
+    Console.WriteLine("⚠️ Google OAuth not configured - skipping. Set Authentication:Google:ClientId and ClientSecret to enable.");
+}
 
 // ============================================
 // REPOSITORY REGISTRATION (Dependency Injection)

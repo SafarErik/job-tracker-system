@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobTracker.Core.Entities;
 using JobTracker.Application.DTOs.Auth;
+using JobTracker.Application.DTOs.Skills;
 using JobTracker.Infrastructure.Data;
 
 namespace JobTracker.API.Controllers;
@@ -199,11 +200,64 @@ public class ProfileController : ControllerBase
             {
                 id = s.Id,
                 name = s.Name,
-                category = "Technical" // Default category since Skill doesn't have category field
+                category = string.IsNullOrWhiteSpace(s.Category) ? "Other" : s.Category
             })
             .ToListAsync();
 
         return Ok(userSkills);
+    }
+
+    /// <summary>
+    /// Create a new custom skill (if not exists) and add it to the current user.
+    /// </summary>
+    [HttpPost("skills")]
+    public async Task<ActionResult<object>> AddCustomSkill([FromBody] CreateSkillDto dto)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var name = dto.Name.Trim();
+        var category = string.IsNullOrWhiteSpace(dto.Category) ? null : dto.Category.Trim();
+
+        var user = await _context.Set<ApplicationUser>()
+            .Include(u => u.Skills)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var existingSkill = await _context.Skills
+            .FirstOrDefaultAsync(s => s.Name.ToLower() == name.ToLower());
+
+        var skill = existingSkill ?? new Core.Entities.Skill
+        {
+            Name = name,
+            Category = category
+        };
+
+        if (existingSkill == null)
+        {
+            _context.Skills.Add(skill);
+        }
+
+        if (!user.Skills.Any(s => s.Name.ToLower() == name.ToLower()))
+        {
+            user.Skills.Add(skill);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            id = skill.Id,
+            name = skill.Name,
+            category = string.IsNullOrWhiteSpace(skill.Category) ? "Other" : skill.Category
+        });
     }
 
     /// <summary>

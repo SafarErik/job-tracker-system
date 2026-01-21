@@ -4,6 +4,7 @@
  * ============================================================================
  *
  * Defines all routes for the JobTracker application.
+ * Uses lazy loading for feature modules for better initial load performance.
  *
  * Route categories:
  * - Public routes: login, register, auth callback (guestGuard)
@@ -16,18 +17,7 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './guards/auth.guard';
-
-// Lazy-loaded components (better initial load performance)
-import { JobList } from './components/job-list/job-list';
-import { JobFormComponent } from './components/job-form/job-form';
-import { CompanyDetailsComponent } from './components/company-details/company-details';
-import { CompanyListComponent } from './components/company-list/company-list';
-import { CompanyFormComponent } from './components/company-form/company-form';
-import { DocumentsListComponent } from './components/documents-list/documents-list';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
+import { authGuard, guestGuard } from './core/auth';
 
 export const routes: Routes = [
   // ============================================
@@ -35,70 +25,105 @@ export const routes: Routes = [
   // ============================================
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
     canActivate: [guestGuard],
     title: 'Login - JobTracker',
   },
   {
     path: 'register',
-    component: RegisterComponent,
+    loadComponent: () =>
+      import('./features/auth/components/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
     canActivate: [guestGuard],
     title: 'Register - JobTracker',
   },
   {
     path: 'auth/callback',
-    component: AuthCallbackComponent,
+    loadComponent: () =>
+      import('./features/auth/components/auth-callback/auth-callback.component').then(
+        (m) => m.AuthCallbackComponent,
+      ),
     title: 'Signing In... - JobTracker',
   },
 
   // ============================================
   // PROTECTED ROUTES (Requires authentication)
   // ============================================
+
+  // Job Applications (Dashboard/Home)
   {
     path: '',
-    component: JobList,
+    loadComponent: () =>
+      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
     canActivate: [authGuard],
     title: 'Applications - JobTracker',
   },
   {
     path: 'new',
-    component: JobFormComponent,
+    loadComponent: () =>
+      import('./features/job-applications/components/job-form/job-form').then(
+        (m) => m.JobFormComponent,
+      ),
     canActivate: [authGuard],
     title: 'New Application - JobTracker',
   },
   {
     path: 'edit/:id',
-    component: JobFormComponent,
+    loadComponent: () =>
+      import('./features/job-applications/components/job-form/job-form').then(
+        (m) => m.JobFormComponent,
+      ),
     canActivate: [authGuard],
     title: 'Edit Application - JobTracker',
   },
+
+  // Companies
   {
     path: 'companies',
-    component: CompanyListComponent,
+    loadComponent: () =>
+      import('./features/companies/components/company-list/company-list').then(
+        (m) => m.CompanyListComponent,
+      ),
     canActivate: [authGuard],
     title: 'Companies - JobTracker',
   },
   {
     path: 'companies/new',
-    component: CompanyFormComponent,
+    loadComponent: () =>
+      import('./features/companies/components/company-form/company-form').then(
+        (m) => m.CompanyFormComponent,
+      ),
     canActivate: [authGuard],
     title: 'New Company - JobTracker',
   },
   {
     path: 'companies/edit/:id',
-    component: CompanyFormComponent,
+    loadComponent: () =>
+      import('./features/companies/components/company-form/company-form').then(
+        (m) => m.CompanyFormComponent,
+      ),
     canActivate: [authGuard],
     title: 'Edit Company - JobTracker',
   },
   {
     path: 'company/:id',
-    component: CompanyDetailsComponent,
+    loadComponent: () =>
+      import('./features/companies/components/company-details/company-details').then(
+        (m) => m.CompanyDetailsComponent,
+      ),
     canActivate: [authGuard],
     title: 'Company Details - JobTracker',
   },
+
+  // Documents
   {
     path: 'documents',
-    component: DocumentsListComponent,
+    loadComponent: () =>
+      import('./features/documents/components/documents-list/documents-list').then(
+        (m) => m.DocumentsListComponent,
+      ),
     canActivate: [authGuard],
     title: 'Documents - JobTracker',
   },

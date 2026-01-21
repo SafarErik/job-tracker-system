@@ -1,7 +1,7 @@
 <div class="kanban-board-container h-full overflow-x-auto bg-gray-50 p-4">
   <!-- Board Header with Instructions -->
   <div class="mb-4">
-    <h2 class="text-2xl font-bold text-gray-800">Job Application Pipeline</h2>
+    <h2 class="text-2xl font-bold text-gray-900">Job Application Pipeline</h2>
     <p class="text-sm text-gray-600 mt-1">
       💡 <strong>Tip:</strong> Click and drag cards between columns to update their status
     </p>
@@ -13,10 +13,10 @@
       <div class="kanban-column flex-shrink-0 w-80 flex flex-col">
         <!-- Column Header -->
         <div class="column-header {{ column.color }} border-2 rounded-t-lg p-3 shadow-sm">
-          <h3 class="font-semibold text-gray-800 flex items-center justify-between">
+          <h3 class="font-semibold text-gray-900 flex items-center justify-between">
             <span>{{ column.title }}</span>
             <span
-              class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-gray-600 bg-white rounded-full"
+              class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-gray-700 bg-white rounded-full"
             >
               {{ column.applications.length }}
             </span>
@@ -42,14 +42,14 @@
             >
               <!-- Card Header -->
               <div class="card-header mb-3">
-                <h4 class="font-semibold text-gray-900 text-lg truncate" [title]="app.position">
+                <h4 class="font-semibold text-black text-lg truncate" [title]="app.position">
                   {{ app.position }}
                 </h4>
                 <p class="text-sm mt-1">
                   <a
                     [href]="'/company/' + app.companyId"
                     (click)="navigateToCompany($event, app.companyId)"
-                    class="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                    class="text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
                     [title]="'View ' + app.companyName + ' details'"
                   >
                     🏢 {{ app.companyName }}
@@ -60,7 +60,7 @@
               <!-- Card Body -->
               <div class="card-body space-y-2">
                 <!-- Applied Date -->
-                <div class="flex items-center text-xs text-gray-500">
+                <div class="flex items-center text-xs text-gray-600">
                   <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
@@ -79,7 +79,7 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     (click)="$event.stopPropagation()"
-                    class="text-xs text-blue-600 hover:text-blue-800 underline flex items-center"
+                    class="text-xs text-blue-700 hover:text-blue-900 underline flex items-center"
                   >
                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -95,7 +95,7 @@
 
                 <!-- Description Preview -->
                 @if (app.description) {
-                  <p class="text-xs text-gray-600 line-clamp-2" [title]="app.description">
+                  <p class="text-xs text-gray-700 line-clamp-2" [title]="app.description">
                     {{ app.description }}
                   </p>
                 }

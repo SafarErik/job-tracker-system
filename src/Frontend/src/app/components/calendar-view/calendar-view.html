@@ -66,21 +66,21 @@
           (keydown.space)="onDayClick(day); $event.preventDefault()"
           [attr.tabindex]="day.applications.length > 0 ? 0 : -1"
           [attr.role]="day.applications.length > 0 ? 'button' : null"
-          class="calendar-day bg-white min-h-[100px] p-2 relative transition-colors"
+          class="calendar-day bg-white min-h-[100px] p-2 relative transition-colors hover:bg-blue-50"
           [class.opacity-50]="!day.isCurrentMonth"
           [class.ring-2]="day.isToday"
           [class.ring-blue-500]="day.isToday"
           [class.cursor-pointer]="day.applications.length > 0"
-          [class.hover:bg-blue-50]="day.applications.length > 0"
         >
           <!-- Day Number -->
           <div class="flex items-start justify-between mb-1">
             <span
               class="text-sm font-medium"
-              [class.text-gray-900]="day.isCurrentMonth"
-              [class.text-gray-400]="!day.isCurrentMonth"
-              [class.text-blue-600]="day.isToday"
-              [class.font-bold]="day.isToday"
+              [ngClass]="{
+                'text-gray-900': day.isCurrentMonth && !day.isToday,
+                'text-gray-400': !day.isCurrentMonth,
+                'text-blue-600 font-bold': day.isToday
+              }"
             >
               {{ day.date.getDate() }}
             </span>
@@ -145,7 +145,7 @@
         <span class="text-xs text-gray-600">Rejected</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+        <div class="w-3 h-3 rounded-full bg-orange-500"></div>
         <span class="text-xs text-gray-600">Ghosted</span>
       </div>
     </div>

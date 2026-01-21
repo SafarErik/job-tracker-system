@@ -240,7 +240,7 @@ export class JobList implements OnInit {
       case JobApplicationStatus.Rejected:
         return 'bg-red-100 text-red-800';
       case JobApplicationStatus.Ghosted:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-orange-100 text-orange-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }

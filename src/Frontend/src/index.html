@@ -1,13 +1,40 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>JobTrackerClient</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+<html lang="en" class="light">
+  <head>
+    <meta charset="utf-8" />
+    <title>JobTrackerClient</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <style>
+      /* Prevent white flash on load */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+    </style>
+    <script>
+      // Synchronously apply theme before first paint to prevent flash
+      // Must match the key used by ThemeService: 'job-tracker-theme'
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem('job-tracker-theme');
+        } catch (error) {
+          stored = null;
+        }
+        var theme = stored;
+        if (!theme || (theme !== 'light' && theme !== 'dark')) {
+          // Fallback to system preference
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.className = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

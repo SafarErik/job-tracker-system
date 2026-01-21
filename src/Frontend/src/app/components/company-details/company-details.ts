@@ -105,7 +105,7 @@ export class CompanyDetailsComponent implements OnInit {
   /**
    * Format date for display
    */
-  formatDate(date: Date): string {
+  formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',

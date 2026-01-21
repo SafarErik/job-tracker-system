@@ -50,13 +50,16 @@
           </svg>
           <span>Documents</span>
         </a>
+
+        <!-- Theme Toggle Component -->
+        <app-theme-toggle></app-theme-toggle>
       </div>
     </div>
   </nav>
 </header>
 
 <!-- Main Content - Router Outlet -->
-<main class="min-h-screen bg-gray-50">
+<main class="main-content">
   <router-outlet></router-outlet>
 </main>
 
@@ -67,8 +70,6 @@
 <app-confirm-dialog></app-confirm-dialog>
 
 <!-- Footer -->
-<footer class="bg-white border-t border-gray-200 py-4">
-  <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
-    JobTracker © 2026 - Track Your Job Search Journey
-  </div>
+<footer class="app-footer">
+  <div class="footer-content">JobTracker © 2026 - Track Your Job Search Journey</div>
 </footer>

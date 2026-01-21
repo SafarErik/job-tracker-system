@@ -8,11 +8,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- EF Core Design tools for migrations -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    
+    <!-- Swagger/OpenAPI documentation -->
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+    
+    <!-- 
+      ASP.NET Core Identity - provides user management, authentication, and authorization.
+      This is the main package that wires up Identity with ASP.NET Core.
+    -->
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
+    
+    <!-- 
+      JWT Bearer Authentication - for token-based authentication.
+      This allows the API to validate JWT tokens sent by the Angular frontend.
+    -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    
+    <!-- 
+      Google OAuth Authentication - for "Sign in with Google" functionality.
+      Handles the OAuth 2.0 flow with Google's authentication servers.
+    -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>

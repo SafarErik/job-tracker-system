@@ -42,7 +42,7 @@ export class LoginComponent {
   showPassword = signal(false);
 
   // Return URL after successful login
-  private returnUrl: string = '/';
+  private readonly returnUrl: string = '/';
 
   constructor(
     private readonly fb: FormBuilder,

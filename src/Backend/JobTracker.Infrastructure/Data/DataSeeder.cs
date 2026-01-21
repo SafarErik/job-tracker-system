@@ -18,6 +18,14 @@ public static class DataSeeder
     public const string DemoUserEmail = "demo@jobtracker.com";
     public const string DemoUserPassword = "Demo123!";
 
+    // Skill category constants to avoid magic strings
+    private const string CategoryProgrammingLanguage = "Programming Language";
+    private const string CategoryFramework = "Framework";
+    private const string CategoryDatabase = "Database";
+    private const string CategoryDevOps = "DevOps";
+    private const string CategoryCloud = "Cloud";
+    private const string CategoryVersionControl = "Version Control";
+
     /// <summary>
     /// Seeds all development data including a demo user.
     /// Requires UserManager to be passed for creating the demo user.
@@ -106,7 +114,7 @@ public static class DataSeeder
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-            throw new Exception($"Failed to create demo user: {errors}");
+            throw new InvalidOperationException($"Failed to create demo user: {errors}");
         }
 
         Console.WriteLine("✅ Demo user created");
@@ -191,30 +199,30 @@ public static class DataSeeder
         return new List<Skill>
         {
             // Programming Languages
-            new Skill { Name = "C#", Category = "Programming Language" },
-            new Skill { Name = "Python", Category = "Programming Language" },
-            new Skill { Name = "JavaScript", Category = "Programming Language" },
-            new Skill { Name = "TypeScript", Category = "Programming Language" },
-            new Skill { Name = "Java", Category = "Programming Language" },
+            new Skill { Name = "C#", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Python", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "JavaScript", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "TypeScript", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Java", Category = CategoryProgrammingLanguage },
 
             // Frameworks
-            new Skill { Name = ".NET Core", Category = "Framework" },
-            new Skill { Name = "Angular", Category = "Framework" },
-            new Skill { Name = "React", Category = "Framework" },
-            new Skill { Name = "Spring Boot", Category = "Framework" },
+            new Skill { Name = ".NET Core", Category = CategoryFramework },
+            new Skill { Name = "Angular", Category = CategoryFramework },
+            new Skill { Name = "React", Category = CategoryFramework },
+            new Skill { Name = "Spring Boot", Category = CategoryFramework },
 
             // Databases
-            new Skill { Name = "SQL", Category = "Database" },
-            new Skill { Name = "PostgreSQL", Category = "Database" },
-            new Skill { Name = "MongoDB", Category = "Database" },
+            new Skill { Name = "SQL", Category = CategoryDatabase },
+            new Skill { Name = "PostgreSQL", Category = CategoryDatabase },
+            new Skill { Name = "MongoDB", Category = CategoryDatabase },
 
             // DevOps
-            new Skill { Name = "Docker", Category = "DevOps" },
-            new Skill { Name = "Kubernetes", Category = "DevOps" },
-            new Skill { Name = "Azure", Category = "Cloud" },
-            new Skill { Name = "AWS", Category = "Cloud" },
-            new Skill { Name = "Git", Category = "Version Control" },
-            new Skill { Name = "CI/CD", Category = "DevOps" }
+            new Skill { Name = "Docker", Category = CategoryDevOps },
+            new Skill { Name = "Kubernetes", Category = CategoryDevOps },
+            new Skill { Name = "Azure", Category = CategoryCloud },
+            new Skill { Name = "AWS", Category = CategoryCloud },
+            new Skill { Name = "Git", Category = CategoryVersionControl },
+            new Skill { Name = "CI/CD", Category = CategoryDevOps }
         };
     }
 

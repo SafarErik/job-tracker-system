@@ -234,7 +234,7 @@ public class DocumentsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error deleting document {id}");
+            _logger.LogError(ex, "Error deleting document {DocumentId}", id);
             return StatusCode(500, "An error occurred while deleting the document");
         }
     }

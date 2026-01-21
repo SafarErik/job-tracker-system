@@ -32,16 +32,28 @@ public class AuthController : ControllerBase
     // Logger for debugging and monitoring
     private readonly ILogger<AuthController> _logger;
 
+    // HttpClientFactory for making HTTP requests (best practice - reuses connections)
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    // Frontend base URL from configuration
+    private readonly string _frontendBaseUrl;
+
+    // Default frontend URL constant (used only as fallback when config is missing)
+    private const string DefaultFrontendUrl = "http://localhost:4200";
+
     public AuthController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IConfiguration configuration,
-        ILogger<AuthController> logger)
+        ILogger<AuthController> logger,
+        IHttpClientFactory httpClientFactory)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
+        _frontendBaseUrl = configuration["Frontend:BaseUrl"] ?? DefaultFrontendUrl;
     }
 
     // ============================================
@@ -322,8 +334,11 @@ public class AuthController : ControllerBase
     /// <param name="returnUrl">URL to redirect after successful login (frontend URL)</param>
     [HttpGet("google-login")]
     [AllowAnonymous]
-    public IActionResult GoogleLogin([FromQuery] string returnUrl = "http://localhost:4200")
+    public IActionResult GoogleLogin([FromQuery] string? returnUrl = null)
     {
+        // Use configured frontend URL if no return URL specified
+        returnUrl ??= _frontendBaseUrl;
+
         // Check if Google authentication is configured
         var googleClientId = _configuration["Authentication:Google:ClientId"];
         if (string.IsNullOrEmpty(googleClientId))
@@ -366,7 +381,7 @@ public class AuthController : ControllerBase
         {
             _logger.LogWarning("Google authentication failed: {Error}", 
                 authenticateResult.Failure?.Message);
-            return Redirect("http://localhost:4200/login?error=google_auth_failed");
+            return Redirect($"{_frontendBaseUrl}/login?error=google_auth_failed");
         }
 
         // Extract claims from Google's response
@@ -375,12 +390,13 @@ public class AuthController : ControllerBase
 
         if (claims == null)
         {
-            return Redirect("http://localhost:4200/login?error=no_claims");
+            return Redirect($"{_frontendBaseUrl}/login?error=no_claims");
         }
 
         // Get user info from Google claims
         var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-        var googleId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        // Note: googleId could be used for external provider linking in the future
+        _ = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         var firstName = claims.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
         var lastName = claims.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
         var profilePicture = claims.FirstOrDefault(c => c.Type == "picture")?.Value;
@@ -388,7 +404,7 @@ public class AuthController : ControllerBase
         if (string.IsNullOrEmpty(email))
         {
             _logger.LogWarning("Google auth: No email claim found");
-            return Redirect("http://localhost:4200/login?error=no_email");
+            return Redirect($"{_frontendBaseUrl}/login?error=no_email");
         }
 
         _logger.LogInformation("Google login attempt for: {Email}", email);
@@ -440,7 +456,7 @@ public class AuthController : ControllerBase
 
         // Get return URL from auth properties
         var returnUrl = authenticateResult.Properties?.Items["returnUrl"] 
-            ?? "http://localhost:4200";
+            ?? _frontendBaseUrl;
 
         // Redirect to frontend with token
         // The frontend will extract the token from the URL and store it
@@ -470,8 +486,8 @@ public class AuthController : ControllerBase
                 });
             }
 
-            // Use Google's token validation endpoint
-            var httpClient = new HttpClient();
+            // Use HttpClientFactory for proper connection reuse
+            var httpClient = _httpClientFactory.CreateClient();
             var response = await httpClient.GetAsync(
                 $"https://oauth2.googleapis.com/tokeninfo?id_token={googleTokenDto.IdToken}");
 

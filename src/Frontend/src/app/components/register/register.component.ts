@@ -90,7 +90,7 @@ export class RegisterComponent {
 
     const hasUppercase = /[A-Z]/.test(value);
     const hasLowercase = /[a-z]/.test(value);
-    const hasDigit = /[0-9]/.test(value);
+    const hasDigit = /\d/.test(value);
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
 
     const valid = hasUppercase && hasLowercase && hasDigit && hasSpecial;

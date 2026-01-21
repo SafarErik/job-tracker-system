@@ -144,6 +144,14 @@ builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
 // ============================================
+// HTTP CLIENT FACTORY REGISTRATION
+// ============================================
+
+// Register IHttpClientFactory for making HTTP requests
+// This is a best practice for connection reuse and proper lifetime management
+builder.Services.AddHttpClient();
+
+// ============================================
 // API CONFIGURATION
 // ============================================
 
@@ -251,4 +259,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

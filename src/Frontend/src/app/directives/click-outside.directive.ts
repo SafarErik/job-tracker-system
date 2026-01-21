@@ -28,7 +28,7 @@ export class ClickOutsideDirective {
    */
   @Output() clickOutside = new EventEmitter<void>();
 
-  constructor(private elementRef: ElementRef) {}
+  constructor(private readonly elementRef: ElementRef) {}
 
   /**
    * Listen for document-level click events

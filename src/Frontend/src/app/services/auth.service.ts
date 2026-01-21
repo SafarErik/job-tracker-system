@@ -17,7 +17,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, throwError, BehaviorSubject } from 'rxjs';
+import { Observable, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   User,
@@ -238,8 +238,8 @@ export class AuthService {
    * Redirects the browser to the backend which then redirects to Google.
    */
   loginWithGoogle(): void {
-    const returnUrl = encodeURIComponent(window.location.origin);
-    window.location.href = `${this.apiUrl}/google-login?returnUrl=${returnUrl}`;
+    const returnUrl = encodeURIComponent(globalThis.location.origin);
+    globalThis.location.href = `${this.apiUrl}/google-login?returnUrl=${returnUrl}`;
   }
 
   /**

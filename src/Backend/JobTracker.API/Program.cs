@@ -182,19 +182,13 @@ builder.Services.AddSwaggerGen(options =>
 
     // Apply the Bearer security scheme globally to all endpoints in Swagger
     // This means the "Authorize" token will be sent with every request
-    options.AddSecurityRequirement(new Microsoft.OpenApi.OpenApiSecurityRequirement
+    // In .NET 10, AddSecurityRequirement uses a function that takes the document
+    options.AddSecurityRequirement(_ =>
     {
-        {
-            new Microsoft.OpenApi.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>() // No specific scopes required
-        }
+        var requirement = new Microsoft.OpenApi.OpenApiSecurityRequirement();
+        var schemeRef = new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer");
+        requirement.Add(schemeRef, new List<string>());
+        return requirement;
     });
 });
 

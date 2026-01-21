@@ -1,12 +1,19 @@
 using JobTracker.API.DTOs;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace JobTracker.API.Controllers;
 
+/// <summary>
+/// Controller for managing user documents (CVs, cover letters, etc.).
+/// All endpoints require authentication - users can only access their own documents.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DocumentsController : ControllerBase
 {
     private readonly IDocumentRepository _documentRepository;
@@ -23,11 +30,22 @@ public class DocumentsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Gets the current authenticated user's ID from the JWT token claims.
+    /// </summary>
+    private string GetUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+        ?? throw new UnauthorizedAccessException("User ID not found in token");
+
     // GET: api/Documents
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
     {
-        var documents = await _documentRepository.GetAllAsync();
+        var userId = GetUserId();
+        
+        // Only get documents belonging to the current user
+        var documents = await _documentRepository.GetAllByUserIdAsync(userId);
+        
         var documentDtos = documents.Select(d => new DocumentDto
         {
             Id = d.Id,
@@ -44,11 +62,18 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<DocumentDto>> GetDocument(Guid id)
     {
+        var userId = GetUserId();
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)
         {
             return NotFound();
+        }
+
+        // Security check: Ensure document belongs to current user
+        if (document.UserId != userId)
+        {
+            return Forbid();
         }
 
         var documentDto = new DocumentDto
@@ -67,6 +92,7 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id}/download")]
     public async Task<IActionResult> DownloadDocument(Guid id)
     {
+        var userId = GetUserId();
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)
@@ -74,12 +100,18 @@ public class DocumentsController : ControllerBase
             return NotFound();
         }
 
+        // Security check: Ensure document belongs to current user
+        if (document.UserId != userId)
+        {
+            return Forbid();
+        }
+
         var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
         var filePath = Path.Combine(uploadsFolder, document.FileName);
 
         if (!System.IO.File.Exists(filePath))
         {
-            _logger.LogError($"File not found: {filePath}");
+            _logger.LogError("File not found: {FilePath}", filePath);
             return NotFound("File not found on server");
         }
 
@@ -116,6 +148,8 @@ public class DocumentsController : ControllerBase
 
         try
         {
+            var userId = GetUserId();
+            
             // Create uploads folder if it doesn't exist
             var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
             Directory.CreateDirectory(uploadsFolder);
@@ -131,10 +165,11 @@ public class DocumentsController : ControllerBase
                 await file.CopyToAsync(stream);
             }
 
-            // Create document entity
+            // Create document entity with user ownership
             var document = new Document
             {
                 Id = Guid.NewGuid(),
+                UserId = userId, // Link document to authenticated user
                 FileName = fileName,
                 OriginalFileName = file.FileName,
                 FileSize = file.Length,
@@ -167,11 +202,18 @@ public class DocumentsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDocument(Guid id)
     {
+        var userId = GetUserId();
         var document = await _documentRepository.GetByIdAsync(id);
 
         if (document == null)
         {
             return NotFound();
+        }
+
+        // Security check: Only allow owners to delete their documents
+        if (document.UserId != userId)
+        {
+            return Forbid();
         }
 
         try

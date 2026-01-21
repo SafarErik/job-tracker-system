@@ -1,32 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.API.DTOs;
 
 namespace JobTracker.API.Controllers;
 
+/// <summary>
+/// Controller for managing job applications.
+/// All endpoints require authentication - users can only see/modify their own applications.
+/// </summary>
 [ApiController]
-[Route("api/[controller]")] // /api/jobapplications => This will be the current address
+[Route("api/[controller]")]
+[Authorize] // Requires authentication for all endpoints
 public class JobApplicationsController : ControllerBase
 {
     private readonly IJobApplicationRepository _repository;
     private readonly IDocumentRepository _documentRepository;
 
-    // Dependency Injection
-    public JobApplicationsController(IJobApplicationRepository repository, IDocumentRepository documentRepository)
+    public JobApplicationsController(
+        IJobApplicationRepository repository, 
+        IDocumentRepository documentRepository)
     {
         _repository = repository;
         _documentRepository = documentRepository;
     }
 
+    /// <summary>
+    /// Gets the current authenticated user's ID from the JWT token claims.
+    /// </summary>
+    private string GetUserId() =>
+        User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+        ?? throw new UnauthorizedAccessException("User ID not found in token");
+
     // GET: api/jobapplications
     [HttpGet]
     public async Task<ActionResult<IEnumerable<JobApplicationDto>>> GetAll()
     {
-        var applications = await _repository.GetAllAsync();
+        var userId = GetUserId();
+        
+        // Only get applications belonging to the current user
+        var applications = await _repository.GetAllByUserIdAsync(userId);
 
-        //Mapping: Entity => DTO
-        // Here we also fill out the company.name, from the connected company object.
         var dtos = applications.Select(app => new JobApplicationDto
         {
             Id = app.Id,
@@ -36,12 +52,12 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company", // Null check, just to be safe
+            CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
             DocumentName = app.Document?.OriginalFileName
         });
 
-        return Ok(dtos); // 200: OK
+        return Ok(dtos);
     }
 
 
@@ -49,12 +65,18 @@ public class JobApplicationsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<JobApplicationDto>> Get(int id)
     {
+        var userId = GetUserId();
         var app = await _repository.GetByIdAsync(id);
 
-        if(app == null)
+        if (app == null)
         {
-            return NotFound(); // 404 - ID Doesn't exist!
+            return NotFound();
+        }
 
+        // Security check: Ensure the application belongs to the current user
+        if (app.UserId != userId)
+        {
+            return Forbid(); // 403 - User doesn't own this resource
         }
 
         var dto = new JobApplicationDto
@@ -66,30 +88,31 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company", // Null check, just to be safe
+            CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
             DocumentName = app.Document?.OriginalFileName
         };
 
         return Ok(dto);
-
-
     }
 
     // POST: api/jobapplications
     [HttpPost]
     public async Task<ActionResult<JobApplicationDto>> Create(CreateJobApplicationDto createDto)
     {
-       // MAPPING: DTO -> Entity
+        var userId = GetUserId();
+
+        // MAPPING: DTO -> Entity
         var application = new JobApplication
         {
+            UserId = userId, // Link to the authenticated user
             Position = createDto.Position,
-            CompanyId = createDto.CompanyId, // The frontend only sends the ID
+            CompanyId = createDto.CompanyId,
             JobUrl = createDto.JobUrl,
             Description = createDto.Description,
             Status = createDto.Status,
             DocumentId = createDto.DocumentId,
-            AppliedAt = DateTime.UtcNow // This is set by the server
+            AppliedAt = DateTime.UtcNow
         };
 
         await _repository.AddAsync(application);
@@ -118,22 +141,26 @@ public class JobApplicationsController : ControllerBase
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
-
     }
 
     // PUT: api/jobapplications/5
     /// <summary>
     /// Update a job application. Supports partial updates.
+    /// Only the owner of the application can update it.
     /// </summary>
-    /// <param name="id">Application ID</param>
-    /// <param name="updateDto">Fields to update (only non-null fields will be updated)</param>
-    /// <returns>NoContent if successful, NotFound if application doesn't exist</returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, UpdateJobApplicationDto updateDto)
     {
+        var userId = GetUserId();
         var existingApp = await _repository.GetByIdAsync(id);
 
         if (existingApp == null) return NotFound();
+
+        // Security check: Only allow owners to update their applications
+        if (existingApp.UserId != userId)
+        {
+            return Forbid();
+        }
 
         // Partial update - only update fields that are provided
         if (updateDto.Position != null)
@@ -153,8 +180,6 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;
-        
-        // Note: We do not allow modifying the AppliedAt date
 
         await _repository.UpdateAsync(existingApp);
 
@@ -162,11 +187,22 @@ public class JobApplicationsController : ControllerBase
     }
 
     // DELETE: api/jobapplications/5
+    /// <summary>
+    /// Delete a job application. Only the owner can delete.
+    /// </summary>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        var userId = GetUserId();
         var app = await _repository.GetByIdAsync(id);
+        
         if (app == null) return NotFound();
+
+        // Security check: Only allow owners to delete their applications
+        if (app.UserId != userId)
+        {
+            return Forbid();
+        }
 
         await _repository.DeleteAsync(id);
         return NoContent();

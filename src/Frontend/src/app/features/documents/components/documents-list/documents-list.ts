@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentService } from '../../services/document';
+import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
 
 @Component({

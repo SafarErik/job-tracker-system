@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService, ThemeMode } from '../../../core/services/theme';
+import { ThemeService, ThemeMode } from '../../../core/services/theme.service';
 
 /**
  * Theme Toggle Component

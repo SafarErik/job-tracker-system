@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { CompanyService } from '../../services/company';
+import { CompanyService } from '../../services/company.service';
 import { Company, CreateCompany, UpdateCompany } from '../../models/company.model';
 
 @Component({

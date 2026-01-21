@@ -4,4 +4,4 @@
  * ============================================================================
  */
 
-export * from './application';
+export * from './application.service';

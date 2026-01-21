@@ -5,13 +5,13 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 // Services
-import { ApplicationService } from '../../services/application';
-import { NotificationService } from '../../../../core/services/notification';
+import { ApplicationService } from '../../services/application.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 // Feature Services
-import { CompanyService } from '../../../companies/services/company';
-import { SkillService } from '../../../skills/services/skill';
-import { DocumentService } from '../../../documents/services/document';
+import { CompanyService } from '../../../companies/services/company.service';
+import { SkillService } from '../../../skills/services/skill.service';
+import { DocumentService } from '../../../documents/services/document.service';
 
 // Models
 import { Company } from '../../../companies/models/company.model';

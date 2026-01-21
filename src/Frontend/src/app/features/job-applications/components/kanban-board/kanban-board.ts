@@ -13,8 +13,8 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Services
-import { ApplicationService } from '../../services/application';
-import { NotificationService } from '../../../../core/services/notification';
+import { ApplicationService } from '../../services/application.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 /**
  * Status Column Configuration

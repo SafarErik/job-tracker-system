@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CompanyService } from '../../services/company';
+import { CompanyService } from '../../services/company.service';
 import { CompanyDetail } from '../../models/company.model';
 
 @Component({

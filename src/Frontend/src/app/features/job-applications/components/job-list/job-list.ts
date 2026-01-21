@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 // Services
-import { ApplicationService } from '../../services/application';
-import { NotificationService } from '../../../../core/services/notification';
+import { ApplicationService } from '../../services/application.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 // Models
 import { JobApplication } from '../../models/job-application.model';

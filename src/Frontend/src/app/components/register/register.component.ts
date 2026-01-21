@@ -51,7 +51,7 @@ export class RegisterComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     // Initialize form with validation
     this.registerForm = this.fb.group(
@@ -73,7 +73,7 @@ export class RegisterComponent {
       {
         // Form-level validator for password matching
         validators: this.passwordMatchValidator,
-      }
+      },
     );
 
     // Clear any existing errors when component loads
@@ -190,7 +190,12 @@ export class RegisterComponent {
   /**
    * Get password strength errors for display
    */
-  getPasswordStrengthErrors(): { hasUppercase: boolean; hasLowercase: boolean; hasDigit: boolean; hasSpecial: boolean } | null {
+  getPasswordStrengthErrors(): {
+    hasUppercase: boolean;
+    hasLowercase: boolean;
+    hasDigit: boolean;
+    hasSpecial: boolean;
+  } | null {
     const control = this.registerForm.get('password');
     if (control?.hasError('passwordStrength')) {
       return control.getError('passwordStrength');

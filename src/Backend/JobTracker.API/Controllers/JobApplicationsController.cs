@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
-using JobTracker.API.DTOs;
+using JobTracker.Application.DTOs.JobApplications;
 
 namespace JobTracker.API.Controllers;
 

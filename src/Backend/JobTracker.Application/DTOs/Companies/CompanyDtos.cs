@@ -1,0 +1,134 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace JobTracker.Application.DTOs.Companies;
+
+/// <summary>
+/// DTO for returning company data in list views.
+/// Contains summary information for quick overview.
+/// </summary>
+public class CompanyDto
+{
+    public int Id { get; set; }
+    
+    public string Name { get; set; } = string.Empty;
+    
+    public string? Website { get; set; }
+    
+    public string? Address { get; set; }
+    
+    /// <summary>
+    /// HR contact person's name
+    /// </summary>
+    public string? HRContactName { get; set; }
+    
+    /// <summary>
+    /// HR contact email for communication
+    /// </summary>
+    public string? HRContactEmail { get; set; }
+    
+    /// <summary>
+    /// HR contact's LinkedIn profile URL
+    /// </summary>
+    public string? HRContactLinkedIn { get; set; }
+    
+    /// <summary>
+    /// Total number of applications submitted to this company
+    /// </summary>
+    public int TotalApplications { get; set; }
+}
+
+/// <summary>
+/// DTO for detailed company view including application history.
+/// Used when viewing a single company's full details.
+/// </summary>
+public class CompanyDetailDto
+{
+    public int Id { get; set; }
+    
+    public string Name { get; set; } = string.Empty;
+    
+    public string? Website { get; set; }
+    
+    public string? Address { get; set; }
+    
+    public string? HRContactName { get; set; }
+    
+    public string? HRContactEmail { get; set; }
+    
+    public string? HRContactLinkedIn { get; set; }
+    
+    /// <summary>
+    /// Total number of applications to this company
+    /// </summary>
+    public int TotalApplications { get; set; }
+    
+    /// <summary>
+    /// History of all applications to this company
+    /// </summary>
+    public List<JobApplicationHistoryDto> ApplicationHistory { get; set; } = new();
+}
+
+/// <summary>
+/// Simplified job application info for company history view.
+/// </summary>
+public class JobApplicationHistoryDto
+{
+    public int Id { get; set; }
+    
+    public string Position { get; set; } = string.Empty;
+    
+    public DateTime AppliedAt { get; set; }
+    
+    /// <summary>
+    /// Status as string for display purposes
+    /// </summary>
+    public string Status { get; set; } = string.Empty;
+    
+    public decimal? SalaryOffer { get; set; }
+}
+
+/// <summary>
+/// DTO for creating a new company.
+/// </summary>
+public class CreateCompanyDto
+{
+    [Required(ErrorMessage = "Company name is required")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Company name must be between 2 and 100 characters")]
+    public string Name { get; set; } = string.Empty;
+
+    [Url(ErrorMessage = "Invalid website URL format")]
+    public string? Website { get; set; }
+    
+    public string? Address { get; set; }
+    
+    public string? HRContactName { get; set; }
+    
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    public string? HRContactEmail { get; set; }
+    
+    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
+    public string? HRContactLinkedIn { get; set; }
+}
+
+/// <summary>
+/// DTO for updating an existing company.
+/// Supports partial updates.
+/// </summary>
+public class UpdateCompanyDto
+{
+    [StringLength(100, MinimumLength = 2)]
+    public string? Name { get; set; }
+
+    [Url(ErrorMessage = "Invalid website URL format")]
+    public string? Website { get; set; }
+    
+    public string? Address { get; set; }
+    
+    public string? HRContactName { get; set; }
+    
+    [EmailAddress(ErrorMessage = "Invalid email format")]
+    public string? HRContactEmail { get; set; }
+    
+    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
+    public string? HRContactLinkedIn { get; set; }
+}

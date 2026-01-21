@@ -1,4 +1,4 @@
-using JobTracker.API.DTOs;
+using JobTracker.Application.DTOs.Documents;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;

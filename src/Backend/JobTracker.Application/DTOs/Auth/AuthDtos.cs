@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace JobTracker.API.DTOs.Auth;
+namespace JobTracker.Application.DTOs.Auth;
 
 /// <summary>
 /// DTO for user registration requests.
@@ -159,6 +159,7 @@ public class UserDto
 
 /// <summary>
 /// DTO for updating user profile information.
+/// All fields are optional - only provided fields will be updated.
 /// </summary>
 public class UpdateProfileDto
 {
@@ -179,6 +180,7 @@ public class UpdateProfileDto
 
 /// <summary>
 /// DTO for changing password.
+/// Requires current password for security verification.
 /// </summary>
 public class ChangePasswordDto
 {

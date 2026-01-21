@@ -37,6 +37,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- 
+      Project References - following Clean Architecture:
+      API -> Application -> Core
+      API -> Infrastructure (for DI registration)
+    -->
+    <ProjectReference Include="..\JobTracker.Application\JobTracker.Application.csproj" />
     <ProjectReference Include="..\JobTracker.Core\JobTracker.Core.csproj" />
     <ProjectReference Include="..\JobTracker.Infrastructure\JobTracker.Infrastructure.csproj" />
   </ItemGroup>

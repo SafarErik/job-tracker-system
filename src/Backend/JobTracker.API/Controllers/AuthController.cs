@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using JobTracker.Core.Entities;
-using JobTracker.API.DTOs.Auth;
+using JobTracker.Application.DTOs.Auth;
 
 namespace JobTracker.API.Controllers;
 

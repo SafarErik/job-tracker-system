@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 // Services
 import { ApplicationService } from '../../services/application.service';
@@ -42,7 +42,6 @@ export enum ViewMode {
   standalone: true, // New Angular feature: no need for NgModule
   imports: [
     CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
-    RouterLink, // Enables [routerLink] directive
     KanbanBoardComponent, // Kanban view
     CalendarViewComponent, // Calendar view
   ],
@@ -79,6 +78,15 @@ export class JobList implements OnInit {
    */
   currentView: ViewMode = ViewMode.Grid;
 
+  /**
+   * Search & filter state
+   */
+  searchTerm = '';
+  selectedStatusFilter: JobApplicationStatus | 'all' = 'all';
+  selectedCompanyFilter: number | 'all' = 'all';
+  isStatusFilterOpen = false;
+  isCompanyFilterOpen = false;
+
   // ============================================
   // Enums for HTML Template Access
   // ============================================
@@ -94,6 +102,17 @@ export class JobList implements OnInit {
    */
   Status = JobApplicationStatus;
 
+  statusFilters = [
+    { value: 'all' as const, label: 'All Statuses' },
+    { value: JobApplicationStatus.Applied, label: 'Applied' },
+    { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
+    { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
+    { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
+    { value: JobApplicationStatus.Offer, label: 'Offer Received' },
+    { value: JobApplicationStatus.Rejected, label: 'Rejected' },
+    { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
+  ];
+
   // ============================================
   // Constructor - Dependency Injection
   // ============================================
@@ -105,6 +124,7 @@ export class JobList implements OnInit {
   constructor(
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
+    private readonly router: Router,
   ) {}
 
   // ============================================
@@ -122,6 +142,67 @@ export class JobList implements OnInit {
    */
   ngOnInit(): void {
     this.loadApplications();
+  }
+
+  get visibleApplications(): JobApplication[] {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    return this.applications.filter((app) => {
+      const matchesSearch = !term
+        ? true
+        : [app.position, app.companyName, app.description, app.jobUrl]
+            .filter(Boolean)
+            .some((value) => value!.toLowerCase().includes(term));
+
+      const matchesStatus =
+        this.selectedStatusFilter === 'all' ? true : app.status === this.selectedStatusFilter;
+
+      const matchesCompany =
+        this.selectedCompanyFilter === 'all'
+          ? true
+          : Number(app.companyId) === this.selectedCompanyFilter;
+
+      return matchesSearch && matchesStatus && matchesCompany;
+    });
+  }
+
+  get companyOptions(): { id: number; name: string }[] {
+    const options = this.applications
+      .filter((app) => app.companyId)
+      .map((app) => ({
+        id: Number(app.companyId),
+        name: app.companyName ?? 'Unknown Company',
+      }));
+
+    const unique = new Map<number, string>();
+    options.forEach((option) => unique.set(option.id, option.name));
+
+    return Array.from(unique.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  get selectedStatusFilterLabel(): string {
+    return (
+      this.statusFilters.find((filter) => filter.value === this.selectedStatusFilter)?.label ??
+      'All Statuses'
+    );
+  }
+
+  get selectedCompanyFilterLabel(): string {
+    if (this.selectedCompanyFilter === 'all') return 'All Companies';
+    return (
+      this.companyOptions.find((option) => option.id === this.selectedCompanyFilter)?.name ??
+      'All Companies'
+    );
+  }
+
+  get hasActiveFilters(): boolean {
+    return (
+      this.searchTerm.trim().length > 0 ||
+      this.selectedStatusFilter !== 'all' ||
+      this.selectedCompanyFilter !== 'all'
+    );
   }
 
   // ============================================
@@ -161,6 +242,50 @@ export class JobList implements OnInit {
         this.isLoading = false; // Hide loading spinner even on error
       },
     });
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm = value;
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.selectedStatusFilter = 'all';
+    this.selectedCompanyFilter = 'all';
+  }
+
+  openStatusFilter(): void {
+    this.isStatusFilterOpen = true;
+  }
+
+  closeStatusFilter(): void {
+    setTimeout(() => {
+      this.isStatusFilterOpen = false;
+    }, 150);
+  }
+
+  selectStatusFilter(value: JobApplicationStatus | 'all'): void {
+    this.selectedStatusFilter = value;
+    this.isStatusFilterOpen = false;
+  }
+
+  openCompanyFilter(): void {
+    this.isCompanyFilterOpen = true;
+  }
+
+  toggleCompanyFilter(): void {
+    this.isCompanyFilterOpen = !this.isCompanyFilterOpen;
+  }
+
+  closeCompanyFilter(): void {
+    setTimeout(() => {
+      this.isCompanyFilterOpen = false;
+    }, 150);
+  }
+
+  selectCompanyFilter(value: number | 'all'): void {
+    this.selectedCompanyFilter = value === 'all' ? 'all' : Number(value);
+    this.isCompanyFilterOpen = false;
   }
 
   /**
@@ -315,15 +440,18 @@ export class JobList implements OnInit {
   /**
    * Get count of applications by status
    */
-  getStatusCount(status: JobApplicationStatus): number {
-    return this.applications.filter((app) => app.status === status).length;
+  getStatusCount(
+    status: JobApplicationStatus,
+    list: JobApplication[] = this.visibleApplications,
+  ): number {
+    return list.filter((app) => app.status === status).length;
   }
 
   /**
    * Get count of active applications (not rejected or ghosted)
    */
-  getActiveCount(): number {
-    return this.applications.filter(
+  getActiveCount(list: JobApplication[] = this.visibleApplications): number {
+    return list.filter(
       (app) =>
         app.status !== JobApplicationStatus.Rejected && app.status !== JobApplicationStatus.Ghosted,
     ).length;
@@ -333,23 +461,23 @@ export class JobList implements OnInit {
    * Get response rate percentage
    * Responses = everything except Applied and Ghosted
    */
-  getResponseRate(): number {
-    if (this.applications.length === 0) return 0;
-    const responses = this.applications.filter(
+  getResponseRate(list: JobApplication[] = this.visibleApplications): number {
+    if (list.length === 0) return 0;
+    const responses = list.filter(
       (app) =>
         app.status !== JobApplicationStatus.Applied && app.status !== JobApplicationStatus.Ghosted,
     ).length;
-    return Math.round((responses / this.applications.length) * 100);
+    return Math.round((responses / list.length) * 100);
   }
 
   /**
    * Get success rate percentage
    * Success = offers received / total applications
    */
-  getSuccessRate(): number {
-    if (this.applications.length === 0) return 0;
-    const offers = this.getStatusCount(JobApplicationStatus.Offer);
-    return Math.round((offers / this.applications.length) * 100);
+  getSuccessRate(list: JobApplication[] = this.visibleApplications): number {
+    if (list.length === 0) return 0;
+    const offers = this.getStatusCount(JobApplicationStatus.Offer, list);
+    return Math.round((offers / list.length) * 100);
   }
 
   /**
@@ -365,5 +493,13 @@ export class JobList implements OnInit {
       month: 'short',
       day: 'numeric',
     });
+  }
+
+  /**
+   * Navigate to job application detail modal
+   * @param id - Application ID
+   */
+  viewApplicationDetail(id: number): void {
+    this.router.navigate(['/view', id]);
   }
 }

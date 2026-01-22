@@ -78,6 +78,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     title: 'Edit Application - JobTracker',
   },
+  {
+    path: 'view/:id',
+    loadComponent: () =>
+      import('./features/job-applications/components/job-detail-modal/job-detail-modal').then(
+        (m) => m.JobDetailModalComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'View Application - JobTracker',
+  },
 
   // Companies
   {
@@ -126,6 +135,15 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
     title: 'Documents - JobTracker',
+  },
+
+  // Profile
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
+    canActivate: [authGuard],
+    title: 'Profile - JobTracker',
   },
 
   // ============================================

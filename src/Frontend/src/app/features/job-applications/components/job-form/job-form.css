@@ -119,6 +119,7 @@
 
 .form-group {
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-label {
@@ -157,7 +158,7 @@
   font-size: 1rem;
   border: 2px solid var(--color-border-primary);
   border-radius: 10px;
-  transition: all 0.2s;
+  transition: none;
   background: var(--color-bg-elevated);
   color: var(--color-text-primary);
 }
@@ -166,7 +167,12 @@
   outline: none;
   border-color: var(--color-border-focus);
   box-shadow: 0 0 0 3px var(--color-primary-light);
-  transform: scale(1.01);
+  transform: none;
+}
+
+select.form-input:focus {
+  transform: none;
+  box-shadow: none;
 }
 
 .form-input.input-error {
@@ -220,17 +226,155 @@
 }
 
 /* ============================================
+   Company Dropdown
+   ============================================ */
+
+.company-dropdown {
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* ============================================
+   Position Dropdown
+   ============================================ */
+
+.position-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 100%;
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  z-index: 5;
+}
+
+.position-option {
+  width: 100%;
+  display: block;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.position-option:hover {
+  background: var(--color-bg-tertiary);
+}
+
+/* ============================================
+   Custom Select Dropdowns
+   ============================================ */
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.select-chevron {
+  color: var(--color-text-tertiary);
+  font-size: 0.9rem;
+}
+
+.select-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  z-index: 5;
+}
+
+.select-option {
+  width: 100%;
+  display: block;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.select-option:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.company-option {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.company-option:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.company-option.create {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.company-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+/* ============================================
    Select Dropdown
    ============================================ */
 
 select.form-input {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.75rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 3rem;
+  background-image: none;
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  padding-right: 1rem;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: none;
+}
+
+select.form-input:focus {
+  border-color: var(--color-border-primary);
+  background-color: var(--color-bg-elevated);
+  outline: none;
+}
+
+select.form-input::-ms-expand {
+  display: none;
+}
+
+select.form-input option {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
 }
 
 /* ============================================
@@ -241,6 +385,77 @@ textarea.form-input {
   resize: vertical;
   min-height: 80px;
   max-height: 200px;
+}
+
+/* ============================================
+   Upload Box
+   ============================================ */
+
+.upload-box {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--color-border-primary);
+  border-radius: 12px;
+  background: var(--color-bg-secondary);
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.upload-title {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.upload-subtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+.upload-progress {
+  margin-top: 0.5rem;
+  position: relative;
+  height: 10px;
+  border-radius: 9999px;
+  background: var(--color-bg-tertiary);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload-bar {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.upload-progress span {
+  position: relative;
+  z-index: 1;
+  padding-left: 0.5rem;
+  font-size: 0.7rem;
+  color: white;
+}
+
+.upload-error {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-error);
 }
 
 /* ============================================

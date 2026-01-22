@@ -1,10 +1,77 @@
 /* Container */
 .documents-container {
+  position: relative;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
   background: var(--color-bg-secondary);
   min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+.documents-container.dragging {
+  background: var(--color-bg-elevated);
+}
+
+/* Drag & Drop Overlay */
+.drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(102, 126, 234, 0.95);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drag-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.drag-icon {
+  width: 5rem;
+  height: 5rem;
+  color: #667eea;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.drag-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #667eea;
+  margin: 0;
 }
 
 /* Header */

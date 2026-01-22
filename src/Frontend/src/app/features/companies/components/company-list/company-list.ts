@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { Company } from '../../models/company.model';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
   selector: 'app-company-list',
@@ -27,6 +28,7 @@ export class CompanyListComponent implements OnInit {
   constructor(
     private readonly companyService: CompanyService,
     private readonly router: Router,
+    private readonly notificationService: NotificationService,
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +97,47 @@ export class CompanyListComponent implements OnInit {
    */
   addNewCompany(): void {
     this.router.navigate(['/companies/new']);
+  }
+
+  /**
+   * Navigate to edit company
+   */
+  editCompany(companyId: number, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/companies/edit', companyId]);
+  }
+
+  /**
+   * Delete company
+   */
+  async deleteCompany(company: Company, event: Event): Promise<void> {
+    event.stopPropagation();
+
+    const confirmed = await this.notificationService.confirm(
+      `Are you sure you want to delete "${company.name}"? This will also delete all associated job applications. This action cannot be undone.`,
+      'Delete Company',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.companyService.deleteCompany(company.id).subscribe({
+      next: () => {
+        this.notificationService.success(
+          `${company.name} has been deleted successfully.`,
+          'Company Deleted',
+        );
+        this.loadCompanies();
+      },
+      error: (err) => {
+        this.notificationService.error(
+          'An error occurred while deleting the company. Please try again.',
+          'Delete Failed',
+        );
+        console.error(err);
+      },
+    });
   }
 
   /**

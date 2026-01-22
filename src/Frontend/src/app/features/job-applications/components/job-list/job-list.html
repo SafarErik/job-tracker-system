@@ -27,6 +27,7 @@
             [class.active]="isViewActive(ViewMode.Grid)"
             class="view-btn"
             title="Grid View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -45,6 +46,7 @@
             [class.active]="isViewActive(ViewMode.Kanban)"
             class="view-btn"
             title="Kanban Board View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -63,6 +65,7 @@
             [class.active]="isViewActive(ViewMode.Calendar)"
             class="view-btn"
             title="Calendar View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -143,7 +146,7 @@
           </svg>
           <span class="stat-label stat-label-active">Active</span>
         </div>
-        <p class="stat-value stat-value-active">{{ getActiveCount() }}</p>
+        <p class="stat-value stat-value-active">{{ getActiveCount(applications) }}</p>
         <p class="stat-description">In Progress</p>
       </div>
 
@@ -162,9 +165,9 @@
         </div>
         <p class="stat-value stat-value-interview">
           {{
-            getStatusCount(Status.Interviewing) +
-              getStatusCount(Status.PhoneScreen) +
-              getStatusCount(Status.TechnicalTask)
+            getStatusCount(Status.Interviewing, applications) +
+              getStatusCount(Status.PhoneScreen, applications) +
+              getStatusCount(Status.TechnicalTask, applications)
           }}
         </p>
         <p class="stat-description">Stages</p>
@@ -183,7 +186,7 @@
           </svg>
           <span class="stat-label stat-label-offers">Offers</span>
         </div>
-        <p class="stat-value stat-value-offers">{{ getStatusCount(Status.Offer) }}</p>
+        <p class="stat-value stat-value-offers">{{ getStatusCount(Status.Offer, applications) }}</p>
         <p class="stat-description">Received</p>
       </div>
 
@@ -200,7 +203,9 @@
           </svg>
           <span class="stat-label stat-label-rejected">Rejected</span>
         </div>
-        <p class="stat-value stat-value-rejected">{{ getStatusCount(Status.Rejected) }}</p>
+        <p class="stat-value stat-value-rejected">
+          {{ getStatusCount(Status.Rejected, applications) }}
+        </p>
         <p class="stat-description">Declined</p>
       </div>
 
@@ -217,7 +222,7 @@
           </svg>
           <span class="stat-label stat-label-response">Response</span>
         </div>
-        <p class="stat-value stat-value-response">{{ getResponseRate() }}%</p>
+        <p class="stat-value stat-value-response">{{ getResponseRate(applications) }}%</p>
         <p class="stat-description">Reply Rate</p>
       </div>
 
@@ -234,9 +239,90 @@
           </svg>
           <span class="stat-label stat-label-success">Success</span>
         </div>
-        <p class="stat-value stat-value-success">{{ getSuccessRate() }}%</p>
+        <p class="stat-value stat-value-success">{{ getSuccessRate(applications) }}%</p>
         <p class="stat-description">Offer Rate</p>
       </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div
+    *ngIf="!isLoading && !errorMessage && applications.length > 0"
+    class="search-filter-bar mb-8"
+  >
+    <div class="search-input">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+      <input
+        #searchInput
+        type="text"
+        placeholder="Search by position, company, notes, or URL..."
+        [value]="searchTerm"
+        (input)="onSearchChange(searchInput.value)"
+      />
+      <button
+        *ngIf="searchTerm"
+        class="clear-search"
+        (click)="onSearchChange('')"
+        type="button"
+        aria-label="Clear search"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-dropdown">
+        <button
+          type="button"
+          class="filter-trigger"
+          (click)="openStatusFilter()"
+          (blur)="closeStatusFilter()"
+        >
+          <span>{{ selectedStatusFilterLabel }}</span>
+          <span class="filter-chevron">▾</span>
+        </button>
+        <div class="filter-menu" *ngIf="isStatusFilterOpen">
+          <button
+            *ngFor="let filter of statusFilters"
+            type="button"
+            class="filter-option"
+            (click)="selectStatusFilter(filter.value)"
+          >
+            {{ filter.label }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-dropdown">
+        <button type="button" class="filter-trigger" (click)="toggleCompanyFilter()">
+          <span>{{ selectedCompanyFilterLabel }}</span>
+          <span class="filter-chevron">▾</span>
+        </button>
+        <div class="filter-menu" *ngIf="isCompanyFilterOpen">
+          <button type="button" class="filter-option" (mousedown)="selectCompanyFilter('all')">
+            All Companies
+          </button>
+          <button
+            *ngFor="let company of companyOptions"
+            type="button"
+            class="filter-option"
+            (mousedown)="selectCompanyFilter(company.id)"
+          >
+            {{ company.name }}
+          </button>
+        </div>
+      </div>
+
+      <button *ngIf="hasActiveFilters" class="filter-clear" (click)="clearFilters()">
+        Clear filters
+      </button>
     </div>
   </div>
 
@@ -268,6 +354,7 @@
         <button
           (click)="loadApplications()"
           class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+          type="button"
         >
           Try Again →
         </button>
@@ -297,14 +384,30 @@
     </a>
   </div>
 
+  <!-- Empty Search Results -->
+  <div
+    *ngIf="
+      !isLoading && !errorMessage && applications.length > 0 && visibleApplications.length === 0
+    "
+    class="bg-white rounded-lg shadow-lg p-12 text-center"
+  >
+    <div class="text-5xl mb-4">🔍</div>
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">No Results</h2>
+    <p class="text-gray-600 mb-6">We couldn't find any applications matching your filters.</p>
+    <button class="filter-clear" (click)="clearFilters()">Clear filters</button>
+  </div>
+
   <!-- View Content -->
-  <div *ngIf="!isLoading && !errorMessage && applications.length > 0">
+  <div *ngIf="!isLoading && !errorMessage && visibleApplications.length > 0">
     <!-- Grid View -->
     <div *ngIf="currentView === ViewMode.Grid">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          *ngFor="let app of applications"
-          class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+        <button
+          *ngFor="let app of visibleApplications"
+          type="button"
+          (click)="viewApplicationDetail(app.id)"
+          class="grid-card-clickable bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-1 text-left border-0 p-0"
+          [title]="'View details for ' + app.position"
         >
           <!-- Card Header -->
           <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
@@ -393,6 +496,7 @@
                     [href]="app.jobUrl"
                     target="_blank"
                     rel="noopener noreferrer"
+                    (click)="$event.stopPropagation()"
                     class="text-indigo-600 hover:text-indigo-800 hover:underline truncate block"
                   >
                     View Posting →
@@ -402,67 +506,35 @@
             </div>
           </div>
 
-          <!-- 
-            Card Footer - Action Buttons
-            
-            Edit Button: Uses routerLink to navigate to /edit/:id
-            - [routerLink]="['/edit', app.id]" creates dynamic route like /edit/5
-            - Uses <a> tag for better accessibility and SEO
-            
-            Delete Button: Calls component method with confirmation
-            - (click) event binding to deleteApplication method
-            - Uses <button> since it's an action, not navigation
-          -->
-          <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end space-x-3">
-            <!-- Edit Button - Navigate to edit page -->
-            <a
-              [routerLink]="['/edit', app.id]"
-              class="action-button inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors duration-200"
-              title="Edit this application"
-            >
-              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Card Footer - View Details Hint -->
+          <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            <p class="text-sm text-gray-600 flex items-center justify-center gap-2 font-medium">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Edit
-            </a>
-
-            <!-- Delete Button -->
-            <button
-              (click)="deleteApplication(app.id)"
-              class="action-button inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-md transition-colors duration-200"
-              title="Delete this application"
-            >
-              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-              Delete
-            </button>
+              Click to view details →
+            </p>
           </div>
-        </div>
+        </button>
       </div>
     </div>
 
     <!-- Kanban View -->
     <div *ngIf="currentView === ViewMode.Kanban">
       <app-kanban-board
-        [applications]="applications"
+        [applications]="visibleApplications"
         (applicationUpdated)="onApplicationUpdated()"
       ></app-kanban-board>
     </div>
 
     <!-- Calendar View -->
     <div *ngIf="currentView === ViewMode.Calendar">
-      <app-calendar-view [applications]="applications"></app-calendar-view>
+      <app-calendar-view [applications]="visibleApplications"></app-calendar-view>
     </div>
   </div>
 </div>

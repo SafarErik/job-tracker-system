@@ -29,4 +29,13 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     canActivate: [authGuard],
     title: 'Edit Application - JobTracker',
   },
+  {
+    path: 'view/:id',
+    loadComponent: () =>
+      import('./components/job-detail-modal/job-detail-modal').then(
+        (m) => m.JobDetailModalComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'View Application - JobTracker',
+  },
 ];

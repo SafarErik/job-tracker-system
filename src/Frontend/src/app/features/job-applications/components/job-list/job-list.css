@@ -119,6 +119,136 @@
 }
 
 /* ============================================
+   Search & Filter Bar
+   ============================================ */
+
+.search-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 18px;
+  background: var(--color-bg-elevated);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  border: 2px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+}
+
+.search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+}
+
+.search-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-text-tertiary);
+}
+
+.clear-search {
+  background: transparent;
+  border: none;
+  color: var(--color-text-tertiary);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filter-dropdown {
+  position: relative;
+}
+
+.filter-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 180px;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--color-border-primary);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-chevron {
+  color: var(--color-text-tertiary);
+}
+
+.filter-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  border-radius: 12px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-primary);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  z-index: 5;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.filter-option {
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.filter-option:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.filter-clear {
+  padding: 0.6rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .search-filter-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .search-input {
+    flex: 1;
+  }
+}
+
+/* ============================================
    Modern Stats Container
    ============================================ */
 
@@ -455,6 +585,35 @@ a:focus {
 button:focus:not(:focus-visible),
 a:focus:not(:focus-visible) {
   outline: none;
+}
+
+/* ============================================
+   Grid Card Button Styles
+   ============================================ */
+
+.grid-card-clickable {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+.grid-card-clickable:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: translateY(-8px) scale(1.02);
+}
+
+.grid-card-clickable:active {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.grid-card-clickable:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }
 
 /* ============================================

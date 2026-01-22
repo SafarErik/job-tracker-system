@@ -49,4 +49,12 @@ export class CompanyService {
   updateCompany(id: number, company: UpdateCompany): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, company);
   }
+
+  /**
+   * Delete a company
+   * @param id Company ID
+   */
+  deleteCompany(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

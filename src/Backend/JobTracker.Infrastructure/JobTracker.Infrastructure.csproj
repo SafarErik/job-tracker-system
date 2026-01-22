@@ -5,6 +5,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\skills.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- 
       EntityFramework Core Identity integration.
       Provides IdentityDbContext and EF Core stores for Identity.

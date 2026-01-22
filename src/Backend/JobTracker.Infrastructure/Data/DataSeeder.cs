@@ -1,3 +1,4 @@
+using System.Text.Json;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -34,10 +35,13 @@ public static class DataSeeder
         ApplicationDbContext context,
         UserManager<ApplicationUser> userManager)
     {
-        // Skip seeding if data already exists
+        // Always ensure base skills exist, even if other data already present
+        await SeedSkillsIfEmpty(context);
+
+        // Skip the demo dataset if companies already exist
         if (context.Companies.Any())
         {
-            Console.WriteLine("Database already contains data. Seeding skipped.");
+            Console.WriteLine("Database already contains data. Demo seeding skipped.");
             return;
         }
 
@@ -57,12 +61,9 @@ public static class DataSeeder
         Console.WriteLine("✅ 10 companies created");
 
         // ============================================
-        // 3. CREATE SKILLS
+        // 3. CREATE SKILLS (already seeded above) - load current list
         // ============================================
-        var skills = CreateSkills();
-        await context.Skills.AddRangeAsync(skills);
-        await context.SaveChangesAsync();
-        Console.WriteLine("✅ Skills created");
+        var skills = context.Skills.ToList();
 
         // Assign some skills to the demo user
         demoUser.Skills = skills.Take(5).ToList(); // User knows first 5 skills
@@ -285,4 +286,78 @@ public static class DataSeeder
 
         return applications;
     }
+
+    /// <summary>
+    /// Seeds the Skills table from a JSON file if empty.
+    /// </summary>
+    private static async Task SeedSkillsIfEmpty(ApplicationDbContext context)
+    {
+        if (context.Skills.Any())
+        {
+            Console.WriteLine("Skills already exist. Seeding skipped.");
+            return;
+        }
+
+        var skills = await LoadSkillsFromJsonAsync();
+        if (skills.Count == 0)
+        {
+            skills = CreateSkills();
+            Console.WriteLine("skills.json not found or empty, using built-in fallback list.");
+        }
+
+        await context.Skills.AddRangeAsync(skills);
+        await context.SaveChangesAsync();
+        Console.WriteLine($"✅ Skills seeded ({skills.Count})");
+    }
+
+    /// <summary>
+    /// Loads skills from skills.json (copied to output). If not found or invalid, returns empty list.
+    /// </summary>
+    private static async Task<List<Skill>> LoadSkillsFromJsonAsync()
+    {
+        var candidatePaths = new List<string>
+        {
+            Path.Combine(AppContext.BaseDirectory, "skills.json"),
+            Path.Combine(AppContext.BaseDirectory, "Data", "skills.json"),
+            Path.Combine(Directory.GetCurrentDirectory(), "skills.json"),
+            Path.Combine(Directory.GetCurrentDirectory(), "Data", "skills.json")
+        };
+
+        foreach (var path in candidatePaths)
+        {
+            if (!File.Exists(path)) continue;
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(path);
+                var items = JsonSerializer.Deserialize<List<SkillSeedDto>>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? new List<SkillSeedDto>();
+
+                var skills = items
+                    .Where(i => !string.IsNullOrWhiteSpace(i.Name))
+                    .Select(i => new Skill
+                    {
+                        Name = i.Name.Trim(),
+                        Category = string.IsNullOrWhiteSpace(i.Category) ? null : i.Category.Trim()
+                    })
+                    .ToList();
+
+                if (skills.Count > 0)
+                {
+                    Console.WriteLine($"Loaded {skills.Count} skills from {path}");
+                    return skills;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load skills from {path}: {ex.Message}");
+            }
+        }
+
+        return new List<Skill>();
+    }
+
+    private record SkillSeedDto(string Name, string? Category);
 }

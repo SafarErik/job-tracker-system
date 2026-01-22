@@ -8,7 +8,7 @@
     ".wasm": "application/wasm"
   },
   "auth": {
-    "rolesSource": "/auth/me",
+    "rolesSource": "/api/auth/me",
     "identityProviders": {
       "customOpenIdConnectProviders": {
         "google": {
@@ -32,7 +32,7 @@
     }
   },
   "globalHeaders": {
-    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://accounts.google.com https://jobtracker-api.azurewebsites.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+    "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://accounts.google.com https://jobtracker-api.azurewebsites.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY",
     "x-xss-protection": "1; mode=block",

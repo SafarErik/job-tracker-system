@@ -25,6 +25,10 @@ public class RegisterDtoValidator : AbstractValidator<RegisterDto>
             .Matches(@"[0-9]").WithMessage("Password must contain at least one digit")
             .Matches(@"[\W_]").WithMessage("Password must contain at least one special character");
 
+        RuleFor(x => x.ConfirmPassword)
+            .NotEmpty().WithMessage("Password confirmation is required")
+            .Equal(x => x.Password).WithMessage("Passwords do not match");
+
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("First name is required")
             .MaximumLength(100).WithMessage("First name must not exceed 100 characters")

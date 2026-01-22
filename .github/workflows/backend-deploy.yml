@@ -35,9 +35,8 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Run tests (if any)
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-restore --verbosity normal
         working-directory: ./src/Backend
-        continue-on-error: true
 
       - name: Publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp

@@ -234,8 +234,13 @@ if (!builder.Environment.IsDevelopment())
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // Ensure UTF-8 encoding for special characters (á, é, ñ, etc.)
-        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+        // Use safe encoder with explicit Unicode ranges for special characters (á, é, ñ, etc.)
+        // This keeps accented characters unescaped while HTML-sensitive characters stay escaped
+        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(
+            System.Text.Unicode.UnicodeRanges.BasicLatin,
+            System.Text.Unicode.UnicodeRanges.Latin1Supplement,
+            System.Text.Unicode.UnicodeRanges.LatinExtendedA,
+            System.Text.Unicode.UnicodeRanges.LatinExtendedB);
     });
 builder.Services.AddEndpointsApiExplorer();
 
@@ -275,8 +280,13 @@ builder.Services.AddSwaggerGen(options =>
 
 // Configure CORS for Angular frontend
 // In production, this should be the Azure Static Web App or App Service URL
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
-    ?? new[] { "http://localhost:4200" };
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+// Treat empty arrays as absent - fall back to default localhost for development
+if (allowedOrigins == null || allowedOrigins.Length == 0)
+{
+    allowedOrigins = new[] { "http://localhost:4200" };
+}
 
 builder.Services.AddCors(options =>
 {
@@ -386,12 +396,13 @@ app.UseHttpsRedirection();
 // CORS must come before authentication
 app.UseCors("AllowAngular");
 
-// Security logging middleware for audit trails
-app.UseSecurityLogging();
-
 // Authentication & Authorization middleware
 // IMPORTANT: Order matters! Authentication must come before Authorization
 app.UseAuthentication();
+
+// Security logging middleware for audit trails (must come after authentication)
+app.UseSecurityLogging();
+
 app.UseAuthorization();
 
 // Health check endpoint for Azure App Service

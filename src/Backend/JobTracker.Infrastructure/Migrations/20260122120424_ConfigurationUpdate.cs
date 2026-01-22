@@ -16,6 +16,11 @@ namespace JobTracker.Infrastructure.Migrations
                 type: "text",
                 nullable: false,
                 defaultValue: "");
+
+            // Backfill existing rows with normalized values
+            migrationBuilder.Sql(
+                @"UPDATE ""Skills"" 
+                  SET ""NormalizedName"" = UPPER(TRIM(COALESCE(""Name"", '')))");
         }
 
         /// <inheritdoc />

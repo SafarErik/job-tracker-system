@@ -533,7 +533,7 @@ export class JobList implements OnInit {
    */
   getWelcomeSubtitle(): string {
     const hasApplications = this.applications.length > 0;
-    
+
     if (!hasApplications) {
       return "Let's start tracking your job applications";
     }

@@ -346,9 +346,16 @@ export class AuthService {
         payload += '='.repeat(4 - padding);
       }
 
-      // Base64 decode and parse JSON
+      // Base64 decode with proper UTF-8 handling
+      // atob() alone doesn't handle UTF-8 characters correctly
       const decoded = atob(payload);
-      return JSON.parse(decoded);
+      // Convert each character code to a UTF-8 byte, then decode as UTF-8 string
+      const utf8String = decodeURIComponent(
+        Array.from(decoded)
+          .map((char) => '%' + ('00' + char.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      );
+      return JSON.parse(utf8String);
     } catch {
       return {};
     }

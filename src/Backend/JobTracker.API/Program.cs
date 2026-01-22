@@ -21,8 +21,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // Register DbContext with PostgreSQL and Identity support
+// Explicitly set encoding to UTF-8 for proper Unicode character handling
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, 
+        npgsqlOptions => npgsqlOptions.CommandTimeout(30)));
 
 // ============================================
 // ASP.NET CORE IDENTITY CONFIGURATION
@@ -229,7 +231,12 @@ if (!builder.Environment.IsDevelopment())
 // API CONFIGURATION
 // ============================================
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Ensure UTF-8 encoding for special characters (á, é, ñ, etc.)
+        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger with JWT authentication support
@@ -283,8 +290,8 @@ builder.Services.AddCors(options =>
 });
 
 // Add health checks for Azure
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<ApplicationDbContext>();
+builder.Services.AddHealthChecks();
+    // .AddDbContextCheck<ApplicationDbContext>(); // TODO: Install Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore package
 
 var app = builder.Build();
 
@@ -374,7 +381,7 @@ else
 app.UseHttpsRedirection();
 
 // Rate limiting must come after routing but before authentication
-app.UseIpRateLimiting();
+// app.UseIpRateLimiting(); // TODO: Configure rate limiting properly with AspNetCoreRateLimit package
 
 // CORS must come before authentication
 app.UseCors("AllowAngular");

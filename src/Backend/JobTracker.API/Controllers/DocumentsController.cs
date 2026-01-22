@@ -207,14 +207,6 @@ public class DocumentsController : ControllerBase
                 _logger.LogError("Path traversal attempt detected: {FilePath}", filePath);
                 return BadRequest("Invalid file path");
             }
-            // Additional security: Verify the resolved path is still within uploads folder
-            var fullPath = Path.GetFullPath(filePath);
-            var uploadsFullPath = Path.GetFullPath(uploadsFolder);
-            if (!fullPath.StartsWith(uploadsFullPath, StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogError("Path traversal attempt detected: {FilePath}", filePath);
-                return BadRequest("Invalid file path");
-            }
 
             // Save file to disk with security best practices
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))

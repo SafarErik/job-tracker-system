@@ -280,7 +280,7 @@ public class ProfileController : ControllerBase
         {
             await _context.SaveChangesAsync();
         }
-        catch (DbUpdateException ex)
+        catch (DbUpdateException ex) when (ex.InnerException is Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
         {
             // Handle unique constraint violation (race condition where skill was created concurrently)
             _logger.LogWarning($"Unique constraint violation while adding skill '{name}': {ex.Message}");
@@ -305,6 +305,12 @@ public class ProfileController : ControllerBase
                 // Unexpected error, return conflict
                 return Conflict("A skill with this name already exists but could not be retrieved.");
             }
+        }
+        catch (DbUpdateException ex)
+        {
+            // Log other DbUpdateException causes appropriately
+            _logger.LogError($"Database update error while adding skill '{name}': {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while saving changes. Please try again.");
         }
 
         return Ok(new

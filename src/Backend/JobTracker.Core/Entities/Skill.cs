@@ -19,7 +19,7 @@ public class Skill
     /// <summary>
     /// Normalized name for case-insensitive uniqueness constraint
     /// </summary>
-    public string? NormalizedName { get; set; }
+    public string NormalizedName { get; set; } = string.Empty;
 
     /// <summary>
     /// Optional category for grouping skills

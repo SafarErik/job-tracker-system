@@ -42,7 +42,6 @@ export enum ViewMode {
   standalone: true, // New Angular feature: no need for NgModule
   imports: [
     CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
-    RouterLink, // Enables [routerLink] directive
     KanbanBoardComponent, // Kanban view
     CalendarViewComponent, // Calendar view
   ],

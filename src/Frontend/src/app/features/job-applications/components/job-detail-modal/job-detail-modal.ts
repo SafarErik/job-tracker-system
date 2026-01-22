@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApplicationService } from '../../services/application.service';
@@ -33,7 +33,13 @@ export class JobDetailModalComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.loadApplication(Number.parseInt(id, 10));
+      const parsedId = Number.parseInt(id, 10);
+      if (!isNaN(parsedId)) {
+        this.loadApplication(parsedId);
+      } else {
+        this.error.set('Invalid application ID');
+        this.isLoading.set(false);
+      }
     } else {
       this.error.set('Application not found');
       this.isLoading.set(false);
@@ -159,7 +165,7 @@ export class JobDetailModalComponent implements OnInit {
   editApplication(): void {
     const app = this.application();
     if (app) {
-      this.router.navigate(['/edit', app.id]);
+      this.router.navigate(['/features', 'job-applications', 'edit', app.id]);
     }
   }
 
@@ -196,5 +202,15 @@ export class JobDetailModalComponent implements OnInit {
     navigator.clipboard.writeText(text).then(() => {
       this.notificationService.success('Copied to clipboard', 'Success');
     });
+  }
+
+  /**
+   * Close modal on Escape key press
+   */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.closeModal();
+    }
   }
 }

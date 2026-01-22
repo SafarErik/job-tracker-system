@@ -27,6 +27,7 @@
             [class.active]="isViewActive(ViewMode.Grid)"
             class="view-btn"
             title="Grid View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -45,6 +46,7 @@
             [class.active]="isViewActive(ViewMode.Kanban)"
             class="view-btn"
             title="Kanban Board View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -63,6 +65,7 @@
             [class.active]="isViewActive(ViewMode.Calendar)"
             class="view-btn"
             title="Calendar View"
+            type="button"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -351,6 +354,7 @@
         <button
           (click)="loadApplications()"
           class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+          type="button"
         >
           Try Again →
         </button>

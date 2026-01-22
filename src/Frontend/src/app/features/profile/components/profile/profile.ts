@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -12,6 +12,7 @@ import { SkillService } from '../../../skills/services/skill.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { UserProfile, ProfileStats, UserSkill } from '../../models/profile.model';
 import { Skill } from '../../../skills/models/skill.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-profile',
@@ -25,6 +26,7 @@ export class ProfileComponent implements OnInit {
   private skillService = inject(SkillService);
   private notificationService = inject(NotificationService);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
   // State
   profile = signal<UserProfile | null>(null);
@@ -59,9 +61,11 @@ export class ProfileComponent implements OnInit {
     this.loadSkills();
     this.loadAvailableSkills();
 
-    this.skillSearchControl.valueChanges.subscribe((term) => {
-      this.skillSearchTerm.set(term?.toString() ?? '');
-    });
+    this.skillSearchControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((term) => {
+        this.skillSearchTerm.set(term?.toString() ?? '');
+      });
   }
 
   loadProfile(): void {

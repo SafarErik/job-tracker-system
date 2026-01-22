@@ -193,16 +193,24 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configure CORS for Angular frontend
+// In production, this should be the Azure Static Web App or App Service URL
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() 
+    ?? new[] { "http://localhost:4200" };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials(); // Important for authentication cookies
     });
 });
+
+// Add health checks for Azure
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>();
 
 var app = builder.Build();
 
@@ -210,8 +218,13 @@ var app = builder.Build();
 // DATABASE INITIALIZATION (Development Only)
 // ============================================
 
+// ============================================
+// PRODUCTION SECURITY: Disable dangerous features
+// ============================================
+
 var resetDb = args.Contains("--reset-db");
 
+// CRITICAL: Database reset is ONLY allowed in Development
 if (resetDb && !app.Environment.IsDevelopment())
 {
     Console.ForegroundColor = ConsoleColor.Red;
@@ -239,7 +252,7 @@ if (app.Environment.IsDevelopment())
         await context.Database.EnsureCreatedAsync();
     }
     
-    // Seed initial data with demo user
+    // Seed initial data with demo user (Development only)
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -247,15 +260,41 @@ if (app.Environment.IsDevelopment())
         await DataSeeder.SeedAsync(context, userManager);
     }
 }
+else
+{
+    // Production: Apply migrations automatically (Azure best practice)
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
+}
 
 // ============================================
 // HTTP REQUEST PIPELINE
 // ============================================
 
+// PRODUCTION SECURITY: Swagger only in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    // Production: Add security headers
+    app.Use(async (context, next) =>
+    {
+        // Prevent clickjacking attacks
+        context.Response.Headers.Append("X-Frame-Options", "DENY");
+        // Prevent MIME type sniffing
+        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        // Enable XSS protection
+        context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+        // Strict Transport Security (HSTS)
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        // Content Security Policy
+        context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'");
+        await next();
+    });
 }
 
 app.UseHttpsRedirection();
@@ -267,6 +306,9 @@ app.UseCors("AllowAngular");
 // IMPORTANT: Order matters! Authentication must come before Authorization
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health check endpoint for Azure App Service
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 

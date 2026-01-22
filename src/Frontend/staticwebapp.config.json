@@ -10,10 +10,16 @@
   "auth": {
     "rolesSource": "/auth/me",
     "identityProviders": {
-      "google": {
-        "registration": {
-          "openIdConnectConfig": {
-            "wellKnownOpenIdConfiguration": "https://accounts.google.com/.well-known/openid-configuration"
+      "customOpenIdConnectProviders": {
+        "google": {
+          "registration": {
+            "clientIdSettingName": "GOOGLE_CLIENT_ID",
+            "clientCredential": {
+              "clientSecretSettingName": "GOOGLE_CLIENT_SECRET"
+            },
+            "openIdConnectConfiguration": {
+              "wellKnownOpenIdConfiguration": "https://accounts.google.com/.well-known/openid-configuration"
+            }
           }
         }
       }
@@ -36,12 +42,12 @@
   "routes": [
     {
       "route": "/api/*",
-      "methods": ["*"],
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       "allowedRoles": ["authenticated"]
     },
     {
       "route": "/auth/*",
-      "methods": ["*"],
+      "methods": ["GET", "POST", "OPTIONS"],
       "allowedRoles": ["unauthenticated", "authenticated"]
     },
     {

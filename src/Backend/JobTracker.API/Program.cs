@@ -8,6 +8,9 @@ using JobTracker.Infrastructure.Repositories;
 using JobTracker.Core.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.API.Extensions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using JobTracker.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -150,6 +153,77 @@ builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 // Register IHttpClientFactory for making HTTP requests
 // This is a best practice for connection reuse and proper lifetime management
 builder.Services.AddHttpClient();
+
+// ============================================
+// RATE LIMITING CONFIGURATION
+// ============================================
+
+// Configure rate limiting to prevent brute force attacks and DDoS
+builder.Services.AddMemoryCache();
+builder.Services.Configure<AspNetCoreRateLimit.IpRateLimitOptions>(options =>
+{
+    options.EnableEndpointRateLimiting = true;
+    options.StackBlockedRequests = false;
+    options.RealIpHeader = "X-Real-IP";
+    options.ClientIdHeader = "X-ClientId";
+    options.HttpStatusCode = 429; // Too Many Requests
+    
+    // General rules for all endpoints
+    options.GeneralRules = new List<AspNetCoreRateLimit.RateLimitRule>
+    {
+        // Global rate limit: 100 requests per minute per IP
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*",
+            Period = "1m",
+            Limit = 100
+        },
+        // Auth endpoints: Stricter limits to prevent brute force
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/auth/login",
+            Period = "1m",
+            Limit = 5  // Only 5 login attempts per minute
+        },
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/auth/register",
+            Period = "1h",
+            Limit = 3  // Only 3 registrations per hour per IP
+        },
+        // File upload: Limit to prevent abuse
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/documents/upload",
+            Period = "1m",
+            Limit = 10
+        }
+    };
+});
+
+// Register rate limiting services
+builder.Services.AddSingleton<AspNetCoreRateLimit.IIpPolicyStore, AspNetCoreRateLimit.MemoryCacheIpPolicyStore>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitCounterStore, AspNetCoreRateLimit.MemoryCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitConfiguration, AspNetCoreRateLimit.RateLimitConfiguration>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IProcessingStrategy, AspNetCoreRateLimit.AsyncKeyLockProcessingStrategy>();
+
+// ============================================
+// FLUENT VALIDATION CONFIGURATION
+// ============================================
+
+// Add FluentValidation for input validation
+builder.Services.AddValidatorsFromAssemblyContaining<JobTracker.Application.DTOs.Auth.RegisterDto>();
+builder.Services.AddFluentValidationAutoValidation();
+
+// ============================================
+// APPLICATION INSIGHTS (Production Monitoring)
+// ============================================
+
+// Add Application Insights for Azure monitoring and security event tracking
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
 
 // ============================================
 // API CONFIGURATION
@@ -299,8 +373,14 @@ else
 
 app.UseHttpsRedirection();
 
+// Rate limiting must come after routing but before authentication
+app.UseIpRateLimiting();
+
 // CORS must come before authentication
 app.UseCors("AllowAngular");
+
+// Security logging middleware for audit trails
+app.UseSecurityLogging();
 
 // Authentication & Authorization middleware
 // IMPORTANT: Order matters! Authentication must come before Authorization

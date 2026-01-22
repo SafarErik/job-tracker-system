@@ -43,6 +43,24 @@
       More secure than calling external tokeninfo endpoint - validates JWT signature locally.
     -->
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    
+    <!--
+      FluentValidation - for robust input validation and sanitization.
+      Provides expressive validation rules for DTOs.
+    -->
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    
+    <!--
+      Rate Limiting - for protecting against brute force and DDoS attacks.
+      Limits requests per IP address and endpoint.
+    -->
+    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    
+    <!--
+      Application Insights - for monitoring and security event logging.
+      Essential for production security monitoring on Azure.
+    -->
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,7 @@ import { RouterLink, Router } from '@angular/router';
 // Services
 import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 // Models
 import { JobApplication } from '../../models/job-application.model';
@@ -126,6 +127,7 @@ export class JobList implements OnInit {
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
     private readonly router: Router,
+    private readonly authService: AuthService,
   ) {}
 
   // ============================================
@@ -502,5 +504,47 @@ export class JobList implements OnInit {
    */
   viewApplicationDetail(id: number): void {
     this.router.navigate(['/view', id]);
+  }
+
+  /**
+   * Get personalized welcome message based on time of day and user status
+   */
+  getWelcomeMessage(): string {
+    const user = this.authService.currentUser();
+    const firstName = user?.firstName || 'there';
+    const hour = new Date().getHours();
+    const hasApplications = this.applications.length > 0;
+
+    if (!hasApplications) {
+      return `Welcome, ${firstName}!`;
+    }
+
+    if (hour < 12) {
+      return `Good morning, ${firstName}!`;
+    } else if (hour < 18) {
+      return `Good afternoon, ${firstName}!`;
+    } else {
+      return `Good evening, ${firstName}!`;
+    }
+  }
+
+  /**
+   * Get subtitle for welcome message
+   */
+  getWelcomeSubtitle(): string {
+    const hasApplications = this.applications.length > 0;
+    
+    if (!hasApplications) {
+      return "Let's start tracking your job applications";
+    }
+
+    const activeCount = this.getActiveCount(this.applications);
+    if (activeCount === 0) {
+      return 'Ready to add more applications?';
+    } else if (activeCount === 1) {
+      return `You have 1 active application in progress`;
+    } else {
+      return `You have ${activeCount} active applications in progress`;
+    }
   }
 }

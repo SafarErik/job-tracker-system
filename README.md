@@ -181,41 +181,44 @@ This application implements enterprise-grade security practices:
 
 ---
 
-## 🗄️ Database Strategy
+## 🗄️ Database
 
-This project uses a **dual-database strategy** for cost optimization:
+This project uses **SQL Server** for both development and production environments for consistency:
 
-| Environment     | Database   | Why?                                           |
+| Environment     | Database   | How?                                           |
 | --------------- | ---------- | ---------------------------------------------- |
-| **Development** | PostgreSQL | Free, Docker-friendly, feature-rich            |
-| **Production**  | SQL Server | 50% cheaper on Azure, better Azure integration |
+| **Development** | SQL Server | Docker container (mssql/server:2022-latest)    |
+| **Production**  | SQL Server | Azure SQL Database (Basic tier - $5/month)     |
 
-### How It Works
+### Connection String Configuration
 
-The database provider is selected via the `DatabaseProvider` setting in `appsettings.json`:
+Configure in `appsettings.json` or environment variables:
 
 ```json
 {
-  "DatabaseProvider": "PostgreSQL"
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,1433;Database=JobTracker;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;"
+  }
 }
 ```
 
-> **Note:** Set `DatabaseProvider` to `"PostgreSQL"` for local development (Docker), or `"SqlServer"` for Azure production deployment.
+### Local Development Setup
 
-**Entity Framework Core** handles the abstraction, so your code works identically with both databases. Migrations are provider-agnostic.
+```bash
+# Start SQL Server in Docker
+docker-compose up -d
 
-### Connection String Examples
+# Run migrations
+cd src/Backend
+dotnet ef database update --project JobTracker.Infrastructure --startup-project JobTracker.API
+```
 
-**PostgreSQL (Development):**
+### Azure Production
+
+Connection string is stored in Azure Key Vault and injected via environment variables.
 
 ```
-Host=localhost;Port=5433;Database=jobtracker;Username=postgres;Password=yourpassword
-```
-
-**SQL Server (Azure Production):**
-
-```
-Server=tcp:yourserver.database.windows.net,1433;Initial Catalog=jobtracker;User ID=admin;Password=YourPassword;Encrypt=True;
+Server=tcp:jobtracker-sql.database.windows.net,1433;Database=jobtracker;User ID=sqladmin;Password=...;Encrypt=True;
 ```
 
 ---

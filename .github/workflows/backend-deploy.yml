@@ -35,11 +35,18 @@ jobs:
         run: dotnet restore
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
+      - name: Build projects
+        run: |
+          dotnet build --configuration Release --no-restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
       - name: Apply database migrations
         run: |
-          dotnet ef database update --project ${{ env.INFRASTRUCTURE_PROJECT }} --startup-project ${{ env.WORKING_DIRECTORY }} --connection "${{ secrets.AZURE_SQL_CONNECTION_STRING }}" --verbose
+          dotnet ef database update --project ${{ env.INFRASTRUCTURE_PROJECT }} --startup-project ${{ env.WORKING_DIRECTORY }} --no-build --verbose
         env:
           ASPNETCORE_ENVIRONMENT: Production
+          DatabaseProvider: SqlServer
+          ConnectionStrings__DefaultConnection: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
 
   build-and-deploy:
     runs-on: ubuntu-latest

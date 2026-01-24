@@ -352,25 +352,8 @@ if (app.Environment.IsDevelopment())
         await DataSeeder.SeedAsync(context, userManager);
     }
 }
-else
-{
-    // Production: Apply migrations with error handling
-    try
-    {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Applying database migrations...");
-        await context.Database.MigrateAsync();
-        logger.LogInformation("Database migrations applied successfully.");
-    }
-    catch (Exception ex)
-    {
-        var logger = app.Services.GetRequiredService<ILogger<Program>>();
-        logger.LogCritical(ex, "Failed to apply database migrations. Application will terminate.");
-        throw; // Fail fast to avoid inconsistent state
-    }
-}
+// Production: Migrations are applied via GitHub Actions CI/CD pipeline before deployment
+// This prevents race conditions and ensures zero-downtime deployments
 
 // ============================================
 // HTTP REQUEST PIPELINE

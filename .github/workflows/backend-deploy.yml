@@ -12,10 +12,39 @@ env:
   AZURE_WEBAPP_NAME: jobtracker-api # Set this to your Azure App Service name
   DOTNET_VERSION: "10.0.x" # .NET version to use
   WORKING_DIRECTORY: "./src/Backend/JobTracker.API"
+  INFRASTRUCTURE_PROJECT: "./src/Backend/JobTracker.Infrastructure"
 
 jobs:
+  migrate-database:
+    runs-on: ubuntu-latest
+    name: Apply Database Migrations
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install EF Core tools
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Apply database migrations
+        run: |
+          dotnet ef database update --project ${{ env.INFRASTRUCTURE_PROJECT }} --startup-project ${{ env.WORKING_DIRECTORY }} --connection "${{ secrets.AZURE_SQL_CONNECTION_STRING }}" --verbose
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
+
   build-and-deploy:
     runs-on: ubuntu-latest
+    needs: migrate-database
+    name: Build and Deploy Backend
 
     steps:
       - name: Checkout code

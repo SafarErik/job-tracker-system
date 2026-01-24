@@ -185,10 +185,10 @@ This application implements enterprise-grade security practices:
 
 This project uses **SQL Server** for both development and production environments for consistency:
 
-| Environment     | Database   | How?                                           |
-| --------------- | ---------- | ---------------------------------------------- |
-| **Development** | SQL Server | Docker container (mssql/server:2022-latest)    |
-| **Production**  | SQL Server | Azure SQL Database (Basic tier - $5/month)     |
+| Environment     | Database   | How?                                        |
+| --------------- | ---------- | ------------------------------------------- |
+| **Development** | SQL Server | Docker container (mssql/server:2022-latest) |
+| **Production**  | SQL Server | Azure SQL Database (Basic tier - $5/month)  |
 
 ### Connection String Configuration
 

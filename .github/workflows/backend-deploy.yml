@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: jobtracker-api # Set this to your Azure App Service name
+  AZURE_WEBAPP_NAME: jobtracker-api-b7dsamfycgfudvfm # Set this to your Azure App Service name
   DOTNET_VERSION: "10.0.x" # .NET version to use
   WORKING_DIRECTORY: "./src/Backend/JobTracker.API"
   INFRASTRUCTURE_PROJECT: "./src/Backend/JobTracker.Infrastructure"

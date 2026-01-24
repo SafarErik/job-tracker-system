@@ -22,6 +22,7 @@
     - FluentValidation: For complex validation logic (optional, for future use)
   -->
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.3.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.0" />
   </ItemGroup>
 

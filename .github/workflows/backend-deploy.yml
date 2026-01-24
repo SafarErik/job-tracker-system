@@ -1,0 +1,50 @@
+name: Deploy Backend to Azure App Service
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - "src/Backend/**"
+      - ".github/workflows/backend-deploy.yml"
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: jobtracker-api # Set this to your Azure App Service name
+  DOTNET_VERSION: "10.0.x" # .NET version to use
+  WORKING_DIRECTORY: "./src/Backend/JobTracker.API"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Run tests (if any)
+        run: dotnet test --configuration Release --no-restore --verbosity normal
+        working-directory: ./src/Backend
+
+      - name: Publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{env.DOTNET_ROOT}}/myapp

@@ -8,18 +8,21 @@ using JobTracker.Infrastructure.Repositories;
 using JobTracker.Core.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.API.Extensions;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using JobTracker.API.Middleware;
+using AspNetCoreRateLimit;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
 // DATABASE CONFIGURATION
 // ============================================
+// Uses PostgreSQL for development (Docker) and SQL Server for production (Azure).
+// The provider is selected based on "DatabaseProvider" setting in appsettings.json.
+// See: Extensions/DatabaseServiceExtensions.cs for implementation details.
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Register DbContext with PostgreSQL and Identity support
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+builder.Services.AddDatabaseContext(builder.Configuration);
 
 // ============================================
 // ASP.NET CORE IDENTITY CONFIGURATION
@@ -152,10 +155,94 @@ builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddHttpClient();
 
 // ============================================
+// RATE LIMITING CONFIGURATION
+// ============================================
+
+// Configure rate limiting to prevent brute force attacks and DDoS
+builder.Services.AddMemoryCache();
+builder.Services.Configure<AspNetCoreRateLimit.IpRateLimitOptions>(options =>
+{
+    options.EnableEndpointRateLimiting = true;
+    options.StackBlockedRequests = false;
+    options.RealIpHeader = "X-Real-IP";
+    options.ClientIdHeader = "X-ClientId";
+    options.HttpStatusCode = 429; // Too Many Requests
+    
+    // General rules for all endpoints
+    options.GeneralRules = new List<AspNetCoreRateLimit.RateLimitRule>
+    {
+        // Global rate limit: 100 requests per minute per IP
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*",
+            Period = "1m",
+            Limit = 100
+        },
+        // Auth endpoints: Stricter limits to prevent brute force
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/auth/login",
+            Period = "1m",
+            Limit = 5  // Only 5 login attempts per minute
+        },
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/auth/register",
+            Period = "1h",
+            Limit = 3  // Only 3 registrations per hour per IP
+        },
+        // File upload: Limit to prevent abuse
+        new AspNetCoreRateLimit.RateLimitRule
+        {
+            Endpoint = "*/documents/upload",
+            Period = "1m",
+            Limit = 10
+        }
+    };
+});
+
+// Register distributed cache for rate limiting (supports multi-instance scaling)
+builder.Services.AddDistributedMemoryCache(); // Replace with Redis in production: AddStackExchangeRedisCache()
+
+// Register rate limiting services with distributed stores
+builder.Services.AddSingleton<AspNetCoreRateLimit.IIpPolicyStore, AspNetCoreRateLimit.DistributedCacheIpPolicyStore>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitCounterStore, AspNetCoreRateLimit.DistributedCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitConfiguration, AspNetCoreRateLimit.RateLimitConfiguration>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IProcessingStrategy, AspNetCoreRateLimit.AsyncKeyLockProcessingStrategy>();
+
+// ============================================
+// FLUENT VALIDATION CONFIGURATION
+// ============================================
+
+// Add FluentValidation for input validation
+builder.Services.AddValidatorsFromAssemblyContaining<JobTracker.Application.DTOs.Auth.RegisterDto>();
+builder.Services.AddFluentValidationAutoValidation();
+
+// ============================================
+// APPLICATION INSIGHTS (Production Monitoring)
+// ============================================
+
+// Add Application Insights for Azure monitoring and security event tracking
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddApplicationInsightsTelemetry();
+}
+
+// ============================================
 // API CONFIGURATION
 // ============================================
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Use safe encoder with explicit Unicode ranges for special characters (á, é, ñ, etc.)
+        // This keeps accented characters unescaped while HTML-sensitive characters stay escaped
+        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(
+            System.Text.Unicode.UnicodeRanges.BasicLatin,
+            System.Text.Unicode.UnicodeRanges.Latin1Supplement,
+            System.Text.Unicode.UnicodeRanges.LatinExtendedA,
+            System.Text.Unicode.UnicodeRanges.LatinExtendedB);
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger with JWT authentication support
@@ -193,16 +280,29 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Configure CORS for Angular frontend
+// In production, this should be the Azure Static Web App or App Service URL
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+// Treat empty arrays as absent - fall back to default localhost for development
+if (allowedOrigins == null || allowedOrigins.Length == 0)
+{
+    allowedOrigins = new[] { "http://localhost:4200" };
+}
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials(); // Important for authentication cookies
     });
 });
+
+// Add health checks for Azure (includes database connectivity check)
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("database");
 
 var app = builder.Build();
 
@@ -210,8 +310,13 @@ var app = builder.Build();
 // DATABASE INITIALIZATION (Development Only)
 // ============================================
 
+// ============================================
+// PRODUCTION SECURITY: Disable dangerous features
+// ============================================
+
 var resetDb = args.Contains("--reset-db");
 
+// CRITICAL: Database reset is ONLY allowed in Development
 if (resetDb && !app.Environment.IsDevelopment())
 {
     Console.ForegroundColor = ConsoleColor.Red;
@@ -239,7 +344,7 @@ if (app.Environment.IsDevelopment())
         await context.Database.EnsureCreatedAsync();
     }
     
-    // Seed initial data with demo user
+    // Seed initial data with demo user (Development only)
     using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -247,18 +352,66 @@ if (app.Environment.IsDevelopment())
         await DataSeeder.SeedAsync(context, userManager);
     }
 }
+else
+{
+    // Production: Apply migrations with error handling
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Applying database migrations...");
+        await context.Database.MigrateAsync();
+        logger.LogInformation("Database migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogCritical(ex, "Failed to apply database migrations. Application will terminate.");
+        throw; // Fail fast to avoid inconsistent state
+    }
+}
 
 // ============================================
 // HTTP REQUEST PIPELINE
 // ============================================
 
+// PRODUCTION SECURITY: Swagger only in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    // Production: Add security headers
+    app.Use(async (context, next) =>
+    {
+        // Prevent clickjacking attacks
+        context.Response.Headers.Append("X-Frame-Options", "DENY");
+        // Prevent MIME type sniffing
+        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        // Enable XSS protection
+        context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
+        // Strict Transport Security (HSTS)
+        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        // Content Security Policy - permissive for Angular SPA with external resources
+        context.Response.Headers.Append("Content-Security-Policy", 
+            "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            "font-src 'self' https://fonts.gstatic.com data:; " +
+            "img-src 'self' data: https: blob:; " +
+            "connect-src 'self' https://jobtracker-api.azurewebsites.net https://jobtracker-frontend.azurewebsites.net; " +
+            "frame-ancestors 'none'");
+        await next();
+    });
+}
 
 app.UseHttpsRedirection();
+
+// Rate limiting must come after routing but before authentication
+app.UseIpRateLimiting();
 
 // CORS must come before authentication
 app.UseCors("AllowAngular");
@@ -266,7 +419,14 @@ app.UseCors("AllowAngular");
 // Authentication & Authorization middleware
 // IMPORTANT: Order matters! Authentication must come before Authorization
 app.UseAuthentication();
+
+// Security logging middleware for audit trails (must come after authentication)
+app.UseSecurityLogging();
+
 app.UseAuthorization();
+
+// Health check endpoint for Azure App Service
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 

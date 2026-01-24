@@ -1,10 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace JobTracker.Application.DTOs.Auth;
 
 /// <summary>
 /// DTO for user registration requests.
 /// Contains all required information to create a new user account.
+/// Validation is handled by RegisterDtoValidator using FluentValidation.
 /// </summary>
 public class RegisterDto
 {
@@ -12,56 +11,44 @@ public class RegisterDto
     /// User's email address - will also be used as username.
     /// Must be unique in the system.
     /// </summary>
-    [Required(ErrorMessage = "Email is required")]
-    [EmailAddress(ErrorMessage = "Invalid email format")]
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// User's password.
     /// Must meet complexity requirements configured in Identity.
     /// </summary>
-    [Required(ErrorMessage = "Password is required")]
-    [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
     /// Password confirmation - must match Password.
     /// </summary>
-    [Required(ErrorMessage = "Password confirmation is required")]
-    [Compare("Password", ErrorMessage = "Passwords do not match")]
     public string ConfirmPassword { get; set; } = string.Empty;
 
     /// <summary>
     /// User's first name for personalization.
     /// </summary>
-    [Required(ErrorMessage = "First name is required")]
-    [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
     public string FirstName { get; set; } = string.Empty;
 
     /// <summary>
     /// User's last name for personalization.
     /// </summary>
-    [Required(ErrorMessage = "Last name is required")]
-    [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
     public string LastName { get; set; } = string.Empty;
 }
 
 /// <summary>
 /// DTO for login requests.
+/// Validation is handled by LoginDtoValidator using FluentValidation.
 /// </summary>
 public class LoginDto
 {
     /// <summary>
     /// User's email address.
     /// </summary>
-    [Required(ErrorMessage = "Email is required")]
-    [EmailAddress(ErrorMessage = "Invalid email format")]
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// User's password.
     /// </summary>
-    [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; } = string.Empty;
 
     /// <summary>
@@ -163,10 +150,8 @@ public class UserDto
 /// </summary>
 public class UpdateProfileDto
 {
-    [StringLength(50)]
     public string? FirstName { get; set; }
 
-    [StringLength(50)]
     public string? LastName { get; set; }
 
     public string? CurrentJobTitle { get; set; }
@@ -184,14 +169,9 @@ public class UpdateProfileDto
 /// </summary>
 public class ChangePasswordDto
 {
-    [Required(ErrorMessage = "Current password is required")]
     public string CurrentPassword { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "New password is required")]
-    [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
     public string NewPassword { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Password confirmation is required")]
-    [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
     public string ConfirmNewPassword { get; set; } = string.Empty;
 }

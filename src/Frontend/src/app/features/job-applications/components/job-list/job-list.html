@@ -1,6 +1,5 @@
+<!-- Job List Page Container -->
 <!-- 
-  Job List Page Container
-  
   Angular Template Syntax Guide:
   - *ngIf="condition" - Conditionally show/hide elements
   - *ngFor="let item of array" - Loop over arrays
@@ -10,6 +9,20 @@
 -->
 
 <div class="container mx-auto px-4 py-8 bg-secondary min-h-screen">
+  <!-- Personalized Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-content">
+      <div class="welcome-icon">👋</div>
+      <div class="welcome-text">
+        <h2 class="welcome-title">{{ getWelcomeMessage() }}</h2>
+        <p class="welcome-subtitle">{{ getWelcomeSubtitle() }}</p>
+      </div>
+    </div>
+    <div class="welcome-decoration">
+      <div class="sparkle">✨</div>
+    </div>
+  </div>
+
   <!-- Modern Page Header with Gradient -->
   <div class="modern-header mb-8">
     <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">

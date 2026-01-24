@@ -273,17 +273,18 @@ public class AuthController : ControllerBase
 
         // Define claims - these are pieces of information about the user
         // that will be encoded in the token
+        // FIX: Ensure proper UTF-8 encoding for special characters (e.g., from Google OAuth)
         var claims = new List<Claim>
         {
             // Standard claims
-            new Claim(ClaimTypes.NameIdentifier, user.Id), // User's unique ID
-            new Claim(ClaimTypes.Email, user.Email ?? ""),  // User's email
-            new Claim(ClaimTypes.Name, user.UserName ?? ""), // Username
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Unique token ID
+            new Claim(ClaimTypes.NameIdentifier, user.Id, ClaimValueTypes.String), // User's unique ID
+            new Claim(ClaimTypes.Email, user.Email ?? "", ClaimValueTypes.String),  // User's email
+            new Claim(ClaimTypes.Name, user.UserName ?? "", ClaimValueTypes.String), // Username
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString(), ClaimValueTypes.String), // Unique token ID
             
-            // Custom claims for our application
-            new Claim("firstName", user.FirstName ?? ""),
-            new Claim("lastName", user.LastName ?? "")
+            // Custom claims for our application - with explicit UTF-8 string type
+            new Claim("firstName", user.FirstName ?? "", ClaimValueTypes.String),
+            new Claim("lastName", user.LastName ?? "", ClaimValueTypes.String)
         };
 
         // Get token expiration from configuration
@@ -497,7 +498,7 @@ public class AuthController : ControllerBase
             }
             catch (InvalidJwtException ex)
             {
-                _logger.LogWarning("Invalid Google token: {Message}", ex.Message);
+                _logger.LogWarning(ex, "Invalid Google token");
                 return Unauthorized(new AuthResponseDto
                 {
                     Succeeded = false,

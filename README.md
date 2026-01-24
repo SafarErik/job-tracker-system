@@ -1,8 +1,13 @@
 # 🚀 JobTracker
 
-**Stop using spreadsheets.** --> A full-stack solution to track applications, manage documents, and visualize your career trajectory.
+**Stop using spreadsheets.** → A full-stack solution to track applications, manage documents, and visualize your career trajectory.
 
-JobTracker is a robust, "future-proof" architecture combining the raw performance of **ASP.NET Core 10** with the reactivity of **Angular 21**. It features a pristine **Clean Architecture** implementation, complete with JWT authentication, file management, and insightful analytics.
+JobTracker is a robust, production-ready architecture combining the raw performance of **ASP.NET Core 10** with the reactivity of **Angular 21**. It features a pristine **Clean Architecture** implementation, complete with JWT authentication, file management, and insightful analytics.
+
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular)](https://angular.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -23,12 +28,12 @@ JobTracker is a robust, "future-proof" architecture combining the raw performanc
 
 ## 🏗 Tech Stack
 
-| Layer        | Technology          | Highlights                                               |
-| ------------ | ------------------- | -------------------------------------------------------- |
-| **Frontend** | **Angular 21**      | Tailwind-ready, Signal-based reactivity, modular design. |
-| **Backend**  | **ASP.NET Core 10** | Web API, Identity, custom Middleware.                    |
-| **Database** | **PostgreSQL**      | Managed via Entity Framework Core.                       |
-| **DevOps**   | **Docker Compose**  | Orchestrates DB and pgAdmin for zero-friction dev.       |
+| Layer        | Technology                  | Highlights                                                 |
+| ------------ | --------------------------- | ---------------------------------------------------------- |
+| **Frontend** | **Angular 21**              | Tailwind-ready, Signal-based reactivity, modular design.   |
+| **Backend**  | **ASP.NET Core 10**         | Web API, Identity, custom Middleware.                      |
+| **Database** | **PostgreSQL / SQL Server** | PostgreSQL for dev, SQL Server for Azure (cost-optimized). |
+| **DevOps**   | **Docker Compose**          | Orchestrates DB and pgAdmin for zero-friction dev.         |
 
 ---
 
@@ -93,7 +98,7 @@ npm start
 
 ```
 
-_Frontend is now live at: `http://localhost:4200_`
+_Frontend is now live at: `http://localhost:4200`_
 
 ---
 
@@ -101,13 +106,17 @@ _Frontend is now live at: `http://localhost:4200_`
 
 Environment variables and `appsettings.json` keys you need to know:
 
-| Key                                   | Description                                |
-| ------------------------------------- | ------------------------------------------ |
-| `ConnectionStrings:DefaultConnection` | Postgres connection string.                |
-| `JwtSettings:SecretKey`               | **Required.** Must be distinct and strong. |
-| `Authentication:Google:ClientId`      | (Optional) For Google Sign-In support.     |
-| `Frontend:BaseUrl`                    | Used for OAuth callbacks/redirects.        |
-| `FileSystem:UploadPath`               | Location for storing user PDFs.            |
+| Key                                   | Description                                                   |
+| ------------------------------------- | ------------------------------------------------------------- |
+| `DatabaseProvider`                    | `PostgreSQL` (dev) or `SqlServer` (production/Azure).         |
+| `ConnectionStrings:DefaultConnection` | Database connection string (format depends on provider).      |
+| `JwtSettings:SecretKey`               | **Required.** Must be 32+ chars and cryptographically strong. |
+| `JwtSettings:Issuer`                  | Token issuer identifier.                                      |
+| `JwtSettings:Audience`                | Token audience identifier.                                    |
+| `Authentication:Google:ClientId`      | (Optional) For Google Sign-In support.                        |
+| `Authentication:Google:ClientSecret`  | (Optional) Google OAuth client secret.                        |
+| `Frontend:BaseUrl`                    | Used for OAuth callbacks/redirects.                           |
+| `AllowedOrigins`                      | Array of allowed CORS origins for production.                 |
 
 ---
 
@@ -152,3 +161,82 @@ cd src/Frontend && npm run build
 - **Swagger Power:** Use the "Authorize" button in Swagger UI (`/swagger`) with the token received from `/api/auth/login` to test protected endpoints manually.
 - **Resetting Data:** The `--reset-db` flag is destructive! It creates a fresh DB instance. Use only during early development.
 - **File Permissions:** Ensure the `src/Backend/JobTracker.API/uploads` folder is writable by the process running the API.
+
+---
+
+## 🔐 Security Features
+
+This application implements enterprise-grade security practices:
+
+| Feature                   | Description                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| **JWT Authentication**    | Stateless token-based auth with configurable expiration        |
+| **ASP.NET Core Identity** | Password hashing, lockout protection (5 attempts → 5 min lock) |
+| **Rate Limiting**         | IP-based throttling (100 req/min global, 5 login/min)          |
+| **Security Headers**      | X-Frame-Options, HSTS, CSP, X-Content-Type-Options             |
+| **Input Validation**      | FluentValidation for all DTOs                                  |
+| **File Upload Security**  | Type checking, size limits (10MB), path traversal prevention   |
+| **CORS Policy**           | Configurable allowed origins                                   |
+| **Security Logging**      | Middleware for audit trails and threat detection               |
+
+---
+
+## 🗄️ Database Strategy
+
+This project uses a **dual-database strategy** for cost optimization:
+
+| Environment     | Database   | Why?                                           |
+| --------------- | ---------- | ---------------------------------------------- |
+| **Development** | PostgreSQL | Free, Docker-friendly, feature-rich            |
+| **Production**  | SQL Server | 50% cheaper on Azure, better Azure integration |
+
+### How It Works
+
+The database provider is selected via the `DatabaseProvider` setting in `appsettings.json`:
+
+```json
+{
+  "DatabaseProvider": "PostgreSQL"
+}
+```
+
+> **Note:** Set `DatabaseProvider` to `"PostgreSQL"` for local development (Docker), or `"SqlServer"` for Azure production deployment.
+
+**Entity Framework Core** handles the abstraction, so your code works identically with both databases. Migrations are provider-agnostic.
+
+### Connection String Examples
+
+**PostgreSQL (Development):**
+
+```
+Host=localhost;Port=5433;Database=jobtracker;Username=postgres;Password=yourpassword
+```
+
+**SQL Server (Azure Production):**
+
+```
+Server=tcp:yourserver.database.windows.net,1433;Initial Catalog=jobtracker;User ID=admin;Password=YourPassword;Encrypt=True;
+```
+
+---
+
+## ☁️ Cloud Deployment
+
+This project is designed for deployment on **Microsoft Azure**:
+
+- **Frontend:** Azure App Service (shared B1 plan with backend - no extra cost!)
+- **Backend:** Azure App Service (.NET 10)
+- **Database:** Azure SQL Server (Basic tier - cost-optimized for students)
+- **Secrets:** Azure Key Vault
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.

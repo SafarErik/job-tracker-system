@@ -42,7 +42,7 @@ jobs:
 
       - name: Apply database migrations
         run: |
-          dotnet ef database update --project ${{ env.INFRASTRUCTURE_PROJECT }} --startup-project ${{ env.WORKING_DIRECTORY }} --no-build --verbose
+          dotnet ef database update --project ${{ env.INFRASTRUCTURE_PROJECT }} --startup-project ${{ env.WORKING_DIRECTORY }} --configuration Release --no-build --verbose
         env:
           ASPNETCORE_ENVIRONMENT: Production
           DatabaseProvider: SqlServer

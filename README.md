@@ -196,11 +196,11 @@ The database provider is selected via the `DatabaseProvider` setting in `appsett
 
 ```json
 {
-  "DatabaseProvider": "PostgreSQL", // Development
-  // or
-  "DatabaseProvider": "SqlServer" // Production (Azure)
+  "DatabaseProvider": "PostgreSQL"
 }
 ```
+
+> **Note:** Set `DatabaseProvider` to `"PostgreSQL"` for local development (Docker), or `"SqlServer"` for Azure production deployment.
 
 **Entity Framework Core** handles the abstraction, so your code works identically with both databases. Migrations are provider-agnostic.
 

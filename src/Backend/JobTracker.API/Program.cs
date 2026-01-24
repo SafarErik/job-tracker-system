@@ -201,9 +201,12 @@ builder.Services.Configure<AspNetCoreRateLimit.IpRateLimitOptions>(options =>
     };
 });
 
-// Register rate limiting services
-builder.Services.AddSingleton<AspNetCoreRateLimit.IIpPolicyStore, AspNetCoreRateLimit.MemoryCacheIpPolicyStore>();
-builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitCounterStore, AspNetCoreRateLimit.MemoryCacheRateLimitCounterStore>();
+// Register distributed cache for rate limiting (supports multi-instance scaling)
+builder.Services.AddDistributedMemoryCache(); // Replace with Redis in production: AddStackExchangeRedisCache()
+
+// Register rate limiting services with distributed stores
+builder.Services.AddSingleton<AspNetCoreRateLimit.IIpPolicyStore, AspNetCoreRateLimit.DistributedCacheIpPolicyStore>();
+builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitCounterStore, AspNetCoreRateLimit.DistributedCacheRateLimitCounterStore>();
 builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitConfiguration, AspNetCoreRateLimit.RateLimitConfiguration>();
 builder.Services.AddSingleton<AspNetCoreRateLimit.IProcessingStrategy, AspNetCoreRateLimit.AsyncKeyLockProcessingStrategy>();
 
@@ -351,10 +354,22 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // Production: Apply migrations automatically (Azure best practice)
-    using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await context.Database.MigrateAsync();
+    // Production: Apply migrations with error handling
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Applying database migrations...");
+        await context.Database.MigrateAsync();
+        logger.LogInformation("Database migrations applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogCritical(ex, "Failed to apply database migrations. Application will terminate.");
+        throw; // Fail fast to avoid inconsistent state
+    }
 }
 
 // ============================================
@@ -380,8 +395,15 @@ else
         context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
         // Strict Transport Security (HSTS)
         context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-        // Content Security Policy
-        context.Response.Headers.Append("Content-Security-Policy", "default-src 'self'");
+        // Content Security Policy - permissive for Angular SPA with external resources
+        context.Response.Headers.Append("Content-Security-Policy", 
+            "default-src 'self'; " +
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+            "font-src 'self' https://fonts.gstatic.com data:; " +
+            "img-src 'self' data: https: blob:; " +
+            "connect-src 'self' https://jobtracker-api.azurewebsites.net https://jobtracker-frontend.azurewebsites.net; " +
+            "frame-ancestors 'none'");
         await next();
     });
 }

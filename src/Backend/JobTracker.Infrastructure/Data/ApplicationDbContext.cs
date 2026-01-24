@@ -64,10 +64,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             // Configure relationship with User (many applications per user)
+            // Restrict deletes to avoid SQL Server cascade path conflicts
             entity.HasOne(j => j.User)
                 .WithMany(u => u.JobApplications)
                 .HasForeignKey(j => j.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Delete applications when user is deleted
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure relationship with Company (many applications per company)
+            // Restrict deletes to avoid SQL Server cascade path conflicts
+            entity.HasOne(j => j.Company)
+                .WithMany(c => c.JobApplications)
+                .HasForeignKey(j => j.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configure relationship with Document
             entity.HasOne(j => j.Document)

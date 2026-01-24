@@ -476,7 +476,7 @@ namespace JobTracker.Infrastructure.Migrations
                     b.HasOne("JobTracker.Core.Entities.Company", "Company")
                         .WithMany("JobApplications")
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("JobTracker.Core.Entities.Document", "Document")
@@ -487,7 +487,7 @@ namespace JobTracker.Infrastructure.Migrations
                     b.HasOne("JobTracker.Core.Entities.ApplicationUser", "User")
                         .WithMany("JobApplications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Company");

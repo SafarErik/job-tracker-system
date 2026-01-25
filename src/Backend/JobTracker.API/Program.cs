@@ -300,6 +300,18 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Configure forwarded headers for reverse proxy support (Render, Azure, etc.)
+// Required for correct hostname/protocol detection behind load balancers
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
+                             | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                             | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost;
+    // Clear default restrictions to trust any proxy
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Add health checks for Azure (includes database connectivity check)
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>("database");
@@ -358,6 +370,10 @@ if (app.Environment.IsDevelopment())
 // ============================================
 // HTTP REQUEST PIPELINE
 // ============================================
+
+// Configure forwarded headers for reverse proxy (Render, Azure, etc.)
+// This MUST be the first middleware to correctly identify the original request
+app.UseForwardedHeaders();
 
 // PRODUCTION SECURITY: Swagger only in Development
 if (app.Environment.IsDevelopment())

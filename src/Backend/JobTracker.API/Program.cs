@@ -129,6 +129,11 @@ if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientS
         {
             options.ClientId = googleClientId;
             options.ClientSecret = googleClientSecret;
+            
+            // Configure correlation cookie for cross-origin OAuth
+            // Required when frontend and backend are on different domains
+            options.CorrelationCookie.SameSite = SameSiteMode.None;
+            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
         });
     Console.WriteLine("✅ Google OAuth enabled");
 }
@@ -293,7 +298,25 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
+        policy.SetIsOriginAllowed(origin =>
+               {
+                   // Allow configured origins
+                   if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                       return true;
+                   
+                   // Allow all Vercel preview deployments (*.vercel.app)
+                   if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                   {
+                       if (uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase))
+                           return true;
+                   }
+                   
+                   // Allow localhost for development
+                   if (origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
+                       return true;
+                       
+                   return false;
+               })
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials(); // Important for authentication cookies

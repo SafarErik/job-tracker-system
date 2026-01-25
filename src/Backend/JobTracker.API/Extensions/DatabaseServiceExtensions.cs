@@ -34,19 +34,18 @@ public static class DatabaseServiceExtensions
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(connectionString, sqlOptions =>
+            options.UseNpgsql(connectionString, npgsqlOptions =>
             {
-                sqlOptions.CommandTimeout(30);
-                // Enable retry on failure - essential for Azure SQL
-                // Also helps with Docker SQL Server startup delays
-                sqlOptions.EnableRetryOnFailure(
+                npgsqlOptions.CommandTimeout(30);
+                // Enable retry on failure
+                npgsqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(10),
-                    errorNumbersToAdd: null);
+                    errorCodesToAdd: null);
             });
         });
 
-        Console.WriteLine("📊 Database Provider: SQL Server");
+        Console.WriteLine("📊 Database Provider: PostgreSQL (Neon)");
 
         return services;
     }

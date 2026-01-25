@@ -4,19 +4,19 @@ WORKDIR /src
 
 # Copy solution file and project files first (for better caching)
 COPY ["JobTracker.slnx", "./"]
-COPY ["src/Backend/JobTracker.API/JobTracker.API.csproj", "src/Backend/JobTracker.API/"]
-COPY ["src/Backend/JobTracker.Application/JobTracker.Application.csproj", "src/Backend/JobTracker.Application/"]
-COPY ["src/Backend/JobTracker.Core/JobTracker.Core.csproj", "src/Backend/JobTracker.Core/"]
-COPY ["src/Backend/JobTracker.Infrastructure/JobTracker.Infrastructure.csproj", "src/Backend/JobTracker.Infrastructure/"]
+COPY ["JobTracker.API/JobTracker.API.csproj", "JobTracker.API/"]
+COPY ["JobTracker.Application/JobTracker.Application.csproj", "JobTracker.Application/"]
+COPY ["JobTracker.Core/JobTracker.Core.csproj", "JobTracker.Core/"]
+COPY ["JobTracker.Infrastructure/JobTracker.Infrastructure.csproj", "JobTracker.Infrastructure/"]
 
 # Restore dependencies
-RUN dotnet restore "src/Backend/JobTracker.API/JobTracker.API.csproj"
+RUN dotnet restore "JobTracker.API/JobTracker.API.csproj"
 
 # Copy the rest of the source code
 COPY . .
 
 # Build and Publish
-WORKDIR "/src/src/Backend/JobTracker.API"
+WORKDIR "/src/JobTracker.API"
 RUN dotnet build "JobTracker.API.csproj" -c Release -o /app/build
 RUN dotnet publish "JobTracker.API.csproj" -c Release -o /app/publish
 

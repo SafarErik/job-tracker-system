@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.DTOs.Companies;
+using System.Security.Claims;
 
 namespace JobTracker.API.Controllers;
 
@@ -20,7 +21,8 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
     {
-        var companies = await _repository.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var companies = await _repository.GetAllByUserIdAsync(userId!);
         
         // Mapping --> Entity => DTO
         // projection => We project the data by hand
@@ -48,7 +50,12 @@ public class CompaniesController : ControllerBase
         if(company == null)
         {
             return NotFound(); // 404 - ID Doesn't exist!
-
+        }
+        
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (company.UserId != userId)
+        {
+             return NotFound();
         }
 
         var dto = new CompanyDto
@@ -82,6 +89,12 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
 
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (company.UserId != userId)
+        {
+             return NotFound();
+        }
+
         var detailDto = new CompanyDetailDto
         {
             Id = company.Id,
@@ -112,6 +125,7 @@ public class CompaniesController : ControllerBase
     public async Task<ActionResult<CompanyDto>> Create(CreateCompanyDto createDto) {
         var company = new Company
         {
+            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
             Name = createDto.Name,
             Website = createDto.Website,
             Address = createDto.Address,
@@ -147,6 +161,12 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
 
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (existingCompany.UserId != userId)
+        {
+             return Forbid();
+        }
+
         // Mapping: update existing entity with new values  
         existingCompany.Name = updateDto.Name;
         existingCompany.Website = updateDto.Website;
@@ -168,6 +188,12 @@ public class CompaniesController : ControllerBase
         if (existingCompany == null)
         {
             return NotFound();
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (existingCompany.UserId != userId)
+        {
+             return Forbid();
         }
 
         await _repository.DeleteAsync(id);

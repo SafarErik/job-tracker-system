@@ -14,6 +14,10 @@ public class Company
 
     // The ? means nullable, so Website can be null
     public string? Website {get; set;}
+    
+    // User Relationship
+    public required string UserId { get; set; }
+    public ApplicationUser? User { get; set; }
 
     // Company's physical address
     public string? Address {get; set;}

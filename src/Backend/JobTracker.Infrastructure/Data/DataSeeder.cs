@@ -55,7 +55,7 @@ public static class DataSeeder
         // ============================================
         // 2. CREATE COMPANIES
         // ============================================
-        var companies = CreateCompanies();
+        var companies = CreateCompanies(demoUser.Id);
         await context.Companies.AddRangeAsync(companies);
         await context.SaveChangesAsync();
         Console.WriteLine("✅ 10 companies created");
@@ -125,66 +125,76 @@ public static class DataSeeder
     /// <summary>
     /// Creates sample companies for job applications
     /// </summary>
-    private static List<Company> CreateCompanies()
+    private static List<Company> CreateCompanies(string userId)
     {
         return new List<Company>
         {
             new Company
             {
+                UserId = userId,
                 Name = "Google Hungary",
                 Website = "https://careers.google.com",
                 HRContactName = "Peter Nagy"
             },
             new Company
             {
+                UserId = userId,
                 Name = "Microsoft Hungary",
                 Website = "https://careers.microsoft.com",
                 HRContactName = "Anna Kovacs"
             },
             new Company
             {
+                UserId = userId,
                 Name = "EPAM Systems",
                 Website = "https://www.epam.com/careers",
                 HRContactName = "Gabor Szabo"
             },
             new Company
             {
+                UserId = userId,
                 Name = "Morgan Stanley Budapest",
                 Website = "https://www.morganstanley.com/careers",
                 HRContactName = "Eva Toth"
             },
             new Company
             {
+                UserId = userId,
                 Name = "Ericsson Hungary",
                 Website = "https://www.ericsson.com/careers",
                 HRContactName = "Janos Kiss"
             },
             new Company
             {
+                UserId = userId,
                 Name = "Prezi",
                 Website = "https://prezi.com/jobs",
                 HRContactName = "Zsofia Horvath"
             },
             new Company
             {
+                UserId = userId,
                 Name = "LogMeIn (GoTo)",
                 Website = "https://www.goto.com/company/careers",
                 HRContactName = "Balazs Molnar"
             },
             new Company
             {
+                UserId = userId,
                 Name = "NNG (Sygic)",
                 Website = "https://www.nng.com/careers",
                 HRContactName = "Katalin Varga"
             },
             new Company
             {
+                UserId = userId,
                 Name = "SAP Hungary",
                 Website = "https://jobs.sap.com",
                 HRContactName = "Laszlo Nemeth"
             },
             new Company
             {
+                UserId = userId,
                 Name = "Bitrise",
                 Website = "https://www.bitrise.io/careers",
                 HRContactName = "Dora Farkas"

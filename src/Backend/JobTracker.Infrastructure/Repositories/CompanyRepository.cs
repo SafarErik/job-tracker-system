@@ -23,6 +23,14 @@ public class CompanyRepository : ICompanyRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Company>> GetAllByUserIdAsync(string userId)
+    {
+        return await _context.Companies
+            .Where(c => c.UserId == userId)
+            .Include(c => c.JobApplications)
+            .ToListAsync();
+    }
+
     public async Task<Company?> GetByIdAsync(int id)
     {
         return await _context.Companies

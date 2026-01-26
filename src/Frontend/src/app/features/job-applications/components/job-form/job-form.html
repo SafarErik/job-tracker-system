@@ -165,15 +165,50 @@
                 {{ doc.originalFileName }}
               </button>
             </div>
+
+            <!-- Upload: Progressive disclosure based on existing documents -->
+            @if (documents.length === 0) {
+            <!-- No CVs yet: Show full upload box -->
+            <div class="upload-box prominent">
+              <label class="upload-label" for="documentUploadFirst">
+                <input id="documentUploadFirst" type="file" class="upload-input" accept=".pdf"
+                  (change)="onDocumentSelected($event)" />
+                <div class="upload-content">
+                  <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <span class="upload-title">Upload your first CV</span>
+                  <span class="upload-subtitle">PDF only • Max 10MB</span>
+                </div>
+              </label>
+            </div>
+            } @else {
+            <!-- Has CVs: Show compact upload link -->
+            @if (!isUploadExpanded) {
+            <button type="button" class="upload-toggle" (click)="isUploadExpanded = true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Or upload a new CV
+            </button>
+            } @else {
             <div class="upload-box">
-              <label class="upload-label" for="documentUpload">
-                <input id="documentUpload" type="file" class="upload-input" accept=".pdf"
+              <label class="upload-label" for="documentUploadNew">
+                <input id="documentUploadNew" type="file" class="upload-input" accept=".pdf"
                   (change)="onDocumentSelected($event)" />
                 <div class="upload-content">
                   <span class="upload-title">Upload a new CV</span>
                   <span class="upload-subtitle">PDF only • Max 10MB</span>
                 </div>
               </label>
+              <button type="button" class="upload-collapse" (click)="isUploadExpanded = false">Cancel</button>
+            </div>
+            }
+            }
+
+            <!-- Upload progress/error (always visible when uploading) -->
+            <div class="upload-status" *ngIf="isUploadingDocument || uploadError">
               <div class="upload-progress" *ngIf="isUploadingDocument">
                 <div class="upload-bar" [style.width.%]="uploadProgress"></div>
                 <span>{{ uploadProgress }}%</span>

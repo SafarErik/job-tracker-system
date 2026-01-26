@@ -76,6 +76,7 @@ export class JobFormComponent implements OnInit {
   isUploadingDocument = false;
   uploadProgress = 0;
   uploadError = '';
+  isUploadExpanded = false;
 
   // AI Drafts Panel State
   isAiPanelOpen = signal(false);

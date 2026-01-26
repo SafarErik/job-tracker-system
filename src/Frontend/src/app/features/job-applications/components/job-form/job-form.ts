@@ -533,35 +533,43 @@ export class JobFormComponent implements OnInit {
     this.isGeneratingCoverLetter.set(true);
     this.coverLetterDraft.set('');
 
-    // Simulated streaming text for demo purposes
+    // Get company name for personalization
+    const companyId = this.jobForm.get('companyId')?.value;
+    const company = this.companies.find((c) => c.id === Number(companyId));
+    const companyName = company?.name || '[Company Name]';
+    const position = this.jobForm.get('position')?.value || '[Position]';
+
+    // Improved cover letter with proper narrative structure
     const demoText = `Dear Hiring Manager,
 
-I am writing to express my strong interest in the ${this.jobForm.get('position')?.value || 'position'} position at your company. With my background in software development and passion for building scalable solutions, I am confident I would be a valuable addition to your team.
+I was excited to discover the ${position} opening at ${companyName}. Having followed your company's innovative work in the industry, I believe my experience and passion for building impactful software solutions make me an ideal candidate for this role.
 
-Throughout my career, I have demonstrated expertise in:
-• Full-stack development with modern frameworks
-• Building and maintaining RESTful APIs
-• Collaborating with cross-functional teams
-• Delivering high-quality code on time
+In my current position, I've had the opportunity to lead critical projects that directly impacted user experience and business outcomes. I architected and delivered a real-time data pipeline that reduced processing latency by 60%, and I mentored junior developers while fostering a culture of code quality and continuous improvement. These experiences have prepared me to hit the ground running at ${companyName}.
 
-I am particularly excited about this opportunity because it aligns perfectly with my career goals and technical interests. I am eager to bring my skills and enthusiasm to your organization.
+What draws me to this opportunity is ${companyName}'s commitment to excellence and the chance to work on problems that matter. I'm particularly impressed by your team's approach to building scalable, user-centered products. I'm confident that my technical skills, combined with my collaborative mindset, would allow me to contribute meaningfully from day one.
 
-Thank you for considering my application. I look forward to the opportunity to discuss how I can contribute to your team's success.
+I would welcome the opportunity to discuss how my background aligns with your team's needs and how I can contribute to ${companyName}'s continued success. Thank you for considering my application.
 
-Best regards,
-[Your Name]`;
+Warm regards,
+[Your Name]
+[Your Email]
+[Your Phone]`;
 
     // Simulate reading resume phase
     this.aiGenerationStatus.set('Reading resume...');
     await this.delay(800);
 
+    // Simulate analyzing job description phase
+    this.aiGenerationStatus.set('Analyzing job description...');
+    await this.delay(600);
+
     // Simulate drafting phase with streaming
-    this.aiGenerationStatus.set('Drafting cover letter...');
+    this.aiGenerationStatus.set('Crafting your cover letter...');
 
     // Stream character by character for effect
-    for (let i = 0; i < demoText.length; i += 3) {
-      await this.delay(15);
-      this.coverLetterDraft.set(demoText.slice(0, i + 3));
+    for (let i = 0; i < demoText.length; i += 4) {
+      await this.delay(12);
+      this.coverLetterDraft.set(demoText.slice(0, i + 4));
     }
 
     this.coverLetterDraft.set(demoText);
@@ -573,22 +581,27 @@ Best regards,
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  copyToClipboard(): void {
+    const content = this.coverLetterDraft();
+    if (!content) return;
+
+    navigator.clipboard.writeText(content).then(() => {
+      this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
+    }).catch(() => {
+      this.notificationService.error('Failed to copy to clipboard', 'Error');
+    });
+  }
+
   saveAsPdf(): void {
     const content = this.coverLetterDraft();
     if (!content) return;
 
-    // Create a simple text blob and download
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'cover-letter.txt';
-    link.click();
-    URL.revokeObjectURL(url);
-
-    this.notificationService.success(
-      'Cover letter saved! (Note: PDF generation requires backend integration)',
-      'Draft Saved',
+    // TODO: In production, this will call the backend to generate a PDF
+    // and attach it to this application's document list
+    // For now, show a message that this requires backend integration
+    this.notificationService.info(
+      'PDF generation requires backend integration. Coming soon!',
+      'Feature Coming Soon',
     );
   }
 }

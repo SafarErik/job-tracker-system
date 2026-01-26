@@ -17,23 +17,23 @@ JobTracker is a robust, production-ready architecture combining the raw performa
 - **📂 Smart Pipeline:** Manage applications with a Kanban-style logical flow (Applied → Interview → Offer).
 - **📄 Document Hub:** Upload resumes and cover letters (PDF, up to 10MB) linked directly to specific applications.
 - **📊 Career Analytics:** Visual stats on your success rate, interview frequency, and offer ratios.
-- **🏢 Company Intel:** specific history tracking per company.
 - **🛠 Clean Architecture:** Strict separation of concerns:
-- **Core:** Domain entities & Interfaces (Pure C#)
-- **Application:** Business logic, DTOs, Use Cases
-- **Infrastructure:** EF Core, Repositories, File Systems
-- **API:** Controllers & Entry points
+    - **Core:** Domain entities & Interfaces (Pure C#)
+    - **Application:** Business logic, DTOs, Use Cases
+    - **Infrastructure:** EF Core, Repositories, File Systems
+    - **API:** Controllers & Entry points
 
 ---
 
 ## 🏗 Tech Stack
 
-| Layer        | Technology                  | Highlights                                                 |
-| ------------ | --------------------------- | ---------------------------------------------------------- |
-| **Frontend** | **Angular 21**              | Tailwind-ready, Signal-based reactivity, modular design.   |
-| **Backend**  | **ASP.NET Core 10**         | Web API, Identity, custom Middleware.                      |
-| **Database** | **PostgreSQL / SQL Server** | PostgreSQL for dev, SQL Server for Azure (cost-optimized). |
-| **DevOps**   | **Docker Compose**          | Orchestrates DB and pgAdmin for zero-friction dev.         |
+| Layer        | Technology           | Highlights                                            |
+| ------------ | -------------------- | ----------------------------------------------------- |
+| **Frontend** | **Angular 21**       | Tailwind-ready, Signal-based reactivity, modular design. |
+| **Backend**  | **ASP.NET Core 10**  | Web API, Identity, custom Middleware.                 |
+| **Database** | **PostgreSQL**       | **Neon** (Serverless Postgres) for production.        |
+| **DevOps**   | **Docker Compose**   | Local development environment.                        |
+| **Deploy**   | **Render & Vercel**  | Modern cloud deployment pipeline.                     |
 
 ---
 
@@ -53,7 +53,6 @@ Launch Postgres and pgAdmin in the background:
 
 ```bash
 docker-compose up -d
-
 ```
 
 > **Note:** The database will be available at `localhost:5433` and pgAdmin at `localhost:5050`.
@@ -65,15 +64,13 @@ Navigate to the API folder and configure your secrets.
 ```bash
 # Set your JWT Secret (Critical!)
 dotnet user-secrets set "JwtSettings:SecretKey" "Your_Super_Strong_Secret_Key_Here_123!" --project src/Backend/JobTracker.API
-
 ```
 
-**Database Seeding (The easy way):**
+**Database Seeding:**
 Run the app with the reset flag to apply migrations and seed the demo user.
 
 ```bash
 dotnet run --project src/Backend/JobTracker.API -- --reset-db
-
 ```
 
 > **Demo Credentials:** `demo@jobtracker.com` / `Demo123!`
@@ -82,7 +79,6 @@ dotnet run --project src/Backend/JobTracker.API -- --reset-db
 
 ```bash
 dotnet run --project src/Backend/JobTracker.API
-
 ```
 
 _API is now live at: `http://localhost:5053` (Swagger at `/swagger`)_
@@ -95,7 +91,6 @@ In a new terminal:
 cd src/Frontend
 npm install
 npm start
-
 ```
 
 _Frontend is now live at: `http://localhost:4200`_
@@ -108,8 +103,7 @@ Environment variables and `appsettings.json` keys you need to know:
 
 | Key                                   | Description                                                   |
 | ------------------------------------- | ------------------------------------------------------------- |
-| `DatabaseProvider`                    | `PostgreSQL` (dev) or `SqlServer` (production/Azure).         |
-| `ConnectionStrings:DefaultConnection` | Database connection string (format depends on provider).      |
+| `ConnectionStrings:DefaultConnection` | Database connection string (PostgreSQL format).               |
 | `JwtSettings:SecretKey`               | **Required.** Must be 32+ chars and cryptographically strong. |
 | `JwtSettings:Issuer`                  | Token issuer identifier.                                      |
 | `JwtSettings:Audience`                | Token audience identifier.                                    |
@@ -120,117 +114,57 @@ Environment variables and `appsettings.json` keys you need to know:
 
 ---
 
-## 📂 Project Anatomy
+## ☁️ Cloud Deployment
 
-```text
-src/
-├── 📂 Backend
-│   ├── 🧱 JobTracker.API            # Entry point, Controllers, Swagger, DI
-│   ├── 🏗️ JobTracker.Infrastructure # EF Core, Migrations, Repositories
-│   ├── 🧠 JobTracker.Application    # DTOs, Validators, Interfaces
-│   └── 💎 JobTracker.Core           # Domain Entities, Enums (Pure)
-├── 📂 Frontend                      # Angular 21 Application
-└── 🐳 docker-compose.yml            # Local dev environment
+This project is optimized for a modern, serverless-first deployment stack.
 
-```
+### 1. Database: Neon (PostgreSQL)
 
----
+1.  Create a project on [Neon.tech](https://neon.tech).
+2.  Get your **Postgres Connection String**.
+3.  Use this connection string in your Backend environment variables.
 
-## 📦 Production Build
+### 2. Backend: Render
 
-**Backend:**
+1.  Create a new **Web Service** on [Render](https://render.com).
+2.  Connect your repository.
+3.  **Build Command:** `dotnet publish src/Backend/JobTracker.API -c Release -o out`
+4.  **Start Command:** `dotnet out/JobTracker.API.dll`
+5.  **Environment Variables:**
+    - `ASPNETCORE_ENVIRONMENT`: `Production`
+    - `ConnectionStrings__DefaultConnection`: `your_neon_connection_string`
+    - `JwtSettings__SecretKey`: `your_secret_key`
 
-```bash
-dotnet publish src/Backend/JobTracker.API -c Release -o publish
+### 3. Frontend: Vercel
 
-```
-
-**Frontend:**
-
-```bash
-cd src/Frontend && npm run build
-
-```
-
-> **Security Tip:** In production, ensure `JwtSettings:SecretKey` is injected via environment variables and strictly limit CORS origins in `Program.cs`.
-
----
-
-## 💡 Developer Tips
-
-- **Swagger Power:** Use the "Authorize" button in Swagger UI (`/swagger`) with the token received from `/api/auth/login` to test protected endpoints manually.
-- **Resetting Data:** The `--reset-db` flag is destructive! It creates a fresh DB instance. Use only during early development.
-- **File Permissions:** Ensure the `src/Backend/JobTracker.API/uploads` folder is writable by the process running the API.
-
----
-
-## 🔐 Security Features
-
-This application implements enterprise-grade security practices:
-
-| Feature                   | Description                                                    |
-| ------------------------- | -------------------------------------------------------------- |
-| **JWT Authentication**    | Stateless token-based auth with configurable expiration        |
-| **ASP.NET Core Identity** | Password hashing, lockout protection (5 attempts → 5 min lock) |
-| **Rate Limiting**         | IP-based throttling (100 req/min global, 5 login/min)          |
-| **Security Headers**      | X-Frame-Options, HSTS, CSP, X-Content-Type-Options             |
-| **Input Validation**      | FluentValidation for all DTOs                                  |
-| **File Upload Security**  | Type checking, size limits (10MB), path traversal prevention   |
-| **CORS Policy**           | Configurable allowed origins                                   |
-| **Security Logging**      | Middleware for audit trails and threat detection               |
+1.  Import your project into [Vercel](https://vercel.com).
+2.  **Root Directory:** `src/Frontend`
+3.  **Build Command:** `npm run build`
+4.  **Output Directory:** `dist/job-tracker/browser`
+5.  All routing issues are handled by `vercel.json`.
 
 ---
 
 ## 🗄️ Database
 
-This project uses **SQL Server** for both development and production environments for consistency:
+This project uses **PostgreSQL** for both development and production consistency.
 
-| Environment     | Database   | How?                                        |
-| --------------- | ---------- | ------------------------------------------- |
-| **Development** | SQL Server | Docker container (mssql/server:2022-latest) |
-| **Production**  | SQL Server | Azure SQL Database (Basic tier - $5/month)  |
+### Connection String Format
 
-### Connection String Configuration
-
-Configure in `appsettings.json` or environment variables:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost,1433;Database=JobTracker;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;"
-  }
-}
+```
+Host=ep-xyz.aws.neon.tech;Database=neondb;Username=user;Password=pass;sslmode=require
 ```
 
 ### Local Development Setup
 
 ```bash
-# Start SQL Server in Docker
+# Start PostgreSQL in Docker
 docker-compose up -d
 
 # Run migrations
 cd src/Backend
 dotnet ef database update --project JobTracker.Infrastructure --startup-project JobTracker.API
 ```
-
-### Azure Production
-
-Connection string is stored in Azure Key Vault and injected via environment variables.
-
-```
-Server=tcp:jobtracker-sql.database.windows.net,1433;Database=jobtracker;User ID=sqladmin;Password=...;Encrypt=True;
-```
-
----
-
-## ☁️ Cloud Deployment
-
-This project is designed for deployment on **Microsoft Azure**:
-
-- **Frontend:** Azure App Service (shared B1 plan with backend - no extra cost!)
-- **Backend:** Azure App Service (.NET 10)
-- **Database:** Azure SQL Server (Basic tier - cost-optimized for students)
-- **Secrets:** Azure Key Vault
 
 ---
 

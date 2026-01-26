@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -77,6 +77,12 @@ export class JobFormComponent implements OnInit {
   uploadProgress = 0;
   uploadError = '';
 
+  // AI Drafts Panel State
+  isAiPanelOpen = signal(false);
+  isGeneratingCoverLetter = signal(false);
+  aiGenerationStatus = signal('');
+  coverLetterDraft = signal('');
+
   // ============================================
   // UI State Indicators
   // ============================================
@@ -154,7 +160,8 @@ export class JobFormComponent implements OnInit {
       companySearch: [''],
       status: [JobApplicationStatus.Applied, [Validators.required]],
       jobUrl: ['', []], // Optional
-      description: ['', []], // Optional
+      jobDescription: ['', []], // Job posting text for AI analysis
+      description: ['', []], // Private notes (salary, thoughts)
       documentId: [null, []], // Optional - CV selection
     });
   }
@@ -230,6 +237,7 @@ export class JobFormComponent implements OnInit {
           companyId: application.companyId,
           status: application.status,
           jobUrl: application.jobUrl || '',
+          jobDescription: application.jobDescription || '',
           description: application.description || '',
           documentId: application.documentId || null,
         });
@@ -504,4 +512,84 @@ export class JobFormComponent implements OnInit {
 
     return Array.from(new Set(positions)).sort((a, b) => a.localeCompare(b));
   }
+
+  // ============================================
+  // AI Drafts Panel Methods
+  // ============================================
+
+  toggleAiPanel(): void {
+    this.isAiPanelOpen.update((open) => !open);
+  }
+
+  get canGenerateCoverLetter(): boolean {
+    const hasJobDescription = !!this.jobForm.get('jobDescription')?.value?.trim();
+    const hasDocument = !!this.jobForm.get('documentId')?.value;
+    return hasJobDescription && hasDocument && !this.isGeneratingCoverLetter();
+  }
+
+  async generateCoverLetter(): Promise<void> {
+    if (!this.canGenerateCoverLetter) return;
+
+    this.isGeneratingCoverLetter.set(true);
+    this.coverLetterDraft.set('');
+
+    // Simulated streaming text for demo purposes
+    const demoText = `Dear Hiring Manager,
+
+I am writing to express my strong interest in the ${this.jobForm.get('position')?.value || 'position'} position at your company. With my background in software development and passion for building scalable solutions, I am confident I would be a valuable addition to your team.
+
+Throughout my career, I have demonstrated expertise in:
+• Full-stack development with modern frameworks
+• Building and maintaining RESTful APIs
+• Collaborating with cross-functional teams
+• Delivering high-quality code on time
+
+I am particularly excited about this opportunity because it aligns perfectly with my career goals and technical interests. I am eager to bring my skills and enthusiasm to your organization.
+
+Thank you for considering my application. I look forward to the opportunity to discuss how I can contribute to your team's success.
+
+Best regards,
+[Your Name]`;
+
+    // Simulate reading resume phase
+    this.aiGenerationStatus.set('Reading resume...');
+    await this.delay(800);
+
+    // Simulate drafting phase with streaming
+    this.aiGenerationStatus.set('Drafting cover letter...');
+
+    // Stream character by character for effect
+    for (let i = 0; i < demoText.length; i += 3) {
+      await this.delay(15);
+      this.coverLetterDraft.set(demoText.slice(0, i + 3));
+    }
+
+    this.coverLetterDraft.set(demoText);
+    this.aiGenerationStatus.set('');
+    this.isGeneratingCoverLetter.set(false);
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  saveAsPdf(): void {
+    const content = this.coverLetterDraft();
+    if (!content) return;
+
+    // Create a simple text blob and download
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'cover-letter.txt';
+    link.click();
+    URL.revokeObjectURL(url);
+
+    this.notificationService.success(
+      'Cover letter saved! (Note: PDF generation requires backend integration)',
+      'Draft Saved',
+    );
+  }
 }
+

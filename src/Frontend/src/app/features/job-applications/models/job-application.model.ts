@@ -4,7 +4,8 @@ export interface JobApplication {
   id: number;
   position: string;
   jobUrl?: string;
-  description?: string;
+  jobDescription?: string; // Full job posting text for AI analysis
+  description?: string; // Private notes (salary, thoughts, etc.)
   appliedAt: string; // ISO date string in JSON
   status: JobApplicationStatus;
   companyId: number;
@@ -17,7 +18,9 @@ export interface CreateJobApplication {
   position: string;
   companyId: number;
   jobUrl?: string;
-  description?: string;
+  jobDescription?: string; // Full job posting text for AI analysis
+  description?: string; // Private notes (salary, thoughts, etc.)
   status: JobApplicationStatus;
   documentId?: string | null;
 }
+

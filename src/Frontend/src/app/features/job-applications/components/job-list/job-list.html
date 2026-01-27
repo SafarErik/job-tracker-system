@@ -21,8 +21,8 @@
         <!-- View Switcher -->
         <div class="inline-flex rounded-lg border border-border bg-card p-1">
           <!-- Grid View Button -->
-          <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'ghost'" size="sm"
-            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -31,8 +31,8 @@
           </button>
 
           <!-- Kanban View Button -->
-          <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'ghost'" size="sm"
-            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
@@ -41,8 +41,8 @@
           </button>
 
           <!-- Calendar View Button -->
-          <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'ghost'" size="sm"
-            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Add New Button -->
-        <a routerLink="/new" hlmBtn class="gap-2">
+        <a routerLink="/new" hlmBtn variant="default" class="gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>

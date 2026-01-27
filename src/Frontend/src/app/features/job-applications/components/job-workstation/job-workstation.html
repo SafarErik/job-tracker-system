@@ -17,9 +17,9 @@
 
     <!-- Main Content -->
     @if (application() && !isLoading()) {
-    <!-- Header - Transparent -->
-    <header class="px-6 py-6 flex items-center gap-4">
-        <button hlmBtn variant="ghost" size="icon" (click)="goBack()" aria-label="Go back">
+    <header
+        class="sticky top-0 z-50 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-md border-b border-border shadow-sm transition-all duration-200">
+        <button hlmBtn variant="ghost" size="icon" (click)="goBack()" aria-label="Go back" class="hover:bg-muted">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>

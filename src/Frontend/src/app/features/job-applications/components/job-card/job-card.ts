@@ -15,6 +15,7 @@ import {
     HlmCardFooter,
 } from '@spartan-ng/helm/card';
 import { HlmBadge } from '@spartan-ng/helm/badge';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
@@ -35,6 +36,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
         HlmCardContent,
         HlmCardFooter,
         HlmBadge,
+        ...HlmButtonImports,
     ],
     templateUrl: './job-card.html',
     styleUrl: './job-card.css',

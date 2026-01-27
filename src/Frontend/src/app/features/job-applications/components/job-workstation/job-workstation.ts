@@ -24,7 +24,7 @@ import {
 } from '../../models/ai-analysis.model';
 import { Document } from '../../../documents/models/document.model';
 
-type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview';
+type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
 
 @Component({
     selector: 'app-job-workstation',
@@ -53,6 +53,7 @@ export class JobWorkstationComponent implements OnInit {
         { id: 'coach', label: 'AI Career Coach', icon: '🤖' },
         { id: 'documents', label: 'Documents Studio', icon: '📁' },
         { id: 'interview', label: 'Interview Prep', icon: '🎤' },
+        { id: 'strategy', label: 'Strategy', icon: '🎯' },
     ];
 
     // Status management
@@ -90,6 +91,16 @@ export class JobWorkstationComponent implements OnInit {
 
     // Mobile menu
     isMobileMenuOpen = signal(false);
+
+    // Strategy tab
+    targetSalary = signal<number | null>(null);
+    actualOffer = signal<number | null>(null);
+    equityBonus = signal('');
+    greenFlags = signal<string[]>([]);
+    redFlags = signal<string[]>([]);
+    strategyNotes = signal('');
+    newGreenFlag = signal('');
+    newRedFlag = signal('');
 
     // Computed values
     matchScoreColor = computed(() => {
@@ -393,5 +404,37 @@ Best regards,
 
     private delay(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    // Strategy tab methods
+    addGreenFlag(): void {
+        const flag = this.newGreenFlag().trim();
+        if (flag) {
+            this.greenFlags.update((flags) => [...flags, flag]);
+            this.newGreenFlag.set('');
+        }
+    }
+
+    removeGreenFlag(index: number): void {
+        this.greenFlags.update((flags) => flags.filter((_, i) => i !== index));
+    }
+
+    addRedFlag(): void {
+        const flag = this.newRedFlag().trim();
+        if (flag) {
+            this.redFlags.update((flags) => [...flags, flag]);
+            this.newRedFlag.set('');
+        }
+    }
+
+    removeRedFlag(index: number): void {
+        this.redFlags.update((flags) => flags.filter((_, i) => i !== index));
+    }
+
+    // Computed: Is offer below target?
+    isOfferBelowTarget(): boolean {
+        const target = this.targetSalary();
+        const offer = this.actualOffer();
+        return offer !== null && offer > 0 && target !== null && offer < target;
     }
 }

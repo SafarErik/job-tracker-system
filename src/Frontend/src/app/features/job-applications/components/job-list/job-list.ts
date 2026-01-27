@@ -14,6 +14,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 // Components
 import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
+import { JobCardComponent } from '../job-card/job-card';
 
 /**
  * View Mode Enum
@@ -46,6 +47,7 @@ export enum ViewMode {
     RouterLink, // Required for routerLink directive in template
     KanbanBoardComponent, // Kanban view
     CalendarViewComponent, // Calendar view
+    JobCardComponent, // Enhanced job card
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',

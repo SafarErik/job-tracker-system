@@ -35,58 +35,31 @@
         <!-- Modern View Switcher with Gradient -->
         <div class="modern-view-switcher">
           <!-- Grid View Button -->
-          <button
-            (click)="switchView(ViewMode.Grid)"
-            [class.active]="isViewActive(ViewMode.Grid)"
-            class="view-btn"
-            title="Grid View"
-            type="button"
-          >
+          <button (click)="switchView(ViewMode.Grid)" [class.active]="isViewActive(ViewMode.Grid)" class="view-btn"
+            title="Grid View" type="button">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             Grid
           </button>
 
           <!-- Kanban View Button -->
-          <button
-            (click)="switchView(ViewMode.Kanban)"
-            [class.active]="isViewActive(ViewMode.Kanban)"
-            class="view-btn"
-            title="Kanban Board View"
-            type="button"
-          >
+          <button (click)="switchView(ViewMode.Kanban)" [class.active]="isViewActive(ViewMode.Kanban)" class="view-btn"
+            title="Kanban Board View" type="button">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
             Kanban
           </button>
 
           <!-- Calendar View Button -->
-          <button
-            (click)="switchView(ViewMode.Calendar)"
-            [class.active]="isViewActive(ViewMode.Calendar)"
-            class="view-btn"
-            title="Calendar View"
-            type="button"
-          >
+          <button (click)="switchView(ViewMode.Calendar)" [class.active]="isViewActive(ViewMode.Calendar)"
+            class="view-btn" title="Calendar View" type="button">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Calendar
           </button>
@@ -95,12 +68,7 @@
         <!-- Modern Add New Button -->
         <a routerLink="/new" class="modern-add-btn">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add New
         </a>
@@ -109,19 +77,12 @@
   </div>
 
   <!-- Modern Quick Stats Dashboard -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length > 0"
-    class="modern-stats-container mb-8"
-  >
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="modern-stats-container mb-8">
     <div class="stats-header">
       <h2 class="stats-title">
         <svg class="stats-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
         Quick Stats
       </h2>
@@ -133,12 +94,8 @@
       <div class="stat-card">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <span class="stat-label">Total</span>
         </div>
@@ -150,12 +107,7 @@
       <div class="stat-card stat-active">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           <span class="stat-label stat-label-active">Active</span>
         </div>
@@ -167,20 +119,16 @@
       <div class="stat-card stat-interview">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <span class="stat-label stat-label-interview">Interview</span>
         </div>
         <p class="stat-value stat-value-interview">
           {{
-            getStatusCount(Status.Interviewing, applications) +
-              getStatusCount(Status.PhoneScreen, applications) +
-              getStatusCount(Status.TechnicalTask, applications)
+          getStatusCount(Status.Interviewing, applications) +
+          getStatusCount(Status.PhoneScreen, applications) +
+          getStatusCount(Status.TechnicalTask, applications)
           }}
         </p>
         <p class="stat-description">Stages</p>
@@ -190,12 +138,8 @@
       <div class="stat-card stat-offers">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
           </svg>
           <span class="stat-label stat-label-offers">Offers</span>
         </div>
@@ -207,12 +151,7 @@
       <div class="stat-card stat-rejected">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
           <span class="stat-label stat-label-rejected">Rejected</span>
         </div>
@@ -226,12 +165,8 @@
       <div class="stat-card stat-response">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
           </svg>
           <span class="stat-label stat-label-response">Response</span>
         </div>
@@ -243,12 +178,8 @@
       <div class="stat-card stat-success">
         <div class="stat-header">
           <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
           </svg>
           <span class="stat-label stat-label-success">Success</span>
         </div>
@@ -259,55 +190,29 @@
   </div>
 
   <!-- Search & Filter Bar -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length > 0"
-    class="search-filter-bar mb-8"
-  >
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="search-filter-bar mb-8">
     <div class="search-input">
       <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-      <input
-        #searchInput
-        type="text"
-        placeholder="Search by position, company, notes, or URL..."
-        [value]="searchTerm"
-        (input)="onSearchChange(searchInput.value)"
-      />
-      <button
-        *ngIf="searchTerm"
-        class="clear-search"
-        (click)="onSearchChange('')"
-        type="button"
-        aria-label="Clear search"
-      >
+      <input #searchInput type="text" placeholder="Search by position, company, notes, or URL..." [value]="searchTerm"
+        (input)="onSearchChange(searchInput.value)" />
+      <button *ngIf="searchTerm" class="clear-search" (click)="onSearchChange('')" type="button"
+        aria-label="Clear search">
         ×
       </button>
     </div>
 
     <div class="filter-group">
       <div class="filter-dropdown">
-        <button
-          type="button"
-          class="filter-trigger"
-          (click)="openStatusFilter()"
-          (blur)="closeStatusFilter()"
-        >
+        <button type="button" class="filter-trigger" (click)="openStatusFilter()" (blur)="closeStatusFilter()">
           <span>{{ selectedStatusFilterLabel }}</span>
           <span class="filter-chevron">▾</span>
         </button>
         <div class="filter-menu" *ngIf="isStatusFilterOpen">
-          <button
-            *ngFor="let filter of statusFilters"
-            type="button"
-            class="filter-option"
-            (click)="selectStatusFilter(filter.value)"
-          >
+          <button *ngFor="let filter of statusFilters" type="button" class="filter-option"
+            (click)="selectStatusFilter(filter.value)">
             {{ filter.label }}
           </button>
         </div>
@@ -322,12 +227,8 @@
           <button type="button" class="filter-option" (mousedown)="selectCompanyFilter('all')">
             All Companies
           </button>
-          <button
-            *ngFor="let company of companyOptions"
-            type="button"
-            class="filter-option"
-            (mousedown)="selectCompanyFilter(company.id)"
-          >
+          <button *ngFor="let company of companyOptions" type="button" class="filter-option"
+            (mousedown)="selectCompanyFilter(company.id)">
             {{ company.name }}
           </button>
         </div>
@@ -345,18 +246,13 @@
     Angular removes it completely from the DOM when false
   -->
   <div *ngIf="isLoading" class="text-center py-12">
-    <div
-      class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"
-    ></div>
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
     <p class="mt-4 text-gray-600">Loading applications...</p>
   </div>
 
   <!-- Error Message -->
   <!-- Only shown when errorMessage has a value (not null) -->
-  <div
-    *ngIf="errorMessage && !isLoading"
-    class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
-  >
+  <div *ngIf="errorMessage && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
     <div class="flex">
       <div class="flex-shrink-0">
         <span class="text-red-400">⚠️</span>
@@ -364,11 +260,8 @@
       <div class="ml-3">
         <h3 class="text-sm font-medium text-red-800">Error</h3>
         <p class="mt-2 text-sm text-red-700">{{ errorMessage }}</p>
-        <button
-          (click)="loadApplications()"
-          class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
-          type="button"
-        >
+        <button (click)="loadApplications()" class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+          type="button">
           Try Again →
         </button>
       </div>
@@ -377,19 +270,15 @@
 
   <!-- Empty State -->
   <!-- Shown when: not loading, no error, and applications array is empty -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length === 0"
-    class="bg-white rounded-lg shadow-lg p-12 text-center"
-  >
+  <div *ngIf="!isLoading && !errorMessage && applications.length === 0"
+    class="bg-white rounded-lg shadow-lg p-12 text-center">
     <div class="text-6xl mb-4">📭</div>
     <h2 class="text-2xl font-bold text-gray-900 mb-2">No Applications Yet</h2>
     <p class="text-gray-600 mb-6">
       Start tracking your job search journey by adding your first application.
     </p>
-    <a
-      routerLink="/new"
-      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition"
-    >
+    <a routerLink="/new"
+      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
@@ -398,12 +287,9 @@
   </div>
 
   <!-- Empty Search Results -->
-  <div
-    *ngIf="
+  <div *ngIf="
       !isLoading && !errorMessage && applications.length > 0 && visibleApplications.length === 0
-    "
-    class="bg-white rounded-lg shadow-lg p-12 text-center"
-  >
+    " class="bg-white rounded-lg shadow-lg p-12 text-center">
     <div class="text-5xl mb-4">🔍</div>
     <h2 class="text-2xl font-bold text-gray-900 mb-2">No Results</h2>
     <p class="text-gray-600 mb-6">We couldn't find any applications matching your filters.</p>
@@ -415,134 +301,15 @@
     <!-- Grid View -->
     <div *ngIf="currentView === ViewMode.Grid">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <button
-          *ngFor="let app of visibleApplications"
-          type="button"
-          (click)="viewApplicationDetail(app.id)"
-          class="grid-card-clickable bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer hover:scale-105 hover:-translate-y-1 text-left border-0 p-0"
-          [title]="'View details for ' + app.position"
-        >
-          <!-- Card Header -->
-          <div class="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4">
-            <h3 class="text-xl font-bold text-white truncate" [title]="app.position">
-              {{ app.position }}
-            </h3>
-            <p class="text-indigo-100 text-sm mt-1">
-              {{ app.companyName || 'Unknown Company' }}
-            </p>
-          </div>
-
-          <!-- Card Body -->
-          <div class="px-6 py-4">
-            <!-- Status Badge -->
-            <div class="mb-4">
-              <span
-                [ngClass]="getStatusClass(app.status)"
-                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-              >
-                {{ getStatusLabel(app.status) }}
-              </span>
-            </div>
-
-            <!-- Application Details -->
-            <div class="space-y-3 text-sm">
-              <!-- Applied Date -->
-              <div class="flex items-start">
-                <svg
-                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <div>
-                  <p class="text-gray-500">Applied</p>
-                  <p class="text-gray-900 font-medium">{{ formatDate(app.appliedAt) }}</p>
-                </div>
-              </div>
-
-              <!-- Description (if exists) -->
-              <div *ngIf="app.description" class="flex items-start">
-                <svg
-                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <div class="flex-1">
-                  <p class="text-gray-500">Notes</p>
-                  <p class="text-gray-700 line-clamp-2">{{ app.description }}</p>
-                </div>
-              </div>
-
-              <!-- Job URL (if exists) -->
-              <div *ngIf="app.jobUrl" class="flex items-start">
-                <svg
-                  class="w-4 h-4 text-gray-400 mr-2 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  />
-                </svg>
-                <div class="flex-1">
-                  <p class="text-gray-500">Job Posting</p>
-                  <a
-                    [href]="app.jobUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    (click)="$event.stopPropagation()"
-                    class="text-indigo-600 hover:text-indigo-800 hover:underline truncate block"
-                  >
-                    View Posting →
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Footer - View Details Hint -->
-          <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
-            <p class="text-sm text-gray-600 flex items-center justify-center gap-2 font-medium">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Click to view details →
-            </p>
-          </div>
-        </button>
+        <app-job-card *ngFor="let app of visibleApplications" [application]="app"
+          (openWorkstation)="viewApplicationDetail($event)"></app-job-card>
       </div>
     </div>
 
     <!-- Kanban View -->
     <div *ngIf="currentView === ViewMode.Kanban">
-      <app-kanban-board
-        [applications]="visibleApplications"
-        (applicationUpdated)="onApplicationUpdated()"
-      ></app-kanban-board>
+      <app-kanban-board [applications]="visibleApplications"
+        (applicationUpdated)="onApplicationUpdated()"></app-kanban-board>
     </div>
 
     <!-- Calendar View -->

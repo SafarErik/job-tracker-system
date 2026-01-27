@@ -2,6 +2,34 @@
   max-width: 1600px;
   margin: 0 auto;
   padding: 1.5rem;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+/* Bento Card - Unified Card Component */
+.bento-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--card-foreground);
+  margin: 0;
+}
+
+/* Spinner for loading states */
+.spinner-sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 /* Loading & Error States */

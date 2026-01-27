@@ -1,77 +1,9 @@
 /* ============================================
    Candidate Workstation - Main Styles
-   Using CSS Variables for Theme Support
    ============================================ */
 
 :host {
-    /* Light Theme (Default) */
-    --bg-gradient-start: #f8fafc;
-    /* slate-50 */
-    --bg-gradient-end: #f1f5f9;
-    /* slate-100 */
-    --bg-card: rgba(255, 255, 255, 0.9);
-    --bg-header: rgba(255, 255, 255, 0.8);
-    --bg-input: #ffffff;
-    --bg-hover: #f1f5f9;
-
-    --border-color: #e2e8f0;
-    /* slate-200 */
-    --border-dashed: #cbd5e1;
-
-    --text-primary: #0f172a;
-    /* slate-900 */
-    --text-secondary: #64748b;
-    /* slate-500 */
-    --text-muted: #94a3b8;
-    /* slate-400 */
-
-    --accent-color: #6366f1;
-    /* indigo-500 */
-    --accent-glow: rgba(99, 102, 241, 0.2);
-
-    /* Status Colors */
-    --success-bg: rgba(34, 197, 94, 0.1);
-    --success-text: #15803d;
-    --warning-bg: rgba(234, 179, 8, 0.1);
-    --warning-text: #a16207;
-}
-
-:host-context(.dark) {
-    /* Dark Theme Overrides */
-    --bg-gradient-start: #0f172a;
-    /* slate-900 */
-    --bg-gradient-end: #1e293b;
-    /* slate-800 */
-    --bg-card: rgba(30, 41, 59, 0.6);
-    --bg-header: rgba(30, 41, 59, 0.8);
-    --bg-input: #0f172a;
-    --bg-hover: #334155;
-
-    --border-color: #334155;
-    /* slate-700 */
-    --border-dashed: #334155;
-
-    --text-primary: #f1f5f9;
-    /* slate-100 */
-    --text-secondary: #94a3b8;
-    /* slate-400 */
-    --text-muted: #64748b;
-    /* slate-500 */
-
-    --accent-color: #818cf8;
-    /* indigo-400 */
-    --accent-glow: rgba(99, 102, 241, 0.2);
-
-    --success-bg: rgba(34, 197, 94, 0.2);
-    --success-text: #4ade80;
-    --warning-bg: rgba(234, 179, 8, 0.2);
-    --warning-text: #facc15;
-}
-
-.workstation-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
-    color: var(--text-primary);
+    display: block;
 }
 
 /* Loading & Error States */
@@ -83,14 +15,14 @@
     justify-content: center;
     min-height: 60vh;
     gap: 1rem;
-    color: #94a3b8;
+    color: var(--muted-foreground);
 }
 
 .spinner {
     width: 3rem;
     height: 3rem;
-    border: 3px solid #334155;
-    border-top-color: #6366f1;
+    border: 3px solid var(--border);
+    border-top-color: var(--primary);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -114,19 +46,11 @@
    Header
    ============================================ */
 
-.workstation-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
-    background: var(--bg-header);
-    border-bottom: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
+/* ============================================
+   Header
+   ============================================ */
 
+/* Styles largely handled by Tailwind in template now */
 .btn-back-icon {
     display: flex;
     align-items: center;
@@ -144,44 +68,6 @@
 .btn-back-icon:hover {
     background: #475569;
     color: #e2e8f0;
-}
-
-.header-main {
-    flex: 1;
-}
-
-.header-title-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.position-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin: 0;
-}
-
-.company-name {
-    font-size: 1rem;
-    color: #94a3b8;
-    margin: 0.25rem 0 0;
-}
-
-.match-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.375rem 0.75rem;
-    border-radius: 9999px;
-    font-weight: 600;
-}
-
-.match-label {
-    font-size: 0.75rem;
-    color: #94a3b8;
 }
 
 /* Status Dropdown */
@@ -237,8 +123,6 @@
     background: #6366f1;
     color: white;
 }
-
-/* NOTE: Tab Navigation CSS removed - now using Spartan Tabs (hlmTabs, hlmTabsList, hlmTabsTrigger) */
 
 /* ============================================
    Tab Content

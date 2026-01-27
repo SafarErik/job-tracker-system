@@ -31,7 +31,7 @@ export class CompanyDetailsComponent implements OnInit {
     private readonly companyService: CompanyService,
     private readonly intelligenceService: CompanyIntelligenceService,
     private readonly notificationService: NotificationService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -200,6 +200,42 @@ export class CompanyDetailsComponent implements OnInit {
     return statusMap[status] || 'status-unknown';
   }
 
+  /**
+   * Get status dot color class for timeline
+   */
+  getStatusDotClass(status: string): string {
+    const dotMap: Record<string, string> = {
+      Applied: 'bg-blue-500',
+      PhoneScreen: 'bg-cyan-500',
+      TechnicalTask: 'bg-yellow-500',
+      Interviewing: 'bg-purple-500',
+      Interview: 'bg-purple-500',
+      Offer: 'bg-green-500',
+      Rejected: 'bg-red-500',
+      Accepted: 'bg-green-600',
+      Ghosted: 'bg-zinc-400',
+    };
+    return dotMap[status] || 'bg-zinc-400';
+  }
+
+  /**
+   * Get status badge color class for timeline
+   */
+  getStatusBadgeClass(status: string): string {
+    const badgeMap: Record<string, string> = {
+      Applied: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+      PhoneScreen: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
+      TechnicalTask: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+      Interviewing: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+      Interview: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+      Offer: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+      Rejected: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+      Accepted: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
+      Ghosted: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400',
+    };
+    return badgeMap[status] || 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400';
+  }
+
   formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -225,4 +261,3 @@ export class CompanyDetailsComponent implements OnInit {
     // In production, would save to backend
   }
 }
-

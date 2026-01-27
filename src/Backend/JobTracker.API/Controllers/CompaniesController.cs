@@ -186,7 +186,7 @@ public class CompaniesController : ControllerBase
         }
         if (existingCompany.UserId != userId)
         {
-             return Forbid();
+             return NotFound();
         }
 
         // Mapping: update existing entity with new values  
@@ -219,7 +219,7 @@ public class CompaniesController : ControllerBase
         }
         if (existingCompany.UserId != userId)
         {
-             return Forbid();
+             return NotFound();
         }
 
         await _repository.DeleteAsync(id);

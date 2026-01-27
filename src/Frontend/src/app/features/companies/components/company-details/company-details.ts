@@ -94,8 +94,12 @@ export class CompanyDetailsComponent implements OnInit {
     let domain = '';
     if (details.website) {
       try {
-        const url = new URL(details.website);
-        domain = url.hostname.replace('www.', '');
+        let website = details.website;
+        if (!/^https?:\/\//i.test(website)) {
+          website = `http://${website}`;
+        }
+        const url = new URL(website);
+        domain = url.hostname.replace(/^www\./, '');
       } catch {
         // Fallback for malformed URLs
       }

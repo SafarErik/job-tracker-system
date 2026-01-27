@@ -14,7 +14,7 @@ export class HlmCard {
 	constructor() {
 		classes(
 			() =>
-				'group/card ring-foreground/10 bg-card text-card-foreground flex flex-col gap-6 overflow-hidden rounded-xl py-6 text-sm shadow-xs ring-1 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
+				'group/card bg-card text-card-foreground flex flex-col gap-6 overflow-hidden rounded-xl py-6 text-sm border border-zinc-200 dark:border-zinc-800 transition-all duration-300 hover:border-indigo-300 dark:hover:border-indigo-800 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl',
 		);
 	}
 }

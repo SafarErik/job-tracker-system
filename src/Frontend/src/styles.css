@@ -537,51 +537,81 @@ app-root {
 
     --radius: 0.5rem;
 
-    /* Indigo-Zinc Light via HSL */
-    --background: 0 0% 100%;
+    /* Neo-Professional Light Theme: Indigo/Zinc/Amber */
+    --background: 240 5% 98%;
+    /* Zinc-50 #FAFAFA */
     --foreground: 240 10% 4%;
+    /* Zinc-950 */
     --card: 0 0% 100%;
+    /* White */
     --card-foreground: 240 10% 4%;
+    /* Zinc-950 */
     --popover: 0 0% 100%;
+    /* White */
     --popover-foreground: 240 10% 4%;
-    --primary: 243 75% 59%;
+    /* Zinc-950 */
+    --primary: 239 84% 67%;
+    /* Indigo-600 #4F46E5 */
     --primary-foreground: 0 0% 100%;
+    /* White */
     --secondary: 240 5% 96%;
+    /* Zinc-100 */
     --secondary-foreground: 240 6% 10%;
     --muted: 240 5% 96%;
+    /* Zinc-100 */
     --muted-foreground: 240 4% 46%;
-    --accent: 240 5% 96%;
+    /* Zinc-500 */
+    --accent: 38 92% 50%;
+    /* Amber-500 #F59E0B - Success/Offer/High Match */
     --accent-foreground: 240 6% 10%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 6% 90%;
+    /* Zinc-200 */
     --input: 240 6% 90%;
-    --ring: 243 75% 59%;
+    /* Zinc-200 */
+    --ring: 239 84% 67%;
+    /* Indigo-600 */
 }
 
 :root.dark {
     color-scheme: dark;
 
-    /* Indigo-Zinc Dark via HSL */
+    /* Neo-Professional Dark Theme: Indigo/Zinc */
     --background: 240 10% 4%;
+    /* Zinc-950 #09090B */
     --foreground: 0 0% 100%;
-    --card: 240 10% 4%;
+    /* White */
+    --card: 240 6% 10%;
+    /* Zinc-900 #18181B */
     --card-foreground: 0 0% 100%;
-    --popover: 240 10% 4%;
+    /* White */
+    --popover: 240 6% 10%;
+    /* Zinc-900 */
     --popover-foreground: 0 0% 100%;
-    --primary: 243 75% 59%;
+    /* White */
+    --primary: 239 84% 67%;
+    /* Indigo-600 #4F46E5 */
     --primary-foreground: 0 0% 100%;
+    /* White */
     --secondary: 240 4% 16%;
+    /* Zinc-800 */
     --secondary-foreground: 0 0% 100%;
     --muted: 240 4% 16%;
+    /* Zinc-800 */
     --muted-foreground: 240 5% 65%;
-    --accent: 240 4% 16%;
-    --accent-foreground: 0 0% 100%;
+    /* Zinc-400 */
+    --accent: 38 92% 50%;
+    /* Amber-500 #F59E0B */
+    --accent-foreground: 240 6% 10%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
     --border: 240 4% 16%;
+    /* Zinc-800 */
     --input: 240 4% 16%;
-    --ring: 243 75% 59%;
+    /* Zinc-800 */
+    --ring: 239 84% 67%;
+    /* Indigo-600 */
 }
 
 @layer base {

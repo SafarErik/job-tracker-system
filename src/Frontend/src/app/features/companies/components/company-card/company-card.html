@@ -1,54 +1,87 @@
-<div class="company-card" (click)="onViewDossier()">
-    <!-- Header with Logo and Industry Badge -->
-    <div class="card-header">
-        <div class="logo-container">
+<div class="group relative flex h-full flex-col cursor-pointer rounded-xl border border-primary bg-elevated p-5 shadow-sm transition-all duration-300 hover:border-purple-500 hover:shadow-xl hover:shadow-purple-500/10 dark:shadow-none"
+    (click)="onViewDossier()">
+
+    <!-- Header -->
+    <div class="mb-4 flex items-start justify-between">
+        <!-- Dynamic Logo -->
+        <div
+            class="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-primary bg-elevated p-1 shadow-sm">
             @if (getLogoUrl() && !logoFailed) {
-            <img [src]="getLogoUrl()" [alt]="company().name + ' logo'" class="company-logo" (error)="onLogoError()" />
+            <img [src]="getLogoUrl()" [alt]="company().name + ' logo'" class="h-full w-full object-contain"
+                (error)="onLogoError()">
             } @else {
-            <div class="logo-fallback">🏢</div>
+            <div class="flex h-full w-full items-center justify-center bg-tertiary text-xl text-tertiary">
+                🏢
+            </div>
             }
         </div>
+
+        <!-- Industry Badge -->
         @if (company().industry) {
-        <span class="industry-badge">{{ company().industry }}</span>
+        <span
+            class="inline-flex items-center rounded-full border border-secondary bg-tertiary px-2.5 py-0.5 text-xs font-medium text-secondary">
+            {{ company().industry }}
+        </span>
         }
     </div>
 
     <!-- Body -->
-    <div class="card-body">
-        <h3 class="company-name">{{ company().name }}</h3>
+    <div class="mb-auto">
+        <h3 class="mb-1 text-lg font-bold tracking-tight text-primary transition-colors group-hover:text-purple-500">
+            {{ company().name }}
+        </h3>
 
+        <!-- Location -->
         @if (company().address) {
-        <div class="location">
-            <span class="location-icon">📍</span>
-            <span class="location-text">{{ company().address }}</span>
+        <div class="mb-4 flex items-center gap-1.5 text-sm text-secondary">
+            <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span class="truncate">{{ company().address }}</span>
         </div>
         }
 
-        <!-- Tech Stack Tags -->
-        @if (getVisibleTechStack().length > 0) {
-        <div class="tech-stack">
+        <!-- Tech Stack -->
+        <div class="flex flex-wrap gap-2">
             @for (tech of getVisibleTechStack(); track tech) {
-            <span class="tech-tag">{{ tech }}</span>
+            <span
+                class="inline-flex items-center justify-center rounded border border-secondary bg-tertiary px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-secondary">
+                {{ tech }}
+            </span>
             }
             @if (getRemainingTechCount() > 0) {
-            <span class="tech-more">+{{ getRemainingTechCount() }}</span>
+            <span
+                class="inline-flex items-center justify-center rounded border border-secondary bg-tertiary px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-tertiary">
+                +{{ getRemainingTechCount() }}
+            </span>
             }
         </div>
-        }
     </div>
 
-    <!-- Footer: Activity Hub -->
-    <div class="card-footer">
-        <div class="activity-indicator">
-            <span class="activity-icon">📂</span>
-            <span class="activity-text">
-                {{ company().totalApplications }}
-                {{ company().totalApplications === 1 ? 'Application' : 'Applications' }}
-            </span>
+    <!-- Footer -->
+    <div class="mt-5 flex items-center justify-between border-t border-primary pt-4">
+        <!-- Status -->
+        @if (hasApplications()) {
+        <div class="flex items-center gap-2 text-xs font-semibold text-purple-500">
+            <span class="flex h-2 w-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.5)]"></span>
+            📂 {{ company().totalApplications }} Application{{ company().totalApplications === 1 ? '' : 's' }}
         </div>
-        <button type="button" class="view-dossier-btn" (click)="onViewDossier(); $event.stopPropagation()">
+        } @else {
+        <div class="flex items-center gap-2 text-xs font-semibold text-secondary">
+            <span class="flex h-2 w-2 rounded-full bg-tertiary border border-secondary"></span>
+            🎯 Target Company
+        </div>
+        }
+
+        <!-- Ghost Button -->
+        <button (click)="onViewDossier(); $event.stopPropagation()"
+            class="group/btn flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-secondary transition-colors hover:bg-tertiary hover:text-primary">
             View Dossier
-            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
         </button>

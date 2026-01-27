@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
 
@@ -14,13 +14,42 @@ export class CompanyCardComponent {
 
     logoFailed = false;
 
+    // Mock tech stacks for demo if not provided
+    private readonly mockTechStacks = [
+        ['Angular', '.NET', 'Azure', 'PostgreSQL'],
+        ['React', 'Node.js', 'AWS', 'MongoDB'],
+        ['Vue.js', 'Python', 'GCP', 'Redis'],
+        ['TypeScript', 'Java', 'Kubernetes', 'MySQL'],
+        ['Next.js', 'Go', 'Docker', 'Elasticsearch'],
+    ];
+
     /**
-     * Get Clearbit logo URL for the company
+     * Get website domain from company website or name
+     */
+    getWebsiteDomain(): string {
+        const website = this.company().website;
+        if (website) {
+            try {
+                const url = new URL(website);
+                return url.hostname.replace('www.', '');
+            } catch {
+                // If URL parsing fails, extract domain pattern
+                const match = website.match(/(?:https?:\/\/)?(?:www\.)?([^\/]+)/);
+                return match?.[1] || '';
+            }
+        }
+        // Fallback: generate from company name
+        const name = this.company().name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        return `${name}.com`;
+    }
+
+    /**
+     * Get Clearbit logo URL using website domain
      */
     getLogoUrl(): string | null {
         if (this.logoFailed) return null;
-        const name = this.company().name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        return `https://logo.clearbit.com/${name}.com`;
+        const domain = this.getWebsiteDomain();
+        return domain ? `https://logo.clearbit.com/${domain}` : null;
     }
 
     /**
@@ -31,18 +60,37 @@ export class CompanyCardComponent {
     }
 
     /**
+     * Get tech stack - use actual data or mock for demo
+     */
+    getTechStack(): string[] {
+        const actual = this.company().techStack;
+        if (actual && actual.length > 0) return actual;
+
+        // Mock data for demo - deterministic based on company ID
+        const index = this.company().id % this.mockTechStacks.length;
+        return this.mockTechStacks[index];
+    }
+
+    /**
      * Get limited tech stack (max 3 items)
      */
     getVisibleTechStack(): string[] {
-        return this.company().techStack?.slice(0, 3) || [];
+        return this.getTechStack().slice(0, 3);
     }
 
     /**
      * Count of remaining tech items
      */
     getRemainingTechCount(): number {
-        const total = this.company().techStack?.length || 0;
+        const total = this.getTechStack().length;
         return Math.max(0, total - 3);
+    }
+
+    /**
+     * Check if company has active applications
+     */
+    hasApplications(): boolean {
+        return this.company().totalApplications > 0;
     }
 
     /**

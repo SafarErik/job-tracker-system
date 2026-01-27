@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { CompanyCardComponent } from '../company-card/company-card';
 
 @Component({
   selector: 'app-company-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CompanyCardComponent],
   templateUrl: './company-list.html',
   styleUrl: './company-list.css',
 })

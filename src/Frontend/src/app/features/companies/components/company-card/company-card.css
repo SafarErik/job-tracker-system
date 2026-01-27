@@ -1,0 +1,177 @@
+.company-card {
+    background: var(--color-bg-elevated);
+    border-radius: 16px;
+    border: 1px solid var(--color-border-primary);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.company-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-primary);
+}
+
+/* Header */
+.card-header {
+    position: relative;
+    padding: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-elevated) 100%);
+}
+
+.logo-container {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+}
+
+.company-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    background: white;
+    padding: 4px;
+}
+
+.logo-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    background: var(--color-bg-tertiary);
+    border-radius: 12px;
+}
+
+.industry-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Body */
+.card-body {
+    padding: 0 1.25rem 1rem;
+    flex: 1;
+}
+
+.company-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.location-icon {
+    font-size: 0.75rem;
+}
+
+.location-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tech Stack */
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-top: 0.5rem;
+}
+
+.tech-tag {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.tech-more {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 4px;
+}
+
+/* Footer */
+.card-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-border-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--color-bg-tertiary);
+}
+
+.activity-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-icon {
+    font-size: 0.875rem;
+}
+
+.activity-text {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.view-dossier-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-dossier-btn:hover {
+    background: var(--color-primary-hover);
+    transform: translateX(2px);
+}
+
+.view-dossier-btn .btn-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}

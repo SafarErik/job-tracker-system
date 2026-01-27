@@ -1,0 +1,56 @@
+<div class="company-card" (click)="onViewDossier()">
+    <!-- Header with Logo and Industry Badge -->
+    <div class="card-header">
+        <div class="logo-container">
+            @if (getLogoUrl() && !logoFailed) {
+            <img [src]="getLogoUrl()" [alt]="company().name + ' logo'" class="company-logo" (error)="onLogoError()" />
+            } @else {
+            <div class="logo-fallback">🏢</div>
+            }
+        </div>
+        @if (company().industry) {
+        <span class="industry-badge">{{ company().industry }}</span>
+        }
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+        <h3 class="company-name">{{ company().name }}</h3>
+
+        @if (company().address) {
+        <div class="location">
+            <span class="location-icon">📍</span>
+            <span class="location-text">{{ company().address }}</span>
+        </div>
+        }
+
+        <!-- Tech Stack Tags -->
+        @if (getVisibleTechStack().length > 0) {
+        <div class="tech-stack">
+            @for (tech of getVisibleTechStack(); track tech) {
+            <span class="tech-tag">{{ tech }}</span>
+            }
+            @if (getRemainingTechCount() > 0) {
+            <span class="tech-more">+{{ getRemainingTechCount() }}</span>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Footer: Activity Hub -->
+    <div class="card-footer">
+        <div class="activity-indicator">
+            <span class="activity-icon">📂</span>
+            <span class="activity-text">
+                {{ company().totalApplications }}
+                {{ company().totalApplications === 1 ? 'Application' : 'Applications' }}
+            </span>
+        </div>
+        <button type="button" class="view-dossier-btn" (click)="onViewDossier(); $event.stopPropagation()">
+            View Dossier
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </button>
+    </div>
+</div>

@@ -63,115 +63,12 @@
       </p>
     </div>
     } @else {
-    <table class="companies-table">
-      <thead>
-        <tr>
-          <th class="th-name">Company Name</th>
-          <th class="th-contact">HR Contact</th>
-          <th class="th-website">Website</th>
-          <th class="th-applications">Applications</th>
-          <th class="th-actions">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (company of filteredCompanies; track company.id) {
-        <tr class="table-row" (click)="viewCompanyDetails(company.id)" (keydown)="onRowKeyDown($event, company.id)"
-          tabindex="0" role="button" [attr.aria-label]="'View details for ' + company.name">
-          <td class="td-name">
-            <div class="company-name-cell">
-              <!-- Clearbit Logo or Fallback -->
-              <div class="company-logo">
-                @if (getLogoUrl(company) && !isLogoFailed(company.id)) {
-                <img [src]="getLogoUrl(company)" [alt]="company.name + ' logo'" class="logo-img"
-                  (error)="onLogoError(company.id)" />
-                } @else {
-                <div class="logo-fallback">🏢</div>
-                }
-              </div>
-              <div class="company-info">
-                <div class="company-name">{{ company.name }}</div>
-                @if (company.industry) {
-                <div class="company-industry">{{ company.industry }}</div>
-                }
-                @if (company.address) {
-                <div class="company-address">📍 {{ company.address }}</div>
-                }
-              </div>
-            </div>
-          </td>
-          <td class="td-contact">
-            @if (company.hrContactName || company.hrContactEmail) {
-            <div class="contact-info">
-              @if (company.hrContactName) {
-              <div class="contact-name">{{ company.hrContactName }}</div>
-              }
-              @if (company.hrContactEmail) {
-              <div class="contact-email">{{ company.hrContactEmail }}</div>
-              }
-            </div>
-            } @else {
-            <span class="text-muted">—</span>
-            }
-          </td>
-          <td class="td-website">
-            @if (company.website) {
-            <a [href]="company.website" target="_blank" rel="noopener noreferrer" class="website-link"
-              (click)="$event.stopPropagation()">
-              🌐 Visit
-            </a>
-            } @else {
-            <span class="text-muted">—</span>
-            }
-          </td>
-          <td class="td-applications">
-            <!-- Rich Applications Display -->
-            <div class="applications-row">
-              @for (app of getVisibleApplications(company); track app.id) {
-              <div class="app-badge" [title]="app.position + ' - ' + app.status">
-                <span class="app-title">{{ app.position.length > 12 ? app.position.substring(0, 12) + '…' : app.position
-                  }}</span>
-                <span class="app-status">{{ getStatusIcon(app.status) }}</span>
-              </div>
-              }
-              @if (getRemainingCount(company) > 0) {
-              <div class="app-badge app-more">+{{ getRemainingCount(company) }} more</div>
-              }
-              @if (!company.recentApplications?.length) {
-              <span class="text-muted text-sm">{{ company.totalApplications }} total</span>
-              }
-            </div>
-          </td>
-          <td class="td-actions">
-            <div class="action-buttons">
-              <button class="action-btn btn-view" (click)="viewCompanyDetails(company.id); $event.stopPropagation()"
-                type="button" title="View Details" aria-label="View Company">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-              <button class="action-btn btn-edit" (click)="editCompany(company.id, $event)" type="button"
-                title="Edit Company" aria-label="Edit Company">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              </button>
-              <button class="action-btn btn-delete" (click)="deleteCompany(company, $event)" type="button"
-                title="Delete Company" aria-label="Delete Company">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
+    <!-- Company Grid -->
+    <div class="companies-grid">
+      @for (company of filteredCompanies; track company.id) {
+      <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+      }
+    </div>
 
     <!-- Results Count -->
     <div class="results-count">

@@ -18,16 +18,16 @@
     <!-- Main Content -->
     @if (application() && !isLoading()) {
     <!-- Header -->
-    <header class="workstation-header">
-        <button (click)="goBack()" class="btn-back-icon" aria-label="Go back">
+    <header class="workstation-header bg-white dark:bg-transparent border-b border-gray-100 dark:border-none px-6 py-4 flex items-center gap-4 transition-colors">
+        <button (click)="goBack()" class="btn-back-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors" aria-label="Go back">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
 
-        <div class="header-main">
-            <div class="header-title-row">
-                <h1 class="position-title">{{ application()!.position }}</h1>
+        <div class="header-main flex-1">
+            <div class="header-title-row flex items-center gap-3 mb-1">
+                <h1 class="position-title text-2xl font-bold text-gray-900 dark:text-white">{{ application()!.position }}</h1>
 
                 <!-- Match Score Badge -->
                 @if (application()!.matchScore !== null && application()!.matchScore !== undefined) {
@@ -38,12 +38,12 @@
                 }
             </div>
 
-            <p class="company-name">{{ application()!.companyName }}</p>
+            <p class="company-name text-gray-500 dark:text-slate-400 font-medium">{{ application()!.companyName }}</p>
         </div>
 
         <!-- Status Dropdown -->
-        <div class="status-dropdown-container">
-            <button class="status-badge" [class]="getStatusClass(application()!.status)"
+        <div class="status-dropdown-container relative">
+            <button class="status-badge flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors" [class]="getStatusClass(application()!.status)"
                 (click)="toggleStatusDropdown()">
                 {{ getStatusLabel(application()!.status) }}
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
@@ -52,9 +52,14 @@
             </button>
 
             @if (isStatusDropdownOpen()) {
-            <div class="status-dropdown">
+            <div class="status-dropdown absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden z-50 animate-fade-in">
                 @for (option of statusOptions; track option.value) {
-                <button class="status-option" [class.active]="option.value === application()!.status"
+                <button class="status-option w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors" 
+                    [class.active]="option.value === application()!.status"
+                    [class.text-indigo-600]="option.value === application()!.status"
+                    [class.dark:text-indigo-400]="option.value === application()!.status"
+                    [class.text-gray-700]="option.value !== application()!.status"
+                    [class.dark:text-slate-300]="option.value !== application()!.status"
                     (click)="selectStatus(option.value)">
                     {{ option.label }}
                 </button>
@@ -65,9 +70,9 @@
     </header>
 
     <!-- Tab Navigation -->
-    <nav class="tab-nav">
+    <nav class="tab-nav px-6 border-b border-gray-200 dark:border-slate-800/50">
         <!-- Mobile Tab Dropdown -->
-        <button class="mobile-tab-toggle" (click)="toggleMobileMenu()">
+        <button class="mobile-tab-toggle md:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-lg text-gray-900 dark:text-white mb-4" (click)="toggleMobileMenu()">
             <span>{{ activeTabIcon() }} {{ activeTabLabel() }}</span>
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -75,9 +80,16 @@
         </button>
 
         @if (isMobileMenuOpen()) {
-        <div class="mobile-tab-menu">
+        <div class="mobile-tab-menu md:hidden flex flex-col gap-1 mb-4">
             @for (tab of tabs; track tab.id) {
-            <button class="mobile-tab-item" [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
+            <button class="mobile-tab-item px-4 py-2.5 rounded-lg text-left text-sm font-medium transition-colors" 
+                [class.bg-indigo-50]="activeTab() === tab.id"
+                [class.dark:bg-indigo-500/10]="activeTab() === tab.id"
+                [class.text-indigo-600]="activeTab() === tab.id"
+                [class.dark:text-indigo-400]="activeTab() === tab.id"
+                [class.text-gray-600]="activeTab() !== tab.id"
+                [class.dark:text-slate-400]="activeTab() !== tab.id"
+                (click)="setActiveTab(tab.id)">
                 {{ tab.icon }} {{ tab.label }}
             </button>
             }
@@ -85,11 +97,25 @@
         }
 
         <!-- Desktop Tabs -->
-        <div class="desktop-tabs">
+        <div class="desktop-tabs hidden md:flex items-center gap-6">
             @for (tab of tabs; track tab.id) {
-            <button class="tab-btn" [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
-                <span class="tab-icon">{{ tab.icon }}</span>
-                <span class="tab-label">{{ tab.label }}</span>
+            <button class="tab-btn group relative py-4 text-sm font-medium transition-colors" 
+                [class.active]="activeTab() === tab.id" 
+                (click)="setActiveTab(tab.id)">
+                <span class="tab-content flex items-center gap-2"
+                    [class.text-indigo-600]="activeTab() === tab.id"
+                    [class.dark:text-indigo-400]="activeTab() === tab.id"
+                    [class.text-gray-500]="activeTab() !== tab.id"
+                    [class.dark:text-slate-400]="activeTab() !== tab.id"
+                    [class.group-hover:text-gray-700]="activeTab() !== tab.id"
+                    [class.dark:group-hover:text-slate-300]="activeTab() !== tab.id">
+                    <span class="tab-icon">{{ tab.icon }}</span>
+                    <span class="tab-label">{{ tab.label }}</span>
+                </span>
+                <div class="active-indicator absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full transition-all duration-300"
+                    [class.bg-indigo-600]="activeTab() === tab.id"
+                    [class.dark:bg-indigo-500]="activeTab() === tab.id"
+                    [class.opacity-0]="activeTab() !== tab.id"></div>
             </button>
             }
         </div>
@@ -384,19 +410,23 @@
         <div class="tab-panel animate-fade-in">
             <div class="strategy-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Card A: The Offer -->
-                <div class="card bg-slate-800 rounded-xl p-6">
-                    <h2 class="card-title text-white text-lg font-semibold mb-4 flex items-center gap-2">
+                <!-- Card A: The Offer -->
+                <div
+                    class="card bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-none transition-colors">
+                    <h2
+                        class="card-title text-gray-900 dark:text-white text-lg font-semibold mb-4 flex items-center gap-2">
                         💰 The Offer
                     </h2>
 
                     <div class="space-y-4">
                         <!-- Target Salary -->
                         <div>
-                            <label class="block text-slate-400 text-sm mb-1">Target Salary</label>
+                            <label class="block text-gray-500 dark:text-slate-400 text-sm mb-1">Target Salary</label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500">$</span>
                                 <input type="number"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                                    class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg pl-7 pr-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                                     placeholder="90,000" [value]="targetSalary() ?? ''"
                                     (input)="targetSalary.set($any($event.target).value ? +$any($event.target).value : null)" />
                             </div>
@@ -404,17 +434,19 @@
 
                         <!-- Actual Offer -->
                         <div>
-                            <label class="block text-slate-400 text-sm mb-1 flex items-center gap-2">
+                            <label class="block text-gray-500 dark:text-slate-400 text-sm mb-1 flex items-center gap-2">
                                 Actual Offer
                                 @if (isOfferBelowTarget()) {
-                                <span class="text-amber-400 text-xs">⚠️ Below target</span>
+                                <span class="text-amber-500 dark:text-amber-400 text-xs font-medium">⚠️ Below
+                                    target</span>
                                 }
                             </label>
                             <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500">$</span>
                                 <input type="number"
-                                    class="w-full bg-slate-900 border rounded-lg pl-7 pr-4 py-2.5 text-white placeholder-slate-500 focus:outline-none"
-                                    [class]="isOfferBelowTarget() ? 'border-amber-500 focus:border-amber-500' : 'border-slate-700 focus:border-indigo-500'"
+                                    class="w-full bg-gray-50 dark:bg-slate-900 border rounded-lg pl-7 pr-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none transition-colors"
+                                    [class]="isOfferBelowTarget() ? 'border-amber-300 dark:border-amber-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500' : 'border-gray-200 dark:border-slate-700 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500'"
                                     placeholder="85,000" [value]="actualOffer() ?? ''"
                                     (input)="actualOffer.set($any($event.target).value ? +$any($event.target).value : null)" />
                             </div>
@@ -422,9 +454,9 @@
 
                         <!-- Equity / Bonus -->
                         <div>
-                            <label class="block text-slate-400 text-sm mb-1">Equity / Bonus</label>
+                            <label class="block text-gray-500 dark:text-slate-400 text-sm mb-1">Equity / Bonus</label>
                             <input type="text"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                                class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                                 placeholder="10k RSUs over 4 years" [value]="equityBonus()"
                                 (input)="equityBonus.set($any($event.target).value)" />
                         </div>
@@ -433,70 +465,120 @@
 
                 <!-- Card B: Vibe Check -->
                 <div class="card bg-slate-800 rounded-xl p-6">
-                    <h2 class="card-title text-white text-lg font-semibold mb-4 flex items-center gap-2">
+                    <h2 class="card-title text-white text-lg font-semibold mb-6 flex items-center gap-2">
                         🎭 Vibe Check
                     </h2>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Green Flags -->
-                        <div>
-                            <label class="block text-green-400 text-sm font-medium mb-2">✅ Green Flags</label>
-                            <div class="space-y-2 mb-2 max-h-32 overflow-y-auto">
-                                @for (flag of greenFlags(); track flag; let i = $index) {
+                        <div class="flex flex-col h-full">
+                            <label class="flex items-center gap-2 text-green-400 text-sm font-medium mb-3">
+                                <span>✅</span> Green Flags
+                            </label>
+
+                            <div
+                                class="flex-1 bg-slate-900/50 rounded-lg p-3 border border-slate-700/50 mb-3 min-h-[100px] max-h-[200px] overflow-y-auto custom-scrollbar">
+                                @if (greenFlags().length === 0) {
                                 <div
-                                    class="flex items-center gap-2 bg-green-500/10 rounded-lg px-3 py-1.5 text-sm text-green-300">
-                                    <span class="flex-1 truncate">{{ flag }}</span>
-                                    <button type="button" class="text-green-500 hover:text-green-300"
-                                        (click)="removeGreenFlag(i)">×</button>
+                                    class="h-full flex flex-col items-center justify-center text-slate-500 text-xs italic opacity-60">
+                                    <span>No green flags yet</span>
                                 </div>
                                 }
+                                <div class="flex flex-wrap gap-2">
+                                    @for (flag of greenFlags(); track flag; let i = $index) {
+                                    <div
+                                        class="animate-fade-in flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 rounded-md pl-2 pr-1.5 py-1 text-xs text-green-300">
+                                        <span>{{ flag }}</span>
+                                        <button type="button"
+                                            class="p-0.5 hover:bg-green-500/20 rounded text-green-400 hover:text-green-200 transition-colors"
+                                            (click)="removeGreenFlag(i)" aria-label="Remove">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    }
+                                </div>
                             </div>
-                            <div class="flex gap-2">
+
+                            <div class="relative flex items-center">
                                 <input type="text"
-                                    class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-green-500"
-                                    placeholder="Remote work" [value]="newGreenFlag()"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-3 pr-10 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-green-500 transition-colors"
+                                    placeholder="Add green flag..." [value]="newGreenFlag()"
                                     (input)="newGreenFlag.set($any($event.target).value)"
                                     (keydown.enter)="addGreenFlag()" />
                                 <button type="button"
-                                    class="px-2 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-500"
-                                    (click)="addGreenFlag()">+</button>
+                                    class="absolute right-1.5 p-1 bg-green-600 hover:bg-green-500 text-white rounded-md transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    [disabled]="!newGreenFlag().trim()" (click)="addGreenFlag()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
                         <!-- Red Flags -->
-                        <div>
-                            <label class="block text-red-400 text-sm font-medium mb-2">🚩 Red Flags</label>
-                            <div class="space-y-2 mb-2 max-h-32 overflow-y-auto">
-                                @for (flag of redFlags(); track flag; let i = $index) {
+                        <div class="flex flex-col h-full">
+                            <label class="flex items-center gap-2 text-red-400 text-sm font-medium mb-3">
+                                <span>🚩</span> Red Flags
+                            </label>
+
+                            <div
+                                class="flex-1 bg-slate-900/50 rounded-lg p-3 border border-slate-700/50 mb-3 min-h-[100px] max-h-[200px] overflow-y-auto custom-scrollbar">
+                                @if (redFlags().length === 0) {
                                 <div
-                                    class="flex items-center gap-2 bg-red-500/10 rounded-lg px-3 py-1.5 text-sm text-red-300">
-                                    <span class="flex-1 truncate">{{ flag }}</span>
-                                    <button type="button" class="text-red-500 hover:text-red-300"
-                                        (click)="removeRedFlag(i)">×</button>
+                                    class="h-full flex flex-col items-center justify-center text-slate-500 text-xs italic opacity-60">
+                                    <span>No red flags yet</span>
                                 </div>
                                 }
+                                <div class="flex flex-wrap gap-2">
+                                    @for (flag of redFlags(); track flag; let i = $index) {
+                                    <div
+                                        class="animate-fade-in flex items-center gap-1.5 bg-red-500/10 border border-red-500/20 rounded-md pl-2 pr-1.5 py-1 text-xs text-red-300">
+                                        <span>{{ flag }}</span>
+                                        <button type="button"
+                                            class="p-0.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-200 transition-colors"
+                                            (click)="removeRedFlag(i)" aria-label="Remove">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    }
+                                </div>
                             </div>
-                            <div class="flex gap-2">
+
+                            <div class="relative flex items-center">
                                 <input type="text"
-                                    class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-500"
-                                    placeholder="Legacy code" [value]="newRedFlag()"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-3 pr-10 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-red-500 transition-colors"
+                                    placeholder="Add red flag..." [value]="newRedFlag()"
                                     (input)="newRedFlag.set($any($event.target).value)"
                                     (keydown.enter)="addRedFlag()" />
                                 <button type="button"
-                                    class="px-2 py-1 bg-red-600 text-white rounded-lg text-sm hover:bg-red-500"
-                                    (click)="addRedFlag()">+</button>
+                                    class="absolute right-1.5 p-1 bg-red-600 hover:bg-red-500 text-white rounded-md transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                    [disabled]="!newRedFlag().trim()" (click)="addRedFlag()">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Card C: Scratchpad -->
-                <div class="card bg-slate-800 rounded-xl p-6 flex flex-col">
-                    <h2 class="card-title text-white text-lg font-semibold mb-4 flex items-center gap-2">
+                <div
+                    class="card bg-white dark:bg-slate-800 rounded-xl p-6 flex flex-col shadow-sm border border-gray-100 dark:border-none transition-colors">
+                    <h2
+                        class="card-title text-gray-900 dark:text-white text-lg font-semibold mb-4 flex items-center gap-2">
                         📝 Scratchpad
                     </h2>
                     <textarea
-                        class="flex-1 w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none min-h-[200px]"
+                        class="flex-1 w-full bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors resize-none min-h-[200px]"
                         placeholder="Questions to ask, login info, negotiation notes..." [value]="strategyNotes()"
                         (input)="strategyNotes.set($any($event.target).value)"></textarea>
                 </div>

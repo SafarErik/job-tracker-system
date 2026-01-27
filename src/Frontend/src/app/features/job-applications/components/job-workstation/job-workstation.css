@@ -1,12 +1,77 @@
 /* ============================================
    Candidate Workstation - Main Styles
-   Using slate-800/900 for dark mode backgrounds
+   Using CSS Variables for Theme Support
    ============================================ */
+
+:host {
+    /* Light Theme (Default) */
+    --bg-gradient-start: #f8fafc;
+    /* slate-50 */
+    --bg-gradient-end: #f1f5f9;
+    /* slate-100 */
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-header: rgba(255, 255, 255, 0.8);
+    --bg-input: #ffffff;
+    --bg-hover: #f1f5f9;
+
+    --border-color: #e2e8f0;
+    /* slate-200 */
+    --border-dashed: #cbd5e1;
+
+    --text-primary: #0f172a;
+    /* slate-900 */
+    --text-secondary: #64748b;
+    /* slate-500 */
+    --text-muted: #94a3b8;
+    /* slate-400 */
+
+    --accent-color: #6366f1;
+    /* indigo-500 */
+    --accent-glow: rgba(99, 102, 241, 0.2);
+
+    /* Status Colors */
+    --success-bg: rgba(34, 197, 94, 0.1);
+    --success-text: #15803d;
+    --warning-bg: rgba(234, 179, 8, 0.1);
+    --warning-text: #a16207;
+}
+
+:host-context(.dark) {
+    /* Dark Theme Overrides */
+    --bg-gradient-start: #0f172a;
+    /* slate-900 */
+    --bg-gradient-end: #1e293b;
+    /* slate-800 */
+    --bg-card: rgba(30, 41, 59, 0.6);
+    --bg-header: rgba(30, 41, 59, 0.8);
+    --bg-input: #0f172a;
+    --bg-hover: #334155;
+
+    --border-color: #334155;
+    /* slate-700 */
+    --border-dashed: #334155;
+
+    --text-primary: #f1f5f9;
+    /* slate-100 */
+    --text-secondary: #94a3b8;
+    /* slate-400 */
+    --text-muted: #64748b;
+    /* slate-500 */
+
+    --accent-color: #818cf8;
+    /* indigo-400 */
+    --accent-glow: rgba(99, 102, 241, 0.2);
+
+    --success-bg: rgba(34, 197, 94, 0.2);
+    --success-text: #4ade80;
+    --warning-bg: rgba(234, 179, 8, 0.2);
+    --warning-text: #facc15;
+}
 
 .workstation-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: #e2e8f0;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    color: var(--text-primary);
 }
 
 /* Loading & Error States */
@@ -54,8 +119,8 @@
     align-items: center;
     gap: 1rem;
     padding: 1.5rem 2rem;
-    background: rgba(30, 41, 59, 0.8);
-    border-bottom: 1px solid #334155;
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
@@ -178,8 +243,8 @@
    ============================================ */
 
 .tab-nav {
-    background: #1e293b;
-    border-bottom: 1px solid #334155;
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border-color);
     padding: 0 2rem;
 }
 
@@ -199,7 +264,7 @@
     padding: 1rem 1.25rem;
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--text-muted);
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -208,13 +273,13 @@
 }
 
 .tab-btn:hover {
-    color: #e2e8f0;
-    background: rgba(99, 102, 241, 0.1);
+    color: var(--text-primary);
+    background: var(--bg-hover);
 }
 
 .tab-btn.active {
-    color: #a5b4fc;
-    border-bottom-color: #6366f1;
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
 }
 
 .tab-icon {
@@ -305,17 +370,18 @@
 
 /* Cards */
 .card {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid #334155;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;
     backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .card-title {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #f1f5f9;
+    color: var(--text-primary);
     margin: 0 0 1rem;
 }
 
@@ -340,16 +406,16 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #334155;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .meta-label {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.875rem;
 }
 
 .meta-value {
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -435,7 +501,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: #334155;
+    background: var(--border-color);
 }
 
 .timeline-item {
@@ -449,9 +515,9 @@
     top: 0.25rem;
     width: 0.75rem;
     height: 0.75rem;
-    background: #6366f1;
+    background: var(--accent-color);
     border-radius: 50%;
-    border: 2px solid #1e293b;
+    border: 2px solid var(--bg-card);
 }
 
 .timeline-content {
@@ -461,12 +527,12 @@
 }
 
 .timeline-title {
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-weight: 500;
 }
 
 .timeline-desc {
-    color: #94a3b8;
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
@@ -491,21 +557,21 @@
 .context-header h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #f1f5f9;
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
 }
 
 .context-hint {
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .job-description-input {
     width: 100%;
     padding: 1.25rem;
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid #334155;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.9375rem;
     line-height: 1.6;
     resize: vertical;
@@ -546,7 +612,7 @@
 
 .empty-state h3 {
     font-size: 1.5rem;
-    color: #f1f5f9;
+    color: var(--text-primary);
     margin: 0 0 0.5rem;
 }
 
@@ -593,7 +659,7 @@
     gap: 1rem;
     align-items: start;
     padding: 1.25rem;
-    background: rgba(15, 23, 42, 0.5);
+    background: var(--bg-hover);
     border-radius: 0.75rem;
 }
 
@@ -632,7 +698,7 @@
 
 .enhancement-original p,
 .enhancement-rebranded p {
-    color: #e2e8f0;
+    color: var(--text-primary);
     margin: 0;
     line-height: 1.5;
 }
@@ -656,10 +722,10 @@
 .btn-copy {
     margin-top: 0.75rem;
     padding: 0.375rem 0.75rem;
-    background: #334155;
+    background: var(--bg-hover);
     border: none;
     border-radius: 0.375rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.8125rem;
     cursor: pointer;
     transition: background 0.2s;
@@ -708,10 +774,10 @@
 .select-input {
     width: 100%;
     padding: 0.75rem 1rem;
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.9375rem;
 }
 
@@ -722,10 +788,10 @@
 
 .upload-zone {
     padding: 2rem;
-    border: 2px dashed #334155;
+    border: 2px dashed var(--border-dashed);
     border-radius: 0.75rem;
     text-align: center;
-    color: #94a3b8;
+    color: var(--text-muted);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -751,10 +817,10 @@
     flex: 1;
     width: 100%;
     padding: 1rem;
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.9375rem;
     line-height: 1.7;
     font-family: 'Georgia', serif;
@@ -796,8 +862,8 @@
 }
 
 .question-card {
-    background: rgba(30, 41, 59, 0.6);
-    border: 1px solid #334155;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     overflow: hidden;
 }
@@ -810,7 +876,7 @@
     padding: 1rem 1.25rem;
     background: transparent;
     border: none;
-    color: #e2e8f0;
+    color: var(--text-primary);
     cursor: pointer;
     text-align: left;
 }
@@ -866,7 +932,7 @@
 
 .question-body {
     padding: 0 1.25rem 1.25rem;
-    border-top: 1px solid #334155;
+    border-top: 1px solid var(--border-color);
 }
 
 .question-tip {
@@ -889,10 +955,10 @@
 .answer-input {
     width: 100%;
     padding: 0.75rem 1rem;
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.9375rem;
     line-height: 1.6;
     resize: vertical;
@@ -940,9 +1006,9 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #334155;
-    color: #e2e8f0;
-    border: none;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-weight: 500;
     font-size: 0.9375rem;
@@ -951,7 +1017,8 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background: #475569;
+    background: var(--bg-input);
+    color: var(--text-primary);
 }
 
 .btn-secondary:disabled {
@@ -961,8 +1028,8 @@
 
 .btn-back {
     padding: 0.5rem 1rem;
-    background: #334155;
-    color: #e2e8f0;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
     border: none;
     border-radius: 0.375rem;
     cursor: pointer;

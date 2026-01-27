@@ -26,12 +26,17 @@ import { Document } from '../../../documents/models/document.model';
 
 // Spartan UI
 import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmTabsImports } from '@spartan-ng/helm/tabs';
+import { BrnTabsImports } from '@spartan-ng/brain/tabs';
+import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
 
 @Component({
     selector: 'app-job-workstation',
-    imports: [CommonModule, FormsModule, ...HlmLabelImports],
+    imports: [CommonModule, FormsModule, ...HlmLabelImports, ...HlmTabsImports, ...BrnTabsImports, ...HlmSeparatorImports, ...HlmCardImports, ...HlmButtonImports],
     templateUrl: './job-workstation.html',
     styleUrl: './job-workstation.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -193,8 +198,8 @@ export class JobWorkstationComponent implements OnInit {
     }
 
     // Tab navigation
-    setActiveTab(tab: WorkstationTab): void {
-        this.activeTab.set(tab);
+    setActiveTab(tab: string | WorkstationTab): void {
+        this.activeTab.set(tab as WorkstationTab);
         this.isMobileMenuOpen.set(false);
     }
 

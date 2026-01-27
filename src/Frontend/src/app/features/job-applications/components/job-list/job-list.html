@@ -8,36 +8,22 @@
   - {{ variable }} - Display data (interpolation)
 -->
 
-<div class="container mx-auto px-4 py-8 bg-secondary min-h-screen">
-  <!-- Personalized Welcome Banner -->
-  <div class="welcome-banner">
-    <div class="welcome-content">
-      <div class="welcome-icon">👋</div>
-      <div class="welcome-text">
-        <h2 class="welcome-title">{{ getWelcomeMessage() }}</h2>
-        <p class="welcome-subtitle">{{ getWelcomeSubtitle() }}</p>
-      </div>
-    </div>
-    <div class="welcome-decoration">
-      <div class="sparkle">✨</div>
-    </div>
-  </div>
-
-  <!-- Modern Page Header with Gradient -->
-  <div class="modern-header mb-8">
-    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
-      <div class="header-content">
-        <h1 class="text-4xl font-bold text-white mb-2">My Job Applications</h1>
-        <p class="text-white text-opacity-90">Track and manage your job search progress</p>
+<div class="container mx-auto px-4 py-8 min-h-screen">
+  <!-- Page Header - Neo-Professional -->
+  <div class="mb-8">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground mb-2">{{ getWelcomeMessage() }}</h1>
+        <p class="text-muted-foreground">{{ getWelcomeSubtitle() }}</p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
-        <!-- Modern View Switcher with Gradient -->
-        <div class="modern-view-switcher">
+        <!-- View Switcher -->
+        <div class="inline-flex rounded-lg border border-border bg-card p-1">
           <!-- Grid View Button -->
-          <button (click)="switchView(ViewMode.Grid)" [class.active]="isViewActive(ViewMode.Grid)" class="view-btn"
-            title="Grid View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'ghost'" size="sm"
+            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
@@ -45,9 +31,9 @@
           </button>
 
           <!-- Kanban View Button -->
-          <button (click)="switchView(ViewMode.Kanban)" [class.active]="isViewActive(ViewMode.Kanban)" class="view-btn"
-            title="Kanban Board View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'ghost'" size="sm"
+            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
@@ -55,9 +41,9 @@
           </button>
 
           <!-- Calendar View Button -->
-          <button (click)="switchView(ViewMode.Calendar)" [class.active]="isViewActive(ViewMode.Calendar)"
-            class="view-btn" title="Calendar View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'ghost'" size="sm"
+            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -65,9 +51,9 @@
           </button>
         </div>
 
-        <!-- Modern Add New Button -->
-        <a routerLink="/new" class="modern-add-btn">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Add New Button -->
+        <a routerLink="/new" hlmBtn class="gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add New
@@ -75,6 +61,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Modern Quick Stats Dashboard -->
   <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="modern-stats-container mb-8">

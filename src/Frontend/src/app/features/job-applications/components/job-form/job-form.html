@@ -168,24 +168,26 @@
           </div>
         </div>
 
-        <!-- Form Actions -->
-        <div class="form-actions">
+        <!-- Form Actions - Sticky Footer -->
+        <div
+          class="sticky bottom-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6 border-t border-border mt-auto flex justify-end gap-3 z-10">
           <a routerLink="/" hlmBtn variant="ghost">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-            Back to List
+            Cancel
           </a>
 
           <button hlmBtn type="submit" [disabled]="jobForm.invalid || isSubmitting">
-            <span *ngIf="isSubmitting" class="btn-spinner"></span>
-            <svg *ngIf="!isSubmitting" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            @if (isSubmitting) {
+            <span class="btn-spinner"></span>
+            } @else {
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-            <span *ngIf="!isSubmitting">{{
-              isEditMode ? 'Update Application' : 'Save Application'
-              }}</span>
-            <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
+            }
+            <span>{{ isSubmitting ? (isEditMode ? 'Updating...' : 'Saving...') : (isEditMode ? 'Update Application' :
+              'Save Application') }}</span>
           </button>
         </div>
       </form>

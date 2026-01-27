@@ -1,55 +1,49 @@
-<div class="workstation-container">
+<div class="workstation-container min-h-screen bg-muted/30">
     <!-- Loading State -->
     @if (isLoading()) {
-    <div class="loading-state">
-        <div class="spinner"></div>
+    <div class="loading-state flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
+        <div class="spinner w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
         <p>Loading application...</p>
     </div>
     }
 
     <!-- Error State -->
     @if (error()) {
-    <div class="error-state">
+    <div class="error-state flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
         <p>{{ error() }}</p>
-        <button (click)="goBack()" class="btn-back">← Back to Applications</button>
+        <button hlmBtn variant="outline" (click)="goBack()">← Back to Applications</button>
     </div>
     }
 
     <!-- Main Content -->
     @if (application() && !isLoading()) {
-    <!-- Header -->
-    <header
-        class="workstation-header bg-white dark:bg-transparent border-b border-gray-100 dark:border-none px-6 py-4 flex items-center gap-4 transition-colors">
-        <button (click)="goBack()"
-            class="btn-back-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-            aria-label="Go back">
+    <!-- Header - Transparent -->
+    <header class="px-6 py-6 flex items-center gap-4">
+        <button hlmBtn variant="ghost" size="icon" (click)="goBack()" aria-label="Go back">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
 
-        <div class="header-main flex-1">
-            <div class="header-title-row flex items-center gap-3 mb-1">
-                <h1 class="position-title text-2xl font-bold text-gray-900 dark:text-white">{{ application()!.position
-                    }}</h1>
+        <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+                <h1 class="text-3xl font-bold tracking-tight text-foreground">{{ application()!.position }}</h1>
 
                 <!-- Match Score Badge -->
                 @if (application()!.matchScore !== null && application()!.matchScore !== undefined) {
-                <div class="match-badge" [class]="matchScoreBg()">
-                    <span [class]="matchScoreColor()">{{ application()!.matchScore }}%</span>
-                    <span class="match-label">Match</span>
-                </div>
+                <span hlmBadge
+                    [class]="(application()?.matchScore ?? 0) >= 80 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-muted text-muted-foreground'">
+                    {{ application()!.matchScore }}% Match
+                </span>
                 }
             </div>
 
-            <p class="company-name text-gray-500 dark:text-slate-400 font-medium">{{ application()!.companyName }}</p>
+            <p class="text-muted-foreground font-medium">{{ application()!.companyName }}</p>
         </div>
 
         <!-- Status Dropdown -->
-        <div class="status-dropdown-container relative">
-            <button
-                class="status-badge flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
-                [class]="getStatusClass(application()!.status)" (click)="toggleStatusDropdown()">
+        <div class="relative">
+            <button hlmBtn variant="secondary" class="gap-2" (click)="toggleStatusDropdown()">
                 {{ getStatusLabel(application()!.status) }}
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -58,15 +52,12 @@
 
             @if (isStatusDropdownOpen()) {
             <div
-                class="status-dropdown absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden z-50 animate-fade-in">
+                class="absolute right-0 top-full mt-2 w-48 bg-card rounded-lg shadow-lg border border-border overflow-hidden z-50">
                 @for (option of statusOptions; track option.value) {
-                <button
-                    class="status-option w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
-                    [class.active]="option.value === application()!.status"
-                    [class.text-indigo-600]="option.value === application()!.status"
-                    [class.dark:text-indigo-400]="option.value === application()!.status"
-                    [class.text-gray-700]="option.value !== application()!.status"
-                    [class.dark:text-slate-300]="option.value !== application()!.status"
+                <button class="w-full text-left px-4 py-2.5 text-sm hover:bg-muted transition-colors"
+                    [class.text-primary]="option.value === application()!.status"
+                    [class.font-medium]="option.value === application()!.status"
+                    [class.text-foreground]="option.value !== application()!.status"
                     (click)="selectStatus(option.value)">
                     {{ option.label }}
                 </button>
@@ -76,62 +67,30 @@
         </div>
     </header>
 
-    <!-- Tab Navigation -->
-    <nav class="tab-nav px-6 border-b border-gray-200 dark:border-slate-800/50">
-        <!-- Mobile Tab Dropdown -->
-        <button
-            class="mobile-tab-toggle md:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-lg text-gray-900 dark:text-white mb-4"
-            (click)="toggleMobileMenu()">
-            <span>{{ activeTabIcon() }} {{ activeTabLabel() }}</span>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-        </button>
-
-        @if (isMobileMenuOpen()) {
-        <div class="mobile-tab-menu md:hidden flex flex-col gap-1 mb-4">
+    <!-- Spartan Tabs -->
+    <div hlmTabs [tab]="activeTab()" (tabActivated)="setActiveTab($event)" class="flex-1 flex flex-col">
+        <!-- Tab List - Underline Style -->
+        <div hlmTabsList variant="line"
+            class="w-full justify-start border-b border-border h-auto p-0 px-6 bg-transparent rounded-none">
             @for (tab of tabs; track tab.id) {
-            <button class="mobile-tab-item px-4 py-2.5 rounded-lg text-left text-sm font-medium transition-colors"
-                [class.bg-indigo-50]="activeTab() === tab.id" [class.dark:bg-indigo-500/10]="activeTab() === tab.id"
-                [class.text-indigo-600]="activeTab() === tab.id" [class.dark:text-indigo-400]="activeTab() === tab.id"
-                [class.text-gray-600]="activeTab() !== tab.id" [class.dark:text-slate-400]="activeTab() !== tab.id"
-                (click)="setActiveTab(tab.id)">
-                {{ tab.icon }} {{ tab.label }}
+            <button [hlmTabsTrigger]="tab.id"
+                class="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none">
+                <span>{{ tab.icon }}</span>
+                <span>{{ tab.label }}</span>
             </button>
             }
         </div>
-        }
 
-        <!-- Desktop Tabs -->
-        <div class="desktop-tabs hidden md:flex items-center gap-6">
-            @for (tab of tabs; track tab.id) {
-            <button class="tab-btn group relative py-4 text-sm font-medium transition-colors"
-                [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
-                <span class="tab-content flex items-center gap-2" [class.text-indigo-600]="activeTab() === tab.id"
-                    [class.dark:text-indigo-400]="activeTab() === tab.id" [class.text-gray-500]="activeTab() !== tab.id"
-                    [class.dark:text-slate-400]="activeTab() !== tab.id"
-                    [class.group-hover:text-gray-700]="activeTab() !== tab.id"
-                    [class.dark:group-hover:text-slate-300]="activeTab() !== tab.id">
-                    <span class="tab-icon">{{ tab.icon }}</span>
-                    <span class="tab-label">{{ tab.label }}</span>
-                </span>
-                <div class="active-indicator absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full transition-all duration-300"
-                    [class.bg-indigo-600]="activeTab() === tab.id" [class.dark:bg-indigo-500]="activeTab() === tab.id"
-                    [class.opacity-0]="activeTab() !== tab.id"></div>
-            </button>
-            }
-        </div>
-    </nav>
 
-    <!-- Tab Content -->
-    <main class="tab-content">
+        <!-- Tab Content -->
         <!-- Overview Tab -->
         @if (activeTab() === 'overview') {
         <div class="tab-panel animate-fade-in">
             <div class="overview-grid">
                 <!-- Metadata Card -->
                 <div class="card">
-                    <h2 class="card-title">Application Details</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Application
+                        Details</h2>
                     <div class="metadata-list">
                         <div class="metadata-item">
                             <span class="meta-label">Applied</span>
@@ -164,7 +123,7 @@
 
                 <!-- Match Score Card -->
                 <div class="card match-card">
-                    <h2 class="card-title">Match Score</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Match Score</h2>
                     <div class="match-score-display">
                         <div class="score-circle" [class]="matchScoreBg()">
                             <span class="score-value" [class]="matchScoreColor()">{{ application()!.matchScore ?? '?'
@@ -183,7 +142,8 @@
                 <!-- Missing Skills -->
                 @if (aiAnalysis()?.missingSkills?.length) {
                 <div class="card">
-                    <h2 class="card-title">Skills to Highlight</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Skills to
+                        Highlight</h2>
                     <div class="skills-grid">
                         @for (skill of aiAnalysis()!.missingSkills; track skill) {
                         <span class="skill-badge missing">{{ skill }}</span>
@@ -194,7 +154,8 @@
 
                 <!-- Timeline Card -->
                 <div class="card timeline-card">
-                    <h2 class="card-title">Activity Timeline</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Activity
+                        Timeline</h2>
                     <div class="timeline">
                         @for (event of timeline(); track event.id) {
                         <div class="timeline-item">
@@ -245,12 +206,20 @@
         @if (activeTab() === 'coach') {
         <div class="tab-panel animate-fade-in">
             @if (!aiAnalysis()) {
-            <div class="empty-state">
-                <div class="empty-icon">🤖</div>
-                <h3>No Analysis Yet</h3>
-                <p>Go to the "Job Context" tab and analyze the job description first.</p>
-                <button class="btn-secondary" (click)="setActiveTab('context')">Go to Job Context →</button>
-            </div>
+            <section hlmCard
+                class="border-dashed border-2 p-8 flex flex-col items-center justify-center text-center gap-4">
+                <div class="text-5xl">🤖</div>
+                <h3 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white">No Analysis Yet</h3>
+                <p class="text-muted-foreground max-w-sm">Go to the "Job Context" tab and analyze the job description
+                    first to unlock AI coaching insights.</p>
+                <button hlmBtn (click)="setActiveTab('context')" class="gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                    Go to Job Context
+                </button>
+            </section>
             } @else {
             <div class="coach-content">
                 <!-- Gap Analysis -->
@@ -312,7 +281,8 @@
             <div class="documents-grid">
                 <!-- Resume Manager -->
                 <div class="card">
-                    <h2 class="card-title">Resume Manager</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Resume Manager
+                    </h2>
                     <div class="resume-selector">
                         <label hlmLabel>Active Resume for this Application</label>
                         <select class="select-input" [value]="selectedResumeId() || ''"
@@ -332,7 +302,8 @@
 
                 <!-- Cover Letter Generator -->
                 <div class="card cover-letter-card">
-                    <h2 class="card-title">Cover Letter</h2>
+                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-white mb-4">Cover Letter
+                    </h2>
 
                     <textarea class="cover-letter-input" [value]="coverLetter().content"
                         (input)="updateCoverLetter($any($event.target).value)"
@@ -587,6 +558,6 @@
             </div>
         </div>
         }
-    </main>
+    </div>
     }
 </div>

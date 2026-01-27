@@ -19,6 +19,7 @@ import { JobCardComponent } from '../job-card/job-card';
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 /**
  * View Mode Enum
@@ -53,6 +54,7 @@ export enum ViewMode {
     JobCardComponent,
     ...HlmInputImports,
     ...HlmLabelImports,
+    ...HlmButtonImports,
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',

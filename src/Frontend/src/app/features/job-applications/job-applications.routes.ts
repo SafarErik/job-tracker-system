@@ -24,18 +24,28 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     title: 'New Application - JobTracker',
   },
   {
+    // Workstation route - full page view with tabs
+    path: ':id',
+    loadComponent: () =>
+      import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
+    canActivate: [authGuard],
+    title: 'Application Workstation - JobTracker',
+  },
+  {
+    // Keep edit/:id as alias to workstation for backwards compatibility
     path: 'edit/:id',
-    loadComponent: () => import('./components/job-form/job-form').then((m) => m.JobFormComponent),
+    loadComponent: () =>
+      import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
     title: 'Edit Application - JobTracker',
   },
   {
+    // Keep view/:id as alias to workstation for backwards compatibility
     path: 'view/:id',
     loadComponent: () =>
-      import('./components/job-detail-modal/job-detail-modal').then(
-        (m) => m.JobDetailModalComponent,
-      ),
+      import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
     title: 'View Application - JobTracker',
   },
 ];
+

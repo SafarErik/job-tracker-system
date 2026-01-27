@@ -14,6 +14,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 // Components
 import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
+import { JobCardComponent } from '../job-card/job-card';
 
 /**
  * View Mode Enum
@@ -46,6 +47,7 @@ export enum ViewMode {
     RouterLink, // Required for routerLink directive in template
     KanbanBoardComponent, // Kanban view
     CalendarViewComponent, // Calendar view
+    JobCardComponent, // Enhanced job card
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',
@@ -128,7 +130,7 @@ export class JobList implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly router: Router,
     private readonly authService: AuthService,
-  ) {}
+  ) { }
 
   // ============================================
   // Lifecycle Hooks
@@ -154,8 +156,8 @@ export class JobList implements OnInit {
       const matchesSearch = !term
         ? true
         : [app.position, app.companyName, app.description, app.jobUrl]
-            .filter(Boolean)
-            .some((value) => value!.toLowerCase().includes(term));
+          .filter(Boolean)
+          .some((value) => value!.toLowerCase().includes(term));
 
       const matchesStatus =
         this.selectedStatusFilter === 'all' ? true : app.status === this.selectedStatusFilter;
@@ -499,11 +501,11 @@ export class JobList implements OnInit {
   }
 
   /**
-   * Navigate to job application detail modal
+   * Navigate to job application workstation
    * @param id - Application ID
    */
   viewApplicationDetail(id: number): void {
-    this.router.navigate(['/view', id]);
+    this.router.navigate(['/applications', id]);
   }
 
   /**

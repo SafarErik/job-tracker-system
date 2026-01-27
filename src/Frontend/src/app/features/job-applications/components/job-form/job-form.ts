@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -76,6 +76,13 @@ export class JobFormComponent implements OnInit {
   isUploadingDocument = false;
   uploadProgress = 0;
   uploadError = '';
+  isUploadExpanded = false;
+
+  // AI Drafts Panel State
+  isAiPanelOpen = signal(false);
+  isGeneratingCoverLetter = signal(false);
+  aiGenerationStatus = signal('');
+  coverLetterDraft = signal('');
 
   // ============================================
   // UI State Indicators
@@ -154,7 +161,8 @@ export class JobFormComponent implements OnInit {
       companySearch: [''],
       status: [JobApplicationStatus.Applied, [Validators.required]],
       jobUrl: ['', []], // Optional
-      description: ['', []], // Optional
+      jobDescription: ['', []], // Job posting text for AI analysis
+      description: ['', []], // Private notes (salary, thoughts)
       documentId: [null, []], // Optional - CV selection
     });
   }
@@ -230,6 +238,7 @@ export class JobFormComponent implements OnInit {
           companyId: application.companyId,
           status: application.status,
           jobUrl: application.jobUrl || '',
+          jobDescription: application.jobDescription || '',
           description: application.description || '',
           documentId: application.documentId || null,
         });
@@ -504,4 +513,97 @@ export class JobFormComponent implements OnInit {
 
     return Array.from(new Set(positions)).sort((a, b) => a.localeCompare(b));
   }
+
+  // ============================================
+  // AI Drafts Panel Methods
+  // ============================================
+
+  toggleAiPanel(): void {
+    this.isAiPanelOpen.update((open) => !open);
+  }
+
+  get canGenerateCoverLetter(): boolean {
+    const hasJobDescription = !!this.jobForm.get('jobDescription')?.value?.trim();
+    const hasDocument = !!this.jobForm.get('documentId')?.value;
+    return hasJobDescription && hasDocument && !this.isGeneratingCoverLetter();
+  }
+
+  async generateCoverLetter(): Promise<void> {
+    if (!this.canGenerateCoverLetter) return;
+
+    this.isGeneratingCoverLetter.set(true);
+    this.coverLetterDraft.set('');
+
+    // Get company name for personalization
+    const companyId = this.jobForm.get('companyId')?.value;
+    const company = this.companies.find((c) => c.id === Number(companyId));
+    const companyName = company?.name || '[Company Name]';
+    const position = this.jobForm.get('position')?.value || '[Position]';
+
+    // Improved cover letter with proper narrative structure
+    const demoText = `Dear Hiring Manager,
+
+I was excited to discover the ${position} opening at ${companyName}. Having followed your company's innovative work in the industry, I believe my experience and passion for building impactful software solutions make me an ideal candidate for this role.
+
+In my current position, I've had the opportunity to lead critical projects that directly impacted user experience and business outcomes. I architected and delivered a real-time data pipeline that reduced processing latency by 60%, and I mentored junior developers while fostering a culture of code quality and continuous improvement. These experiences have prepared me to hit the ground running at ${companyName}.
+
+What draws me to this opportunity is ${companyName}'s commitment to excellence and the chance to work on problems that matter. I'm particularly impressed by your team's approach to building scalable, user-centered products. I'm confident that my technical skills, combined with my collaborative mindset, would allow me to contribute meaningfully from day one.
+
+I would welcome the opportunity to discuss how my background aligns with your team's needs and how I can contribute to ${companyName}'s continued success. Thank you for considering my application.
+
+Warm regards,
+[Your Name]
+[Your Email]
+[Your Phone]`;
+
+    // Simulate reading resume phase
+    this.aiGenerationStatus.set('Reading resume...');
+    await this.delay(800);
+
+    // Simulate analyzing job description phase
+    this.aiGenerationStatus.set('Analyzing job description...');
+    await this.delay(600);
+
+    // Simulate drafting phase with streaming
+    this.aiGenerationStatus.set('Crafting your cover letter...');
+
+    // Stream character by character for effect
+    for (let i = 0; i < demoText.length; i += 4) {
+      await this.delay(12);
+      this.coverLetterDraft.set(demoText.slice(0, i + 4));
+    }
+
+    this.coverLetterDraft.set(demoText);
+    this.aiGenerationStatus.set('');
+    this.isGeneratingCoverLetter.set(false);
+  }
+
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  copyToClipboard(): void {
+    const content = this.coverLetterDraft();
+    if (!content) return;
+
+    navigator.clipboard.writeText(content).then(() => {
+      this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
+    }).catch(() => {
+      this.notificationService.error('Failed to copy to clipboard', 'Error');
+    });
+  }
+
+  saveAsPdf(): void {
+    const content = this.coverLetterDraft();
+    if (!content) return;
+
+    // TODO: In production, this will call the backend to generate a PDF
+    // and attach it to this application's document list
+    // For now, show a message that this requires backend integration
+    this.notificationService.info(
+      'PDF generation requires backend integration. Coming soon!',
+      'Feature Coming Soon',
+    );
+  }
 }
+

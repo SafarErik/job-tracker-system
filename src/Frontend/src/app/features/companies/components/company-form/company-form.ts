@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
+import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { Company, CreateCompany, UpdateCompany } from '../../models/company.model';
 
 @Component({
@@ -19,9 +20,15 @@ export class CompanyFormComponent implements OnInit {
   isSubmitting = signal(false);
   error = signal<string | null>(null);
 
+  // New fields
+  industryOptions: string[] = [];
+  techStack = signal<string[]>([]);
+  newTech = signal('');
+
   constructor(
     private fb: FormBuilder,
     private companyService: CompanyService,
+    private intelligenceService: CompanyIntelligenceService,
     private router: Router,
     private route: ActivatedRoute,
   ) {
@@ -29,10 +36,13 @@ export class CompanyFormComponent implements OnInit {
       name: ['', [Validators.required, Validators.minLength(2)]],
       website: ['', []],
       address: ['', []],
+      industry: ['', []],
       hrContactName: ['', []],
       hrContactEmail: ['', [Validators.email]],
       hrContactLinkedIn: ['', []],
     });
+
+    this.industryOptions = this.intelligenceService.getIndustryOptions();
   }
 
   ngOnInit(): void {
@@ -57,10 +67,12 @@ export class CompanyFormComponent implements OnInit {
           name: company.name,
           website: company.website || '',
           address: company.address || '',
+          industry: company.industry || '',
           hrContactName: company.hrContactName || '',
           hrContactEmail: company.hrContactEmail || '',
           hrContactLinkedIn: company.hrContactLinkedIn || '',
         });
+        this.techStack.set(company.techStack || []);
         this.isLoading.set(false);
       },
       error: (err: Error) => {
@@ -69,6 +81,26 @@ export class CompanyFormComponent implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  // Tech Stack Management
+  addTech(): void {
+    const tech = this.newTech().trim();
+    if (tech && !this.techStack().includes(tech)) {
+      this.techStack.update((stack) => [...stack, tech]);
+      this.newTech.set('');
+    }
+  }
+
+  removeTech(index: number): void {
+    this.techStack.update((stack) => stack.filter((_, i) => i !== index));
+  }
+
+  onTechKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addTech();
+    }
   }
 
   onSubmit(): void {
@@ -80,10 +112,12 @@ export class CompanyFormComponent implements OnInit {
     this.isSubmitting.set(true);
     this.error.set(null);
 
-    const formValue = this.companyForm.value;
+    const formValue = {
+      ...this.companyForm.value,
+      techStack: this.techStack(),
+    };
 
     if (this.isEditMode()) {
-      // Update existing company
       const id = this.companyId();
       if (!id) return;
 
@@ -100,7 +134,6 @@ export class CompanyFormComponent implements OnInit {
         },
       });
     } else {
-      // Create new company
       const newCompany: CreateCompany = formValue;
 
       this.companyService.createCompany(newCompany).subscribe({
@@ -128,3 +161,4 @@ export class CompanyFormComponent implements OnInit {
     return this.companyForm.get('hrContactEmail');
   }
 }
+

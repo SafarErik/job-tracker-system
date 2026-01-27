@@ -1,0 +1,73 @@
+/* Job Card Component Styles */
+
+.job-card {
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job-card:hover {
+    transform: scale(1.02) translateY(-0.25rem);
+}
+
+.job-card.stale-card {
+    opacity: 0.95;
+}
+
+/* Logo container */
+.logo-container img {
+    transition: transform 0.2s ease;
+}
+
+.job-card:hover .logo-container img {
+    transform: scale(1.05);
+}
+
+/* Stale badge animation */
+.stale-badge {
+    animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Progress bar glow on hover */
+.job-card:hover .progress-section div {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer hover state */
+.card-footer {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, transparent, rgba(99, 102, 241, 0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+}
+
+.job-card:hover .card-footer::before {
+    transform: translateX(100%);
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+}

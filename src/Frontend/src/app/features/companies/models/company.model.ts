@@ -6,7 +6,17 @@ export interface Company {
   hrContactName?: string;
   hrContactEmail?: string;
   hrContactLinkedIn?: string;
+  industry?: string;
+  techStack?: string[];
   totalApplications: number;
+  // For rich display in list view
+  recentApplications?: ApplicationPreview[];
+}
+
+export interface ApplicationPreview {
+  id: number;
+  position: string;
+  status: string;
 }
 
 export interface CreateCompany {
@@ -16,6 +26,8 @@ export interface CreateCompany {
   hrContactName?: string;
   hrContactEmail?: string;
   hrContactLinkedIn?: string;
+  industry?: string;
+  techStack?: string[];
 }
 
 export interface UpdateCompany {
@@ -25,6 +37,8 @@ export interface UpdateCompany {
   hrContactName?: string;
   hrContactEmail?: string;
   hrContactLinkedIn?: string;
+  industry?: string;
+  techStack?: string[];
 }
 
 export interface CompanyDetail {
@@ -35,8 +49,21 @@ export interface CompanyDetail {
   hrContactName?: string;
   hrContactEmail?: string;
   hrContactLinkedIn?: string;
+  industry?: string;
+  techStack?: string[];
   totalApplications: number;
   applicationHistory: JobApplicationHistory[];
+  // Intelligence fields (mock data for now)
+  contacts?: CompanyContact[];
+  notes?: string;
+}
+
+export interface CompanyContact {
+  id: string;
+  name: string;
+  role: string;
+  email?: string;
+  linkedIn?: string;
 }
 
 export interface JobApplicationHistory {
@@ -46,3 +73,12 @@ export interface JobApplicationHistory {
   status: string;
   salaryOffer?: number;
 }
+
+// Mock news service types
+export interface CompanyNews {
+  id: string;
+  title: string;
+  date: string;
+  source: string;
+}
+

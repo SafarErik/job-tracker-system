@@ -79,10 +79,21 @@ export const routes: Routes = [
     title: 'Edit Application - JobTracker',
   },
   {
+    // Application Workstation - full page view with tabs
+    path: 'applications/:id',
+    loadComponent: () =>
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
+      ),
+    canActivate: [authGuard],
+    title: 'Application Workstation - JobTracker',
+  },
+  {
+    // Keep view/:id as alias for backwards compatibility
     path: 'view/:id',
     loadComponent: () =>
-      import('./features/job-applications/components/job-detail-modal/job-detail-modal').then(
-        (m) => m.JobDetailModalComponent,
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
       ),
     canActivate: [authGuard],
     title: 'View Application - JobTracker',

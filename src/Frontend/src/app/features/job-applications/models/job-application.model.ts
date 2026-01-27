@@ -12,6 +12,11 @@ export interface JobApplication {
   companyName?: string;
   documentId?: string | null;
   documentName?: string | null;
+  // Workstation fields (frontend-computed or optional from backend)
+  matchScore?: number; // 0-100, computed from AI analysis
+  location?: string;
+  salaryMin?: number;
+  salaryMax?: number;
 }
 
 export interface CreateJobApplication {

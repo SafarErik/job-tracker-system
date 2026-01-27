@@ -1,0 +1,382 @@
+<div class="workstation-container">
+    <!-- Loading State -->
+    @if (isLoading()) {
+    <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading application...</p>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="error-state">
+        <p>{{ error() }}</p>
+        <button (click)="goBack()" class="btn-back">← Back to Applications</button>
+    </div>
+    }
+
+    <!-- Main Content -->
+    @if (application() && !isLoading()) {
+    <!-- Header -->
+    <header class="workstation-header">
+        <button (click)="goBack()" class="btn-back-icon" aria-label="Go back">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+
+        <div class="header-main">
+            <div class="header-title-row">
+                <h1 class="position-title">{{ application()!.position }}</h1>
+
+                <!-- Match Score Badge -->
+                @if (application()!.matchScore) {
+                <div class="match-badge" [class]="matchScoreBg()">
+                    <span [class]="matchScoreColor()">{{ application()!.matchScore }}%</span>
+                    <span class="match-label">Match</span>
+                </div>
+                }
+            </div>
+
+            <p class="company-name">{{ application()!.companyName }}</p>
+        </div>
+
+        <!-- Status Dropdown -->
+        <div class="status-dropdown-container">
+            <button class="status-badge" [class]="getStatusClass(application()!.status)"
+                (click)="toggleStatusDropdown()">
+                {{ getStatusLabel(application()!.status) }}
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+
+            @if (isStatusDropdownOpen()) {
+            <div class="status-dropdown">
+                @for (option of statusOptions; track option.value) {
+                <button class="status-option" [class.active]="option.value === application()!.status"
+                    (click)="selectStatus(option.value)">
+                    {{ option.label }}
+                </button>
+                }
+            </div>
+            }
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+        <!-- Mobile Tab Dropdown -->
+        <button class="mobile-tab-toggle" (click)="toggleMobileMenu()">
+            <span>{{ activeTabIcon() }} {{ activeTabLabel() }}</span>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        @if (isMobileMenuOpen()) {
+        <div class="mobile-tab-menu">
+            @for (tab of tabs; track tab.id) {
+            <button class="mobile-tab-item" [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
+                {{ tab.icon }} {{ tab.label }}
+            </button>
+            }
+        </div>
+        }
+
+        <!-- Desktop Tabs -->
+        <div class="desktop-tabs">
+            @for (tab of tabs; track tab.id) {
+            <button class="tab-btn" [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
+                <span class="tab-icon">{{ tab.icon }}</span>
+                <span class="tab-label">{{ tab.label }}</span>
+            </button>
+            }
+        </div>
+    </nav>
+
+    <!-- Tab Content -->
+    <main class="tab-content">
+        <!-- Overview Tab -->
+        @if (activeTab() === 'overview') {
+        <div class="tab-panel animate-fade-in">
+            <div class="overview-grid">
+                <!-- Metadata Card -->
+                <div class="card">
+                    <h2 class="card-title">Application Details</h2>
+                    <div class="metadata-list">
+                        <div class="metadata-item">
+                            <span class="meta-label">Applied</span>
+                            <span class="meta-value">{{ formatDate(application()!.appliedAt) }}</span>
+                        </div>
+                        @if (application()!.location) {
+                        <div class="metadata-item">
+                            <span class="meta-label">Location</span>
+                            <span class="meta-value">{{ application()!.location }}</span>
+                        </div>
+                        }
+                        @if (application()!.salaryMin || application()!.salaryMax) {
+                        <div class="metadata-item">
+                            <span class="meta-label">Salary Range</span>
+                            <span class="meta-value">
+                                ${{ application()!.salaryMin?.toLocaleString() || '?' }} - ${{
+                                application()!.salaryMax?.toLocaleString() || '?' }}
+                            </span>
+                        </div>
+                        }
+                        @if (application()!.jobUrl) {
+                        <div class="metadata-item">
+                            <span class="meta-label">Job Posting</span>
+                            <a [href]="application()!.jobUrl" target="_blank" class="meta-link">View Original →</a>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Match Score Card -->
+                <div class="card match-card">
+                    <h2 class="card-title">Match Score</h2>
+                    <div class="match-score-display">
+                        <div class="score-circle" [class]="matchScoreBg()">
+                            <span class="score-value" [class]="matchScoreColor()">{{ application()!.matchScore || '?'
+                                }}%</span>
+                        </div>
+                        <p class="score-hint">
+                            @if (!aiAnalysis()) {
+                            Run AI analysis in the "Job Context" tab to get your match score
+                            } @else {
+                            Based on your resume vs job requirements
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Missing Skills -->
+                @if (aiAnalysis()?.missingSkills?.length) {
+                <div class="card">
+                    <h2 class="card-title">Skills to Highlight</h2>
+                    <div class="skills-grid">
+                        @for (skill of aiAnalysis()!.missingSkills; track skill) {
+                        <span class="skill-badge missing">{{ skill }}</span>
+                        }
+                    </div>
+                </div>
+                }
+
+                <!-- Timeline Card -->
+                <div class="card timeline-card">
+                    <h2 class="card-title">Activity Timeline</h2>
+                    <div class="timeline">
+                        @for (event of timeline(); track event.id) {
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-title">{{ event.title }}</span>
+                                @if (event.description) {
+                                <span class="timeline-desc">{{ event.description }}</span>
+                                }
+                                <span class="timeline-date">{{ formatDate(event.timestamp) }}</span>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Job Context Tab -->
+        @if (activeTab() === 'context') {
+        <div class="tab-panel animate-fade-in">
+            <div class="context-container">
+                <div class="context-header">
+                    <h2>Job Description</h2>
+                    <p class="context-hint">Paste the full job description here. This is the source for all AI features.
+                    </p>
+                </div>
+
+                <textarea class="job-description-input" [value]="jobDescriptionInput()"
+                    (input)="jobDescriptionInput.set($any($event.target).value)"
+                    placeholder="Paste the job description here..." rows="20"></textarea>
+
+                <button class="btn-primary analyze-btn" [disabled]="isAnalyzing() || !jobDescriptionInput().trim()"
+                    (click)="analyzeJobDescription()">
+                    @if (isAnalyzing()) {
+                    <span class="spinner-sm"></span>
+                    Analyzing...
+                    } @else {
+                    🔍 Analyze Job Description
+                    }
+                </button>
+            </div>
+        </div>
+        }
+
+        <!-- AI Career Coach Tab -->
+        @if (activeTab() === 'coach') {
+        <div class="tab-panel animate-fade-in">
+            @if (!aiAnalysis()) {
+            <div class="empty-state">
+                <div class="empty-icon">🤖</div>
+                <h3>No Analysis Yet</h3>
+                <p>Go to the "Job Context" tab and analyze the job description first.</p>
+                <button class="btn-secondary" (click)="setActiveTab('context')">Go to Job Context →</button>
+            </div>
+            } @else {
+            <div class="coach-content">
+                <!-- Gap Analysis -->
+                <div class="card">
+                    <h2 class="card-title">Gap Analysis</h2>
+                    <p class="gap-text">{{ aiAnalysis()!.gapAnalysis }}</p>
+
+                    <div class="skills-comparison">
+                        <div class="skills-section matched">
+                            <h3>✓ Matched Skills</h3>
+                            <div class="skills-grid">
+                                @for (skill of aiAnalysis()!.matchedSkills; track skill) {
+                                <span class="skill-badge matched">{{ skill }}</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="skills-section missing">
+                            <h3>⚠ Consider Adding</h3>
+                            <div class="skills-grid">
+                                @for (skill of aiAnalysis()!.missingSkills; track skill) {
+                                <span class="skill-badge missing">{{ skill }}</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Enhancements -->
+                <div class="card">
+                    <h2 class="card-title">Resume Enhancements</h2>
+                    <div class="enhancements-list">
+                        @for (enhancement of aiAnalysis()!.resumeEnhancements; track enhancement.id) {
+                        <div class="enhancement-card">
+                            <div class="enhancement-original">
+                                <span class="enhancement-label">Original</span>
+                                <p>{{ enhancement.originalBullet }}</p>
+                            </div>
+                            <div class="enhancement-arrow">→</div>
+                            <div class="enhancement-rebranded">
+                                <span class="enhancement-label">Rebranded</span>
+                                <p>{{ enhancement.rebrandedBullet }}</p>
+                                <button class="btn-copy" (click)="copyToClipboard(enhancement.rebrandedBullet)">
+                                    📋 Copy
+                                </button>
+                            </div>
+                            <p class="enhancement-reasoning">💡 {{ enhancement.reasoning }}</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Documents Studio Tab -->
+        @if (activeTab() === 'documents') {
+        <div class="tab-panel animate-fade-in">
+            <div class="documents-grid">
+                <!-- Resume Manager -->
+                <div class="card">
+                    <h2 class="card-title">Resume Manager</h2>
+                    <div class="resume-selector">
+                        <label>Active Resume for this Application</label>
+                        <select class="select-input" [value]="selectedResumeId() || ''"
+                            (change)="selectedResumeId.set($any($event.target).value || null)">
+                            <option value="">-- Select Resume --</option>
+                            @for (doc of documents(); track doc.id) {
+                            <option [value]="doc.id">{{ doc.originalFileName }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="upload-zone">
+                        <p>📁 Drag & drop a tailored PDF here</p>
+                        <span class="upload-hint">or click to browse</span>
+                    </div>
+                </div>
+
+                <!-- Cover Letter Generator -->
+                <div class="card cover-letter-card">
+                    <h2 class="card-title">Cover Letter</h2>
+
+                    <textarea class="cover-letter-input" [value]="coverLetter().content"
+                        (input)="updateCoverLetter($any($event.target).value)"
+                        placeholder="Your cover letter will appear here..." rows="15"></textarea>
+
+                    <div class="cover-letter-actions">
+                        <button class="btn-primary" [disabled]="isGeneratingCoverLetter()"
+                            (click)="generateCoverLetter()">
+                            @if (isGeneratingCoverLetter()) {
+                            <span class="spinner-sm"></span>
+                            Generating...
+                            } @else {
+                            ✨ Generate Draft
+                            }
+                        </button>
+                        <button class="btn-secondary" [disabled]="!coverLetter().content"
+                            (click)="saveCoverLetterAsPdf()">
+                            📄 Save as PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Interview Prep Tab -->
+        @if (activeTab() === 'interview') {
+        <div class="tab-panel animate-fade-in">
+            <div class="interview-container">
+                <button class="btn-primary generate-questions-btn" [disabled]="isGeneratingQuestions()"
+                    (click)="generateInterviewQuestions()">
+                    @if (isGeneratingQuestions()) {
+                    <span class="spinner-sm"></span>
+                    Generating Questions...
+                    } @else {
+                    🎤 Generate Interview Questions
+                    }
+                </button>
+
+                @if (interviewQuestions().length) {
+                <div class="questions-list">
+                    @for (q of interviewQuestions(); track q.id) {
+                    <div class="question-card" [class.expanded]="expandedQuestionId() === q.id">
+                        <button class="question-header" (click)="toggleQuestion(q.id)">
+                            <div class="question-info">
+                                <span class="question-category" [class]="q.category">{{ q.category }}</span>
+                                <span class="question-text">{{ q.question }}</span>
+                            </div>
+                            <svg class="expand-icon" [class.rotated]="expandedQuestionId() === q.id" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        @if (expandedQuestionId() === q.id) {
+                        <div class="question-body">
+                            @if (q.tips) {
+                            <p class="question-tip">💡 {{ q.tips }}</p>
+                            }
+                            <label>Your Answer Draft</label>
+                            <textarea class="answer-input" [value]="q.draftAnswer"
+                                (input)="updateAnswer(q.id, $any($event.target).value)"
+                                placeholder="Draft your answer here..." rows="5"></textarea>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </main>
+    }
+</div>

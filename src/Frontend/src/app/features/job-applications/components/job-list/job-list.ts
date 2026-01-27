@@ -128,7 +128,7 @@ export class JobList implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly router: Router,
     private readonly authService: AuthService,
-  ) {}
+  ) { }
 
   // ============================================
   // Lifecycle Hooks
@@ -154,8 +154,8 @@ export class JobList implements OnInit {
       const matchesSearch = !term
         ? true
         : [app.position, app.companyName, app.description, app.jobUrl]
-            .filter(Boolean)
-            .some((value) => value!.toLowerCase().includes(term));
+          .filter(Boolean)
+          .some((value) => value!.toLowerCase().includes(term));
 
       const matchesStatus =
         this.selectedStatusFilter === 'all' ? true : app.status === this.selectedStatusFilter;
@@ -499,11 +499,11 @@ export class JobList implements OnInit {
   }
 
   /**
-   * Navigate to job application detail modal
+   * Navigate to job application workstation
    * @param id - Application ID
    */
   viewApplicationDetail(id: number): void {
-    this.router.navigate(['/view', id]);
+    this.router.navigate(['/applications', id]);
   }
 
   /**

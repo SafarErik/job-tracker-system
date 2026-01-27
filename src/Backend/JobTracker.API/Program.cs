@@ -387,8 +387,9 @@ if (app.Environment.IsDevelopment())
         await DataSeeder.SeedAsync(context, userManager);
     }
 }
-// Production: Migrations are applied via GitHub Actions CI/CD pipeline before deployment
-// This prevents race conditions and ensures zero-downtime deployments
+// Production: Migrations are applied automatically on startup
+// This ensures the database is always up-to-date with the code
+await app.ApplyMigrationsAsync();
 
 // ============================================
 // HTTP REQUEST PIPELINE

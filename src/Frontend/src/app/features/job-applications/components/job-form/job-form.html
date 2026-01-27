@@ -34,7 +34,7 @@
 
           <!-- Position Title -->
           <div class="form-group">
-            <label for="position" class="form-label">
+            <label hlmLabel for="position">
               Position Title <span class="required">*</span>
             </label>
             <div class="input-with-icon">
@@ -42,10 +42,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <input id="position" type="text" formControlName="position" placeholder="e.g. Senior Backend Developer"
-                class="form-input with-icon" [class.input-error]="
-                  jobForm.get('position')?.invalid && jobForm.get('position')?.touched
-                " (input)="onPositionSearchChange($event.target.value)" (focus)="openPositionDropdown()"
+              <input hlmInput id="position" type="text" formControlName="position"
+                placeholder="e.g. Senior Backend Developer" class="pl-10"
+                (input)="onPositionSearchChange($event.target.value)" (focus)="openPositionDropdown()"
                 (blur)="closePositionDropdown()" />
             </div>
             <div class="position-dropdown" *ngIf="isPositionDropdownOpen && filteredPositions.length > 0">
@@ -61,7 +60,7 @@
 
           <!-- Company -->
           <div class="form-group">
-            <label for="company" class="form-label">
+            <label hlmLabel for="company">
               Company <span class="required">*</span>
             </label>
             <div class="input-with-icon">
@@ -69,9 +68,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
-              <input id="company" type="text" formControlName="companySearch" placeholder="Start typing a company..."
-                class="form-input with-icon" (input)="onCompanySearchChange($event.target.value)"
-                (focus)="openCompanyDropdown()" (blur)="closeCompanyDropdown()" />
+              <input hlmInput id="company" type="text" formControlName="companySearch"
+                placeholder="Start typing a company..." class="pl-10"
+                (input)="onCompanySearchChange($event.target.value)" (focus)="openCompanyDropdown()"
+                (blur)="closeCompanyDropdown()" />
             </div>
             <div class="company-dropdown"
               *ngIf="isCompanyDropdownOpen && (filteredCompanies.length > 0 || canCreateCompany)">
@@ -92,7 +92,7 @@
 
           <!-- Job URL -->
           <div class="form-group">
-            <label for="jobUrl" class="form-label">
+            <label hlmLabel for="jobUrl">
               Job Posting URL
               <span class="optional-badge">Optional</span>
             </label>
@@ -101,8 +101,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
-              <input id="jobUrl" type="url" formControlName="jobUrl" placeholder="https://linkedin.com/jobs/..."
-                class="form-input with-icon" />
+              <input hlmInput id="jobUrl" type="url" formControlName="jobUrl"
+                placeholder="https://linkedin.com/jobs/..." class="pl-10" />
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@
 
           <!-- Status -->
           <div class="form-group">
-            <label for="status" class="form-label">Current Status</label>
+            <label hlmLabel for="status">Current Status</label>
             <div class="input-with-icon">
               <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -141,7 +141,7 @@
 
           <!-- CV / Resume Selection (dropdown only - upload moved to Workstation) -->
           <div class="form-group">
-            <label for="documentId" class="form-label">
+            <label hlmLabel for="documentId">
               CV / Resume
               <span class="optional-badge">Optional</span>
             </label>
@@ -170,16 +170,16 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <a routerLink="/" class="btn btn-secondary">
-            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a routerLink="/" hlmBtn variant="ghost">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
             Back to List
           </a>
 
-          <button type="submit" [disabled]="jobForm.invalid || isSubmitting" class="btn btn-primary">
+          <button hlmBtn type="submit" [disabled]="jobForm.invalid || isSubmitting">
             <span *ngIf="isSubmitting" class="btn-spinner"></span>
-            <svg *ngIf="!isSubmitting" class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg *ngIf="!isSubmitting" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
             <span *ngIf="!isSubmitting">{{

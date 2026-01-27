@@ -19,6 +19,11 @@ import { Skill } from '../../../skills/models/skill.model';
 import { Document } from '../../../documents/models/document.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+
 /**
  * JobFormComponent - Dual-purpose form for creating and editing job applications
  *
@@ -42,8 +47,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
  */
 @Component({
   selector: 'app-job-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
   templateUrl: './job-form.html',
   styleUrl: './job-form.css',
 })

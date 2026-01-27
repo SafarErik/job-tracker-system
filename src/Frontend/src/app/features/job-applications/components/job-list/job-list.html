@@ -196,7 +196,9 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-      <input #searchInput type="text" placeholder="Search by position, company, notes, or URL..." [value]="searchTerm"
+      <label hlmLabel for="search-applications" class="sr-only">Search applications</label>
+      <input hlmInput id="search-applications" #searchInput type="text"
+        placeholder="Search by position, company, notes, or URL..." [value]="searchTerm" class="pl-10"
         (input)="onSearchChange(searchInput.value)" />
       <button *ngIf="searchTerm" class="clear-search" (click)="onSearchChange('')" type="button"
         aria-label="Clear search">

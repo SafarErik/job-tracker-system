@@ -26,11 +26,13 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -98,13 +100,13 @@ export class RegisterComponent {
     return valid
       ? null
       : {
-          passwordStrength: {
-            hasUppercase,
-            hasLowercase,
-            hasDigit,
-            hasSpecial,
-          },
-        };
+        passwordStrength: {
+          hasUppercase,
+          hasLowercase,
+          hasDigit,
+          hasSpecial,
+        },
+      };
   }
 
   /**

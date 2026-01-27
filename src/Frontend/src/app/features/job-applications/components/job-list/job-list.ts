@@ -16,6 +16,10 @@ import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
 import { JobCardComponent } from '../job-card/job-card';
 
+// Spartan UI
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+
 /**
  * View Mode Enum
  * Defines the available view modes for displaying job applications
@@ -41,13 +45,14 @@ export enum ViewMode {
  */
 @Component({
   selector: 'app-job-list',
-  standalone: true, // New Angular feature: no need for NgModule
   imports: [
-    CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
-    RouterLink, // Required for routerLink directive in template
-    KanbanBoardComponent, // Kanban view
-    CalendarViewComponent, // Calendar view
-    JobCardComponent, // Enhanced job card
+    CommonModule,
+    RouterLink,
+    KanbanBoardComponent,
+    CalendarViewComponent,
+    JobCardComponent,
+    ...HlmInputImports,
+    ...HlmLabelImports,
   ],
   templateUrl: './job-list.html',
   styleUrl: './job-list.css',

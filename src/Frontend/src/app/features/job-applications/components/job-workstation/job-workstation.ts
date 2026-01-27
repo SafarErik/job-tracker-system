@@ -24,11 +24,14 @@ import {
 } from '../../models/ai-analysis.model';
 import { Document } from '../../../documents/models/document.model';
 
+// Spartan UI
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
 
 @Component({
     selector: 'app-job-workstation',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ...HlmLabelImports],
     templateUrl: './job-workstation.html',
     styleUrl: './job-workstation.css',
     changeDetection: ChangeDetectionStrategy.OnPush,

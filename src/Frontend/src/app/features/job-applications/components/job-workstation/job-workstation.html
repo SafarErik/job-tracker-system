@@ -18,8 +18,11 @@
     <!-- Main Content -->
     @if (application() && !isLoading()) {
     <!-- Header -->
-    <header class="workstation-header bg-white dark:bg-transparent border-b border-gray-100 dark:border-none px-6 py-4 flex items-center gap-4 transition-colors">
-        <button (click)="goBack()" class="btn-back-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors" aria-label="Go back">
+    <header
+        class="workstation-header bg-white dark:bg-transparent border-b border-gray-100 dark:border-none px-6 py-4 flex items-center gap-4 transition-colors">
+        <button (click)="goBack()"
+            class="btn-back-icon p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+            aria-label="Go back">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
@@ -27,7 +30,8 @@
 
         <div class="header-main flex-1">
             <div class="header-title-row flex items-center gap-3 mb-1">
-                <h1 class="position-title text-2xl font-bold text-gray-900 dark:text-white">{{ application()!.position }}</h1>
+                <h1 class="position-title text-2xl font-bold text-gray-900 dark:text-white">{{ application()!.position
+                    }}</h1>
 
                 <!-- Match Score Badge -->
                 @if (application()!.matchScore !== null && application()!.matchScore !== undefined) {
@@ -43,8 +47,9 @@
 
         <!-- Status Dropdown -->
         <div class="status-dropdown-container relative">
-            <button class="status-badge flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors" [class]="getStatusClass(application()!.status)"
-                (click)="toggleStatusDropdown()">
+            <button
+                class="status-badge flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                [class]="getStatusClass(application()!.status)" (click)="toggleStatusDropdown()">
                 {{ getStatusLabel(application()!.status) }}
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -52,9 +57,11 @@
             </button>
 
             @if (isStatusDropdownOpen()) {
-            <div class="status-dropdown absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden z-50 animate-fade-in">
+            <div
+                class="status-dropdown absolute right-0 top-full mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-100 dark:border-slate-700 overflow-hidden z-50 animate-fade-in">
                 @for (option of statusOptions; track option.value) {
-                <button class="status-option w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors" 
+                <button
+                    class="status-option w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors"
                     [class.active]="option.value === application()!.status"
                     [class.text-indigo-600]="option.value === application()!.status"
                     [class.dark:text-indigo-400]="option.value === application()!.status"
@@ -72,7 +79,9 @@
     <!-- Tab Navigation -->
     <nav class="tab-nav px-6 border-b border-gray-200 dark:border-slate-800/50">
         <!-- Mobile Tab Dropdown -->
-        <button class="mobile-tab-toggle md:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-lg text-gray-900 dark:text-white mb-4" (click)="toggleMobileMenu()">
+        <button
+            class="mobile-tab-toggle md:hidden w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-slate-800 rounded-lg text-gray-900 dark:text-white mb-4"
+            (click)="toggleMobileMenu()">
             <span>{{ activeTabIcon() }} {{ activeTabLabel() }}</span>
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -82,13 +91,10 @@
         @if (isMobileMenuOpen()) {
         <div class="mobile-tab-menu md:hidden flex flex-col gap-1 mb-4">
             @for (tab of tabs; track tab.id) {
-            <button class="mobile-tab-item px-4 py-2.5 rounded-lg text-left text-sm font-medium transition-colors" 
-                [class.bg-indigo-50]="activeTab() === tab.id"
-                [class.dark:bg-indigo-500/10]="activeTab() === tab.id"
-                [class.text-indigo-600]="activeTab() === tab.id"
-                [class.dark:text-indigo-400]="activeTab() === tab.id"
-                [class.text-gray-600]="activeTab() !== tab.id"
-                [class.dark:text-slate-400]="activeTab() !== tab.id"
+            <button class="mobile-tab-item px-4 py-2.5 rounded-lg text-left text-sm font-medium transition-colors"
+                [class.bg-indigo-50]="activeTab() === tab.id" [class.dark:bg-indigo-500/10]="activeTab() === tab.id"
+                [class.text-indigo-600]="activeTab() === tab.id" [class.dark:text-indigo-400]="activeTab() === tab.id"
+                [class.text-gray-600]="activeTab() !== tab.id" [class.dark:text-slate-400]="activeTab() !== tab.id"
                 (click)="setActiveTab(tab.id)">
                 {{ tab.icon }} {{ tab.label }}
             </button>
@@ -99,13 +105,10 @@
         <!-- Desktop Tabs -->
         <div class="desktop-tabs hidden md:flex items-center gap-6">
             @for (tab of tabs; track tab.id) {
-            <button class="tab-btn group relative py-4 text-sm font-medium transition-colors" 
-                [class.active]="activeTab() === tab.id" 
-                (click)="setActiveTab(tab.id)">
-                <span class="tab-content flex items-center gap-2"
-                    [class.text-indigo-600]="activeTab() === tab.id"
-                    [class.dark:text-indigo-400]="activeTab() === tab.id"
-                    [class.text-gray-500]="activeTab() !== tab.id"
+            <button class="tab-btn group relative py-4 text-sm font-medium transition-colors"
+                [class.active]="activeTab() === tab.id" (click)="setActiveTab(tab.id)">
+                <span class="tab-content flex items-center gap-2" [class.text-indigo-600]="activeTab() === tab.id"
+                    [class.dark:text-indigo-400]="activeTab() === tab.id" [class.text-gray-500]="activeTab() !== tab.id"
                     [class.dark:text-slate-400]="activeTab() !== tab.id"
                     [class.group-hover:text-gray-700]="activeTab() !== tab.id"
                     [class.dark:group-hover:text-slate-300]="activeTab() !== tab.id">
@@ -113,8 +116,7 @@
                     <span class="tab-label">{{ tab.label }}</span>
                 </span>
                 <div class="active-indicator absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full transition-all duration-300"
-                    [class.bg-indigo-600]="activeTab() === tab.id"
-                    [class.dark:bg-indigo-500]="activeTab() === tab.id"
+                    [class.bg-indigo-600]="activeTab() === tab.id" [class.dark:bg-indigo-500]="activeTab() === tab.id"
                     [class.opacity-0]="activeTab() !== tab.id"></div>
             </button>
             }
@@ -312,7 +314,7 @@
                 <div class="card">
                     <h2 class="card-title">Resume Manager</h2>
                     <div class="resume-selector">
-                        <label>Active Resume for this Application</label>
+                        <label hlmLabel>Active Resume for this Application</label>
                         <select class="select-input" [value]="selectedResumeId() || ''"
                             (change)="selectedResumeId.set($any($event.target).value || null)">
                             <option value="">-- Select Resume --</option>
@@ -391,7 +393,7 @@
                             @if (q.tips) {
                             <p class="question-tip">💡 {{ q.tips }}</p>
                             }
-                            <label>Your Answer Draft</label>
+                            <label hlmLabel>Your Answer Draft</label>
                             <textarea class="answer-input" [value]="q.draftAnswer"
                                 (input)="updateAnswer(q.id, $any($event.target).value)"
                                 placeholder="Draft your answer here..." rows="5"></textarea>

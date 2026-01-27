@@ -5,10 +5,13 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { Company, CreateCompany, UpdateCompany } from '../../models/company.model';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
 
 @Component({
   selector: 'app-company-form',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
   templateUrl: './company-form.html',
   styleUrl: './company-form.css',
 })

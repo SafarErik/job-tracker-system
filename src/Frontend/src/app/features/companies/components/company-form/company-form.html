@@ -57,10 +57,10 @@
 
         <!-- Company Name -->
         <div class="form-group">
-          <label for="name" class="form-label">
+          <label hlmLabel for="name">
             Company Name <span class="required">*</span>
           </label>
-          <input type="text" id="name" formControlName="name" class="form-input"
+          <input hlmInput type="text" id="name" formControlName="name"
             [class.input-error]="name?.invalid && name?.touched" placeholder="e.g., Google, Microsoft, Apple" />
           @if (name?.invalid && name?.touched) {
           <p class="error-message">
@@ -76,20 +76,20 @@
 
         <!-- Website -->
         <div class="form-group">
-          <label for="website" class="form-label"> Website </label>
+          <label hlmLabel for="website"> Website </label>
           <div class="input-with-icon">
             <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
             </svg>
-            <input type="url" id="website" formControlName="website" class="form-input with-icon"
+            <input hlmInput type="url" id="website" formControlName="website" class="pl-10"
               placeholder="https://www.example.com" />
           </div>
         </div>
 
         <!-- Address -->
         <div class="form-group">
-          <label for="address" class="form-label"> Address </label>
+          <label hlmLabel for="address"> Address </label>
           <div class="input-with-icon">
             <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,7 +97,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <input type="text" id="address" formControlName="address" class="form-input with-icon"
+            <input hlmInput type="text" id="address" formControlName="address" class="pl-10"
               placeholder="1234 Main Street, City, Country" />
           </div>
         </div>
@@ -115,21 +115,20 @@
 
         <!-- Tech Stack -->
         <div class="form-group">
-          <label class="form-label"> Tech Stack </label>
+          <label hlmLabel> Tech Stack </label>
           <div class="tech-stack-input">
             <div class="tech-tags-container">
               @for (tech of techStack(); track tech; let i = $index) {
               <span class="tech-tag-input">
                 {{ tech }}
-                <button type="button" class="tech-remove" (click)="removeTech(i)">×</button>
+                <button hlmBtn variant="ghost" size="icon-xs" type="button" (click)="removeTech(i)">×</button>
               </span>
               }
             </div>
             <div class="input-with-button">
-              <input type="text" class="form-input" placeholder="Type a technology and press Enter..."
-                [value]="newTech()" (input)="newTech.set($any($event.target).value)"
-                (keydown)="onTechKeydown($event)" />
-              <button type="button" class="btn-add-tech" (click)="addTech()">Add</button>
+              <input hlmInput type="text" placeholder="Type a technology and press Enter..." [value]="newTech()"
+                (input)="newTech.set($any($event.target).value)" (keydown)="onTechKeydown($event)" />
+              <button hlmBtn variant="secondary" type="button" (click)="addTech()">Add</button>
             </div>
           </div>
         </div>
@@ -148,26 +147,26 @@
 
         <!-- HR Contact Name -->
         <div class="form-group">
-          <label for="hrContactName" class="form-label"> HR Contact Name </label>
+          <label hlmLabel for="hrContactName"> HR Contact Name </label>
           <div class="input-with-icon">
             <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <input type="text" id="hrContactName" formControlName="hrContactName" class="form-input with-icon"
+            <input hlmInput type="text" id="hrContactName" formControlName="hrContactName" class="pl-10"
               placeholder="John Doe" />
           </div>
         </div>
 
         <!-- HR Contact Email -->
         <div class="form-group">
-          <label for="hrContactEmail" class="form-label"> HR Contact Email </label>
+          <label hlmLabel for="hrContactEmail"> HR Contact Email </label>
           <div class="input-with-icon">
             <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <input type="email" id="hrContactEmail" formControlName="hrContactEmail" class="form-input with-icon"
+            <input hlmInput type="email" id="hrContactEmail" formControlName="hrContactEmail" class="pl-10"
               [class.input-error]="hrContactEmail?.invalid && hrContactEmail?.touched" placeholder="hr@example.com" />
           </div>
           @if (hrContactEmail?.invalid && hrContactEmail?.touched) {
@@ -177,13 +176,13 @@
 
         <!-- HR LinkedIn -->
         <div class="form-group">
-          <label for="hrContactLinkedIn" class="form-label"> HR LinkedIn Profile </label>
+          <label hlmLabel for="hrContactLinkedIn"> HR LinkedIn Profile </label>
           <div class="input-with-icon">
             <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <input type="url" id="hrContactLinkedIn" formControlName="hrContactLinkedIn" class="form-input with-icon"
+            <input hlmInput type="url" id="hrContactLinkedIn" formControlName="hrContactLinkedIn" class="pl-10"
               placeholder="https://www.linkedin.com/in/johndoe" />
           </div>
         </div>
@@ -191,19 +190,19 @@
 
       <!-- Form Actions -->
       <div class="form-actions">
-        <button type="button" (click)="goBack()" class="btn btn-secondary">
-          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button hlmBtn variant="ghost" type="button" (click)="goBack()">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           Cancel
         </button>
 
-        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting() || companyForm.invalid">
+        <button hlmBtn type="submit" [disabled]="isSubmitting() || companyForm.invalid">
           @if (isSubmitting()) {
           <div class="btn-spinner"></div>
           <span>Saving...</span>
           } @else {
-          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
           <span>{{ isEditMode() ? 'Update Company' : 'Create Company' }}</span>

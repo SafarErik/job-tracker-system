@@ -1,458 +1,326 @@
 <div class="profile-container">
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner-modern"></div>
-      <p class="loading-text">Loading your profile...</p>
-    </div>
+  <div class="loading-state">
+    <div class="spinner-modern"></div>
+    <p class="loading-text">Loading your profile...</p>
+  </div>
   }
 
   <!-- Error State -->
   @if (error()) {
-    <div class="error-state">
-      <div class="error-icon">⚠️</div>
-      <p class="error-text">{{ error() }}</p>
-      <button (click)="loadProfile()" class="btn-retry">Try Again</button>
-    </div>
+  <div class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p class="error-text">{{ error() }}</p>
+    <button (click)="loadProfile()" class="btn-retry">Try Again</button>
+  </div>
   }
 
   <!-- Profile Content -->
   @if (profile() && !isLoading() && !error()) {
-    <!-- Hero Header -->
-    <div class="profile-hero">
-      <div class="hero-background"></div>
-      <div class="hero-content">
-        <div class="profile-picture-section">
-          @if (profile()!.profilePictureUrl) {
-            <img
-              [src]="profile()!.profilePictureUrl"
-              [alt]="profile()!.fullName"
-              class="profile-picture"
-            />
-          } @else {
-            <div class="profile-picture-placeholder">
-              {{ profile()!.firstName?.[0] || '?' }}{{ profile()!.lastName?.[0] || '' }}
-            </div>
-          }
-          <input
-            type="file"
-            #fileInput
-            (change)="onFileSelected($event)"
-            accept="image/*"
-            style="display: none"
-          />
-          <button
-            class="btn-upload-picture"
-            (click)="fileInput.click()"
-            [disabled]="isUploadingPicture()"
-          >
-            @if (isUploadingPicture()) {
-              <span class="spinner-small"></span>
-            } @else {
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            }
-          </button>
+  <!-- Hero Header -->
+  <div class="profile-hero">
+    <div class="hero-background"></div>
+    <div class="hero-content">
+      <div class="profile-picture-section">
+        @if (profile()!.profilePictureUrl) {
+        <img [src]="profile()!.profilePictureUrl" [alt]="profile()!.fullName" class="profile-picture" />
+        } @else {
+        <div class="profile-picture-placeholder">
+          {{ profile()!.firstName?.[0] || '?' }}{{ profile()!.lastName?.[0] || '' }}
         </div>
-
-        <div class="hero-info">
-          <h1 class="profile-name">{{ profile()!.fullName || 'Your Name' }}</h1>
-          @if (profile()!.currentJobTitle != null) {
-            <p class="profile-title">{{ profile()!.currentJobTitle }}</p>
-          }
-          @if (profile()!.yearsOfExperience != null) {
-            <p class="profile-experience">{{ profile()!.yearsOfExperience }} years of experience</p>
-          }
-          <p class="profile-email">{{ profile()!.email }}</p>
-          <p class="profile-joined">Member since {{ formatDate(profile()!.createdAt) }}</p>
-        </div>
-
-        <button class="btn-edit-toggle" (click)="toggleEditMode()">
-          @if (isEditMode()) {
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-            Cancel
+        }
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none" />
+        <button class="btn-upload-picture" (click)="fileInput.click()" [disabled]="isUploadingPicture()">
+          @if (isUploadingPicture()) {
+          <span class="spinner-small"></span>
           } @else {
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-            Edit Profile
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
           }
         </button>
       </div>
+
+      <div class="hero-info">
+        <h1 class="profile-name">{{ profile()!.fullName || 'Your Name' }}</h1>
+        @if (profile()!.currentJobTitle != null) {
+        <p class="profile-title">{{ profile()!.currentJobTitle }}</p>
+        }
+        @if (profile()!.yearsOfExperience != null) {
+        <p class="profile-experience">{{ profile()!.yearsOfExperience }} years of experience</p>
+        }
+        <p class="profile-email">{{ profile()!.email }}</p>
+        <p class="profile-joined">Member since {{ formatDate(profile()!.createdAt) }}</p>
+      </div>
+
+      <button class="btn-edit-toggle" (click)="toggleEditMode()">
+        @if (isEditMode()) {
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        Cancel
+        } @else {
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Edit Profile
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  @if (stats()) {
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Total Applications</p>
+        <p class="stat-value">{{ stats()!.totalApplications }}</p>
+      </div>
     </div>
 
-    <!-- Stats Cards -->
-    @if (stats()) {
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Total Applications</p>
-            <p class="stat-value">{{ stats()!.totalApplications }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Active</p>
-            <p class="stat-value">{{ stats()!.activeApplications }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Interviews</p>
-            <p class="stat-value">{{ stats()!.interviewsScheduled }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Offers</p>
-            <p class="stat-value">{{ stats()!.offersReceived }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Companies</p>
-            <p class="stat-value">{{ stats()!.companiesAppliedTo }}</p>
-          </div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
-            </svg>
-          </div>
-          <div class="stat-content">
-            <p class="stat-label">Success Rate</p>
-            <p class="stat-value">{{ stats()!.successRate }}%</p>
-          </div>
-        </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
       </div>
-    }
+      <div class="stat-content">
+        <p class="stat-label">Active</p>
+        <p class="stat-value">{{ stats()!.activeApplications }}</p>
+      </div>
+    </div>
 
-    <!-- Main Content Grid -->
-    <div class="content-grid">
-      <!-- Profile Information Card -->
-      <div class="modern-card">
-        <div class="card-header">
-          <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
-          <h2 class="card-title">Profile Information</h2>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Interviews</p>
+        <p class="stat-value">{{ stats()!.interviewsScheduled }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Offers</p>
+        <p class="stat-value">{{ stats()!.offersReceived }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Companies</p>
+        <p class="stat-value">{{ stats()!.companiesAppliedTo }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Success Rate</p>
+        <p class="stat-value">{{ stats()!.successRate }}%</p>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Profile Information Card -->
+    <div class="modern-card">
+      <div class="card-header">
+        <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <h2 class="card-title">Profile Information</h2>
+      </div>
+
+      @if (isEditMode()) {
+      <!-- Edit Form -->
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label hlmLabel>First Name *</label>
+            <input hlmInput type="text" formControlName="firstName" placeholder="John" />
+            @if (
+            profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched
+            ) {
+            <span class="form-error">First name is required</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label hlmLabel>Last Name *</label>
+            <input hlmInput type="text" formControlName="lastName" placeholder="Doe" />
+            @if (profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
+            <span class="form-error">Last name is required</span>
+            }
+          </div>
         </div>
 
-        @if (isEditMode()) {
-          <!-- Edit Form -->
-          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">First Name *</label>
-                <input
-                  type="text"
-                  formControlName="firstName"
-                  class="form-input"
-                  placeholder="John"
-                />
-                @if (
-                  profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched
-                ) {
-                  <span class="form-error">First name is required</span>
-                }
-              </div>
+        <div class="form-group">
+          <label hlmLabel>Current Job Title</label>
+          <input hlmInput type="text" formControlName="currentJobTitle" placeholder="e.g., Senior Software Engineer" />
+        </div>
 
-              <div class="form-group">
-                <label class="form-label">Last Name *</label>
-                <input
-                  type="text"
-                  formControlName="lastName"
-                  class="form-input"
-                  placeholder="Doe"
-                />
-                @if (profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
-                  <span class="form-error">Last name is required</span>
-                }
-              </div>
-            </div>
+        <div class="form-group">
+          <label hlmLabel>Years of Experience</label>
+          <input hlmInput type="number" formControlName="yearsOfExperience" placeholder="5" min="0" max="50" />
+        </div>
 
-            <div class="form-group">
-              <label class="form-label">Current Job Title</label>
-              <input
-                type="text"
-                formControlName="currentJobTitle"
-                class="form-input"
-                placeholder="e.g., Senior Software Engineer"
-              />
-            </div>
+        <div class="form-group">
+          <label hlmLabel>Bio</label>
+          <textarea formControlName="bio" class="form-textarea" rows="4"
+            placeholder="Tell us about yourself..."></textarea>
+          <span class="form-hint">{{ profileForm.get('bio')?.value?.length || 0 }}/500 characters</span>
+        </div>
 
-            <div class="form-group">
-              <label class="form-label">Years of Experience</label>
-              <input
-                type="number"
-                formControlName="yearsOfExperience"
-                class="form-input"
-                placeholder="5"
-                min="0"
-                max="50"
-              />
-            </div>
+        <div class="form-actions">
+          <button type="button" (click)="toggleEditMode()" hlmBtn variant="ghost">Cancel</button>
+          <button type="submit" hlmBtn [disabled]="profileForm.invalid">
+            Save Changes
+          </button>
+        </div>
+      </form>
+      } @else {
+      <!-- View Mode -->
+      <div class="profile-info">
+        @if (profile()!.bio) {
+        <div class="info-item">
+          <span class="info-label">Bio</span>
+          <p class="info-value">{{ profile()!.bio }}</p>
+        </div>
+        } @else {
+        <div class="empty-bio">
+          <p>No bio added yet. Click "Edit Profile" to add information about yourself.</p>
+        </div>
+        }
+      </div>
+      }
+    </div>
 
-            <div class="form-group">
-              <label class="form-label">Bio</label>
-              <textarea
-                formControlName="bio"
-                class="form-textarea"
-                rows="4"
-                placeholder="Tell us about yourself..."
-              ></textarea>
-              <span class="form-hint"
-                >{{ profileForm.get('bio')?.value?.length || 0 }}/500 characters</span
-              >
-            </div>
+    <!-- Skills Card -->
+    <div class="modern-card">
+      <div class="card-header">
+        <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <h2 class="card-title">Skills</h2>
+        <span class="skill-count">{{ userSkills().length }}</span>
+      </div>
 
-            <div class="form-actions">
-              <button type="button" (click)="toggleEditMode()" class="btn-secondary">Cancel</button>
-              <button type="submit" class="btn-primary" [disabled]="profileForm.invalid">
-                Save Changes
+      @if (userSkills().length > 0) {
+      <div class="skills-section">
+        @for (category of getSkillsByCategory() | keyvalue; track category.key) {
+        <div class="skill-category">
+          <h3 class="category-title">{{ category.key }}</h3>
+          <div class="skills-list">
+            @for (skill of category.value; track skill.id) {
+            <div class="skill-tag">
+              <span>{{ skill.name }}</span>
+              <button (click)="removeSkill(skill)" class="btn-remove-skill" title="Remove skill">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
-          </form>
-        } @else {
-          <!-- View Mode -->
-          <div class="profile-info">
-            @if (profile()!.bio) {
-              <div class="info-item">
-                <span class="info-label">Bio</span>
-                <p class="info-value">{{ profile()!.bio }}</p>
-              </div>
-            } @else {
-              <div class="empty-bio">
-                <p>No bio added yet. Click "Edit Profile" to add information about yourself.</p>
-              </div>
             }
           </div>
+        </div>
         }
       </div>
+      } @else {
+      <div class="empty-skills">
+        <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <p>No skills added yet. Add skills to showcase your expertise!</p>
+      </div>
+      }
 
-      <!-- Skills Card -->
-      <div class="modern-card">
-        <div class="card-header">
-          <svg class="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
-          <h2 class="card-title">Skills</h2>
-          <span class="skill-count">{{ userSkills().length }}</span>
-        </div>
-
-        @if (userSkills().length > 0) {
-          <div class="skills-section">
-            @for (category of getSkillsByCategory() | keyvalue; track category.key) {
-              <div class="skill-category">
-                <h3 class="category-title">{{ category.key }}</h3>
-                <div class="skills-list">
-                  @for (skill of category.value; track skill.id) {
-                    <div class="skill-tag">
-                      <span>{{ skill.name }}</span>
-                      <button
-                        (click)="removeSkill(skill)"
-                        class="btn-remove-skill"
-                        title="Remove skill"
-                      >
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  }
-                </div>
-              </div>
+      <!-- Add Skill Section -->
+      <div class="add-skill-section">
+        <h3 class="add-skill-title">Add Skills</h3>
+        <div class="add-skill-form">
+          <input hlmInput type="text" placeholder="Search or add a skill (e.g., React, Terraform)"
+            [formControl]="skillSearchControl" (keyup.enter)="onSkillInputEnter()" />
+          <input hlmInput type="text" placeholder="Category (optional)" [formControl]="skillCategoryControl"
+            (keyup.enter)="onSkillInputEnter()" />
+          <button type="button" class="btn-primary add-skill-btn" (click)="addCustomSkillFromInput()"
+            [disabled]="!addableSkillName || isAddingSkill()">
+            @if (isAddingSkill()) {
+            <span class="spinner-small"></span>
+            } @else if (addableSkillName) {
+            Add "{{ addableSkillName }}"
+            } @else {
+            Add new skill
             }
-          </div>
-        } @else {
-          <div class="empty-skills">
-            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 10V3L4 14h7v7l9-11h-7z"
-              />
+          </button>
+        </div>
+        <p class="form-hint">Type to search existing skills. If not found, add it instantly.</p>
+
+        @if (filteredSkills.length > 0) {
+        <div class="available-skills">
+          @for (skill of filteredSkills; track skill.id) {
+          <button (click)="addSkill(skill)" class="skill-tag-add">
+            <span>{{ skill.name }}</span>
+            @if (skill.category) {
+            <small class="skill-category">{{ skill.category }}</small>
+            }
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            <p>No skills added yet. Add skills to showcase your expertise!</p>
-          </div>
-        }
-
-        <!-- Add Skill Section -->
-        <div class="add-skill-section">
-          <h3 class="add-skill-title">Add Skills</h3>
-          <div class="add-skill-form">
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Search or add a skill (e.g., React, Terraform)"
-              [formControl]="skillSearchControl"
-              (keyup.enter)="onSkillInputEnter()"
-            />
-            <input
-              type="text"
-              class="form-input"
-              placeholder="Category (optional)"
-              [formControl]="skillCategoryControl"
-              (keyup.enter)="onSkillInputEnter()"
-            />
-            <button
-              type="button"
-              class="btn-primary add-skill-btn"
-              (click)="addCustomSkillFromInput()"
-              [disabled]="!addableSkillName || isAddingSkill()"
-            >
-              @if (isAddingSkill()) {
-                <span class="spinner-small"></span>
-              } @else if (addableSkillName) {
-                Add "{{ addableSkillName }}"
-              } @else {
-                Add new skill
-              }
-            </button>
-          </div>
-          <p class="form-hint">Type to search existing skills. If not found, add it instantly.</p>
-
-          @if (filteredSkills.length > 0) {
-            <div class="available-skills">
-              @for (skill of filteredSkills; track skill.id) {
-                <button (click)="addSkill(skill)" class="skill-tag-add">
-                  <span>{{ skill.name }}</span>
-                  @if (skill.category) {
-                    <small class="skill-category">{{ skill.category }}</small>
-                  }
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4v16m8-8H4"
-                    />
-                  </svg>
-                </button>
-              }
-            </div>
-          } @else if (skillSearchTerm().trim()) {
-            <div class="empty-skills small">
-              <p>No matches found.</p>
-              @if (addableSkillName) {
-                <button
-                  class="btn-primary"
-                  type="button"
-                  (click)="addCustomSkillFromInput()"
-                  [disabled]="isAddingSkill()"
-                >
-                  @if (isAddingSkill()) {
-                    <span class="spinner-small"></span>
-                  } @else {
-                    Add "{{ addableSkillName }}"
-                  }
-                </button>
-              }
-            </div>
+          </button>
           }
         </div>
+        } @else if (skillSearchTerm().trim()) {
+        <div class="empty-skills small">
+          <p>No matches found.</p>
+          @if (addableSkillName) {
+          <button class="btn-primary" type="button" (click)="addCustomSkillFromInput()" [disabled]="isAddingSkill()">
+            @if (isAddingSkill()) {
+            <span class="spinner-small"></span>
+            } @else {
+            Add "{{ addableSkillName }}"
+            }
+          </button>
+          }
+        </div>
+        }
       </div>
     </div>
+  </div>
   }
 </div>

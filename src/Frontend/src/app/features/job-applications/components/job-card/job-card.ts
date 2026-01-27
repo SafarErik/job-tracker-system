@@ -6,6 +6,15 @@ import {
     ChangeDetectionStrategy,
     signal,
 } from '@angular/core';
+import {
+    HlmCard,
+    HlmCardHeader,
+    HlmCardTitle,
+    HlmCardDescription,
+    HlmCardContent,
+    HlmCardFooter,
+} from '@spartan-ng/helm/card';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
@@ -17,7 +26,16 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
  */
 @Component({
     selector: 'app-job-card',
-    imports: [CommonModule],
+    imports: [
+        CommonModule,
+        HlmCard,
+        HlmCardHeader,
+        HlmCardTitle,
+        HlmCardDescription,
+        HlmCardContent,
+        HlmCardFooter,
+        HlmBadge,
+    ],
     templateUrl: './job-card.html',
     styleUrl: './job-card.css',
     changeDetection: ChangeDetectionStrategy.OnPush,

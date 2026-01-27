@@ -5,11 +5,12 @@ import { CompanyService } from '../../services/company.service';
 import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyCardComponent } from '../company-card/company-card';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
 
 @Component({
   selector: 'app-company-list',
-  standalone: true,
-  imports: [CommonModule, CompanyCardComponent],
+  imports: [CommonModule, CompanyCardComponent, ...HlmInputImports, ...HlmLabelImports],
   templateUrl: './company-list.html',
   styleUrl: './company-list.css',
 })

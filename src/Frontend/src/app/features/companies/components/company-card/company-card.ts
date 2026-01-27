@@ -1,10 +1,28 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import {
+    HlmCard,
+    HlmCardHeader,
+    HlmCardTitle,
+    HlmCardDescription,
+    HlmCardContent,
+    HlmCardFooter,
+} from '@spartan-ng/helm/card';
+import { HlmButton } from '@spartan-ng/helm/button';
 import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
 
 @Component({
     selector: 'app-company-card',
-    imports: [CommonModule],
+    imports: [
+        CommonModule,
+        HlmCard,
+        HlmCardHeader,
+        HlmCardTitle,
+        HlmCardDescription,
+        HlmCardContent,
+        HlmCardFooter,
+        HlmButton,
+    ],
     templateUrl: './company-card.html',
     styleUrl: './company-card.css',
 })

@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
-import { Company } from '../../models/company.model';
+import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
@@ -25,11 +25,14 @@ export class CompanyListComponent implements OnInit {
   // Signal for search filter
   searchTerm = signal('');
 
+  // Track failed logo loads
+  logoFailedIds = signal<Set<number>>(new Set());
+
   constructor(
     private readonly companyService: CompanyService,
     private readonly router: Router,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadCompanies();
@@ -73,7 +76,8 @@ export class CompanyListComponent implements OnInit {
       (company) =>
         company.name.toLowerCase().includes(term) ||
         company.website?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term),
+        company.address?.toLowerCase().includes(term) ||
+        company.industry?.toLowerCase().includes(term),
     );
   }
 
@@ -145,8 +149,69 @@ export class CompanyListComponent implements OnInit {
    */
   onRowKeyDown(event: KeyboardEvent, companyId: number): void {
     if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault(); // Prevent default scrolling for Space key
+      event.preventDefault();
       this.viewCompanyDetails(companyId);
     }
   }
+
+  /**
+   * Get Clearbit logo URL for a company
+   */
+  getLogoUrl(company: Company): string | null {
+    if (this.logoFailedIds().has(company.id)) return null;
+    const name = company.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return `https://logo.clearbit.com/${name}.com`;
+  }
+
+  /**
+   * Handle logo load error
+   */
+  onLogoError(companyId: number): void {
+    this.logoFailedIds.update((ids) => {
+      const newSet = new Set(ids);
+      newSet.add(companyId);
+      return newSet;
+    });
+  }
+
+  /**
+   * Check if logo failed for company
+   */
+  isLogoFailed(companyId: number): boolean {
+    return this.logoFailedIds().has(companyId);
+  }
+
+  /**
+   * Get status icon/emoji for application status
+   */
+  getStatusIcon(status: string): string {
+    const icons: Record<string, string> = {
+      Applied: '🔵',
+      PhoneScreen: '📞',
+      TechnicalTask: '💻',
+      Interviewing: '🟡',
+      Interview: '🟡',
+      Offer: '🟢',
+      Rejected: '🔴',
+      Accepted: '✅',
+      Ghosted: '👻',
+    };
+    return icons[status] || '⚪';
+  }
+
+  /**
+   * Get visible applications (max 2) for display
+   */
+  getVisibleApplications(company: Company): ApplicationPreview[] {
+    return company.recentApplications?.slice(0, 2) || [];
+  }
+
+  /**
+   * Get remaining applications count
+   */
+  getRemainingCount(company: Company): number {
+    const total = company.recentApplications?.length || 0;
+    return Math.max(0, total - 2);
+  }
 }
+

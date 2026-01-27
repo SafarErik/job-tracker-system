@@ -2,8 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
+import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { CompanyDetail } from '../../models/company.model';
+import { CompanyDetail, CompanyNews } from '../../models/company.model';
 
 @Component({
   selector: 'app-company-details',
@@ -13,24 +14,26 @@ import { CompanyDetail } from '../../models/company.model';
   styleUrl: './company-details.css',
 })
 export class CompanyDetailsComponent implements OnInit {
-  // Signal for company details
+  // Core signals
   companyDetails = signal<CompanyDetail | null>(null);
-
-  // Signal for loading state
   isLoading = signal(true);
-
-  // Signal for error state
   error = signal<string | null>(null);
+
+  // Intelligence signals
+  companyNews = signal<CompanyNews[]>([]);
+  newsLoading = signal(false);
+  companyNotes = signal('');
+  logoFailed = signal(false);
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly companyService: CompanyService,
+    private readonly intelligenceService: CompanyIntelligenceService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    // Get company ID from route parameters
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
@@ -51,7 +54,10 @@ export class CompanyDetailsComponent implements OnInit {
     this.companyService.getCompanyDetails(id).subscribe({
       next: (details) => {
         this.companyDetails.set(details);
+        this.companyNotes.set(details.notes || '');
         this.isLoading.set(false);
+        // Load mock news after company details
+        this.loadCompanyNews(details.name);
       },
       error: (err) => {
         console.error('Error loading company details:', err);
@@ -59,6 +65,50 @@ export class CompanyDetailsComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  /**
+   * Load mock company news
+   */
+  private loadCompanyNews(companyName: string): void {
+    this.newsLoading.set(true);
+    this.intelligenceService.getCompanyNews(companyName, 3).subscribe({
+      next: (news) => {
+        this.companyNews.set(news);
+        this.newsLoading.set(false);
+      },
+      error: () => {
+        this.newsLoading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Get Clearbit logo URL
+   */
+  getLogoUrl(): string | null {
+    if (this.logoFailed()) return null;
+    const name = this.companyDetails()?.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return name ? `https://logo.clearbit.com/${name}.com` : null;
+  }
+
+  /**
+   * Handle logo error
+   */
+  onLogoError(): void {
+    this.logoFailed.set(true);
+  }
+
+  /**
+   * Calculate success rate (Offers / Total Applications)
+   */
+  getSuccessRate(): number {
+    const details = this.companyDetails();
+    if (!details || details.totalApplications === 0) return 0;
+    const offers = details.applicationHistory.filter(
+      (app) => app.status === 'Offer' || app.status === 'Accepted',
+    ).length;
+    return Math.round((offers / details.totalApplications) * 100);
   }
 
   /**
@@ -74,16 +124,10 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
-  /**
-   * Navigate back to the company list
-   */
   goBack(): void {
     this.router.navigate(['/companies']);
   }
 
-  /**
-   * Navigate to edit company
-   */
   editCompany(): void {
     const details = this.companyDetails();
     if (details) {
@@ -91,9 +135,6 @@ export class CompanyDetailsComponent implements OnInit {
     }
   }
 
-  /**
-   * Delete current company
-   */
   async deleteCompany(): Promise<void> {
     const details = this.companyDetails();
     if (!details) return;
@@ -123,9 +164,6 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
-  /**
-   * Get CSS class for application status
-   */
   getStatusClass(status: string): string {
     const statusMap: Record<string, string> = {
       Applied: 'status-applied',
@@ -138,24 +176,17 @@ export class CompanyDetailsComponent implements OnInit {
       Accepted: 'status-accepted',
       Ghosted: 'status-ghosted',
     };
-
     return statusMap[status] || 'status-unknown';
   }
 
-  /**
-   * Format date for display
-   */
   formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
     });
   }
 
-  /**
-   * Format salary for display
-   */
   formatSalary(salary?: number): string {
     if (!salary) return 'N/A';
     return new Intl.NumberFormat('en-US', {
@@ -164,4 +195,13 @@ export class CompanyDetailsComponent implements OnInit {
       minimumFractionDigits: 0,
     }).format(salary);
   }
+
+  /**
+   * Update notes (for scratchpad)
+   */
+  updateNotes(value: string): void {
+    this.companyNotes.set(value);
+    // In production, would save to backend
+  }
 }
+

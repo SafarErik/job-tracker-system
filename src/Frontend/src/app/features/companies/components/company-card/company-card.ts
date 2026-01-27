@@ -38,9 +38,9 @@ export class CompanyCardComponent {
                 return match?.[1] || '';
             }
         }
-        // Fallback: generate from company name
+        // Fallback: generate from company name only if valid
         const name = this.company().name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        return `${name}.com`;
+        return name ? `${name}.com` : '';
     }
 
     /**

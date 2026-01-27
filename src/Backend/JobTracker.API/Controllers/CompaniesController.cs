@@ -22,7 +22,11 @@ public class CompaniesController : ControllerBase
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var companies = await _repository.GetAllByUserIdAsync(userId!);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        var companies = await _repository.GetAllByUserIdAsync(userId);
         
         // Mapping --> Entity => DTO
         // projection => We project the data by hand
@@ -53,6 +57,10 @@ public class CompaniesController : ControllerBase
         }
         
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         if (company.UserId != userId)
         {
              return NotFound();
@@ -90,6 +98,10 @@ public class CompaniesController : ControllerBase
         }
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         if (company.UserId != userId)
         {
              return NotFound();
@@ -123,9 +135,15 @@ public class CompaniesController : ControllerBase
 
     [HttpPost]
     public async Task<ActionResult<CompanyDto>> Create(CreateCompanyDto createDto) {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
         var company = new Company
         {
-            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)!,
+            UserId = userId,
             Name = createDto.Name,
             Website = createDto.Website,
             Address = createDto.Address,
@@ -162,6 +180,10 @@ public class CompaniesController : ControllerBase
         }
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         if (existingCompany.UserId != userId)
         {
              return Forbid();
@@ -191,6 +213,10 @@ public class CompaniesController : ControllerBase
         }
 
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
         if (existingCompany.UserId != userId)
         {
              return Forbid();

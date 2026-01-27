@@ -450,9 +450,40 @@
   color: #ef4444;
 }
 
+/* Ghosted */
 .timeline-status.status-ghosted {
   background: rgba(107, 114, 128, 0.1);
   color: #6b7280;
+}
+
+/* Phone Screen */
+.timeline-dot.status-phonescreen {
+  background: #a855f7;
+}
+
+.timeline-status.status-phonescreen {
+  background: rgba(168, 85, 247, 0.1);
+  color: #a855f7;
+}
+
+/* Technical Task */
+.timeline-dot.status-technicaltask {
+  background: #f97316;
+}
+
+.timeline-status.status-technicaltask {
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316;
+}
+
+/* Unknown */
+.timeline-dot.status-unknown {
+  background: #9ca3af;
+}
+
+.timeline-status.status-unknown {
+  background: rgba(156, 163, 175, 0.1);
+  color: #9ca3af;
 }
 
 /* News */

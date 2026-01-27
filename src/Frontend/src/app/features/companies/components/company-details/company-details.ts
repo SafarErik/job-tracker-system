@@ -88,8 +88,25 @@ export class CompanyDetailsComponent implements OnInit {
    */
   getLogoUrl(): string | null {
     if (this.logoFailed()) return null;
-    const name = this.companyDetails()?.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return name ? `https://logo.clearbit.com/${name}.com` : null;
+    const details = this.companyDetails();
+    if (!details) return null;
+
+    let domain = '';
+    if (details.website) {
+      try {
+        const url = new URL(details.website);
+        domain = url.hostname.replace('www.', '');
+      } catch {
+        // Fallback for malformed URLs
+      }
+    }
+
+    if (!domain && details.name) {
+      const cleanName = details.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (cleanName) domain = `${cleanName}.com`;
+    }
+
+    return domain ? `https://logo.clearbit.com/${domain}` : null;
   }
 
   /**

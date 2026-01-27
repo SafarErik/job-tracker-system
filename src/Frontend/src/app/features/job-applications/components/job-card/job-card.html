@@ -1,5 +1,5 @@
 <!-- Job Card Component -->
-<button type="button" (click)="onCardClick()"
+<div role="button" tabindex="0" (click)="onCardClick()" (keydown.enter)="onCardClick()" (keydown.space)="onCardClick()"
     class="job-card group relative bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer text-left border-0 p-0 w-full"
     [class.stale-card]="isStale()" [title]="'Manage documents, AI analysis, and interview prep'">
     <!-- Stale Indicator Border -->
@@ -109,4 +109,4 @@
             <span>Open Workstation</span>
         </div>
     </div>
-</button>
+</div>

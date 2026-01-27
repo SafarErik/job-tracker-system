@@ -46,7 +46,7 @@
 
         <!-- Tech Stack -->
         <div class="flex flex-wrap gap-2">
-            @for (tech of getVisibleTechStack(); track tech) {
+            @for (tech of getVisibleTechStack(); track $index) {
             <span
                 class="inline-flex items-center justify-center rounded border border-secondary bg-tertiary px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-secondary">
                 {{ tech }}

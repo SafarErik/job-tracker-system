@@ -30,7 +30,7 @@
                 <h1 class="position-title">{{ application()!.position }}</h1>
 
                 <!-- Match Score Badge -->
-                @if (application()!.matchScore) {
+                @if (application()!.matchScore !== null && application()!.matchScore !== undefined) {
                 <div class="match-badge" [class]="matchScoreBg()">
                     <span [class]="matchScoreColor()">{{ application()!.matchScore }}%</span>
                     <span class="match-label">Match</span>
@@ -127,7 +127,8 @@
                         @if (application()!.jobUrl) {
                         <div class="metadata-item">
                             <span class="meta-label">Job Posting</span>
-                            <a [href]="application()!.jobUrl" target="_blank" class="meta-link">View Original →</a>
+                            <a [href]="application()!.jobUrl" target="_blank" rel="noopener noreferrer"
+                                class="meta-link">View Original →</a>
                         </div>
                         }
                     </div>
@@ -138,7 +139,7 @@
                     <h2 class="card-title">Match Score</h2>
                     <div class="match-score-display">
                         <div class="score-circle" [class]="matchScoreBg()">
-                            <span class="score-value" [class]="matchScoreColor()">{{ application()!.matchScore || '?'
+                            <span class="score-value" [class]="matchScoreColor()">{{ application()!.matchScore ?? '?'
                                 }}%</span>
                         </div>
                         <p class="score-hint">

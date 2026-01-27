@@ -139,6 +139,8 @@ export class JobWorkstationComponent implements OnInit {
                 this.error.set('Invalid application ID');
                 this.isLoading.set(false);
             }
+        } else {
+            this.isLoading.set(false);
         }
     }
 
@@ -385,9 +387,14 @@ Best regards,
 
     // Utility
     copyToClipboard(text: string): void {
-        navigator.clipboard.writeText(text).then(() => {
-            this.notificationService.success('Copied to clipboard!', 'Success');
-        });
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                this.notificationService.success('Copied to clipboard!', 'Success');
+            })
+            .catch((err) => {
+                console.error('Clipboard error:', err);
+                this.notificationService.error('Failed to copy to clipboard', 'Error');
+            });
     }
 
     formatDate(date: string | Date): string {

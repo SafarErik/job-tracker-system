@@ -3,623 +3,96 @@
 @import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css';
 
-
-
-/* You can add global styles to this file, and also import other style files */
-
-/*
-* ============================================================================
-* THEME SYSTEM - CSS Custom Properties
-* ============================================================================
-*
-* Modern theme system using CSS custom properties (CSS variables)
-* Supports light and dark modes with smooth transitions
-*
-* Best practices:
-* - Uses semantic color names (background, text, primary, etc.)
-* - Provides consistent color palette across the application
-* - Enables easy theme switching without JavaScript
-* - Follows WCAG contrast guidelines for accessibility
-*/
-
-/* ============================================================================
-* ROOT VARIABLES - Light Theme (Default)
-* ============================================================================ */
-:root {
-    /* Background colors */
-    --color-bg-primary: #ffffff;
-    --color-bg-secondary: #f9fafb;
-    --color-bg-tertiary: #f3f4f6;
-    --color-bg-elevated: #ffffff;
-    --color-bg-overlay: rgba(0, 0, 0, 0.5);
-
-    /* Text colors */
-    --color-text-primary: #111827;
-    --color-text-secondary: #6b7280;
-    --color-text-tertiary: #9ca3af;
-    --color-text-inverse: #ffffff;
-
-    /* Border colors */
-    --color-border-primary: #e5e7eb;
-    --color-border-secondary: #d1d5db;
-    --color-border-focus: #667eea;
-
-    /* Brand colors - Gradient */
-    --color-primary-start: #667eea;
-    --color-primary-end: #764ba2;
-    --color-primary: #667eea;
-    --color-primary-hover: #5568d3;
-    --color-primary-light: rgba(102, 126, 234, 0.1);
-
-    /* Semantic colors */
-    --color-success: #10b981;
-    --color-success-light: #d1fae5;
-    --color-warning: #f59e0b;
-    --color-warning-light: #fef3c7;
-    --color-error: #ef4444;
-    --color-error-light: #fee2e2;
-    --color-info: #3b82f6;
-    --color-info-light: #dbeafe;
-
-    /* Status badge colors */
-    --status-pending: #f59e0b;
-    --status-pending-bg: #fef3c7;
-    --status-applied: #3b82f6;
-    --status-applied-bg: #dbeafe;
-    --status-interview: #8b5cf6;
-    --status-interview-bg: #ede9fe;
-    --status-offer: #10b981;
-    --status-offer-bg: #d1fae5;
-    --status-rejected: #ef4444;
-    --status-rejected-bg: #fee2e2;
-
-    /* Shadow colors */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-    /* Navigation specific */
-    --nav-bg-gradient-start: #667eea;
-    --nav-bg-gradient-end: #764ba2;
-    --nav-text-color: rgba(255, 255, 255, 0.9);
-    --nav-text-hover: #ffffff;
-    --nav-link-active-bg: rgba(255, 255, 255, 0.2);
-
-    /* Transition durations */
-    --transition-fast: 150ms;
-    --transition-normal: 250ms;
-    --transition-slow: 350ms;
-}
-
-/* ============================================================================
-* DARK THEME VARIABLES
-* ============================================================================ */
-.dark {
-    /* Background colors - Modern slate palette */
-    --color-bg-primary: #0a0e1a;
-    --color-bg-secondary: #111827;
-    --color-bg-tertiary: #1f2937;
-    --color-bg-elevated: #1f2937;
-    --color-bg-overlay: rgba(0, 0, 0, 0.75);
-
-    /* Text colors - Adjusted for dark backgrounds */
-    --color-text-primary: #f1f5f9;
-    --color-text-secondary: #cbd5e1;
-    --color-text-tertiary: #94a3b8;
-    --color-text-inverse: #0f172a;
-
-    /* Border colors - Subtle in dark mode */
-    --color-border-primary: #374151;
-    --color-border-secondary: #4b5563;
-    --color-border-focus: #6366f1;
-
-    /* Brand colors - Modern indigo accent for dark mode */
-    --color-primary-start: #6366f1;
-    --color-primary-end: #8b5cf6;
-    --color-primary: #6366f1;
-    --color-primary-hover: #818cf8;
-    --color-primary-light: rgba(99, 102, 241, 0.15);
-
-    /* Semantic colors - Dark mode variants */
-    --color-success: #34d399;
-    --color-success-light: rgba(52, 211, 153, 0.15);
-    --color-warning: #fbbf24;
-    --color-warning-light: rgba(251, 191, 36, 0.15);
-    --color-error: #f87171;
-    --color-error-light: rgba(248, 113, 113, 0.15);
-    --color-info: #60a5fa;
-    --color-info-light: rgba(96, 165, 250, 0.15);
-
-    /* Status badge colors - Dark mode */
-    --status-pending: #fbbf24;
-    --status-pending-bg: rgba(251, 191, 36, 0.15);
-    --status-applied: #60a5fa;
-    --status-applied-bg: rgba(96, 165, 250, 0.15);
-    --status-interview: #a78bfa;
-    --status-interview-bg: rgba(167, 139, 250, 0.15);
-    --status-offer: #34d399;
-    --status-offer-bg: rgba(52, 211, 153, 0.15);
-    --status-rejected: #f87171;
-    --status-rejected-bg: rgba(248, 113, 113, 0.15);
-
-    /* Shadow colors - Strong elevation for dark mode */
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.6), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.7), 0 4px 10px -2px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 20px 35px -5px rgba(0, 0, 0, 0.8), 0 10px 15px -5px rgba(0, 0, 0, 0.6);
-
-    /* Navigation specific - Modern dark gradient */
-    --nav-bg-gradient-start: #1f2937;
-    --nav-bg-gradient-end: #111827;
-    --nav-text-color: rgba(241, 245, 249, 0.9);
-    --nav-text-hover: #ffffff;
-    --nav-link-active-bg: rgba(129, 140, 248, 0.2);
-}
-
-/* ============================================================================
-* GLOBAL THEME STYLES
-* ============================================================================ */
-
-/* Smooth color transitions when switching themes - only for specific properties */
-:root,
-body,
-.modern-nav,
-.main-content,
-.app-footer,
-[class*='bg-'],
-[class*='text-'],
-[class*='border-'] {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: var(--transition-normal);
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Body and root element theming */
-html {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-primary);
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-primary);
-}
-
-/* App root should also stretch */
-app-root {
-    display: block;
-    min-height: 100vh;
-}
-
-/* ============================================================================
-* UTILITY CLASSES FOR THEME-AWARE COMPONENTS
-* ============================================================================ */
-
-/* Background utilities */
-.bg-primary {
-    background-color: var(--color-bg-primary);
-}
-
-.bg-secondary {
-    background-color: var(--color-bg-secondary);
-}
-
-.bg-tertiary {
-    background-color: var(--color-bg-tertiary);
-}
-
-.bg-elevated {
-    background-color: var(--color-bg-elevated);
-}
-
-/* Text utilities */
-.text-primary {
-    color: var(--color-text-primary);
-}
-
-.text-secondary {
-    color: var(--color-text-secondary);
-}
-
-.text-tertiary {
-    color: var(--color-text-tertiary);
-}
-
-/* Border utilities */
-.border-primary {
-    border-color: var(--color-border-primary);
-}
-
-.border-secondary {
-    border-color: var(--color-border-secondary);
-}
-
-/* Shadow utilities */
-.shadow-theme-sm {
-    box-shadow: var(--shadow-sm);
-}
-
-.shadow-theme-md {
-    box-shadow: var(--shadow-md);
-}
-
-.shadow-theme-lg {
-    box-shadow: var(--shadow-lg);
-}
-
-.shadow-theme-xl {
-    box-shadow: var(--shadow-xl);
-}
-
-/* ============================================================================
-* TAILWIND DARK MODE OVERRIDES
-* ============================================================================ */
-
-/* Override Tailwind's default colors to respect our theme */
-.dark .bg-gray-50 {
-    background-color: var(--color-bg-secondary) !important;
-}
-
-.dark .bg-white {
-    background-color: var(--color-bg-elevated) !important;
-}
-
-.dark .bg-gray-100 {
-    background-color: var(--color-bg-tertiary) !important;
-}
-
-.dark .text-gray-900 {
-    color: var(--color-text-primary) !important;
-}
-
-.dark .text-gray-600,
-.dark .text-gray-700 {
-    color: var(--color-text-secondary) !important;
-}
-
-.dark .text-gray-400,
-.dark .text-gray-500 {
-    color: var(--color-text-tertiary) !important;
-}
-
-.dark .border-gray-100,
-.dark .border-gray-200 {
-    border-color: var(--color-border-primary) !important;
-}
-
-/* Card shadows in dark mode - stronger for elevation */
-.dark .shadow-md {
-    box-shadow: var(--shadow-md) !important;
-}
-
-.dark .shadow-lg {
-    box-shadow: var(--shadow-lg) !important;
-}
-
-.dark .shadow-xl {
-    box-shadow: var(--shadow-xl) !important;
-}
-
-/* Hover shadows enhanced */
-.dark .hover\:shadow-xl:hover {
-    box-shadow: var(--shadow-xl) !important;
-}
-
-/* ============================================================================
-* KANBAN BOARD DARK MODE OVERRIDES
-* Note: !important needed here to override Tailwind utility classes
-* ============================================================================ */
-
-/* Applied column - Blue */
-.dark .bg-blue-50 {
-    background-color: rgba(59, 130, 246, 0.15) !important;
-}
-
-.dark .border-blue-200 {
-    border-color: #1e40af !important;
-}
-
-/* Phone Screen column - Purple */
-.dark .bg-purple-50 {
-    background-color: rgba(168, 85, 247, 0.15) !important;
-}
-
-.dark .border-purple-200 {
-    border-color: #6b21a8 !important;
-}
-
-/* Technical Task column - Indigo */
-.dark .bg-indigo-50 {
-    background-color: rgba(99, 102, 241, 0.15) !important;
-}
-
-.dark .border-indigo-200 {
-    border-color: #4338ca !important;
-}
-
-/* Interviewing column - Yellow */
-.dark .bg-yellow-50 {
-    background-color: rgba(234, 179, 8, 0.15) !important;
-}
-
-.dark .border-yellow-200 {
-    border-color: #a16207 !important;
-}
-
-/* Offer column - Green */
-.dark .bg-green-50 {
-    background-color: rgba(34, 197, 94, 0.15) !important;
-}
-
-.dark .border-green-200 {
-    border-color: #15803d !important;
-}
-
-/* Rejected column - Red */
-.dark .bg-red-50 {
-    background-color: rgba(239, 68, 68, 0.15) !important;
-}
-
-.dark .border-red-200 {
-    border-color: #991b1b !important;
-}
-
-/* Ghosted column - Orange */
-.dark .bg-orange-50 {
-    background-color: rgba(251, 146, 60, 0.15) !important;
-}
-
-.dark .border-orange-200 {
-    border-color: #c2410c !important;
-}
-
-/* Text color overrides for Kanban cards and UI elements
-* Scoped to .kanban-board-container to avoid global conflicts */
-.dark .kanban-board-container .text-gray-500,
-.dark .column-content .text-gray-500 {
-    color: var(--color-text-tertiary) !important;
-}
-
-.dark .kanban-board-container .text-gray-600,
-.dark .column-content .text-gray-600 {
-    color: #9ca3af !important;
-}
-
-.dark .kanban-board-container .text-gray-700,
-.dark .column-content .text-gray-700 {
-    color: #d1d5db !important;
-}
-
-.dark .kanban-board-container .text-gray-900,
-.dark .column-content .text-gray-900 {
-    color: #f9fafb !important;
-}
-
-.dark .kanban-board-container .text-black,
-.dark .column-content .text-black {
-    color: #ffffff !important;
-}
-
-.dark .kanban-board-container .text-blue-700,
-.dark .column-content .text-blue-700 {
-    color: #60a5fa !important;
-}
-
-.dark .kanban-board-container .hover\:text-blue-900:hover,
-.dark .column-content .hover\:text-blue-900:hover {
-    color: #93c5fd !important;
-}
-
-/* Status badge background and text colors - !important needed for Tailwind overrides */
-.dark .bg-orange-100 {
-    background-color: rgba(251, 146, 60, 0.2) !important;
-}
-
-.dark .text-orange-800 {
-    color: #fb923c !important;
-}
-
-.dark .bg-purple-100 {
-    background-color: rgba(124, 58, 237, 0.2) !important;
-}
-
-.dark .text-purple-800 {
-    color: #a78bfa !important;
-}
-
-.dark .bg-indigo-100 {
-    background-color: rgba(99, 102, 241, 0.2) !important;
-}
-
-.dark .text-indigo-800 {
-    color: #818cf8 !important;
-}
-
-.dark .bg-yellow-100 {
-    background-color: rgba(234, 179, 8, 0.2) !important;
-}
-
-.dark .text-yellow-800 {
-    color: #fbbf24 !important;
-}
-
-.dark .bg-green-100 {
-    background-color: rgba(34, 197, 94, 0.2) !important;
-}
-
-.dark .text-green-800 {
-    color: #4ade80 !important;
-}
-
-.dark .bg-red-100 {
-    background-color: rgba(239, 68, 68, 0.2) !important;
-}
-
-.dark .text-red-800 {
-    color: #f87171 !important;
-}
-
-.dark .bg-blue-100 {
-    background-color: rgba(59, 130, 246, 0.2) !important;
-}
-
-.dark .text-blue-800 {
-    color: #60a5fa !important;
-}
-
-/* Kanban board scrollbars - !important needed to override component styles */
-.dark .kanban-board-container {
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
-}
-
-.dark .kanban-board-container::-webkit-scrollbar {
-    height: 8px !important;
-}
-
-.dark .kanban-board-container::-webkit-scrollbar-track {
-    background: transparent !important;
-}
-
-.dark .kanban-board-container::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3) !important;
-    border-radius: 4px !important;
-}
-
-.dark .kanban-board-container::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-/* Kanban board column vertical scrollbar - dark mode */
-.dark .column-content {
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
-}
-
-.dark .column-content::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.dark .column-content::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.dark .border-gray-200,
-.dark .border-gray-300 {
-    border-color: var(--color-border-primary) !important;
-}
-
-/* ============================================================================
-* ACCESSIBILITY - Reduced Motion Support
-* ============================================================================ */
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-}
-
-@import "@spartan-ng/brain/hlm-tailwind-preset.css";
+/* Import Spartan Preset */
+@import '@spartan-ng/brain/hlm-tailwind-preset.css';
+
+/* * NEO-PROFESSIONAL THEME SYSTEM 
+ * Indigo (Confidence) + Zinc (Technical) + Amber (Success)
+ */
 
 :root {
-    color-scheme: light;
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  color-scheme: light;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    sans-serif;
 
-    --radius: 0.5rem;
+  --radius: 0.5rem;
 
-    /* Neo-Professional Light Theme: Indigo/Zinc/Amber */
-    --background: 240 5% 98%;
-    /* Zinc-50 #FAFAFA */
-    --foreground: 240 10% 4%;
-    /* Zinc-950 */
-    --card: 0 0% 100%;
-    /* White */
-    --card-foreground: 240 10% 4%;
-    /* Zinc-950 */
-    --popover: 0 0% 100%;
-    /* White */
-    --popover-foreground: 240 10% 4%;
-    /* Zinc-950 */
-    --primary: 239 84% 67%;
-    /* Indigo-600 #4F46E5 */
-    --primary-foreground: 0 0% 100%;
-    /* White */
-    --secondary: 240 5% 96%;
-    /* Zinc-100 */
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    /* Zinc-100 */
-    --muted-foreground: 240 4% 46%;
-    /* Zinc-500 */
-    --accent: 38 92% 50%;
-    /* Amber-500 #F59E0B - Success/Offer/High Match */
-    --accent-foreground: 240 6% 10%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 6% 90%;
-    /* Zinc-200 */
-    --input: 240 6% 90%;
-    /* Zinc-200 */
-    --ring: 239 84% 67%;
-    /* Indigo-600 */
+  /* Light Mode: Clean Zinc + Indigo */
+  --background: 240 5% 98%; /* Zinc-50: Softer than pure white */
+  --foreground: 240 10% 4%; /* Zinc-950: Sharp text */
+
+  --card: 0 0% 100%; /* White: Pop against the zinc background */
+  --card-foreground: 240 10% 4%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 4%;
+
+  --primary: 239 84% 67%; /* Indigo-600 #4F46E5: The Brand Color */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 240 5% 96%; /* Zinc-100: For hover states & subtle pills */
+  --secondary-foreground: 240 6% 10%;
+
+  --muted: 240 5% 96%; /* Zinc-100 */
+  --muted-foreground: 240 4% 46%; /* Zinc-500: Perfect for subtitles */
+
+  --accent: 38 92% 50%; /* Amber-500: Use ONLY for "Success" or "Gold" badges */
+  --accent-foreground: 240 6% 10%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 240 6% 90%; /* Zinc-200: Subtle borders */
+  --input: 240 6% 90%;
+  --ring: 239 84% 67%; /* Focus ring matches Primary */
 }
 
 :root.dark {
-    color-scheme: dark;
+  color-scheme: dark;
 
-    /* Neo-Professional Dark Theme: Indigo/Zinc */
-    --background: 240 10% 4%;
-    /* Zinc-950 #09090B */
-    --foreground: 0 0% 100%;
-    /* White */
-    --card: 240 6% 10%;
-    /* Zinc-900 #18181B */
-    --card-foreground: 0 0% 100%;
-    /* White */
-    --popover: 240 6% 10%;
-    /* Zinc-900 */
-    --popover-foreground: 0 0% 100%;
-    /* White */
-    --primary: 239 84% 67%;
-    /* Indigo-600 #4F46E5 */
-    --primary-foreground: 0 0% 100%;
-    /* White */
-    --secondary: 240 4% 16%;
-    /* Zinc-800 */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 240 4% 16%;
-    /* Zinc-800 */
-    --muted-foreground: 240 5% 65%;
-    /* Zinc-400 */
-    --accent: 38 92% 50%;
-    /* Amber-500 #F59E0B */
-    --accent-foreground: 240 6% 10%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 4% 16%;
-    /* Zinc-800 */
-    --input: 240 4% 16%;
-    /* Zinc-800 */
-    --ring: 239 84% 67%;
-    /* Indigo-600 */
+  /* Dark Mode: Deep Zinc + Indigo Glow */
+  --background: 240 10% 4%; /* Zinc-950: Almost black, very premium */
+  --foreground: 0 0% 100%;
+
+  --card: 240 6% 10%; /* Zinc-900: Distinct from background */
+  --card-foreground: 0 0% 100%;
+
+  --popover: 240 6% 10%;
+  --popover-foreground: 0 0% 100%;
+
+  --primary: 239 84% 67%; /* Indigo-600: Stays bright in dark mode */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 240 4% 16%; /* Zinc-800 */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 240 4% 16%; /* Zinc-800 */
+  --muted-foreground: 240 5% 65%; /* Zinc-400 */
+
+  --accent: 38 92% 50%; /* Amber-500 */
+  --accent-foreground: 240 6% 10%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 4% 16%; /* Zinc-800: Dark, subtle borders */
+  --input: 240 4% 16%;
+  --ring: 239 84% 67%;
 }
 
 @layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
 
-    body {
-        @apply bg-background text-foreground;
-    }
+  /* Optional: Smooth transitions for theme switching */
+  :root {
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
 }

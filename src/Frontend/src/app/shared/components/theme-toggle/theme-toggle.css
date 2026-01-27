@@ -8,33 +8,30 @@
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  font-size: 0.9375rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   overflow: hidden;
-  backdrop-filter: blur(8px);
 }
 
 /* Hover state with smooth elevation */
 .theme-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: hsl(var(--accent) / 0.8);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Active/pressed state */
 .theme-toggle-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Focus state for accessibility */
 .theme-toggle-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 

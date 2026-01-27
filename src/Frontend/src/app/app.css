@@ -1,11 +1,11 @@
 /* 
  * ============================================================================
- * MODERN NAVIGATION STYLES - Theme Aware
+ * MODERN NAVIGATION STYLES - Theme Aware with Glassmorphism
  * ============================================================================
  * 
- * Modern, responsive navigation with gradient background and theme support
+ * Modern, responsive navigation with glassmorphism and theme support
  * Features:
- * - Gradient background that adapts to theme
+ * - Sticky top bar with backdrop blur
  * - Smooth transitions and hover effects
  * - Mobile-responsive design
  * - Accessible focus states
@@ -13,17 +13,20 @@
 
 /* Modern Navigation Container */
 .modern-nav {
-  background: linear-gradient(
-    135deg,
-    var(--nav-bg-gradient-start) 0%,
-    var(--nav-bg-gradient-end) 100%
-  );
-  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 50;
-  backdrop-filter: blur(10px);
+  width: 100%;
+  border-bottom: 1px solid rgba(var(--border), 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all var(--transition-normal) ease;
+}
+
+.dark .modern-nav {
+  background-color: rgba(9, 9, 11, 0.8);
+  border-bottom-color: rgba(var(--border), 0.5);
 }
 
 .nav-container {
@@ -62,9 +65,8 @@
 .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
-  color: white;
+  color: hsl(var(--foreground));
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================================================
@@ -81,42 +83,23 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
-  color: var(--nav-text-color);
+  color: hsl(var(--muted-foreground));
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.9375rem;
-  border-radius: 12px;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
   transition: all var(--transition-fast) ease;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Hover effect overlay */
-.nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  opacity: 0;
-  transition: opacity var(--transition-fast) ease;
-}
-
-.nav-link:hover::before {
-  opacity: 1;
 }
 
 .nav-link:hover {
-  color: var(--nav-text-hover);
-  transform: translateY(-1px);
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--accent));
+  transform: translateY(0);
 }
 
 /* Focus state for accessibility */
 .nav-link:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
@@ -128,31 +111,10 @@
 
 /* Active Link Styles */
 .nav-link-active {
-  background: var(--nav-link-active-bg);
-  color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.nav-link-active::before {
-  opacity: 0;
-}
-
-/* Primary Action Button (if needed) */
-.nav-link-primary {
-  background: white;
-  color: var(--color-primary);
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.nav-link-primary::before {
-  background: var(--color-primary-light);
-}
-
-.nav-link-primary:hover {
-  color: var(--color-primary-hover);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  border-bottom: 2px solid hsl(var(--primary));
 }
 
 /* ============================================================================
@@ -160,18 +122,18 @@
  * ============================================================================ */
 .main-content {
   min-height: calc(100vh - 4.5rem - 4rem); /* Subtract header and footer height */
-  background-color: var(--color-bg-secondary);
-  transition: background-color var(--transition-normal) ease;
+  background-color: hsl(var(--background));
+  transition: background-color 0.2s ease;
 }
 
 /* ============================================================================
  * FOOTER STYLES
  * ============================================================================ */
 .app-footer {
-  background-color: var(--color-bg-elevated);
-  border-top: 1px solid var(--color-border-primary);
+  background-color: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
   padding: 1rem 0;
-  transition: all var(--transition-normal) ease;
+  transition: all 0.2s ease;
 }
 
 .footer-content {
@@ -180,7 +142,7 @@
   padding: 0 1rem;
   text-align: center;
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: hsl(var(--muted-foreground));
 }
 
 /* ============================================================================
@@ -254,11 +216,13 @@
 
 /* Dark mode shadow enhancement */
 .dark .modern-nav {
-  box-shadow: var(--shadow-lg);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 .dark .nav-link-active {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 /* ============================================================================
@@ -315,21 +279,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.375rem 0.75rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: hsl(var(--accent));
+  border: 1px solid hsl(var(--border));
   border-radius: 9999px; /* Pill shape */
   cursor: pointer;
-  transition: all var(--transition-fast) ease;
-  color: var(--nav-text-color);
+  transition: all 0.2s ease;
+  color: hsl(var(--foreground));
 }
 
 .user-menu-trigger:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: hsl(var(--accent) / 0.8);
+  border-color: hsl(var(--border));
 }
 
 .user-menu-trigger:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
@@ -339,7 +303,7 @@
   height: 2rem;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid hsl(var(--border));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -348,15 +312,15 @@
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: hsl(var(--primary));
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 0.8rem;
-  color: #ffffff;
+  color: hsl(var(--primary-foreground));
   text-transform: uppercase;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid hsl(var(--border));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -375,7 +339,7 @@
   width: 1rem;
   height: 1rem;
   opacity: 0.8;
-  transition: transform var(--transition-fast) ease;
+  transition: transform 0.2s ease;
 }
 
 .user-menu-trigger:hover .dropdown-icon {
@@ -388,10 +352,12 @@
   top: calc(100% + 0.5rem);
   right: 0;
   min-width: 200px;
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-primary);
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.75rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   z-index: 100;
   animation: dropdownFadeIn 0.15s ease-out;
   overflow: hidden;
@@ -412,19 +378,19 @@
 /* Dropdown Header - User Email */
 .dropdown-header {
   padding: 0.875rem 1rem;
-  background: var(--color-bg-tertiary);
+  background: hsl(var(--muted));
 }
 
 .dropdown-email {
   font-size: 0.8125rem;
-  color: var(--color-text-secondary);
+  color: hsl(var(--muted-foreground));
   font-weight: 500;
 }
 
 /* Dropdown Divider */
 .dropdown-divider {
   height: 1px;
-  background: var(--color-border-primary);
+  background: hsl(var(--border));
 }
 
 /* Dropdown Menu Item */
@@ -436,17 +402,16 @@
   padding: 0.75rem 1rem;
   background: transparent;
   border: none;
-  color: var(--color-text-primary);
+  color: hsl(var(--foreground));
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast) ease;
+  transition: all 0.2s ease;
   text-align: left;
 }
 
 .dropdown-item:hover {
-  background: var(--color-bg-hover);
-  color: var(--color-danger);
+  background: hsl(var(--accent));
 }
 
 .dropdown-item svg {
@@ -468,23 +433,24 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: white;
-  color: var(--color-primary);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
   border-radius: 9999px; /* Pill shape */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: all var(--transition-fast) ease;
+  transition: all 0.2s ease;
 }
 
 .login-btn:hover {
+  background: hsl(var(--primary) / 0.9);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .login-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
 
@@ -539,19 +505,21 @@
  * ============================================================================ */
 
 .dark .user-menu-trigger {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: hsl(var(--accent));
+  border-color: hsl(var(--border));
 }
 
 .dark .user-menu-trigger:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: hsl(var(--accent) / 0.8);
 }
 
 .dark .user-dropdown {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.3),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
 }
 
 .dark .login-btn {
-  background: rgba(255, 255, 255, 0.95);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
 }

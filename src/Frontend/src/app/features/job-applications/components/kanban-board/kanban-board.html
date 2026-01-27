@@ -1,8 +1,8 @@
-<div class="kanban-board-container h-full overflow-x-auto bg-gray-50 p-4">
+<div class="kanban-board-container h-full overflow-x-auto bg-zinc-50 dark:bg-zinc-950 p-4">
   <!-- Board Header with Instructions -->
   <div class="mb-4">
-    <h2 class="text-2xl font-bold text-gray-900">Job Application Pipeline</h2>
-    <p class="text-sm text-gray-600 mt-1">
+    <h2 class="text-2xl font-bold text-foreground">Job Application Pipeline</h2>
+    <p class="text-sm text-muted-foreground mt-1">
       💡 <strong>Tip:</strong> Click and drag cards between columns to update their status
     </p>
   </div>
@@ -11,12 +11,14 @@
   <div class="kanban-board flex gap-4 min-h-[calc(100vh-200px)]">
     @for (column of columns; track column.id) {
       <div class="kanban-column flex-shrink-0 w-80 flex flex-col">
-        <!-- Column Header -->
-        <div class="column-header {{ column.color }} border-2 rounded-t-lg p-3 shadow-sm">
-          <h3 class="font-semibold text-gray-900 flex items-center justify-between">
+        <!-- Column Header with new background -->
+        <div
+          class="column-header bg-zinc-100 dark:bg-zinc-900 border-2 border-border rounded-t-lg p-3 shadow-sm"
+        >
+          <h3 class="font-semibold text-foreground flex items-center justify-between">
             <span>{{ column.title }}</span>
             <span
-              class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-gray-700 bg-white rounded-full"
+              class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-foreground bg-background rounded-full border border-border"
             >
               {{ column.applications.length }}
             </span>
@@ -30,19 +32,17 @@
           [cdkDropListData]="column.applications"
           [cdkDropListConnectedTo]="getConnectedLists()"
           (cdkDropListDropped)="onCardDropped($event)"
-          class="column-content {{
-            column.color
-          }} border-2 border-t-0 rounded-b-lg p-3 flex-1 min-h-[200px] space-y-3 overflow-y-auto"
+          class="column-content bg-background border-2 border-t-0 border-border rounded-b-lg p-3 flex-1 min-h-[200px] space-y-3 overflow-y-auto"
         >
           <!-- Job Application Cards -->
           @for (app of column.applications; track app.id) {
             <div
               cdkDrag
-              class="job-card bg-white rounded-lg shadow-md p-4 cursor-move hover:shadow-lg transition-shadow border border-gray-200"
+              class="job-card bg-card rounded-lg shadow-md p-4 cursor-move hover:shadow-lg transition-shadow border border-border"
             >
               <!-- Card Header -->
               <div class="card-header mb-3">
-                <h4 class="font-semibold text-black text-lg truncate" [title]="app.position">
+                <h4 class="font-semibold text-foreground text-lg truncate" [title]="app.position">
                   {{ app.position }}
                 </h4>
                 <p class="text-sm mt-1">

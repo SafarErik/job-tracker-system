@@ -90,8 +90,6 @@
   --ring: #7C7CFF;
 }
 
-
-
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     width: 8px;

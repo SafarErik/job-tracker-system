@@ -5,12 +5,12 @@ namespace JobTracker.API.Extensions;
 
 /// <summary>
 /// Extension methods for configuring database services.
-/// Uses SQL Server for both development (Docker) and production (Azure).
+/// Uses PostgreSQL for both development (Docker) and production (Azure).
 /// </summary>
 public static class DatabaseServiceExtensions
 {
     /// <summary>
-    /// Adds and configures the database context with SQL Server.
+    /// Adds and configures the database context with PostgreSQL.
     /// 
     /// Configuration in appsettings.json:
     /// {

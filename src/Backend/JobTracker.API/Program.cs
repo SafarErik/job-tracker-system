@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // ============================================
 // DATABASE CONFIGURATION
 // ============================================
-// Uses PostgreSQL for development (Docker) and SQL Server for production (Azure).
+// Uses PostgreSQL for both development (Docker) and production.
 // The provider is selected based on "DatabaseProvider" setting in appsettings.json.
 // See: Extensions/DatabaseServiceExtensions.cs for implementation details.
 

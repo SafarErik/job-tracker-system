@@ -1,36 +1,12 @@
-<button
-  hlmBtn
-  variant="ghost"
-  size="icon"
-  class="relative h-9 w-9"
-  (click)="onToggleTheme()"
-  [attr.aria-label]="themeLabel()"
-  [title]="themeLabel()"
-  type="button"
-  role="switch"
-  [attr.aria-checked]="themeMode() === 'dark'"
->
+<button hlmBtn variant="ghost" size="icon" class="relative h-9 w-9" (click)="onToggleTheme()"
+  [attr.aria-label]="themeLabel()" [title]="themeLabel()" type="button" role="switch" [attr.aria-checked]="isDark()">
   <!-- Icon container with transition effects (decorative, hidden from AT) -->
   <span class="relative h-5 w-5" aria-hidden="true">
-    <!-- Light mode icon -->
-    <span
-      class="absolute inset-0 transition-all duration-300"
-      [class.opacity-100]="themeMode() === 'light'"
-      [class.scale-100]="themeMode() === 'light'"
-      [class.opacity-0]="themeMode() !== 'light'"
-      [class.scale-0]="themeMode() !== 'light'"
-    >
-      <svg
-        class="h-5 w-5"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        focusable="false"
-      >
+    <!-- Light mode icon (Visible when NOT dark) -->
+    <span class="absolute inset-0 transition-all duration-300" [class.opacity-100]="!isDark()"
+      [class.scale-100]="!isDark()" [class.opacity-0]="isDark()" [class.scale-0]="isDark()">
+      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2" />
         <path d="M12 20v2" />
@@ -43,25 +19,11 @@
       </svg>
     </span>
 
-    <!-- Dark mode icon -->
-    <span
-      class="absolute inset-0 transition-all duration-300"
-      [class.opacity-100]="themeMode() === 'dark'"
-      [class.scale-100]="themeMode() === 'dark'"
-      [class.opacity-0]="themeMode() !== 'dark'"
-      [class.scale-0]="themeMode() !== 'dark'"
-    >
-      <svg
-        class="h-5 w-5"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        focusable="false"
-      >
+    <!-- Dark mode icon (Visible when dark) -->
+    <span class="absolute inset-0 transition-all duration-300" [class.opacity-100]="isDark()"
+      [class.scale-100]="isDark()" [class.opacity-0]="!isDark()" [class.scale-0]="!isDark()">
+      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
       </svg>
     </span>

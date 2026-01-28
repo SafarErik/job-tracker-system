@@ -5,10 +5,10 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyDetail, CompanyNews } from '../../models/company.model';
-import { HlmButtonImports } from '@ui/button';
-import { HlmCardImports } from '@ui/card';
-import { HlmBadgeImports } from '@ui/badge';
-import { HlmInputImports } from '@ui/input';
+import { HlmButtonImports } from '../../../../../../libs/ui/button';
+import { HlmCardImports } from '../../../../../../libs/ui/card';
+import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
+import { HlmInputImports } from '../../../../../../libs/ui/input';
 
 @Component({
   selector: 'app-company-details',

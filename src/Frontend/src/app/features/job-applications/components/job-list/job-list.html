@@ -25,83 +25,40 @@
         <!-- View Switcher -->
         <div class="inline-flex rounded-lg border border-border bg-card p-1">
           <!-- Grid View Button -->
-          <button
-            hlmBtn
-            [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'outline'"
-            size="sm"
-            (click)="switchView(ViewMode.Grid)"
-            title="Grid View"
-            type="button"
-            class="gap-2 border-0"
-          >
+          <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             Grid
           </button>
 
           <!-- Kanban View Button -->
-          <button
-            hlmBtn
-            [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'outline'"
-            size="sm"
-            (click)="switchView(ViewMode.Kanban)"
-            title="Kanban Board View"
-            type="button"
-            class="gap-2 border-0"
-          >
+          <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
             Kanban
           </button>
 
           <!-- Calendar View Button -->
-          <button
-            hlmBtn
-            [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'outline'"
-            size="sm"
-            (click)="switchView(ViewMode.Calendar)"
-            title="Calendar View"
-            type="button"
-            class="gap-2 border-0"
-          >
+          <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2 border-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
             Calendar
           </button>
         </div>
 
         <!-- Iconic Add New Button -->
-        <a
-          routerLink="/new"
-          hlmBtn
-          variant="default"
-          class="h-11 px-8 bg-primary text-primary-foreground font-semibold shadow-md hover:bg-primary/90 hover:-translate-y-0.5 transition-all duration-300 rounded-lg focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 gap-2"
-        >
+        <a routerLink="/new" hlmBtn size="lg" variant="default" class="gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add New
         </a>
@@ -114,38 +71,34 @@
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
       <!-- Total Applications -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Total</p>
         <p class="text-2xl font-bold text-foreground">{{ applications.length }}</p>
       </div>
 
       <!-- Active Applications -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Active</p>
         <p class="text-2xl font-bold text-primary">{{ getActiveCount(applications) }}</p>
       </div>
 
       <!-- Interviewing -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Interview</p>
         <p class="text-2xl font-bold text-amber-500">
           {{
-            getStatusCount(Status.Interviewing, applications) +
-              getStatusCount(Status.PhoneScreen, applications) +
-              getStatusCount(Status.TechnicalTask, applications)
+          getStatusCount(Status.Interviewing, applications) +
+          getStatusCount(Status.PhoneScreen, applications) +
+          getStatusCount(Status.TechnicalTask, applications)
           }}
         </p>
       </div>
 
       <!-- Offers -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Offers</p>
         <p class="text-2xl font-bold text-green-500">
           {{ getStatusCount(Status.Offer, applications) }}
@@ -154,8 +107,7 @@
 
       <!-- Rejected -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Rejected</p>
         <p class="text-2xl font-bold text-red-500">
           {{ getStatusCount(Status.Rejected, applications) }}
@@ -164,16 +116,14 @@
 
       <!-- Response Rate -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Response</p>
         <p class="text-2xl font-bold text-blue-500">{{ getResponseRate(applications) }}%</p>
       </div>
 
       <!-- Success Rate -->
       <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default"
-      >
+        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
         <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Success</p>
         <p class="text-2xl font-bold text-purple-500">{{ getSuccessRate(applications) }}%</p>
       </div>
@@ -181,50 +131,23 @@
   </div>
 
   <!-- Search & Filter Bar -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length > 0"
-    class="flex flex-col sm:flex-row gap-4 mb-8"
-  >
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="flex flex-col sm:flex-row gap-4 mb-8">
     <!-- Search Input -->
     <div class="relative flex-1">
-      <svg
-        class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+        stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
       <label hlmLabel for="search-applications" class="sr-only">Search applications</label>
-      <input
-        hlmInput
-        id="search-applications"
-        #searchInput
-        type="text"
-        placeholder="Search by position, company, notes, or URL..."
-        [value]="searchTerm"
-        class="pl-10 pr-8 w-full"
-        (input)="onSearchChange(searchInput.value)"
-      />
-      <button
-        *ngIf="searchTerm"
+      <input hlmInput id="search-applications" #searchInput type="text"
+        placeholder="Search by position, company, notes, or URL..." [value]="searchTerm" class="pl-10 pr-8 w-full"
+        (input)="onSearchChange(searchInput.value)" />
+      <button *ngIf="searchTerm"
         class="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        (click)="onSearchChange('')"
-        type="button"
-        aria-label="Clear search"
-      >
+        (click)="onSearchChange('')" type="button" aria-label="Clear search">
         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
@@ -233,34 +156,18 @@
     <div class="flex flex-wrap items-center gap-2">
       <!-- Status Filter Dropdown -->
       <div class="relative">
-        <button
-          type="button"
-          hlmBtn
-          variant="outline"
-          class="gap-2"
-          (click)="openStatusFilter()"
-          (blur)="closeStatusFilter()"
-        >
+        <button type="button" hlmBtn variant="outline" class="gap-2" (click)="openStatusFilter()"
+          (blur)="closeStatusFilter()">
           <span>{{ selectedStatusFilterLabel }}</span>
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div
-          *ngIf="isStatusFilterOpen"
-          class="absolute top-full left-0 mt-1 z-50 min-w-40 rounded-md border border-border bg-popover p-1 shadow-md"
-        >
-          <button
-            *ngFor="let filter of statusFilters"
-            type="button"
+        <div *ngIf="isStatusFilterOpen"
+          class="absolute top-full left-0 mt-1 z-50 min-w-40 rounded-md border border-border bg-popover p-1 shadow-md">
+          <button *ngFor="let filter of statusFilters" type="button"
             class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-            (click)="selectStatusFilter(filter.value)"
-          >
+            (click)="selectStatusFilter(filter.value)">
             {{ filter.label }}
           </button>
         </div>
@@ -268,54 +175,30 @@
 
       <!-- Company Filter Dropdown -->
       <div class="relative">
-        <button
-          type="button"
-          hlmBtn
-          variant="outline"
-          class="gap-2"
-          (click)="toggleCompanyFilter()"
-        >
+        <button type="button" hlmBtn variant="outline" class="gap-2" (click)="toggleCompanyFilter()">
           <span>{{ selectedCompanyFilterLabel }}</span>
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
-        <div
-          *ngIf="isCompanyFilterOpen"
-          class="absolute top-full left-0 mt-1 z-50 min-w-40 max-h-60 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md"
-        >
-          <button
-            type="button"
+        <div *ngIf="isCompanyFilterOpen"
+          class="absolute top-full left-0 mt-1 z-50 min-w-40 max-h-60 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md">
+          <button type="button"
             class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-            (mousedown)="selectCompanyFilter('all')"
-          >
+            (mousedown)="selectCompanyFilter('all')">
             All Companies
           </button>
-          <button
-            *ngFor="let company of companyOptions"
-            type="button"
+          <button *ngFor="let company of companyOptions" type="button"
             class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-            (mousedown)="selectCompanyFilter(company.id)"
-          >
+            (mousedown)="selectCompanyFilter(company.id)">
             {{ company.name }}
           </button>
         </div>
       </div>
 
       <!-- Clear Filters Button -->
-      <button
-        *ngIf="hasActiveFilters"
-        hlmBtn
-        variant="ghost"
-        size="sm"
-        class="text-destructive hover:text-destructive"
-        (click)="clearFilters()"
-      >
+      <button *ngIf="hasActiveFilters" hlmBtn variant="ghost" size="sm" class="text-destructive hover:text-destructive"
+        (click)="clearFilters()">
         Clear filters
       </button>
     </div>
@@ -333,10 +216,7 @@
 
   <!-- Error Message -->
   <!-- Only shown when errorMessage has a value (not null) -->
-  <div
-    *ngIf="errorMessage && !isLoading"
-    class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
-  >
+  <div *ngIf="errorMessage && !isLoading" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
     <div class="flex">
       <div class="flex-shrink-0">
         <span class="text-red-400">⚠️</span>
@@ -344,11 +224,8 @@
       <div class="ml-3">
         <h3 class="text-sm font-medium text-red-800">Error</h3>
         <p class="mt-2 text-sm text-red-700">{{ errorMessage }}</p>
-        <button
-          (click)="loadApplications()"
-          class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
-          type="button"
-        >
+        <button (click)="loadApplications()" class="mt-3 text-sm font-medium text-red-600 hover:text-red-500"
+          type="button">
           Try Again →
         </button>
       </div>
@@ -357,19 +234,15 @@
 
   <!-- Empty State -->
   <!-- Shown when: not loading, no error, and applications array is empty -->
-  <div
-    *ngIf="!isLoading && !errorMessage && applications.length === 0"
-    class="bg-card rounded-lg shadow-lg p-12 text-center"
-  >
+  <div *ngIf="!isLoading && !errorMessage && applications.length === 0"
+    class="bg-card rounded-lg shadow-lg p-12 text-center">
     <div class="text-6xl mb-4">📝</div>
     <h2 class="text-2xl font-bold text-foreground mb-2">No Applications Yet</h2>
     <p class="text-gray-600 mb-6">
       Start tracking your job search journey by adding your first application.
     </p>
-    <a
-      routerLink="/new"
-      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition"
-    >
+    <a routerLink="/new"
+      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
@@ -378,12 +251,9 @@
   </div>
 
   <!-- Empty Search Results -->
-  <div
-    *ngIf="
+  <div *ngIf="
       !isLoading && !errorMessage && applications.length > 0 && visibleApplications.length === 0
-    "
-    class="bg-card border border-border rounded-lg shadow-lg p-12 text-center"
-  >
+    " class="bg-card border border-border rounded-lg shadow-lg p-12 text-center">
     <div class="text-5xl mb-4">🔍</div>
     <h2 class="text-2xl font-bold text-foreground mb-2">No Results</h2>
     <p class="text-muted-foreground mb-6">
@@ -397,22 +267,17 @@
     <!-- Grid View -->
     <div *ngIf="currentView === ViewMode.Grid">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <app-job-card
-          *ngFor="let app of visibleApplications; let i = index"
-          [application]="app"
+        <app-job-card *ngFor="let app of visibleApplications; let i = index" [application]="app"
           (openWorkstation)="viewApplicationDetail($event)"
           class="animate-in fade-in slide-in-from-bottom-8 duration-500 fill-mode-both"
-          [style.animation-delay]="i * 100 + 'ms'"
-        ></app-job-card>
+          [style.animation-delay]="i * 100 + 'ms'"></app-job-card>
       </div>
     </div>
 
     <!-- Kanban View -->
     <div *ngIf="currentView === ViewMode.Kanban">
-      <app-kanban-board
-        [applications]="visibleApplications"
-        (applicationUpdated)="onApplicationUpdated()"
-      ></app-kanban-board>
+      <app-kanban-board [applications]="visibleApplications"
+        (applicationUpdated)="onApplicationUpdated()"></app-kanban-board>
     </div>
 
     <!-- Calendar View -->

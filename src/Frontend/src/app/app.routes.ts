@@ -128,7 +128,7 @@ export const routes: Routes = [
     title: 'Edit Company - JobTracker',
   },
   {
-    path: 'company/:id',
+    path: 'companies/:id',
     loadComponent: () =>
       import('./features/companies/components/company-details/company-details').then(
         (m) => m.CompanyDetailsComponent,
@@ -155,6 +155,16 @@ export const routes: Routes = [
       import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
     canActivate: [authGuard],
     title: 'Profile - JobTracker',
+  },
+
+  // Compatibility Redirects
+  {
+    path: 'company/:id',
+    redirectTo: 'companies/:id',
+  },
+  {
+    path: 'companies/:id/details',
+    redirectTo: 'companies/:id',
   },
 
   // ============================================

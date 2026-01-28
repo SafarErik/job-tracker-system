@@ -10,7 +10,8 @@ export const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm',
+				default:
+					'bg-primary text-primary-foreground shadow-md hover:bg-primary/90 hover:-translate-y-0.5 transition-all duration-300',
 				destructive:
 					'bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white',
 				outline:
@@ -22,7 +23,7 @@ export const buttonVariants = cva(
 			size: {
 				default: 'h-9 px-4 py-2 has-[>ng-icon]:px-3',
 				sm: 'h-8 gap-1.5 rounded-md px-3 has-[>ng-icon]:px-2.5',
-				lg: 'h-10 rounded-md px-6 has-[>ng-icon]:px-4',
+				lg: 'h-11 rounded-md px-8 has-[>ng-icon]:px-6',
 				icon: 'size-9',
 				'icon-xs': `size-6 [&_ng-icon:not([class*='text-'])]:text-xs`,
 				'icon-sm': 'size-8',

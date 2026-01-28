@@ -5,12 +5,19 @@ import { CompanyService } from '../../services/company.service';
 import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyCardComponent } from '../company-card/company-card';
-import { HlmInputImports } from '@spartan-ng/helm/input';
-import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmButtonImports } from '../../../../../../libs/ui/button';
+import { HlmInputImports } from '../../../../../../libs/ui/input';
+import { HlmLabelImports } from '../../../../../../libs/ui/label';
 
 @Component({
   selector: 'app-company-list',
-  imports: [CommonModule, CompanyCardComponent, ...HlmInputImports, ...HlmLabelImports],
+  imports: [
+    CommonModule,
+    CompanyCardComponent,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmButtonImports
+  ],
   templateUrl: './company-list.html',
   styleUrl: './company-list.css',
 })
@@ -64,7 +71,7 @@ export class CompanyListComponent implements OnInit {
    * Navigate to company details page
    */
   viewCompanyDetails(companyId: number): void {
-    this.router.navigate(['/company', companyId]);
+    this.router.navigate(['/companies', companyId]);
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService, ThemeMode } from '../../../core/services/theme.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 // Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -30,18 +30,17 @@ export class ThemeToggleComponent {
   private readonly themeService = inject(ThemeService);
 
   // Current theme mode from the theme service
-  protected readonly themeMode = this.themeService.themeMode;
+  protected readonly isDark = this.themeService.darkMode;
 
   // Computed label for accessibility and display
   protected readonly themeLabel = computed(() => {
-    const mode = this.themeMode();
-    return mode === 'dark' ? 'Dark Mode' : 'Light Mode';
+    return this.isDark() ? 'Dark Mode' : 'Light Mode';
   });
 
   /**
    * Toggle between light and dark modes when button is clicked
    */
   protected onToggleTheme(): void {
-    this.themeService.toggleTheme();
+    this.themeService.toggle();
   }
 }

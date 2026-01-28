@@ -22,7 +22,6 @@ import { Company } from '../../models/company.model';
     HlmButton,
   ],
   templateUrl: './company-card.html',
-  styleUrl: './company-card.css',
 })
 export class CompanyCardComponent {
   company = input.required<Company>();

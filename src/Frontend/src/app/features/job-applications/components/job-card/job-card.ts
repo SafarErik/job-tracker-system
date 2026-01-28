@@ -124,8 +124,8 @@ export class JobCardComponent {
             return `${base} border-amber-500/40 hover:-translate-y-1.5 hover:shadow-2xl`;
         }
 
-        // Standard Card: Add subtle primary border and elegant lift
-        return `${base} border-primary/20 hover:border-primary/50 hover:-translate-y-1.5 hover:shadow-xl`;
+        // Standard Card: Premium Primary Gradient Border effect
+        return `${base} p-[1px] bg-linear-to-br from-primary/60 via-primary/40 to-primary/60 border-0 hover:from-primary hover:via-primary/80 hover:to-primary hover:-translate-y-1.5 hover:shadow-xl`;
     });
 
     // Computed: Status Strip Color (The Left Border)
@@ -133,7 +133,7 @@ export class JobCardComponent {
         if (this.isOffer()) return 'bg-emerald-500';
         if (this.isDead()) return 'bg-slate-500/30';
         if (this.isStale()) return 'bg-amber-500';
-        return 'bg-transparent';
+        return 'bg-primary';
     });
 
     // Computed: Progress percentage based on status

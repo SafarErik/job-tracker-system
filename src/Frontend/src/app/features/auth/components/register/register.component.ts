@@ -43,7 +43,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
     ...HlmCardImports,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   // Reactive form for registration

@@ -37,7 +37,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
     ...HlmCardImports,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   // Reactive form for login

@@ -1,0 +1,110 @@
+<div class="p-6 max-w-xl mx-auto space-y-8">
+    <!-- Header with Back & Paste Action -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a routerLink="/"
+                class="group flex items-center justify-center w-8 h-8 rounded-full hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground">
+                <ng-icon name="lucideArrowLeft"
+                    class="text-lg transition-transform group-hover:-translate-x-0.5"></ng-icon>
+            </a>
+            <div>
+                <h2 class="text-xl font-bold tracking-tight">Add Application</h2>
+                <p class="text-muted-foreground text-sm">Quickly track a new position</p>
+            </div>
+        </div>
+
+        <button hlmBtn variant="outline" (click)="onPasteUrl()"
+            class="h-9 gap-2 text-xs font-medium rounded-lg border border-transparent hover:border-primary/30 hover:bg-primary/5 hover:text-primary hover:shadow-md hover:shadow-primary/30 transition-all active:scale-95"
+            type="button">
+            <ng-icon name="lucideClipboard" class="text-sm"></ng-icon>
+            Paste URL
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+
+        <!-- Company Input -->
+        <hlm-autocomplete class="w-full relative z-20" [itemToString]="companyToString"
+            (valueChange)="onCompanySelected($event)">
+            <label hlmLabel
+                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 mb-2 block">Company</label>
+            <input hlmInput brnAutocompleteInput brnAutocompleteAnchor [formControlName]="'companyName'"
+                placeholder="e.g. Google"
+                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
+                [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"
+                (input)="onCompanyInput($event)" (focus)="onCompanyFocus()" />
+            @if (form.get('companyName')?.invalid && form.get('companyName')?.touched) {
+            <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Company name is
+                required
+            </p>
+            }
+
+            <div *brnPopoverContent hlmAutocompleteContent>
+                <div hlmAutocompleteList>
+                    @for(company of filteredCompanies(); track company.id) {
+                    <hlm-autocomplete-item [value]="company">
+                        {{ company.name }}
+                    </hlm-autocomplete-item>
+                    }
+                    @if(form.get('companyName')?.value && filteredCompanies().length === 0) {
+                    <!-- We pass the current input string as value -->
+                    <hlm-autocomplete-item [value]="form.get('companyName')?.value">
+                        <span class="text-primary italic">+ Create "{{ form.get('companyName')?.value }}"</span>
+                    </hlm-autocomplete-item>
+                    }
+                </div>
+            </div>
+        </hlm-autocomplete>
+
+        <!-- Position Input -->
+        <hlm-autocomplete class="w-full relative z-10" (valueChange)="onPositionSelected($event)">
+            <label hlmLabel
+                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 mb-2 block">Position</label>
+            <input hlmInput brnAutocompleteInput brnAutocompleteAnchor [formControlName]="'position'"
+                placeholder="e.g. Senior Frontend Engineer"
+                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
+                [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"
+                (input)="onPositionInput($event)" (focus)="onPositionFocus()" />
+            @if (form.get('position')?.invalid && form.get('position')?.touched) {
+            <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Position is
+                required</p>
+            }
+
+            <div *brnPopoverContent hlmAutocompleteContent>
+                <div hlmAutocompleteList>
+                    @if (filteredPositions().length > 0) {
+                    <div
+                        class="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold bg-muted/10 my-1 rounded-sm">
+                        Recent Positions</div>
+                    @for(pos of filteredPositions(); track pos) {
+                    <hlm-autocomplete-item [value]="pos">
+                        {{ pos }}
+                    </hlm-autocomplete-item>
+                    }
+                    }
+                </div>
+            </div>
+        </hlm-autocomplete>
+
+        <!-- Job URL (Hidden or Optional - populated via paste or manual) -->
+        <div class="space-y-2">
+            <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Job Link
+                <span class="normal-case opacity-50">(Optional)</span></label>
+            <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
+                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50" />
+        </div>
+
+        <!-- Save Button - Primary Action -->
+        <div class="pt-2">
+            <button hlmBtn type="submit" [disabled]="form.invalid || isSubmitting()"
+                class="w-full h-12 rounded-xl text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:shadow-none">
+                @if (isSubmitting()) {
+                <span class="animate-pulse">Saving...</span>
+                } @else {
+                Save Application
+                }
+            </button>
+        </div>
+
+    </form>
+</div>

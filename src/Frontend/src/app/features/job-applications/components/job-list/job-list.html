@@ -68,66 +68,10 @@
 
   <!-- Quick Stats Dashboard - Neo-Professional -->
   <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="mb-8">
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-      <!-- Total Applications -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Total</p>
-        <p class="text-2xl font-bold text-foreground">{{ applications.length }}</p>
-      </div>
-
-      <!-- Active Applications -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Active</p>
-        <p class="text-2xl font-bold text-primary">{{ getActiveCount(applications) }}</p>
-      </div>
-
-      <!-- Interviewing -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Interview</p>
-        <p class="text-2xl font-bold text-amber-500">
-          {{
-          getStatusCount(Status.Interviewing, applications) +
-          getStatusCount(Status.PhoneScreen, applications) +
-          getStatusCount(Status.TechnicalTask, applications)
-          }}
-        </p>
-      </div>
-
-      <!-- Offers -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Offers</p>
-        <p class="text-2xl font-bold text-green-500">
-          {{ getStatusCount(Status.Offer, applications) }}
-        </p>
-      </div>
-
-      <!-- Rejected -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Rejected</p>
-        <p class="text-2xl font-bold text-red-500">
-          {{ getStatusCount(Status.Rejected, applications) }}
-        </p>
-      </div>
-
-      <!-- Response Rate -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Response</p>
-        <p class="text-2xl font-bold text-blue-500">{{ getResponseRate(applications) }}%</p>
-      </div>
-
-      <!-- Success Rate -->
-      <div
-        class="bg-card border border-border rounded-xl p-4 hover:-translate-y-0.5 transition-all duration-200 cursor-default">
-        <p class="text-xs uppercase tracking-wider text-muted-foreground mb-1">Success</p>
-        <p class="text-2xl font-bold text-purple-500">{{ getSuccessRate(applications) }}%</p>
-      </div>
-    </div>
+    <app-dashboard-metrics [total]="applications.length" [active]="getActiveCount(applications)"
+      [interviews]="getInterviewCount(applications)" [offers]="getStatusCount(Status.Offer, applications)"
+      [rejected]="getStatusCount(Status.Rejected, applications)" [responseRate]="getResponseRate(applications)"
+      [successRate]="getSuccessRate(applications)"></app-dashboard-metrics>
   </div>
 
   <!-- Search & Filter Bar -->

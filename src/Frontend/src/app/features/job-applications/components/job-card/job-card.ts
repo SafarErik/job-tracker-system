@@ -14,7 +14,7 @@ import {
     HlmCardContent,
     HlmCardFooter,
 } from '@spartan-ng/helm/card';
-import { HlmBadge } from '@spartan-ng/helm/badge';
+
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
@@ -35,7 +35,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
         HlmCardDescription,
         HlmCardContent,
         HlmCardFooter,
-        HlmBadge,
+
         ...HlmButtonImports,
     ],
     templateUrl: './job-card.html',
@@ -45,6 +45,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 export class JobCardComponent {
     // Inputs
     application = input.required<JobApplication>();
+    compact = input<boolean>(false); // Compact mode for Kanban boards
 
     // Outputs
     openWorkstation = output<number>();
@@ -132,12 +133,13 @@ export class JobCardComponent {
             case JobApplicationStatus.Interviewing:
                 return 'bg-primary'; // Purple/Indigo dot
             case JobApplicationStatus.Offer:
-                return 'ring-2 ring-accent bg-transparent'; // Hollow gold ring
+                return 'bg-success shadow-[0_0_8px_rgba(16,185,129,0.3)]'; // Emerald glow
             case JobApplicationStatus.Rejected:
+                return 'bg-destructive'; // Coral dot
             case JobApplicationStatus.Ghosted:
-                return 'bg-gray-400'; // Gray dot
+                return 'bg-warning'; // Yellow dot
             default:
-                return 'bg-gray-400';
+                return 'bg-muted-foreground/30';
         }
     });
 

@@ -1,0 +1,23 @@
+@reference "../../../../../styles.css";
+
+/* Kanban Board - Open Air Premium Design */
+
+/* Dragging item visual enhancement */
+.cdk-drag-preview {
+    @apply rotate-2 scale-105 shadow-2xl;
+}
+
+/* Disable pointer events on placeholder */
+.cdk-drag-placeholder {
+    @apply opacity-0;
+}
+
+/* Animate items when list changes */
+.cdk-drag-animating {
+    @apply transition-transform duration-200 ease-out;
+}
+
+/* Smooth reordering animation */
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+    @apply transition-transform duration-200;
+}

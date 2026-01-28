@@ -15,6 +15,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
 import { JobCardComponent } from '../job-card/job-card';
+import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -52,6 +53,7 @@ export enum ViewMode {
     KanbanBoardComponent,
     CalendarViewComponent,
     JobCardComponent,
+    DashboardMetricsComponent,
     ...HlmInputImports,
     ...HlmLabelImports,
     ...HlmButtonImports,
@@ -466,6 +468,18 @@ export class JobList implements OnInit {
     return list.filter(
       (app) =>
         app.status !== JobApplicationStatus.Rejected && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+  }
+
+  /**
+   * Get count of applications in any interview stage
+   */
+  getInterviewCount(list: JobApplication[] = this.visibleApplications): number {
+    return list.filter(
+      (app) =>
+        app.status === JobApplicationStatus.PhoneScreen ||
+        app.status === JobApplicationStatus.TechnicalTask ||
+        app.status === JobApplicationStatus.Interviewing,
     ).length;
   }
 

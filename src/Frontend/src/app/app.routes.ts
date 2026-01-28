@@ -63,8 +63,8 @@ export const routes: Routes = [
   {
     path: 'new',
     loadComponent: () =>
-      import('./features/job-applications/components/job-form/job-form').then(
-        (m) => m.JobFormComponent,
+      import('./features/job-applications/components/add-job-form/add-job-form').then(
+        (m) => m.AddJobFormComponent,
       ),
     canActivate: [authGuard],
     title: 'New Application - JobTracker',

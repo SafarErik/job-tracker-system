@@ -88,6 +88,18 @@
       ],
       "@spartan-ng/helm/alert": [
         "./libs/ui/alert/src/index.ts"
+      ],
+      "@spartan-ng/helm/autocomplete": [
+        "./libs/ui/autocomplete/src/index.ts"
+      ],
+      "@spartan-ng/helm/popover": [
+        "./libs/ui/popover/src/index.ts"
+      ],
+      "@spartan-ng/helm/input-group": [
+        "./libs/ui/input-group/src/index.ts"
+      ],
+      "@spartan-ng/helm/combobox": [
+        "./libs/ui/combobox/src/index.ts"
       ]
     }
   },

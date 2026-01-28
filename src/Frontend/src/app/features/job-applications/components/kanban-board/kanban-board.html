@@ -1,131 +1,65 @@
-<div class="h-full overflow-x-auto bg-background p-4">
-  <!-- Board Header with Instructions -->
-  <div class="mb-4">
-    <h2 class="text-2xl font-bold text-foreground">Job Application Pipeline</h2>
-    <p class="text-sm text-muted-foreground mt-1">
-      💡 <strong>Tip:</strong> Click and drag cards between columns to update their status
-    </p>
-  </div>
+<!-- Open Air Kanban Board - Premium Design with Horizontal Scroll -->
+<div class="h-[calc(100vh-140px)] w-full overflow-x-auto overflow-y-hidden pb-4">
 
-  <!-- Kanban Board Columns -->
-  <div class="flex gap-4 min-h-[calc(100vh-200px)]">
+  <!-- The Board: Flex Row with Gap -->
+  <div class="flex h-full gap-6 px-1" cdkDropListGroup>
+
+    <!-- COLUMN LOOP -->
     @for (column of columns; track column.id) {
-      <div class="flex-shrink-0 w-80 flex flex-col">
-        <!-- Column Header -->
-        <div class="bg-muted border-2 border-border rounded-t-lg p-3 shadow-sm">
-          <h3 class="font-semibold text-foreground flex items-center justify-between">
-            <span>{{ column.title }}</span>
-            <span
-              class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-foreground bg-background rounded-full border border-border"
-              >{{ column.applications.length }}</span
-            >
-          </h3>
-        </div>
 
-        <!-- Drop Zone for Cards -->
-        <div
-          cdkDropList
-          [id]="column.id"
-          [cdkDropListData]="column.applications"
-          [cdkDropListConnectedTo]="getConnectedLists()"
-          (cdkDropListDropped)="onCardDropped($event)"
-          class="bg-background border-2 border-t-0 border-border rounded-b-lg p-3 flex-1 min-h-[200px] space-y-3 overflow-y-auto"
-        >
-          <!-- Job Application Cards -->
-          @for (app of column.applications; track app.id) {
-            <div
-              cdkDrag
-              class="bg-card rounded-lg shadow-md p-4 cursor-move hover:shadow-lg transition-shadow border border-border"
-            >
-              <!-- Card Header -->
-              <div class="mb-3">
-                <h4 class="font-semibold text-foreground text-lg truncate" [title]="app.position">
-                  {{ app.position }}
-                </h4>
-                <p class="text-sm mt-1">
-                  <a
-                    [href]="'/company/' + app.companyId"
-                    (click)="navigateToCompany($event, app.companyId)"
-                    class="text-primary hover:text-primary/80 hover:underline cursor-pointer"
-                    [title]="'View ' + app.companyName + ' details'"
-                    >🏢 {{ app.companyName }}</a
-                  >
-                </p>
-              </div>
+    <!-- 
+         COLUMN: 
+         - w-80 (320px) Fixed Width. 
+         - shrink-0 (Never shrink below 320px).
+         - Subtle background for visual grouping
+      -->
+    <div class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/50 p-2">
 
-              <!-- Card Body -->
-              <div class="space-y-2">
-                <!-- Applied Date -->
-                <div class="flex items-center text-xs text-muted-foreground">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  Applied: {{ formatDate(app.appliedAt) }}
-                </div>
-
-                <!-- Job URL -->
-                @if (app.jobUrl) {
-                  <a
-                    [href]="app.jobUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    (click)="$event.stopPropagation()"
-                    class="text-xs text-primary hover:text-primary/80 underline flex items-center"
-                  >
-                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                    View Job Posting
-                  </a>
-                }
-
-                <!-- Description Preview -->
-                @if (app.description) {
-                  <p class="text-xs text-muted-foreground line-clamp-2" [title]="app.description">
-                    {{ app.description }}
-                  </p>
-                }
-              </div>
-
-              <!-- CDK Drag Placeholder -->
-              <div
-                *cdkDragPlaceholder
-                class="h-24 bg-muted/50 border-2 border-dashed border-primary/30 rounded-lg"
-              ></div>
-            </div>
-          }
-
-          <!-- Empty State -->
-          @if (column.applications.length === 0) {
-            <div class="text-center py-8 text-muted-foreground">
-              <svg
-                class="w-12 h-12 mx-auto mb-2 opacity-50"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-                />
-              </svg>
-              <p class="text-sm">No applications</p>
-            </div>
-          }
-        </div>
+      <!-- Header - Large confident text -->
+      <div class="flex items-center justify-between px-2 pt-2">
+        <h3 class="font-semibold text-lg tracking-tight flex items-center gap-2"
+          [class.text-foreground]="column.status !== Status.Interviewing && column.status !== Status.Offer && column.status !== Status.PhoneScreen && column.status !== Status.TechnicalTask"
+          [class.text-primary]="column.status === Status.Interviewing || column.status === Status.PhoneScreen || column.status === Status.TechnicalTask"
+          [class.text-accent]="column.status === Status.Offer">
+          {{ column.title }}
+          <span
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
+            {{ column.applications.length }}
+          </span>
+        </h3>
       </div>
+
+      <!-- Drop List (Vertical Scroll for cards) -->
+      <div cdkDropList [id]="column.id" [cdkDropListData]="column.applications"
+        [cdkDropListConnectedTo]="getConnectedLists()" (cdkDropListDropped)="onCardDropped($event)"
+        class="flex flex-1 flex-col gap-3 overflow-y-auto px-1 pb-2 custom-scrollbar">
+        @for (app of column.applications; track app.id) {
+        <div cdkDrag [cdkDragData]="app" class="group">
+
+          <!-- DRAG PLACEHOLDER (The ghost spot) -->
+          <div *cdkDragPlaceholder class="mb-3 h-24 rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5">
+          </div>
+
+          <!-- THE CARD: Compact mode for Kanban -->
+          <app-job-card [application]="app" [compact]="true" (openWorkstation)="onOpenWorkstation($event)"
+            (openJobUrl)="onOpenJobUrl($event)"></app-job-card>
+
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (column.applications.length === 0) {
+        <div class="flex flex-col items-center justify-center py-12 text-muted-foreground/50">
+          <svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>
+          <p class="text-sm">Drop here</p>
+        </div>
+        }
+      </div>
+    </div>
     }
+
   </div>
 </div>

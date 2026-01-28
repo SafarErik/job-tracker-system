@@ -12,6 +12,9 @@ import {
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Components
+import { JobCardComponent } from '../job-card/job-card';
+
 // Services
 import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -43,7 +46,7 @@ interface StatusColumn {
 @Component({
   selector: 'app-kanban-board',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule, JobCardComponent],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
 })
@@ -128,11 +131,16 @@ export class KanbanBoardComponent {
    */
   isUpdating = false;
 
+  /**
+   * Expose status enum for template conditionals
+   */
+  readonly Status = JobApplicationStatus;
+
   constructor(
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
     private readonly router: Router,
-  ) {}
+  ) { }
 
   /**
    * Organize applications into their respective status columns
@@ -309,5 +317,21 @@ export class KanbanBoardComponent {
    */
   getConnectedLists(): string[] {
     return this.columns.map((col) => col.id);
+  }
+
+  /**
+   * Handle 'Open Workstation' event from Job Card
+   */
+  onOpenWorkstation(applicationId: number): void {
+    // Navigate to workstation view (assuming route structure)
+    // Adjust route as needed based on app routing
+    this.router.navigate(['/applications', applicationId]);
+  }
+
+  /**
+   * Handle 'Open Job URL' event from Job Card
+   */
+  onOpenJobUrl(url: string): void {
+    window.open(url, '_blank');
   }
 }

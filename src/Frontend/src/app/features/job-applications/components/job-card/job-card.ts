@@ -121,6 +121,26 @@ export class JobCardComponent {
         }
     });
 
+    // Computed: Status dot class for visual indicator
+    statusDotClass = computed(() => {
+        const status = this.application().status;
+        switch (status) {
+            case JobApplicationStatus.Applied:
+                return 'bg-blue-500'; // Blue solid dot
+            case JobApplicationStatus.PhoneScreen:
+            case JobApplicationStatus.TechnicalTask:
+            case JobApplicationStatus.Interviewing:
+                return 'bg-primary'; // Purple/Indigo dot
+            case JobApplicationStatus.Offer:
+                return 'ring-2 ring-accent bg-transparent'; // Hollow gold ring
+            case JobApplicationStatus.Rejected:
+            case JobApplicationStatus.Ghosted:
+                return 'bg-gray-400'; // Gray dot
+            default:
+                return 'bg-gray-400';
+        }
+    });
+
     // Computed: Status label
     statusLabel = computed(() => {
         const status = this.application().status;

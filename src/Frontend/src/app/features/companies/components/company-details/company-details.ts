@@ -5,6 +5,7 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyDetail, CompanyNews } from '../../models/company.model';
+import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmCardImports } from '../../../../../../libs/ui/card';
 import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
@@ -40,6 +41,7 @@ export class CompanyDetailsComponent implements OnInit {
     private readonly companyService: CompanyService,
     private readonly intelligenceService: CompanyIntelligenceService,
     private readonly notificationService: NotificationService,
+    private readonly breadcrumbService: BreadcrumbService,
   ) { }
 
   ngOnInit(): void {
@@ -155,7 +157,12 @@ export class CompanyDetailsComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/companies']);
+    const fromApp = this.route.snapshot.queryParamMap.get('from') === 'application';
+    if (fromApp) {
+      this.router.navigateByUrl(this.breadcrumbService.getLastWorkstationLink());
+    } else {
+      this.router.navigate(['/companies']);
+    }
   }
 
   editCompany(): void {

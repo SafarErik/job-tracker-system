@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ApplicationService } from '../../services/application.service';
 import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
@@ -62,7 +63,11 @@ import {
     lucideLoader2,
     lucideChevronLeft,
     lucideActivity,
-    lucideArrowRight
+    lucideArrowRight,
+    lucideZap,
+    lucideTrash2,
+    lucidePlus,
+    lucideLinkedin
 } from '@ng-icons/lucide';
 
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
@@ -106,9 +111,14 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
             lucideLoader2,
             lucideChevronLeft,
             lucideActivity,
-            lucideArrowRight
+            lucideArrowRight,
+            lucideZap,
+            lucideTrash2,
+            lucidePlus,
+            lucideLinkedin
         })
     ],
+    styleUrls: ['./workstation-animations.css'],
     templateUrl: './job-workstation.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -119,6 +129,7 @@ export class JobWorkstationComponent implements OnInit {
     private readonly applicationService = inject(ApplicationService);
     private readonly documentService = inject(DocumentService);
     private readonly notificationService = inject(NotificationService);
+    private readonly breadcrumbService = inject(BreadcrumbService);
 
     // Core state
     application = signal<JobApplication | null>(null);
@@ -202,9 +213,9 @@ export class JobWorkstationComponent implements OnInit {
     // Computed values
     matchScoreColor = computed(() => {
         const score = this.application()?.matchScore ?? 0;
-        if (score >= 80) return 'text-green-400';
-        if (score >= 50) return 'text-yellow-400';
-        return 'text-slate-400';
+        if (score >= 80) return 'text-emerald-500';
+        if (score >= 50) return 'text-amber-500';
+        return 'text-rose-500';
     });
 
     matchScoreBg = computed(() => {
@@ -235,12 +246,22 @@ export class JobWorkstationComponent implements OnInit {
             if (!isNaN(parsedId)) {
                 this.loadApplication(parsedId);
                 this.loadDocuments();
+
+                // Set initial tab from query params if available
+                const tab = this.route.snapshot.queryParamMap.get('tab') as WorkstationTab;
+                if (tab && this.tabs.some(t => t.id === tab)) {
+                    this.activeTab.set(tab);
+                    this.breadcrumbService.setLastWorkstationState(parsedId, tab);
+                } else {
+                    this.breadcrumbService.setLastWorkstationState(parsedId, this.activeTab());
+                }
             } else {
-                this.error.set('Invalid application ID');
+                this.error.set(`Invalid application ID: ${id}`);
                 this.isLoading.set(false);
             }
         } else {
             console.error('No ID found in route!');
+            this.error.set('Mission context missing (No ID found in route)');
             this.isLoading.set(false);
         }
     }
@@ -290,8 +311,20 @@ export class JobWorkstationComponent implements OnInit {
 
     // Tab navigation
     setActiveTab(tab: string | WorkstationTab): void {
-        this.activeTab.set(tab as WorkstationTab);
+        const tabId = tab as WorkstationTab;
+        this.activeTab.set(tabId);
         this.isMobileMenuOpen.set(false);
+        const app = this.application();
+        if (app) {
+            this.breadcrumbService.setLastWorkstationState(app.id, tabId);
+        }
+
+        // Sync with query params for persistence
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { tab: tabId },
+            queryParamsHandling: 'merge'
+        });
     }
 
     toggleMobileMenu(): void {
@@ -345,13 +378,16 @@ export class JobWorkstationComponent implements OnInit {
         });
     }
 
-    getStatusLabel(status: JobApplicationStatus): string {
+    getStatusLabel(status: JobApplicationStatus | undefined): string {
+        if (status === undefined) return 'Unknown';
         return this.statusOptions.find((o) => o.value === status)?.label || 'Unknown';
     }
 
-    getStatusClass(status: JobApplicationStatus): string {
+    getStatusClass(status: JobApplicationStatus | undefined): string {
         const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
-        switch (status) {
+        if (status === undefined) return base;
+
+        switch (status as JobApplicationStatus) {
             case JobApplicationStatus.Applied:
                 return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
             case JobApplicationStatus.PhoneScreen:
@@ -373,7 +409,8 @@ export class JobWorkstationComponent implements OnInit {
         }
     }
 
-    getJobTypeLabel(type: JobType): string {
+    getJobTypeLabel(type: JobType | undefined): string {
+        if (type === undefined) return 'Unknown';
         switch (type) {
             case JobType.FullTime: return 'Full-time';
             case JobType.PartTime: return 'Part-time';
@@ -384,7 +421,8 @@ export class JobWorkstationComponent implements OnInit {
         }
     }
 
-    getWorkplaceLabel(type: WorkplaceType): string {
+    getWorkplaceLabel(type: WorkplaceType | undefined): string {
+        if (type === undefined) return 'Unknown';
         switch (type) {
             case WorkplaceType.OnSite: return 'On-site';
             case WorkplaceType.Remote: return 'Remote';
@@ -393,7 +431,8 @@ export class JobWorkstationComponent implements OnInit {
         }
     }
 
-    getPriorityLabel(priority: JobPriority): string {
+    getPriorityLabel(priority: JobPriority | undefined): string {
+        if (priority === undefined) return 'Medium';
         switch (priority) {
             case JobPriority.High: return 'High Priority';
             case JobPriority.Medium: return 'Medium Priority';
@@ -402,9 +441,11 @@ export class JobWorkstationComponent implements OnInit {
         }
     }
 
-    getPriorityClass(priority: JobPriority): string {
+    getPriorityClass(priority: JobPriority | undefined): string {
         const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
-        switch (priority) {
+        if (priority === undefined) return base;
+
+        switch (priority as JobPriority) {
             case JobPriority.High:
                 return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
             case JobPriority.Medium:
@@ -569,6 +610,14 @@ Best regards,
     // Flashcard methods
     flipFlashcard(): void {
         this.isFlashcardFlipped.update(v => !v);
+    }
+
+    updateCoverLetterContent(content: string): void {
+        this.coverLetter.update(s => ({ ...s, content, isEdited: true }));
+    }
+
+    updateStrategyNotes(notes: string): void {
+        this.strategyNotes.set(notes);
     }
 
     nextFlashcard(): void {

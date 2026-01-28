@@ -5,6 +5,8 @@ import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
 
 // Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -111,6 +113,32 @@ export class JobDetailModalComponent implements OnInit {
       case JobApplicationStatus.Accepted: return 'Accepted';
       case JobApplicationStatus.Rejected: return 'Rejected';
       case JobApplicationStatus.Ghosted: return 'Ghosted';
+      default: return 'Unknown';
+    }
+  }
+
+  /**
+   * Get human-readable job type label
+   */
+  getJobTypeLabel(type: JobType): string {
+    switch (type) {
+      case JobType.FullTime: return 'Full-time';
+      case JobType.PartTime: return 'Part-time';
+      case JobType.Internship: return 'Internship';
+      case JobType.Contract: return 'Contract';
+      case JobType.Freelance: return 'Freelance';
+      default: return 'Unknown';
+    }
+  }
+
+  /**
+   * Get human-readable workplace label
+   */
+  getWorkplaceLabel(type: WorkplaceType): string {
+    switch (type) {
+      case WorkplaceType.OnSite: return 'On-site';
+      case WorkplaceType.Remote: return 'Remote';
+      case WorkplaceType.Hybrid: return 'Hybrid';
       default: return 'Unknown';
     }
   }

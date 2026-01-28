@@ -1,4 +1,6 @@
 import { JobApplicationStatus } from './application-status.enum';
+import { JobType } from './job-type.enum';
+import { WorkplaceType } from './workplace-type.enum';
 
 export interface JobApplication {
   id: number;
@@ -17,6 +19,8 @@ export interface JobApplication {
   location?: string;
   salaryMin?: number;
   salaryMax?: number;
+  jobType: JobType;
+  workplaceType: WorkplaceType;
 }
 
 export interface CreateJobApplication {
@@ -27,5 +31,7 @@ export interface CreateJobApplication {
   description?: string; // Private notes (salary, thoughts, etc.)
   status: JobApplicationStatus;
   documentId?: string | null;
+  jobType?: JobType;
+  workplaceType?: WorkplaceType;
 }
 

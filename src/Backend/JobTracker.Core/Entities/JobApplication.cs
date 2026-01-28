@@ -66,6 +66,16 @@ public class JobApplication
     public JobApplicationStatus Status { get; set; } = JobApplicationStatus.Applied;
 
     /// <summary>
+    /// Type of employment (Full-time, Internship, etc.)
+    /// </summary>
+    public JobType JobType { get; set; } = JobType.FullTime;
+
+    /// <summary>
+    /// Type of workplace (On-site, Remote, Hybrid)
+    /// </summary>
+    public WorkplaceType WorkplaceType { get; set; } = WorkplaceType.OnSite;
+
+    /// <summary>
     /// Offered or expected salary (nullable)
     /// </summary>
     public decimal? SalaryOffer { get; set; }

@@ -36,6 +36,16 @@ public class JobApplicationDto
     /// </summary>
     public JobApplicationStatus Status { get; set; }
 
+    /// <summary>
+    /// Type of employment (e.g., FullTime, Internship)
+    /// </summary>
+    public JobType JobType { get; set; }
+
+    /// <summary>
+    /// Type of workplace (e.g., Remote, OnSite, Hybrid)
+    /// </summary>
+    public WorkplaceType WorkplaceType { get; set; }
+
     // ============================================
     // RELATED ENTITY INFORMATION
     // ============================================
@@ -93,6 +103,10 @@ public class CreateJobApplicationDto
     
     public JobApplicationStatus Status { get; set; } = JobApplicationStatus.Applied;
 
+    public JobType JobType { get; set; } = JobType.FullTime;
+
+    public WorkplaceType WorkplaceType { get; set; } = WorkplaceType.OnSite;
+
     /// <summary>
     /// Reference to the CV/Resume to use for this application
     /// </summary>
@@ -126,4 +140,8 @@ public class UpdateJobApplicationDto
     public bool DocumentIdProvided { get; set; }
 
     public JobApplicationStatus? Status { get; set; }
+
+    public JobType? JobType { get; set; }
+
+    public WorkplaceType? WorkplaceType { get; set; }
 }

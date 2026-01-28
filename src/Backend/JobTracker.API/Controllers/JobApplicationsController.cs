@@ -60,7 +60,9 @@ public class JobApplicationsController : ControllerBase
             CompanyId = app.CompanyId,
             CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName
+            DocumentName = app.Document?.OriginalFileName,
+            JobType = app.JobType,
+            WorkplaceType = app.WorkplaceType
         });
 
         return Ok(dtos);
@@ -102,7 +104,9 @@ public class JobApplicationsController : ControllerBase
             CompanyId = app.CompanyId,
             CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName
+            DocumentName = app.Document?.OriginalFileName,
+            JobType = app.JobType,
+            WorkplaceType = app.WorkplaceType
         };
 
         return Ok(dto);
@@ -128,6 +132,8 @@ public class JobApplicationsController : ControllerBase
             JobUrl = createDto.JobUrl,
             Description = createDto.Description,
             Status = createDto.Status,
+            JobType = createDto.JobType,
+            WorkplaceType = createDto.WorkplaceType,
             DocumentId = createDto.DocumentId,
             AppliedAt = DateTime.UtcNow
         };
@@ -154,7 +160,9 @@ public class JobApplicationsController : ControllerBase
             CompanyId = application.CompanyId,
             CompanyName = application.Company?.Name ?? "Unknown Company",
             DocumentId = application.DocumentId,
-            DocumentName = documentName
+            DocumentName = documentName,
+            JobType = application.JobType,
+            WorkplaceType = application.WorkplaceType
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -200,6 +208,12 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
+
+        if (updateDto.JobType.HasValue)
+            existingApp.JobType = updateDto.JobType.Value;
+
+        if (updateDto.WorkplaceType.HasValue)
+            existingApp.WorkplaceType = updateDto.WorkplaceType.Value;
         
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;

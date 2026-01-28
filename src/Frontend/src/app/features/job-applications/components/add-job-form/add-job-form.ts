@@ -10,6 +10,8 @@ import { CompanyService } from '../../../companies/services/company.service';
 
 // Models
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
 
 // Spartan UI Imports
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -59,6 +61,37 @@ export class AddJobFormComponent {
     filteredCompanies = signal<any[]>([]);
     filteredPositions = signal<string[]>([]);
 
+    // Dropdown Visibility
+    isStatusDropdownOpen = signal(false);
+    isJobTypeDropdownOpen = signal(false);
+    isWorkplaceTypeDropdownOpen = signal(false);
+
+    // Options
+    statusOptions = [
+        { value: JobApplicationStatus.Applied, label: 'Applied' },
+        { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
+        { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
+        { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
+        { value: JobApplicationStatus.Offer, label: 'Offer Received' },
+        { value: JobApplicationStatus.Rejected, label: 'Rejected' },
+        { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
+        { value: JobApplicationStatus.Accepted, label: 'Accepted' },
+    ];
+
+    jobTypeOptions = [
+        { value: JobType.FullTime, label: 'Full-time' },
+        { value: JobType.PartTime, label: 'Part-time' },
+        { value: JobType.Internship, label: 'Internship' },
+        { value: JobType.Contract, label: 'Contract' },
+        { value: JobType.Freelance, label: 'Freelance' },
+    ];
+
+    workplaceTypeOptions = [
+        { value: WorkplaceType.OnSite, label: 'On-site' },
+        { value: WorkplaceType.Remote, label: 'Remote' },
+        { value: WorkplaceType.Hybrid, label: 'Hybrid' },
+    ];
+
     constructor(
         private fb: FormBuilder,
         private applicationService: ApplicationService,
@@ -72,6 +105,8 @@ export class AddJobFormComponent {
             position: ['', [Validators.required]],
             jobUrl: ['', []],
             status: [JobApplicationStatus.Applied, [Validators.required]],
+            jobType: [JobType.FullTime, [Validators.required]],
+            workplaceType: [WorkplaceType.OnSite, [Validators.required]],
             location: ['', []],
             // Removed salaryMin/Max as requested
         });
@@ -159,6 +194,38 @@ export class AddJobFormComponent {
 
     onPositionSelected(value: string) {
         this.form.patchValue({ position: value });
+    }
+
+    // --- Dropdown Selection Logic ---
+
+    selectStatus(value: number) {
+        this.form.patchValue({ status: value });
+        this.isStatusDropdownOpen.set(false);
+    }
+
+    selectJobType(value: number) {
+        this.form.patchValue({ jobType: value });
+        this.isJobTypeDropdownOpen.set(false);
+    }
+
+    selectWorkplaceType(value: number) {
+        this.form.patchValue({ workplaceType: value });
+        this.isWorkplaceTypeDropdownOpen.set(false);
+    }
+
+    get selectedStatusLabel(): string {
+        const value = Number(this.form.get('status')?.value);
+        return this.statusOptions.find((o) => o.value === value)?.label ?? 'Select status';
+    }
+
+    get selectedJobTypeLabel(): string {
+        const value = Number(this.form.get('jobType')?.value);
+        return this.jobTypeOptions.find((o) => o.value === value)?.label ?? 'Select type';
+    }
+
+    get selectedWorkplaceTypeLabel(): string {
+        const value = Number(this.form.get('workplaceType')?.value);
+        return this.workplaceTypeOptions.find((o) => o.value === value)?.label ?? 'Select location';
     }
 
     // --- Focus Handling ---

@@ -18,6 +18,8 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
 
 /**
  * Job Card Component
@@ -263,6 +265,40 @@ export class JobCardComponent {
                 return 'Rejected';
             case JobApplicationStatus.Ghosted:
                 return 'Ghosted';
+            default:
+                return 'Unknown';
+        }
+    });
+
+    // Computed: Job Type Label
+    jobTypeLabel = computed(() => {
+        const type = this.application().jobType;
+        switch (type) {
+            case JobType.FullTime:
+                return 'Full-time';
+            case JobType.PartTime:
+                return 'Part-time';
+            case JobType.Internship:
+                return 'Internship';
+            case JobType.Contract:
+                return 'Contract';
+            case JobType.Freelance:
+                return 'Freelance';
+            default:
+                return 'Unknown';
+        }
+    });
+
+    // Computed: Workplace Type Label
+    workplaceTypeLabel = computed(() => {
+        const type = this.application().workplaceType;
+        switch (type) {
+            case WorkplaceType.OnSite:
+                return 'On-site';
+            case WorkplaceType.Remote:
+                return 'Remote';
+            case WorkplaceType.Hybrid:
+                return 'Hybrid';
             default:
                 return 'Unknown';
         }

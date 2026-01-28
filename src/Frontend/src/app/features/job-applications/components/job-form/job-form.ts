@@ -18,6 +18,8 @@ import { Company } from '../../../companies/models/company.model';
 import { Skill } from '../../../skills/models/skill.model';
 import { Document } from '../../../documents/models/document.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
 
 // Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -84,6 +86,8 @@ export class JobFormComponent implements OnInit {
   isCompanyDropdownOpen = false;
   companySearchTerm = '';
   isStatusDropdownOpen = false;
+  isJobTypeDropdownOpen = false;
+  isWorkplaceTypeDropdownOpen = false;
   isDocumentDropdownOpen = false;
   isUploadingDocument = false;
   uploadProgress = 0;
@@ -146,6 +150,21 @@ export class JobFormComponent implements OnInit {
     { value: JobApplicationStatus.Offer, label: 'Offer Received' },
     { value: JobApplicationStatus.Rejected, label: 'Rejected' },
     { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
+    { value: JobApplicationStatus.Accepted, label: 'Accepted' },
+  ];
+
+  jobTypeOptions = [
+    { value: JobType.FullTime, label: 'Full-time' },
+    { value: JobType.PartTime, label: 'Part-time' },
+    { value: JobType.Internship, label: 'Internship' },
+    { value: JobType.Contract, label: 'Contract' },
+    { value: JobType.Freelance, label: 'Freelance' },
+  ];
+
+  workplaceTypeOptions = [
+    { value: WorkplaceType.OnSite, label: 'On-site' },
+    { value: WorkplaceType.Remote, label: 'Remote' },
+    { value: WorkplaceType.Hybrid, label: 'Hybrid' },
   ];
 
   /**
@@ -172,6 +191,8 @@ export class JobFormComponent implements OnInit {
       companyId: [null, [Validators.required]],
       companySearch: [''],
       status: [JobApplicationStatus.Applied, [Validators.required]],
+      jobType: [JobType.FullTime, [Validators.required]],
+      workplaceType: [WorkplaceType.OnSite, [Validators.required]],
       jobUrl: ['', []], // Optional
       jobDescription: ['', []], // Job posting text for AI analysis
       description: ['', []], // Private notes (salary, thoughts)
@@ -253,6 +274,8 @@ export class JobFormComponent implements OnInit {
           jobDescription: application.jobDescription || '',
           description: application.description || '',
           documentId: application.documentId || null,
+          jobType: application.jobType,
+          workplaceType: application.workplaceType,
         });
         this.syncCompanySearch();
         this.isLoading = false;
@@ -381,9 +404,51 @@ export class JobFormComponent implements OnInit {
     this.isStatusDropdownOpen = false;
   }
 
+  openJobTypeDropdown() {
+    this.isJobTypeDropdownOpen = true;
+  }
+
+  closeJobTypeDropdown() {
+    setTimeout(() => {
+      this.isJobTypeDropdownOpen = false;
+    }, 150);
+  }
+
+  selectJobType(value: number) {
+    this.jobForm.patchValue({ jobType: value });
+    this.isJobTypeDropdownOpen = false;
+  }
+
+  openWorkplaceTypeDropdown() {
+    this.isWorkplaceTypeDropdownOpen = true;
+  }
+
+  closeWorkplaceTypeDropdown() {
+    setTimeout(() => {
+      this.isWorkplaceTypeDropdownOpen = false;
+    }, 150);
+  }
+
+  selectWorkplaceType(value: number) {
+    this.jobForm.patchValue({ workplaceType: value });
+    this.isWorkplaceTypeDropdownOpen = false;
+  }
+
   get selectedStatusLabel(): string {
     const value = Number(this.jobForm.get('status')?.value);
     return this.statusOptions.find((option) => option.value === value)?.label ?? 'Select status';
+  }
+
+  get selectedJobTypeLabel(): string {
+    const value = Number(this.jobForm.get('jobType')?.value);
+    return this.jobTypeOptions.find((option) => option.value === value)?.label ?? 'Select type';
+  }
+
+  get selectedWorkplaceTypeLabel(): string {
+    const value = Number(this.jobForm.get('workplaceType')?.value);
+    return (
+      this.workplaceTypeOptions.find((option) => option.value === value)?.label ?? 'Select location'
+    );
   }
 
   openDocumentDropdown() {

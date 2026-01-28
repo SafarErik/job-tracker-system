@@ -127,6 +127,98 @@
                 </div>
                 }
             </div>
+            <!-- Metadata Grid: Status, Type, Workplace -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Status Dropdown -->
+                <div class="space-y-2">
+                    <label hlmLabel
+                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Status</label>
+                    <div class="relative">
+                        <button type="button" hlmBtn variant="outline"
+                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
+                            (click)="isStatusDropdownOpen.set(!isStatusDropdownOpen())">
+                            <span class="text-sm font-medium">{{ selectedStatusLabel }}</span>
+                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @if (isStatusDropdownOpen()) {
+                        <div
+                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="p-1">
+                                @for (opt of statusOptions; track opt.value) {
+                                <button type="button" (click)="selectStatus(opt.value)"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+                                    {{ opt.label }}
+                                </button>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Job Type Dropdown -->
+                <div class="space-y-2">
+                    <label hlmLabel
+                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Type</label>
+                    <div class="relative">
+                        <button type="button" hlmBtn variant="outline"
+                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
+                            (click)="isJobTypeDropdownOpen.set(!isJobTypeDropdownOpen())">
+                            <span class="text-sm font-medium">{{ selectedJobTypeLabel }}</span>
+                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @if (isJobTypeDropdownOpen()) {
+                        <div
+                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="p-1">
+                                @for (opt of jobTypeOptions; track opt.value) {
+                                <button type="button" (click)="selectJobType(opt.value)"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+                                    {{ opt.label }}
+                                </button>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Workplace Dropdown -->
+                <div class="space-y-2">
+                    <label hlmLabel
+                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Workplace</label>
+                    <div class="relative">
+                        <button type="button" hlmBtn variant="outline"
+                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
+                            (click)="isWorkplaceTypeDropdownOpen.set(!isWorkplaceTypeDropdownOpen())">
+                            <span class="text-sm font-medium">{{ selectedWorkplaceTypeLabel }}</span>
+                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @if (isWorkplaceTypeDropdownOpen()) {
+                        <div
+                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="p-1">
+                                @for (opt of workplaceTypeOptions; track opt.value) {
+                                <button type="button" (click)="selectWorkplaceType(opt.value)"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+                                    {{ opt.label }}
+                                </button>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Save Button - Primary Action -->

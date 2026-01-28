@@ -1,21 +1,26 @@
-<!-- Job Card Component - Signature Premium Design with Compact Mode -->
-<section hlmCard role="button" tabindex="0" (click)="onCardClick()" (keydown.enter)="onCardClick()"
-  (keydown.space)="onCardClick()" class="group relative w-full flex flex-col cursor-pointer
-         bg-card rounded-2xl border border-white/5
-         transition-all duration-300 ease-out
-         hover:-translate-y-1.5 hover:shadow-2xl hover:border-primary/40 hover:bg-card" [class.p-3]="compact()"
-  [class.p-4]="!compact()" [class.h-full]="!compact()" [title]="'Manage documents, AI analysis, and interview prep'">
-  <!-- Card Header - Logo + Title -->
-  <div hlmCardHeader class="flex-row items-center gap-3 p-0 mb-3">
-    <!-- Company Logo -->
+<!-- Job Card Component - Smart "Indicator" Card -->
+<section [class]="containerClasses()" role="button" tabindex="0" (click)="onCardClick()" (keydown.enter)="onCardClick()"
+  (keydown.space)="onCardClick()" [class.p-3]="compact()" [class.p-4]="!compact()" [class.h-full]="!compact()"
+  [title]="'Manage documents, AI analysis, and interview prep'">
+  <!-- STATUS STRIP (Left Indicator) -->
+  <div class="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl transition-all duration-300"
+    [class]="statusStripColor()"></div>
+
+  <!-- Card Header -->
+  <div hlmCardHeader class="flex-row items-center gap-3 p-0 mb-3"
+    [class.pl-2]="statusStripColor() !== 'bg-transparent'">
+    <!-- Company Logo with Robust Fallback -->
     <div class="flex-shrink-0">
       @if (logoUrl() && !logoFailed()) {
-      <img [src]="logoUrl()" [alt]="application().companyName + ' logo'" class="rounded-lg bg-muted object-contain"
-        [class.w-10]="compact()" [class.h-10]="compact()" [class.p-1]="compact()" [class.w-12]="!compact()"
-        [class.h-12]="!compact()" [class.p-1.5]="!compact()" (error)="onLogoError()" />
+      <div class="relative rounded-lg bg-white overflow-hidden border border-white/5" [class.w-10]="compact()"
+        [class.h-10]="compact()" [class.w-12]="!compact()" [class.h-12]="!compact()">
+        <img [src]="logoUrl()" [alt]="application().companyName + ' logo'" class="h-full w-full object-contain p-1"
+          (error)="onLogoError()" />
+      </div>
       } @else {
-      <!-- Fallback: First letter of company name -->
-      <div class="rounded-lg bg-muted flex items-center justify-center text-muted-foreground font-bold"
+      <!-- Fallback Monogram -->
+      <div
+        class="rounded-lg bg-muted flex items-center justify-center text-muted-foreground font-bold uppercase transition-colors"
         [class.w-10]="compact()" [class.h-10]="compact()" [class.text-sm]="compact()" [class.w-12]="!compact()"
         [class.h-12]="!compact()" [class.text-base]="!compact()">
         {{ (application().companyName || 'C').charAt(0) }}
@@ -26,8 +31,9 @@
     <!-- Title & Company -->
     <div class="min-w-0 flex-1">
       <div class="flex items-start justify-between gap-2">
-        <h3 hlmCardTitle class="font-semibold text-foreground truncate tracking-tight" [class.text-sm]="compact()"
-          [class.text-base]="!compact()" [title]="application().position">
+        <h3 hlmCardTitle class="font-semibold text-foreground truncate tracking-tight transition-all"
+          [class.text-sm]="compact()" [class.text-base]="!compact()" [class.line-through]="isDead()"
+          [class.opacity-70]="isDead()" [title]="application().position">
           {{ application().position }}
         </h3>
         <span [class]="getStatusClasses(application().status)" class="shrink-0 scale-75 origin-right">
@@ -48,21 +54,25 @@
     </div>
   </div>
 
-  <!-- Card Body - Details (HIDDEN IN COMPACT MODE) -->
+  <!-- Card Body - Details -->
   @if (!compact()) {
   <div hlmCardContent class="flex-1 px-0 pb-2">
-    <!-- Stale Badge -->
+    <!-- Stale Warning Badge -->
     @if (isStale()) {
     <div
-      class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
-      <span>⏳</span>
-      <span>No activity for {{ daysSinceUpdate() }} days</span>
+      class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-3 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20 animate-pulse">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Needs Follow-up ({{ daysSinceUpdate() }}d)</span>
     </div>
     }
 
     <!-- Quick Info -->
     <div class="space-y-2 text-sm">
-      <!-- Location (if available) -->
+      <!-- ... Rest of info ... -->
+      <!-- Location -->
       @if (application().location) {
       <div class="flex items-center gap-2 text-muted-foreground">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +84,7 @@
       </div>
       }
 
-      <!-- Salary (if available) -->
+      <!-- Salary -->
       @if (application().salaryMin || application().salaryMax) {
       <div class="flex items-center gap-2 text-muted-foreground">
         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,59 +102,22 @@
         </span>
       </div>
       }
-
-      <!-- Notes Preview -->
-      @if (application().description) {
-      <div class="flex items-start gap-2 text-muted-foreground">
-        <svg class="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        <span class="line-clamp-2">{{ application().description }}</span>
-      </div>
-      }
-
-      <!-- Job URL -->
-      @if (application().jobUrl) {
-      <a [href]="application().jobUrl" target="_blank" rel="noopener noreferrer" (click)="onJobUrlClick($event)"
-        class="inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary hover:underline text-xs transition-colors">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-        </svg>
-        External Posting
-      </a>
-      }
     </div>
   </div>
   }
 
-  <!-- Card Footer - Date + Status Dot (HIDDEN IN COMPACT MODE) -->
+  <!-- Footer -->
   @if (!compact()) {
   <div hlmCardFooter class="mt-auto px-0 py-2 flex items-center justify-between border-t border-white/5">
-    <!-- Applied Date -->
     <span class="text-xs text-muted-foreground">
       {{ formatDate(application().appliedAt) }}
     </span>
-
-    <!-- Status Indicator (Dot) - Always visible -->
-    <div class="flex items-center gap-2">
-      <span [class]="getStatusClasses(application().status)">
-        {{ statusLabel() }}
-      </span>
-    </div>
-  </div>
-  }
-
-  <!-- Open Workstation Button (HIDDEN IN COMPACT MODE) -->
-  @if (!compact()) {
-  <div class="pt-2">
-    <button hlmBtn variant="default" class="w-full gap-2 rounded-xl shadow-sm hover:shadow-primary/20">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+    <button hlmBtn variant="ghost" size="sm" class="h-8 px-3 text-xs gap-2 group/btn">
+      View Workstation
+      <svg class="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-0.5" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
       </svg>
-      Open Workstation
     </button>
   </div>
   }

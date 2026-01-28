@@ -23,11 +23,6 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  /* NEW: Semantic Colors for Statuses */
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-destructive: var(--destructive);
-
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
@@ -37,97 +32,65 @@
 
 /* 3. Define the Color Palettes */
 :root {
-  /* =========================================
-     LIGHT MODE (The "Cool Airy" Theme)
-     ========================================= */
-  --background: #FBFBFD;
-  /* Cool White */
-  --foreground: #22223B;
-  /* Deep Navy (Primary Text) */
+  /* LIGHT MODE (Default) */
+  --background: #F9FAFB;
+  --foreground: #111827;
 
   --card: #FFFFFF;
-  --card-foreground: #22223B;
+  --card-foreground: #111827;
 
   --popover: #FFFFFF;
-  --popover-foreground: #22223B;
+  --popover-foreground: #111827;
 
-  /* BRANDING */
-  --primary: #6D5DF6;
-  /* Electric Violet */
+  --primary: #7C7CFF;
   --primary-foreground: #FFFFFF;
 
-  /* ACCENTS & SEMANTICS */
-  --accent: #FF6B6B;
-  /* Coral Red (Use sparingly for 'Hot' items) */
-  --accent-foreground: #FFFFFF;
+  --accent: #FFB703;
+  --accent-foreground: #111827;
 
-  --success: #10B981;
-  /* Emerald (For Offers) */
-  --warning: #FFE66D;
-  /* Warm Yellow (For Ghosting/Pending) */
-  --destructive: #FF6B6B;
-  /* Coral Red (For Rejection/Delete) */
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
 
-  /* NEUTRALS */
-  --muted: #F1F1F4;
-  /* Slightly blue-ish grey */
-  --muted-foreground: #7A7A9D;
-  /* Cool Grey */
-
-  --border: #E2E2E8;
-  --input: #F1F1F4;
-  /* Soft inputs matching muted */
-  --ring: #6D5DF6;
-  /* Matches Primary */
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #7C7CFF;
 
   --radius: 0.875rem;
 }
 
 /* DARK MODE OVERRIDES */
+/* This selector applies when 'dark' class is on HTML or BODY */
 :root.dark {
-  /* =========================================
-     DARK MODE (The "Deep Focus" Theme)
-     ========================================= */
   --background: #0F111A;
-  /* Deep Blue-Black (Kept this, it's perfect) */
-  --foreground: #E0E0FF;
-  /* Very light blue-white (Better contrast than grey) */
+  /* Deep Blue-Black */
+  --foreground: #E5E7EB;
 
-  --card: #151725;
-  /* Slightly lighter deep blue */
-  --card-foreground: #E0E0FF;
+  --card: #181B27;
+  /* Signature Dark Card */
+  --card-foreground: #E5E7EB;
 
-  --popover: #151725;
-  --popover-foreground: #E0E0FF;
+  --popover: #181B27;
+  --popover-foreground: #E5E7EB;
 
-  /* BRANDING */
-  --primary: #8B80F8;
-  /* Lighter Violet for visibility on dark */
+  --primary: #7C7CFF;
+  /* Indigo stays consistent */
   --primary-foreground: #FFFFFF;
 
-  /* ACCENTS & SEMANTICS */
-  --accent: #FF6B6B;
-  /* Coral stays same */
-  --accent-foreground: #FFFFFF;
+  --accent: #FFB703;
+  /* Gold stays consistent */
+  --accent-foreground: #0F111A;
 
-  --success: #34D399;
-  /* Lighter Emerald */
-  --warning: #FBBF24;
-  /* Gold/Yellow */
-  --destructive: #F87171;
-  /* Soft Red */
+  --muted: #1F2333;
+  /* Dark grey for secondary items */
+  --muted-foreground: #9CA3AF;
 
-  /* NEUTRALS */
-  --muted: #1E2030;
-  /* Dark Navy Grey */
-  --muted-foreground: #9494B8;
-  /* Blue-tinted Grey */
-
-  --border: #2D2D40;
-  /* Subtle Navy Border */
-  --input: #1E2030;
-  --ring: #8B80F8;
+  --border: #2E3346;
+  /* Subtle dark border */
+  --input: #2E3346;
+  --ring: #7C7CFF;
 }
+
+
 
 @utility custom-scrollbar {
   &::-webkit-scrollbar {

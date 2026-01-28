@@ -1,0 +1,38 @@
+@reference "../../../../../styles.css";
+
+/* Job Card - Smart Indicator Refinements */
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* Grayscale transition for "Dead" state */
+.grayscale {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.group:hover .grayscale {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Pulse animation for Stale badge */
+@keyframes soft-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(0.98);
+    }
+}
+
+.animate-pulse {
+    animation: soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

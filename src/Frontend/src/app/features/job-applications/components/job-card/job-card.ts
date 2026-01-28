@@ -75,11 +75,62 @@ export class JobCardComponent {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     });
 
+    // Computed: Is dead (rejected/ghosted)
+    isDead = computed(() =>
+        [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted].includes(
+            this.application().status,
+        ),
+    );
+
+    // Computed: Is success (offer/accepted)
+    isOffer = computed(() =>
+        [JobApplicationStatus.Offer, JobApplicationStatus.Accepted].includes(
+            this.application().status,
+        ),
+    );
+
     // Computed: Is application stale (>14 days, status is Applied or Interviewing)
     isStale = computed(() => {
         const app = this.application();
-        const staleStatuses = [JobApplicationStatus.Applied, JobApplicationStatus.Interviewing];
-        return staleStatuses.includes(app.status) && this.daysSinceUpdate() > 14;
+        const staleStatuses = [
+            JobApplicationStatus.Applied,
+            JobApplicationStatus.Interviewing,
+            JobApplicationStatus.PhoneScreen,
+            JobApplicationStatus.TechnicalTask,
+        ];
+        return (
+            !this.isDead() &&
+            !this.isOffer() &&
+            staleStatuses.includes(app.status) &&
+            this.daysSinceUpdate() > 14
+        );
+    });
+
+    // Computed: Dynamic Container Classes
+    containerClasses = computed(() => {
+        const base = 'group relative w-full flex flex-col cursor-pointer bg-card rounded-2xl border transition-all duration-300 ease-out';
+
+        if (this.isDead()) {
+            return `${base} border-white/5 opacity-60 grayscale hover:opacity-100 hover:grayscale-0`;
+        }
+
+        if (this.isOffer()) {
+            return `${base} border-emerald-500/30 shadow-lg shadow-emerald-500/10 hover:-translate-y-1.5 hover:shadow-2xl hover:border-emerald-500/50`;
+        }
+
+        if (this.isStale()) {
+            return `${base} border-white/5 hover:border-amber-500/40 hover:-translate-y-1.5 hover:shadow-2xl`;
+        }
+
+        return `${base} border-white/5 hover:-translate-y-1.5 hover:shadow-2xl hover:border-primary/40`;
+    });
+
+    // Computed: Status Strip Color (The Left Border)
+    statusStripColor = computed(() => {
+        if (this.isOffer()) return 'bg-emerald-500';
+        if (this.isDead()) return 'bg-slate-500/30';
+        if (this.isStale()) return 'bg-amber-500';
+        return 'bg-transparent';
     });
 
     // Computed: Progress percentage based on status

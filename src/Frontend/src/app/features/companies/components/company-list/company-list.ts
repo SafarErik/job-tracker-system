@@ -19,7 +19,6 @@ import { HlmLabelImports } from '../../../../../../libs/ui/label';
     ...HlmButtonImports
   ],
   templateUrl: './company-list.html',
-  styleUrl: './company-list.css',
 })
 export class CompanyListComponent implements OnInit {
   // Signal for companies list

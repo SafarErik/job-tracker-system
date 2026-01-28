@@ -58,7 +58,6 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
     ...HlmCardImports,
   ],
   templateUrl: './job-form.html',
-  styleUrl: './job-form.css',
 })
 export class JobFormComponent implements OnInit {
   // ============================================

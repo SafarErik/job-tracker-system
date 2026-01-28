@@ -38,7 +38,6 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
     selector: 'app-job-workstation',
     imports: [CommonModule, FormsModule, ...HlmLabelImports, ...HlmTabsImports, ...BrnTabsImports, ...HlmSeparatorImports, ...HlmCardImports, ...HlmButtonImports],
     templateUrl: './job-workstation.html',
-    styleUrl: './job-workstation.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobWorkstationComponent implements OnInit {

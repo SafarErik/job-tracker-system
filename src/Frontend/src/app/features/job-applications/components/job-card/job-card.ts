@@ -7,7 +7,6 @@ import {
     signal,
 } from '@angular/core';
 import {
-    HlmCard,
     HlmCardHeader,
     HlmCardTitle,
     HlmCardDescription,
@@ -29,7 +28,6 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
     selector: 'app-job-card',
     imports: [
         CommonModule,
-        HlmCard,
         HlmCardHeader,
         HlmCardTitle,
         HlmCardDescription,
@@ -108,7 +106,8 @@ export class JobCardComponent {
 
     // Computed: Dynamic Container Classes
     containerClasses = computed(() => {
-        const base = 'group relative w-full flex flex-col cursor-pointer bg-card rounded-2xl border transition-all duration-300 ease-out';
+        const base =
+            'group relative w-full flex flex-col cursor-pointer bg-card rounded-2xl border transition-all duration-300 ease-out shadow-sm';
 
         if (this.isDead()) {
             return `${base} border-white/5 opacity-60 grayscale hover:opacity-100 hover:grayscale-0`;
@@ -119,10 +118,11 @@ export class JobCardComponent {
         }
 
         if (this.isStale()) {
-            return `${base} border-white/5 hover:border-amber-500/40 hover:-translate-y-1.5 hover:shadow-2xl`;
+            return `${base} border-amber-500/40 hover:-translate-y-1.5 hover:shadow-2xl`;
         }
 
-        return `${base} border-white/5 hover:-translate-y-1.5 hover:shadow-2xl hover:border-primary/40`;
+        // Standard Card: Add subtle primary border and elegant lift
+        return `${base} border-primary/20 hover:border-primary/50 hover:-translate-y-1.5 hover:shadow-xl`;
     });
 
     // Computed: Status Strip Color (The Left Border)

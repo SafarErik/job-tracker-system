@@ -59,7 +59,6 @@ export enum ViewMode {
     ...HlmButtonImports,
   ],
   templateUrl: './job-list.html',
-  styleUrl: './job-list.css',
 })
 export class JobList implements OnInit {
   // ============================================

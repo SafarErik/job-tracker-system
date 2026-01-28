@@ -27,24 +27,33 @@ export interface DashboardMetric {
     <div class="w-full overflow-x-auto pb-2 -mx-1 px-1">
       <div class="flex gap-4 min-w-max">
         @for (metric of metrics(); track metric.label) {
-          <div class="min-w-[140px] flex-1 rounded-2xl p-5 flex flex-col gap-1 transition-all cursor-default"
-               [class]="metric.label === 'Active' 
-                 ? 'bg-primary text-primary-foreground scale-105 ring-4 ring-primary/10 z-10 border-transparent shadow-xl shadow-primary/20 p-6' 
-                 : 'bg-card border border-border/40 text-foreground hover:shadow-md shadow-sm'"
-          >
-            <!-- Label: Small uppercase tracking -->
-            <span class="text-[10px] uppercase tracking-widest font-semibold"
-                  [class]="metric.label === 'Active' ? 'text-primary-foreground/80' : 'text-muted-foreground'">
-              {{ metric.label }}
-            </span>
-            <!-- Value: Large bold number -->
-            <span
-              class="text-3xl font-bold tracking-tight transition-all"
-              [class]="metric.label === 'Active' ? 'text-primary-foreground' : metric.colorClass"
-            >
-              {{ metric.value }}
-            </span>
-          </div>
+          @if (metric.label === 'Active') {
+            <!-- PREMIUM ACTIVE CARD -->
+            <div class="relative overflow-hidden min-w-[160px] flex-1 rounded-2xl bg-gradient-to-br from-[#7C7CFF] to-[#6060ff] p-6 text-white shadow-lg shadow-primary/20 ring-1 ring-white/10 transition-all scale-105 z-10">
+              <!-- Subtle decoration circle -->
+              <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
+              
+              <div class="relative z-10 flex flex-col gap-1">
+                <span class="text-[10px] uppercase tracking-widest font-bold text-white/70">
+                  Active
+                </span>
+                <span class="text-4xl font-bold tracking-tight text-white">
+                  {{ metric.value }}
+                </span>
+              </div>
+            </div>
+          } @else {
+            <div class="min-w-[140px] flex-1 rounded-2xl p-5 flex flex-col gap-1 transition-all cursor-default bg-card border border-border/40 text-foreground hover:shadow-md shadow-sm">
+              <!-- Label: Small uppercase tracking -->
+              <span class="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">
+                {{ metric.label }}
+              </span>
+              <!-- Value: Large bold number -->
+              <span class="text-3xl font-bold tracking-tight transition-all" [class]="metric.colorClass">
+                {{ metric.value }}
+              </span>
+            </div>
+          }
         }
       </div>
     </div>

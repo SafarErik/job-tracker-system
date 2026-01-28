@@ -1,22 +1,46 @@
-<!-- Application Shell - Tailwind + Spartan UI Only -->
+<!-- Application Shell with Global Premium Background -->
+<div
+  class="min-h-screen w-full bg-zinc-50 dark:bg-zinc-950 transition-colors duration-500 relative overflow-x-hidden text-foreground antialiased font-sans">
 
-<!-- Glass Navigation Header -->
-<app-navbar />
-
-<!-- Main Content -->
-<main class="mx-auto max-w-7xl px-6 lg:px-8 min-h-[calc(100vh-8rem)]">
-  <router-outlet></router-outlet>
-</main>
-
-<!-- Toast Notifications -->
-<app-toast-notification></app-toast-notification>
-
-<!-- Confirm Dialog -->
-<app-confirm-dialog></app-confirm-dialog>
-
-<!-- Footer -->
-<footer class="border-t border-border bg-background py-6">
-  <div class="container mx-auto px-4 text-center text-sm text-muted-foreground">
-    JobTracker © 2026 - Track Your Job Search Journey
+  <!-- Global Decorative Mesh Blobs (Fixed Position) -->
+  <div
+    class="fixed top-[-10%] left-[-10%] h-[800px] w-[800px] rounded-full bg-primary/5 dark:bg-primary/10 blur-[140px] pointer-events-none">
   </div>
-</footer>
+  <div
+    class="fixed bottom-[-10%] right-[-10%] h-[800px] w-[800px] rounded-full bg-blue-500/5 dark:bg-indigo-500/10 blur-[140px] pointer-events-none">
+  </div>
+
+  <div class="relative z-10 flex flex-col min-h-screen">
+    <!-- Glass Navigation Header -->
+    <app-navbar />
+
+    <!-- Main Content -->
+    <main class="flex-grow mx-auto w-full max-w-7xl px-6 lg:px-8 py-8 md:py-12">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Refined Footer -->
+    <footer class="mt-auto border-t border-border/40 bg-background/20 backdrop-blur-md py-10">
+      <div
+        class="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div class="flex flex-col gap-1">
+          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80">JobTracker v2.0</div>
+          <div class="text-xs font-medium text-muted-foreground/60 tracking-wider">CAREER COMMAND CENTER © 2026</div>
+        </div>
+
+        <div class="flex items-center gap-8 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+          <a href="#" class="hover:text-primary transition-colors duration-200">Privacy</a>
+          <a href="#" class="hover:text-primary transition-colors duration-200">Terms</a>
+          <a href="#" class="hover:text-primary transition-colors duration-200">System Status</a>
+          <a href="#" class="hover:text-primary transition-colors duration-200">Support</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notifications -->
+  <app-toast-notification></app-toast-notification>
+
+  <!-- Confirm Dialog -->
+  <app-confirm-dialog></app-confirm-dialog>
+</div>

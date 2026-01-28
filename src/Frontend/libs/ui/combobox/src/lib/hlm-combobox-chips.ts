@@ -6,7 +6,7 @@ import { classes } from '@spartan-ng/helm/utils';
 	selector: '[hlmComboboxChips],hlm-combobox-chips',
 	hostDirectives: [BrnComboboxInputWrapper, BrnComboboxAnchor, BrnComboboxPopoverTrigger],
 	host: {
-		'data-slott': 'combobox-chips',
+		'data-slot': 'combobox-chips',
 	},
 })
 export class HlmComboboxChips {

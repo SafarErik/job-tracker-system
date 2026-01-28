@@ -213,36 +213,35 @@ export class CompanyDetailsComponent implements OnInit {
    * Get status dot color class for timeline
    */
   getStatusDotClass(status: string): string {
-    const dotMap: Record<string, string> = {
-      Applied: 'bg-blue-500',
-      PhoneScreen: 'bg-cyan-500',
-      TechnicalTask: 'bg-yellow-500',
-      Interviewing: 'bg-purple-500',
-      Interview: 'bg-purple-500',
-      Offer: 'bg-green-500',
-      Rejected: 'bg-red-500',
-      Accepted: 'bg-green-600',
-      Ghosted: 'bg-zinc-400',
-    };
-    return dotMap[status] || 'bg-zinc-400';
+    const s = status.toLowerCase();
+    if (s.includes('applied')) return 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.3)]';
+    if (s.includes('phone')) return 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.3)]';
+    if (s.includes('technical')) return 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.3)]';
+    if (s.includes('interview')) return 'bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.3)]';
+    if (s.includes('offer')) return 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]';
+    if (s.includes('accepted')) return 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.3)]';
+    if (s.includes('rejected')) return 'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.3)]';
+    if (s.includes('ghosted')) return 'bg-slate-400 shadow-[0_0_8px_rgba(148,163,184,0.3)]';
+    return 'bg-zinc-400';
   }
 
   /**
    * Get status badge color class for timeline
    */
   getStatusBadgeClass(status: string): string {
-    const badgeMap: Record<string, string> = {
-      Applied: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-      PhoneScreen: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
-      TechnicalTask: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-      Interviewing: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-      Interview: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-      Offer: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-      Rejected: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-      Accepted: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-      Ghosted: 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400',
-    };
-    return badgeMap[status] || 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400';
+    const base = 'px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent transition-all';
+    const s = status.toLowerCase();
+
+    if (s.includes('applied')) return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
+    if (s.includes('phone')) return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
+    if (s.includes('technical')) return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
+    if (s.includes('interview')) return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
+    if (s.includes('offer')) return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+    if (s.includes('accepted')) return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
+    if (s.includes('rejected')) return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
+    if (s.includes('ghosted')) return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+
+    return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400`;
   }
 
   formatDate(date: string | Date): string {

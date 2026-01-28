@@ -8,5 +8,6 @@ public enum JobApplicationStatus
     Offer,
     PhoneScreen,
     Ghosted,
-    TechnicalTask
+    TechnicalTask,
+    Accepted
 }

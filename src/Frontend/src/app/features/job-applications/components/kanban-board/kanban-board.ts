@@ -79,49 +79,56 @@ export class KanbanBoardComponent {
       id: 'applied',
       title: 'Applied',
       status: JobApplicationStatus.Applied,
-      color: 'bg-blue-50 border-blue-200',
+      color: 'border-blue-500/20 bg-blue-500/5',
       applications: [],
     },
     {
       id: 'phone-screen',
       title: 'Phone Screen',
       status: JobApplicationStatus.PhoneScreen,
-      color: 'bg-purple-50 border-purple-200',
+      color: 'border-indigo-500/20 bg-indigo-500/5',
       applications: [],
     },
     {
       id: 'technical-task',
       title: 'Technical Task',
       status: JobApplicationStatus.TechnicalTask,
-      color: 'bg-indigo-50 border-indigo-200',
+      color: 'border-orange-500/20 bg-orange-500/5',
       applications: [],
     },
     {
       id: 'interviewing',
       title: 'Interviewing',
       status: JobApplicationStatus.Interviewing,
-      color: 'bg-yellow-50 border-yellow-200',
+      color: 'border-violet-500/20 bg-violet-500/5',
       applications: [],
     },
     {
       id: 'offer',
       title: 'Offer',
       status: JobApplicationStatus.Offer,
-      color: 'bg-green-50 border-green-200',
+      color: 'border-amber-500/30 bg-amber-500/5',
+      applications: [],
+    },
+    {
+      id: 'accepted',
+      title: 'Accepted',
+      status: JobApplicationStatus.Accepted,
+      color: 'border-emerald-500/20 bg-emerald-500/5',
       applications: [],
     },
     {
       id: 'rejected',
       title: 'Rejected',
       status: JobApplicationStatus.Rejected,
-      color: 'bg-red-50 border-red-200',
+      color: 'border-rose-500/20 bg-rose-500/5',
       applications: [],
     },
     {
       id: 'ghosted',
       title: 'Ghosted',
       status: JobApplicationStatus.Ghosted,
-      color: 'bg-orange-50 border-orange-200',
+      color: 'border-slate-500/20 bg-slate-500/5',
       applications: [],
     },
   ];
@@ -280,13 +287,32 @@ export class KanbanBoardComponent {
       case JobApplicationStatus.Interviewing:
         return 'Interviewing';
       case JobApplicationStatus.Offer:
-        return 'Offer';
+        return 'Offer Received';
+      case JobApplicationStatus.Accepted:
+        return 'Accepted';
       case JobApplicationStatus.Rejected:
         return 'Rejected';
       case JobApplicationStatus.Ghosted:
         return 'Ghosted';
       default:
         return 'Unknown';
+    }
+  }
+
+  /**
+   * Get semantic text color for column headers
+   */
+  getColumnColorClass(status: JobApplicationStatus): string {
+    switch (status) {
+      case JobApplicationStatus.Applied: return 'text-blue-600 dark:text-blue-400';
+      case JobApplicationStatus.PhoneScreen: return 'text-indigo-600 dark:text-indigo-400';
+      case JobApplicationStatus.TechnicalTask: return 'text-orange-600 dark:text-orange-400';
+      case JobApplicationStatus.Interviewing: return 'text-violet-600 dark:text-violet-400';
+      case JobApplicationStatus.Offer: return 'text-amber-600 dark:text-amber-400';
+      case JobApplicationStatus.Accepted: return 'text-emerald-600 dark:text-emerald-400';
+      case JobApplicationStatus.Rejected: return 'text-rose-600 dark:text-rose-400';
+      case JobApplicationStatus.Ghosted: return 'text-slate-600 dark:text-slate-400';
+      default: return 'text-foreground';
     }
   }
 

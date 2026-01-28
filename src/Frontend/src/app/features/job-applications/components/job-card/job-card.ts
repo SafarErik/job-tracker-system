@@ -87,13 +87,17 @@ export class JobCardComponent {
         const status = this.application().status;
         switch (status) {
             case JobApplicationStatus.Applied:
-                return 25;
+                return 15;
             case JobApplicationStatus.PhoneScreen:
+                return 30;
             case JobApplicationStatus.TechnicalTask:
+                return 45;
             case JobApplicationStatus.Interviewing:
-                return 50;
+                return 60;
             case JobApplicationStatus.Offer:
-                return 75;
+                return 80;
+            case JobApplicationStatus.Accepted:
+                return 100;
             case JobApplicationStatus.Rejected:
             case JobApplicationStatus.Ghosted:
                 return 100;
@@ -107,18 +111,23 @@ export class JobCardComponent {
         const status = this.application().status;
         switch (status) {
             case JobApplicationStatus.Applied:
-                return 'bg-blue-500';
+                return 'bg-blue-400';
             case JobApplicationStatus.PhoneScreen:
+                return 'bg-indigo-400';
             case JobApplicationStatus.TechnicalTask:
+                return 'bg-orange-400';
             case JobApplicationStatus.Interviewing:
-                return 'bg-purple-500';
+                return 'bg-violet-400';
             case JobApplicationStatus.Offer:
-                return 'bg-green-500';
+                return 'bg-amber-400';
+            case JobApplicationStatus.Accepted:
+                return 'bg-emerald-400';
             case JobApplicationStatus.Rejected:
+                return 'bg-rose-400';
             case JobApplicationStatus.Ghosted:
-                return 'bg-red-500';
+                return 'bg-slate-400';
             default:
-                return 'bg-gray-400';
+                return 'bg-muted-foreground/30';
         }
     });
 
@@ -127,21 +136,61 @@ export class JobCardComponent {
         const status = this.application().status;
         switch (status) {
             case JobApplicationStatus.Applied:
-                return 'bg-blue-500'; // Blue solid dot
+                return 'bg-blue-400';
             case JobApplicationStatus.PhoneScreen:
+                return 'bg-indigo-400';
             case JobApplicationStatus.TechnicalTask:
+                return 'bg-orange-400';
             case JobApplicationStatus.Interviewing:
-                return 'bg-primary'; // Purple/Indigo dot
+                return 'bg-violet-400';
             case JobApplicationStatus.Offer:
-                return 'bg-success shadow-[0_0_8px_rgba(16,185,129,0.3)]'; // Emerald glow
+                return 'bg-amber-400';
+            case JobApplicationStatus.Accepted:
+                return 'bg-emerald-400';
             case JobApplicationStatus.Rejected:
-                return 'bg-destructive'; // Coral dot
+                return 'bg-rose-400';
             case JobApplicationStatus.Ghosted:
-                return 'bg-warning'; // Yellow dot
+                return 'bg-slate-400';
             default:
                 return 'bg-muted-foreground/30';
         }
     });
+
+    /**
+     * Get consistent tailwind classes for status badges (Pill style)
+     */
+    getStatusClasses(status: JobApplicationStatus): string {
+        const base = 'px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent transition-all duration-300';
+
+        switch (status) {
+            case JobApplicationStatus.Applied:
+                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
+
+            case JobApplicationStatus.PhoneScreen:
+                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
+
+            case JobApplicationStatus.TechnicalTask:
+                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
+
+            case JobApplicationStatus.Interviewing:
+                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
+
+            case JobApplicationStatus.Offer:
+                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+
+            case JobApplicationStatus.Accepted:
+                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
+
+            case JobApplicationStatus.Rejected:
+                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
+
+            case JobApplicationStatus.Ghosted:
+                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+
+            default:
+                return `${base} bg-muted text-muted-foreground`;
+        }
+    }
 
     // Computed: Status label
     statusLabel = computed(() => {
@@ -156,7 +205,9 @@ export class JobCardComponent {
             case JobApplicationStatus.Interviewing:
                 return 'Interviewing';
             case JobApplicationStatus.Offer:
-                return 'Offer';
+                return 'Offer Received';
+            case JobApplicationStatus.Accepted:
+                return 'Accepted';
             case JobApplicationStatus.Rejected:
                 return 'Rejected';
             case JobApplicationStatus.Ghosted:

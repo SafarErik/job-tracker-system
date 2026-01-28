@@ -32,7 +32,7 @@ export class JobDetailModalComponent implements OnInit {
     private readonly router: Router,
     private readonly applicationService: ApplicationService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -74,32 +74,45 @@ export class JobDetailModalComponent implements OnInit {
    * Get CSS class for status badge
    */
   getStatusClass(status: JobApplicationStatus): string {
-    const statusMap: Record<JobApplicationStatus, string> = {
-      [JobApplicationStatus.Applied]: 'status-applied',
-      [JobApplicationStatus.PhoneScreen]: 'status-phonescreen',
-      [JobApplicationStatus.TechnicalTask]: 'status-technical',
-      [JobApplicationStatus.Interviewing]: 'status-interviewing',
-      [JobApplicationStatus.Offer]: 'status-offer',
-      [JobApplicationStatus.Rejected]: 'status-rejected',
-      [JobApplicationStatus.Ghosted]: 'status-ghosted',
-    };
-    return statusMap[status] || 'status-unknown';
+    const base = 'px-2.5 py-0.5 rounded-full text-xs font-semibold border border-transparent transition-all';
+
+    switch (status) {
+      case JobApplicationStatus.Applied:
+        return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
+      case JobApplicationStatus.PhoneScreen:
+        return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
+      case JobApplicationStatus.TechnicalTask:
+        return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
+      case JobApplicationStatus.Interviewing:
+        return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
+      case JobApplicationStatus.Offer:
+        return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+      case JobApplicationStatus.Accepted:
+        return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
+      case JobApplicationStatus.Rejected:
+        return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
+      case JobApplicationStatus.Ghosted:
+        return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+      default:
+        return `${base} bg-muted text-muted-foreground`;
+    }
   }
 
   /**
    * Get human-readable status label
    */
   getStatusLabel(status: JobApplicationStatus): string {
-    const labels: Record<JobApplicationStatus, string> = {
-      [JobApplicationStatus.Applied]: 'Applied',
-      [JobApplicationStatus.PhoneScreen]: 'Phone Screen',
-      [JobApplicationStatus.TechnicalTask]: 'Technical Task',
-      [JobApplicationStatus.Interviewing]: 'Interviewing',
-      [JobApplicationStatus.Offer]: 'Offer',
-      [JobApplicationStatus.Rejected]: 'Rejected',
-      [JobApplicationStatus.Ghosted]: 'Ghosted',
-    };
-    return labels[status] || String(status);
+    switch (status) {
+      case JobApplicationStatus.Applied: return 'Applied';
+      case JobApplicationStatus.PhoneScreen: return 'Phone Screen';
+      case JobApplicationStatus.TechnicalTask: return 'Technical Task';
+      case JobApplicationStatus.Interviewing: return 'Interviewing';
+      case JobApplicationStatus.Offer: return 'Offer Received';
+      case JobApplicationStatus.Accepted: return 'Accepted';
+      case JobApplicationStatus.Rejected: return 'Rejected';
+      case JobApplicationStatus.Ghosted: return 'Ghosted';
+      default: return 'Unknown';
+    }
   }
 
   /**

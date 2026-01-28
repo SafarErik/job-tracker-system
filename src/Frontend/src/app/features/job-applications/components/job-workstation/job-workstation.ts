@@ -70,7 +70,8 @@ export class JobWorkstationComponent implements OnInit {
         { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
         { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
         { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
-        { value: JobApplicationStatus.Offer, label: 'Offer' },
+        { value: JobApplicationStatus.Offer, label: 'Offer Received' },
+        { value: JobApplicationStatus.Accepted, label: 'Accepted' },
         { value: JobApplicationStatus.Rejected, label: 'Rejected' },
         { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
     ];
@@ -231,16 +232,27 @@ export class JobWorkstationComponent implements OnInit {
     }
 
     getStatusClass(status: JobApplicationStatus): string {
-        const classes: Record<number, string> = {
-            [JobApplicationStatus.Applied]: 'bg-blue-500/20 text-blue-400',
-            [JobApplicationStatus.PhoneScreen]: 'bg-purple-500/20 text-purple-400',
-            [JobApplicationStatus.TechnicalTask]: 'bg-orange-500/20 text-orange-400',
-            [JobApplicationStatus.Interviewing]: 'bg-cyan-500/20 text-cyan-400',
-            [JobApplicationStatus.Offer]: 'bg-green-500/20 text-green-400',
-            [JobApplicationStatus.Rejected]: 'bg-red-500/20 text-red-400',
-            [JobApplicationStatus.Ghosted]: 'bg-slate-500/20 text-slate-400',
-        };
-        return classes[status] || 'bg-slate-500/20 text-slate-400';
+        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
+        switch (status) {
+            case JobApplicationStatus.Applied:
+                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+            case JobApplicationStatus.PhoneScreen:
+                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20`;
+            case JobApplicationStatus.TechnicalTask:
+                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20`;
+            case JobApplicationStatus.Interviewing:
+                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20`;
+            case JobApplicationStatus.Offer:
+                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30`;
+            case JobApplicationStatus.Accepted:
+                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`;
+            case JobApplicationStatus.Rejected:
+                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+            case JobApplicationStatus.Ghosted:
+                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
+            default:
+                return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700`;
+        }
     }
 
     // Job Context - AI Analysis

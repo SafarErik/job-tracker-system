@@ -6,4 +6,5 @@ export enum JobApplicationStatus {
   PhoneScreen = 4,
   Ghosted = 5,
   TechnicalTask = 6,
+  Accepted = 7,
 }

@@ -23,75 +23,110 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
 
-        <!-- Company Input -->
-        <hlm-autocomplete class="w-full relative z-20" [itemToString]="companyToString"
-            (valueChange)="onCompanySelected($event)">
+        <!-- Company Input (Combobox) -->
+        <div class="space-y-2 relative z-20">
             <label hlmLabel
-                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 mb-2 block">Company</label>
-            <input hlmInput brnAutocompleteInput brnAutocompleteAnchor [formControlName]="'companyName'"
-                placeholder="e.g. Google"
-                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
-                [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"
-                (input)="onCompanyInput($event)" (focus)="onCompanyFocus()" />
+                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Company</label>
+            <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
+                <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
+                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50 hlm-input-group"
+                    [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
+
+                <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
+                    <hlm-combobox-empty>No companies found.</hlm-combobox-empty>
+                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto">
+                        @for(company of companies(); track company.id) {
+                        <hlm-combobox-item [value]="company">
+                            {{ company.name }}
+                        </hlm-combobox-item>
+                        }
+                        @if(form.get('companyName')?.value && companies().length === 0) {
+                        <hlm-combobox-item [value]="form.get('companyName')?.value">
+                            <span class="text-primary italic">+ Create "{{ form.get('companyName')?.value }}"</span>
+                        </hlm-combobox-item>
+                        }
+                    </div>
+                </div>
+            </hlm-combobox>
             @if (form.get('companyName')?.invalid && form.get('companyName')?.touched) {
             <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Company name is
-                required
-            </p>
+                required</p>
             }
+        </div>
 
-            <div *brnPopoverContent hlmAutocompleteContent>
-                <div hlmAutocompleteList>
-                    @for(company of filteredCompanies(); track company.id) {
-                    <hlm-autocomplete-item [value]="company">
-                        {{ company.name }}
-                    </hlm-autocomplete-item>
-                    }
-                    @if(form.get('companyName')?.value && filteredCompanies().length === 0) {
-                    <!-- We pass the current input string as value -->
-                    <hlm-autocomplete-item [value]="form.get('companyName')?.value">
-                        <span class="text-primary italic">+ Create "{{ form.get('companyName')?.value }}"</span>
-                    </hlm-autocomplete-item>
-                    }
-                </div>
-            </div>
-        </hlm-autocomplete>
-
-        <!-- Position Input -->
-        <hlm-autocomplete class="w-full relative z-10" (valueChange)="onPositionSelected($event)">
+        <!-- Position Input (Combobox) -->
+        <div class="space-y-2 relative z-10">
             <label hlmLabel
-                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 mb-2 block">Position</label>
-            <input hlmInput brnAutocompleteInput brnAutocompleteAnchor [formControlName]="'position'"
-                placeholder="e.g. Senior Frontend Engineer"
-                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
-                [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"
-                (input)="onPositionInput($event)" (focus)="onPositionFocus()" />
+                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Position</label>
+            <hlm-combobox (valueChange)="onPositionSelected($event)">
+                <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend Engineer"
+                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50 hlm-input-group"
+                    [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
+
+                <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
+                    <hlm-combobox-empty>No recent positions found.</hlm-combobox-empty>
+                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto">
+                        @if (recentPositions().length > 0) {
+                        <div
+                            class="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold bg-muted/10 my-1 rounded-sm">
+                            Recent Positions</div>
+                        @for(pos of recentPositions(); track pos) {
+                        <hlm-combobox-item [value]="pos">
+                            {{ pos }}
+                        </hlm-combobox-item>
+                        }
+                        }
+                    </div>
+                </div>
+            </hlm-combobox>
             @if (form.get('position')?.invalid && form.get('position')?.touched) {
             <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Position is
                 required</p>
             }
+        </div>
 
-            <div *brnPopoverContent hlmAutocompleteContent>
-                <div hlmAutocompleteList>
-                    @if (filteredPositions().length > 0) {
-                    <div
-                        class="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold bg-muted/10 my-1 rounded-sm">
-                        Recent Positions</div>
-                    @for(pos of filteredPositions(); track pos) {
-                    <hlm-autocomplete-item [value]="pos">
-                        {{ pos }}
-                    </hlm-autocomplete-item>
-                    }
-                    }
-                </div>
-            </div>
-        </hlm-autocomplete>
-
-        <!-- Job URL (Hidden or Optional - populated via paste or manual) -->
+        <!-- Job URL -->
         <div class="space-y-2">
             <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Job Link
                 <span class="normal-case opacity-50">(Optional)</span></label>
             <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
                 class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50" />
+        </div>
+
+        <!-- Resume Upload Zone -->
+        <div class="space-y-2">
+            <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Resume / CV
+                <span class="normal-case opacity-50">(Recommended)</span></label>
+
+            <div (click)="fileInput.click()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
+                (drop)="onFileDropped($event)" [class.border-primary]="isDragging()" [class.bg-primary/5]="isDragging()"
+                [class.border-muted-foreground/20]="!isDragging()"
+                class="relative h-32 w-full rounded-xl border-2 border-dashed transition-all cursor-pointer hover:border-primary/50 hover:bg-muted/30 flex flex-col items-center justify-center gap-2 group">
+                <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)"
+                    accept=".pdf,.doc,.docx" />
+
+                @if (selectedFile()) {
+                <div
+                    class="flex items-center gap-3 bg-card p-3 rounded-lg shadow-sm border border-border animate-in fade-in zoom-in duration-200">
+                    <ng-icon name="lucideFileText" class="text-primary text-xl"></ng-icon>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-sm font-medium truncate max-w-[200px]">{{ selectedFile()?.name }}</span>
+                        <span class="text-[10px] text-muted-foreground">{{ (selectedFile()?.size || 0) / 1024 |
+                            number:'1.0-1' }} KB</span>
+                    </div>
+                    <button (click)="removeFile($event)" class="ml-2 p-1 hover:bg-muted rounded-full transition-colors">
+                        <ng-icon name="lucideX" class="text-muted-foreground"></ng-icon>
+                    </button>
+                </div>
+                } @else {
+                <div
+                    class="flex flex-col items-center gap-1 text-muted-foreground group-hover:text-primary transition-colors">
+                    <ng-icon name="lucideUploadCloud" class="text-3xl mb-1"></ng-icon>
+                    <span class="text-sm font-medium">Drop your resume here</span>
+                    <span class="text-xs opacity-60">or click to browse PDF, Word</span>
+                </div>
+                }
+            </div>
         </div>
 
         <!-- Save Button - Primary Action -->

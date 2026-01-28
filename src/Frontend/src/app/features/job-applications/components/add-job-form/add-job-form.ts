@@ -15,13 +15,12 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete';
-import { BrnAutocompleteInput, BrnAutocompleteAnchor } from '@spartan-ng/brain/autocomplete';
+import { HlmComboboxImports } from '@spartan-ng/helm/combobox';
 import { BrnPopoverContent } from '@spartan-ng/brain/popover';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideArrowLeft, lucideClipboard } from '@ng-icons/lucide';
+import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lucideX } from '@ng-icons/lucide';
 
 @Component({
     selector: 'app-add-job-form',
@@ -34,13 +33,11 @@ import { lucideArrowLeft, lucideClipboard } from '@ng-icons/lucide';
         ...HlmInputImports,
         ...HlmLabelImports,
         ...HlmButtonImports,
-        ...HlmAutocompleteImports,
-        BrnAutocompleteInput,
-        BrnAutocompleteAnchor,
+        ...HlmComboboxImports,
         BrnPopoverContent,
     ],
     providers: [
-        provideIcons({ lucideArrowLeft, lucideClipboard })
+        provideIcons({ lucideArrowLeft, lucideClipboard, lucideUploadCloud })
     ],
     templateUrl: './add-job-form.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +46,10 @@ export class AddJobFormComponent {
     form: FormGroup;
     isSubmitting = signal(false);
     isLoadingData = signal(false);
+
+    // File Upload State
+    selectedFile = signal<File | null>(null);
+    isDragging = signal(false);
 
     // Data Sources
     companies = signal<any[]>([]);
@@ -183,6 +184,60 @@ export class AddJobFormComponent {
             console.error('Failed to read clipboard', err);
             // Fallback or specific error handling
         }
+    }
+
+    // --- File Handling Logic ---
+
+    onFileSelected(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.handleFile(input.files[0]);
+        }
+    }
+
+    onFileDropped(event: DragEvent) {
+        event.preventDefault();
+        this.isDragging.set(false);
+        if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+            this.handleFile(event.dataTransfer.files[0]);
+        }
+    }
+
+    onDragOver(event: DragEvent) {
+        event.preventDefault();
+        this.isDragging.set(true);
+    }
+
+    onDragLeave() {
+        this.isDragging.set(false);
+    }
+
+    private handleFile(file: File) {
+        // Validate file type (PDF, DOCX, etc.)
+        const allowedTypes = [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            this.notificationService.error('Invalid file type. Please upload PDF or Word document.', 'Error');
+            return;
+        }
+
+        // Validate size (e.g., 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            this.notificationService.error('File too large. Max size is 5MB.', 'Error');
+            return;
+        }
+
+        this.selectedFile.set(file);
+        this.notificationService.success(`File "${file.name}" ready to upload.`, 'File Selected');
+    }
+
+    removeFile(event?: Event) {
+        event?.stopPropagation();
+        this.selectedFile.set(null);
     }
 
     onSubmit() {

@@ -13,14 +13,12 @@
          - shrink-0 (Never shrink below 320px).
          - Subtle background for visual grouping
       -->
-    <div class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/50 p-2">
+    <div class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/40 p-2 border-t-2" [class]="column.color">
 
       <!-- Header - Large confident text -->
       <div class="flex items-center justify-between px-2 pt-2">
-        <h3 class="font-semibold text-lg tracking-tight flex items-center gap-2"
-          [class.text-foreground]="column.status !== Status.Interviewing && column.status !== Status.Offer && column.status !== Status.PhoneScreen && column.status !== Status.TechnicalTask"
-          [class.text-primary]="column.status === Status.Interviewing || column.status === Status.PhoneScreen || column.status === Status.TechnicalTask"
-          [class.text-accent]="column.status === Status.Offer">
+        <h3 class="font-bold text-base tracking-tight flex items-center gap-2 uppercase opacity-90"
+          [class]="getColumnColorClass(column.status)">
           {{ column.title }}
           <span
             class="flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">

@@ -21,22 +21,35 @@ import { authGuard, guestGuard } from './core/auth';
 
 export const routes: Routes = [
   // ============================================
-  // PUBLIC ROUTES (Guest only - redirect if logged in)
+  // PROTECTED ROOT (Dashboard)
+  // ============================================
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
+    canActivate: [authGuard],
+    pathMatch: 'full',
+    title: 'Applications - JobTracker',
+  },
+
+  // ============================================
+  // GUEST ROUTES (Login, Register, etc.)
   // ============================================
   {
     path: '',
     loadComponent: () =>
       import('./features/auth/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
-    canActivate: [guestGuard],
     children: [
       {
         path: 'login',
+        canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
         title: 'Login - JobTracker',
       },
       {
         path: 'register',
+        canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/auth/components/register/register.component').then(
             (m) => m.RegisterComponent,
@@ -52,19 +65,6 @@ export const routes: Routes = [
         title: 'Signing In... - JobTracker',
       },
     ],
-  },
-
-  // ============================================
-  // PROTECTED ROUTES (Requires authentication)
-  // ============================================
-
-  // Job Applications (Dashboard/Home)
-  {
-    path: '',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
-    canActivate: [authGuard],
-    title: 'Applications - JobTracker',
   },
   {
     path: 'new',

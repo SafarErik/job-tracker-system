@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+
 /**
  * Calendar Day Interface
  * Represents a single day in the calendar with its applications
@@ -32,9 +36,8 @@ interface CalendarDay {
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './calendar-view.html',
-  styleUrl: './calendar-view.css',
 })
 export class CalendarViewComponent implements OnChanges {
   /**

@@ -6,12 +6,16 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
+
 @Component({
   selector: 'app-job-detail-modal',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ...HlmButtonImports, ...HlmCardImports, ...HlmBadgeImports],
   templateUrl: './job-detail-modal.html',
-  styleUrl: './job-detail-modal.css',
 })
 export class JobDetailModalComponent implements OnInit {
   // Signals

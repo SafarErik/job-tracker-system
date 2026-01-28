@@ -1,26 +1,30 @@
 <!-- Background Overlay - Dark with blur -->
 <button
   type="button"
-  class="modal-overlay"
+  class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
   (click)="closeModal()"
   aria-label="Close modal"
 ></button>
 
 <!-- Modal Container -->
-<div class="modal-container">
+<div
+  hlmCard
+  class="fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+>
   <!-- Header with gradient background -->
-  <div class="modal-header">
-    <div class="header-background"></div>
-
+  <div hlmCardHeader class="relative bg-gradient-to-r from-primary/10 to-primary/5 pb-6">
     <!-- Close Button (top right) -->
     <button
+      hlmBtn
+      variant="ghost"
+      size="icon"
       type="button"
-      class="close-button"
+      class="absolute right-4 top-4 h-8 w-8"
       (click)="closeModal()"
       aria-label="Close modal"
       title="Close"
     >
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -31,14 +35,33 @@
     </button>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading()" class="loading-container">
-      <div class="spinner"></div>
-      <p>Loading application details...</p>
+    <div *ngIf="isLoading()" class="flex flex-col items-center justify-center py-8">
+      <svg
+        class="h-8 w-8 animate-spin text-primary"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      <p class="mt-3 text-muted-foreground">Loading application details...</p>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error() && !isLoading()" class="error-container">
-      <svg class="error-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div *ngIf="error() && !isLoading()" class="flex flex-col items-center justify-center py-8">
+      <svg class="h-12 w-12 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -46,33 +69,37 @@
           d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <p>{{ error() }}</p>
-      <button type="button" class="btn-primary" (click)="closeModal()">Go Back</button>
+      <p class="mt-3 text-destructive">{{ error() }}</p>
+      <button hlmBtn type="button" class="mt-4" (click)="closeModal()">Go Back</button>
     </div>
 
     <!-- Header Content -->
-    <div *ngIf="application() && !isLoading()" class="header-content">
-      <div class="header-main">
-        <h1 class="position-title">{{ application()!.position }}</h1>
-        <p class="company-name">{{ application()!.companyName }}</p>
+    <div *ngIf="application() && !isLoading()" class="flex items-start justify-between gap-4 pr-12">
+      <div>
+        <h1 hlmCardTitle class="text-xl font-bold">{{ application()!.position }}</h1>
+        <p hlmCardDescription class="mt-1">{{ application()!.companyName }}</p>
       </div>
-      <span [ngClass]="getStatusClass(application()!.status)" class="status-badge">
+      <span [ngClass]="getStatusClass(application()!.status)" hlmBadge>
         {{ getStatusLabel(application()!.status) }}
       </span>
     </div>
   </div>
 
   <!-- Modal Content -->
-  <div class="modal-content" *ngIf="application() && !isLoading()">
+  <div
+    hlmCardContent
+    class="max-h-[60vh] space-y-6 overflow-y-auto"
+    *ngIf="application() && !isLoading()"
+  >
     <!-- Main Info Section -->
-    <div class="content-section">
-      <h2 class="section-title">Application Details</h2>
+    <div>
+      <h2 class="mb-4 text-lg font-semibold text-foreground">Application Details</h2>
 
-      <div class="details-grid">
+      <div class="space-y-4">
         <!-- Applied Date -->
-        <div class="detail-item">
-          <div class="detail-label">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-start gap-3">
+          <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -82,16 +109,18 @@
             </svg>
             Applied
           </div>
-          <div class="detail-value">
-            <p class="date-primary">{{ formatDate(application()!.appliedAt) }}</p>
-            <p class="date-secondary">{{ formatTimeAgo(application()!.appliedAt) }}</p>
+          <div class="flex-1">
+            <p class="font-medium text-foreground">{{ formatDate(application()!.appliedAt) }}</p>
+            <p class="text-sm text-muted-foreground">
+              {{ formatTimeAgo(application()!.appliedAt) }}
+            </p>
           </div>
         </div>
 
         <!-- Job URL -->
-        <div class="detail-item" *ngIf="application()!.jobUrl">
-          <div class="detail-label">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-start gap-3" *ngIf="application()!.jobUrl">
+          <div class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -101,15 +130,15 @@
             </svg>
             Job Posting
           </div>
-          <div class="detail-value">
+          <div class="flex-1">
             <a
               [href]="application()!.jobUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="url-link"
+              class="inline-flex items-center gap-1 text-primary hover:underline"
             >
               View Posting
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -127,10 +156,12 @@
     </div>
 
     <!-- Description/Notes Section -->
-    <div class="content-section" *ngIf="application()!.description">
-      <h2 class="section-title">Notes</h2>
-      <div class="notes-container">
-        <p class="notes-text">{{ application()!.description }}</p>
+    <div *ngIf="application()!.description">
+      <h2 class="mb-4 text-lg font-semibold text-foreground">Notes</h2>
+      <div class="rounded-lg bg-muted p-4">
+        <p class="whitespace-pre-line text-sm text-muted-foreground">
+          {{ application()!.description }}
+        </p>
       </div>
     </div>
 
@@ -139,12 +170,16 @@
   </div>
 
   <!-- Footer with Action Buttons -->
-  <div class="modal-footer" *ngIf="application() && !isLoading()">
-    <button type="button" class="btn-secondary" (click)="closeModal()">Close</button>
+  <div
+    hlmCardFooter
+    class="flex items-center justify-between gap-4 border-t border-border pt-4"
+    *ngIf="application() && !isLoading()"
+  >
+    <button hlmBtn variant="outline" type="button" (click)="closeModal()">Close</button>
 
-    <div class="action-buttons">
-      <a [routerLink]="['/edit', application()!.id]" class="btn-primary">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-center gap-2">
+      <a hlmBtn [routerLink]="['/edit', application()!.id]" class="inline-flex items-center gap-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -155,8 +190,14 @@
         Edit
       </a>
 
-      <button type="button" class="btn-danger" (click)="deleteApplication()">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button
+        hlmBtn
+        variant="destructive"
+        type="button"
+        class="inline-flex items-center gap-2"
+        (click)="deleteApplication()"
+      >
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"

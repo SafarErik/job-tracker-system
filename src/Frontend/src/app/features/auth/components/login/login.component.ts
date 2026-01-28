@@ -23,10 +23,19 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })

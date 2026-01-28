@@ -6,6 +6,10 @@ import {
   NotificationMessage,
 } from '../../../core/services/notification.service';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+
 /**
  * ToastNotification Component
  *
@@ -21,9 +25,8 @@ import {
 @Component({
   selector: 'app-toast-notification',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './toast-notification.html',
-  styleUrl: './toast-notification.css',
 })
 export class ToastNotificationComponent implements OnInit, OnDestroy {
   /**
@@ -79,21 +82,20 @@ export class ToastNotificationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get CSS classes for notification type
+   * Get Tailwind classes for notification type
    */
   getNotificationClasses(type: string): string {
-    const baseClasses = 'toast-item';
     switch (type) {
       case 'success':
-        return `${baseClasses} toast-success`;
+        return 'border-l-4 border-l-green-500';
       case 'error':
-        return `${baseClasses} toast-error`;
+        return 'border-l-4 border-l-destructive';
       case 'warning':
-        return `${baseClasses} toast-warning`;
+        return 'border-l-4 border-l-yellow-500';
       case 'info':
-        return `${baseClasses} toast-info`;
+        return 'border-l-4 border-l-primary';
       default:
-        return baseClasses;
+        return '';
     }
   }
 

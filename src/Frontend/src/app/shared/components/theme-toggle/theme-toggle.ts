@@ -2,6 +2,9 @@ import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ThemeService, ThemeMode } from '../../../core/services/theme.service';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+
 /**
  * Theme Toggle Component
  *
@@ -18,9 +21,8 @@ import { ThemeService, ThemeMode } from '../../../core/services/theme.service';
  */
 @Component({
   selector: 'app-theme-toggle',
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports],
   templateUrl: './theme-toggle.html',
-  styleUrl: './theme-toggle.css',
   standalone: true,
 })
 export class ThemeToggleComponent {

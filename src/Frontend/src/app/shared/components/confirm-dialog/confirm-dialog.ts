@@ -1,6 +1,10 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+
 /**
  * ConfirmDialog Component
  *
@@ -16,9 +20,8 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './confirm-dialog.html',
-  styleUrl: './confirm-dialog.css',
 })
 export class ConfirmDialogComponent {
   /**
@@ -33,7 +36,7 @@ export class ConfirmDialogComponent {
   message = 'Are you sure you want to proceed?';
   confirmText = 'OK';
   cancelText = 'Cancel';
-  confirmButtonClass = 'btn-danger'; // 'btn-danger' or 'btn-primary'
+  isDestructive = true; // Controls button variant
 
   /**
    * Promise resolver for async confirmation
@@ -66,7 +69,7 @@ export class ConfirmDialogComponent {
     this.message = config.message;
     this.confirmText = config.confirmText || 'OK';
     this.cancelText = config.cancelText || 'Cancel';
-    this.confirmButtonClass = config.isDangerous ? 'btn-danger' : 'btn-primary';
+    this.isDestructive = config.isDangerous ?? true;
     this.isVisible = true;
 
     // Focus dialog after it renders

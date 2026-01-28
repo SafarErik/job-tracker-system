@@ -29,10 +29,19 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
 })
@@ -100,13 +109,13 @@ export class RegisterComponent {
     return valid
       ? null
       : {
-        passwordStrength: {
-          hasUppercase,
-          hasLowercase,
-          hasDigit,
-          hasSpecial,
-        },
-      };
+          passwordStrength: {
+            hasUppercase,
+            hasLowercase,
+            hasDigit,
+            hasSpecial,
+          },
+        };
   }
 
   /**

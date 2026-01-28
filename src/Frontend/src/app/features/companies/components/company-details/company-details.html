@@ -1,27 +1,42 @@
-<div class="company-details-container">
+<div class="container mx-auto px-4 py-8 min-h-screen">
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner-modern"></div>
-      <p class="loading-text">Loading company intelligence...</p>
+    <div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
+      <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+          fill="none"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      <p>Loading company intelligence...</p>
     </div>
   }
 
   <!-- Error State -->
   @if (error()) {
-    <div class="error-state">
-      <div class="error-icon">⚠️</div>
-      <p class="error-text">{{ error() }}</p>
-      <button (click)="goBack()" class="btn-primary">Go Back</button>
+    <div class="flex flex-col items-center justify-center py-16 gap-4">
+      <span class="text-4xl">⚠️</span>
+      <p class="text-destructive">{{ error() }}</p>
+      <button hlmBtn (click)="goBack()">Go Back</button>
     </div>
   }
 
   <!-- Company Intelligence Hub -->
   @if (companyDetails() && !isLoading() && !error()) {
     <!-- Header Bar -->
-    <div class="header-bar">
-      <button (click)="goBack()" class="btn-back">
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <button hlmBtn variant="ghost" (click)="goBack()" class="gap-2 self-start">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -31,9 +46,11 @@
         </svg>
         Back to Companies
       </button>
-      <div class="header-actions">
-        <button (click)="editCompany()" class="btn-secondary">✏️ Edit</button>
-        <button (click)="deleteCompany()" class="btn-danger">🗑️ Delete</button>
+      <div class="flex items-center gap-2">
+        <button hlmBtn variant="outline" (click)="editCompany()" class="gap-2">✏️ Edit</button>
+        <button hlmBtn variant="destructive" (click)="deleteCompany()" class="gap-2">
+          🗑️ Delete
+        </button>
       </div>
     </div>
 
@@ -42,7 +59,7 @@
       <!-- Column 1: Profile -->
       <div class="space-y-6">
         <!-- Logo & Company Info -->
-        <div class="bento-card">
+        <section hlmCard class="p-6">
           <div class="flex flex-col items-center text-center space-y-4">
             <!-- Logo -->
             <div
@@ -65,9 +82,7 @@
 
             <!-- Industry Badge -->
             @if (companyDetails()!.industry) {
-              <span
-                class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary border border-primary/20"
-              >
+              <span hlmBadge variant="outline" class="text-primary border-primary/20 bg-primary/10">
                 {{ companyDetails()!.industry }}
               </span>
             }
@@ -92,11 +107,11 @@
               </a>
             }
           </div>
-        </div>
+        </section>
 
         <!-- Tech Stack -->
-        <div class="bento-card">
-          <h2 class="card-title flex items-center gap-2 mb-4">
+        <section hlmCard class="p-6">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -110,9 +125,7 @@
           <div class="flex flex-wrap gap-2">
             @if (companyDetails()!.techStack?.length) {
               @for (tech of companyDetails()!.techStack; track tech) {
-                <span
-                  class="inline-flex items-center rounded-full bg-muted px-3 py-1.5 text-xs font-medium border"
-                >
+                <span hlmBadge variant="secondary">
                   {{ tech }}
                 </span>
               }
@@ -120,11 +133,13 @@
               <p class="text-sm text-muted-foreground">No tech stack info yet</p>
             }
           </div>
-        </div>
+        </section>
 
         <!-- Stats -->
-        <div class="bento-card">
-          <h2 class="card-title mb-4">📊 Stats</h2>
+        <section hlmCard class="p-6">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
+            📊 Stats
+          </h2>
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col items-center justify-center p-4 bg-muted rounded-lg">
               <span class="text-3xl font-bold text-primary">{{
@@ -139,14 +154,14 @@
               <span class="text-xs text-muted-foreground mt-1">Success Rate</span>
             </div>
           </div>
-        </div>
+        </section>
       </div>
 
       <!-- Column 2: Context (Wide - People + Timeline) -->
       <div class="lg:col-span-1 space-y-6">
         <!-- People / HR Contacts -->
-        <div class="bento-card">
-          <h2 class="card-title flex items-center gap-2 mb-4">
+        <section hlmCard class="p-6">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -218,11 +233,11 @@
           } @else {
             <p class="text-sm text-muted-foreground">No contacts added yet</p>
           }
-        </div>
+        </section>
 
         <!-- Application Timeline -->
-        <div class="bento-card">
-          <h2 class="card-title flex items-center gap-2 mb-4">
+        <section hlmCard class="p-6">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -240,7 +255,7 @@
               @for (app of companyDetails()!.applicationHistory; track app.id) {
                 <button
                   type="button"
-                  class="w-full flex items-center gap-3 p-3 rounded-lg bg-muted border hover:bg-accent transition-colors text-left"
+                  class="w-full flex items-center gap-3 p-3 rounded-lg bg-muted border border-border hover:bg-accent transition-colors text-left"
                   (click)="viewApplication(app.id)"
                 >
                   <div
@@ -263,14 +278,14 @@
               }
             </div>
           }
-        </div>
+        </section>
       </div>
 
       <!-- Column 3: Intel (News + Strategy Notes) -->
       <div class="space-y-6">
         <!-- Recent News -->
-        <div class="bento-card">
-          <h2 class="card-title flex items-center gap-2 mb-4">
+        <section hlmCard class="p-6">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -283,14 +298,29 @@
           </h2>
           @if (newsLoading()) {
             <div class="flex items-center justify-center py-8">
-              <div class="spinner-sm"></div>
+              <svg class="h-6 w-6 animate-spin text-primary" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  fill="none"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
             </div>
           } @else if (companyNews().length === 0) {
             <p class="text-sm text-muted-foreground">No recent news found</p>
           } @else {
             <div class="space-y-3">
               @for (news of companyNews(); track news.id) {
-                <div class="p-3 rounded-lg bg-muted border">
+                <div class="p-3 rounded-lg bg-muted border border-border">
                   <div class="text-sm font-medium text-foreground mb-1 line-clamp-2">
                     {{ news.title }}
                   </div>
@@ -302,11 +332,11 @@
               }
             </div>
           }
-        </div>
+        </section>
 
         <!-- Strategy Notes -->
-        <div class="bento-card flex flex-col h-[400px]">
-          <h2 class="card-title flex items-center gap-2 mb-4">
+        <section hlmCard class="p-6 flex flex-col h-[400px]">
+          <h2 class="flex items-center gap-2 text-lg font-semibold text-foreground mb-4">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
@@ -318,12 +348,13 @@
             Strategy Notes
           </h2>
           <textarea
-            class="flex-1 w-full bg-muted border rounded-lg px-4 py-3 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+            hlmInput
+            class="flex-1 w-full resize-none"
             placeholder="Strategy notes, talking points, questions to ask, negotiation tactics..."
             [value]="companyNotes()"
             (input)="updateNotes($any($event.target).value)"
           ></textarea>
-        </div>
+        </section>
       </div>
     </div>
   }

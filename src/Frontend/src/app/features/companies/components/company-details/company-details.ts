@@ -5,13 +5,22 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyDetail, CompanyNews } from '../../models/company.model';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
+import { HlmInputImports } from '@spartan-ng/helm/input';
 
 @Component({
   selector: 'app-company-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    ...HlmButtonImports,
+    ...HlmCardImports,
+    ...HlmBadgeImports,
+    ...HlmInputImports,
+  ],
   templateUrl: './company-details.html',
-  styleUrl: './company-details.css',
 })
 export class CompanyDetailsComponent implements OnInit {
   // Core signals

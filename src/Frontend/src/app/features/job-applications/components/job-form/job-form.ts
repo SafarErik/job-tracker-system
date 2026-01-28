@@ -23,6 +23,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 
 /**
  * JobFormComponent - Dual-purpose form for creating and editing job applications
@@ -47,7 +48,15 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
  */
 @Component({
   selector: 'app-job-form',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+  ],
   templateUrl: './job-form.html',
   styleUrl: './job-form.css',
 })
@@ -590,11 +599,14 @@ Warm regards,
     const content = this.coverLetterDraft();
     if (!content) return;
 
-    navigator.clipboard.writeText(content).then(() => {
-      this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
-    }).catch(() => {
-      this.notificationService.error('Failed to copy to clipboard', 'Error');
-    });
+    navigator.clipboard
+      .writeText(content)
+      .then(() => {
+        this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
+      })
+      .catch(() => {
+        this.notificationService.error('Failed to copy to clipboard', 'Error');
+      });
   }
 
   saveAsPdf(): void {
@@ -610,4 +622,3 @@ Warm regards,
     );
   }
 }
-

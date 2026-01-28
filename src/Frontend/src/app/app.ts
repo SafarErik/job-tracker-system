@@ -21,7 +21,11 @@ import {
   ConfirmDialogComponent,
   ThemeToggleComponent,
 } from './shared/components';
-import { ClickOutsideDirective } from './shared/directives';
+
+// Spartan UI Components
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 
 @Component({
   selector: 'app-root',
@@ -33,10 +37,12 @@ import { ClickOutsideDirective } from './shared/directives';
     ToastNotificationComponent,
     ConfirmDialogComponent,
     ThemeToggleComponent,
-    ClickOutsideDirective,
+    // Spartan UI
+    ...HlmButtonImports,
+    ...HlmSeparatorImports,
+    ...HlmDropdownMenuImports,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App implements AfterViewInit {
   protected readonly title = signal('job-tracker-client');

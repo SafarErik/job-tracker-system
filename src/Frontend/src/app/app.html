@@ -1,35 +1,33 @@
-<!--
-  ============================================================================
-  APPLICATION SHELL TEMPLATE
-  ============================================================================
-  
-  Contains:
-  - Navigation header with conditional auth UI
-  - Main content area with router outlet
-  - Global notification components
-  - Footer
--->
+<!-- Application Shell - Tailwind + Spartan UI Only -->
 
-<!-- Modern Navigation Header -->
-<header class="modern-nav">
-  <nav class="nav-container">
-    <div class="nav-content">
-      <!-- Logo with gradient -->
-      <a routerLink="/" class="logo-link">
-        <div class="logo-icon">🎯</div>
-        <span class="logo-text">JobTracker</span>
+<!-- Navigation Header -->
+<header
+  class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+>
+  <nav class="container mx-auto px-4">
+    <div class="flex h-16 items-center justify-between">
+      <!-- Logo -->
+      <a
+        routerLink="/"
+        class="flex items-center gap-2 font-semibold text-foreground hover:opacity-80 transition-opacity"
+      >
+        <span class="text-2xl">🎯</span>
+        <span class="text-xl font-bold tracking-tight">JobTracker</span>
       </a>
 
       <!-- Navigation Links - Only show when authenticated -->
-      <div class="nav-links">
+      <div class="flex items-center gap-1">
         @if (isAuthenticated()) {
           <a
             routerLink="/"
-            routerLinkActive="nav-link-active"
+            routerLinkActive="bg-secondary text-foreground"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="nav-link"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="gap-2"
           >
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -37,11 +35,18 @@
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
               />
             </svg>
-            <span>Applications</span>
+            <span class="hidden sm:inline">Applications</span>
           </a>
 
-          <a routerLink="/companies" routerLinkActive="nav-link-active" class="nav-link">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a
+            routerLink="/companies"
+            routerLinkActive="bg-secondary text-foreground"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="gap-2"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -49,11 +54,18 @@
                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
               />
             </svg>
-            <span>Companies</span>
+            <span class="hidden sm:inline">Companies</span>
           </a>
 
-          <a routerLink="/documents" routerLinkActive="nav-link-active" class="nav-link">
-            <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a
+            routerLink="/documents"
+            routerLinkActive="bg-secondary text-foreground"
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="gap-2"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -61,48 +73,61 @@
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <span>Documents</span>
+            <span class="hidden sm:inline">Documents</span>
           </a>
+
+          <!-- Separator -->
+          <div hlmSeparator orientation="vertical" class="mx-2 h-6"></div>
         }
 
-        <!-- Theme Toggle Component -->
+        <!-- Theme Toggle -->
         <app-theme-toggle></app-theme-toggle>
 
         <!-- User Menu (Authenticated) -->
         @if (isAuthenticated()) {
-          <div class="user-menu-container" (clickOutside)="closeUserMenu()">
-            <button class="user-menu-trigger" (click)="toggleUserMenu()">
-              @if (currentUser()?.profilePictureUrl) {
-                <img
-                  [src]="currentUser()?.profilePictureUrl"
-                  [alt]="userFullName()"
-                  class="user-avatar"
-                />
-              } @else {
-                <div class="user-avatar-placeholder">
-                  {{ userInitials() }}
-                </div>
-              }
-              <span class="user-name">{{ userFullName() }}</span>
-              <svg class="dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            <!-- Dropdown Menu -->
-            @if (showUserMenu()) {
-              <div class="user-dropdown">
-                <div class="dropdown-header">
-                  <span class="dropdown-email">{{ currentUser()?.email }}</span>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a routerLink="/profile" class="dropdown-item" (click)="closeUserMenu()">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button
+            hlmBtn
+            variant="ghost"
+            size="sm"
+            class="gap-2 ml-2"
+            [hlmDropdownMenuTrigger]="userMenu"
+          >
+            @if (currentUser()?.profilePictureUrl) {
+              <img
+                [src]="currentUser()?.profilePictureUrl"
+                [alt]="userFullName()"
+                class="h-7 w-7 rounded-full object-cover"
+              />
+            } @else {
+              <div
+                class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground"
+              >
+                {{ userInitials() }}
+              </div>
+            }
+            <span class="hidden md:inline text-sm font-medium">{{ userFullName() }}</span>
+            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <ng-template #userMenu>
+            <div hlmDropdownMenu class="w-56">
+              <div hlmDropdownMenuLabel>
+                <span class="text-xs text-muted-foreground">{{ currentUser()?.email }}</span>
+              </div>
+              <div hlmDropdownMenuSeparator></div>
+              <div hlmDropdownMenuGroup>
+                <a
+                  routerLink="/profile"
+                  hlmDropdownMenuItem
+                  class="flex items-center gap-2 w-full cursor-pointer"
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -112,25 +137,25 @@
                   </svg>
                   My Profile
                 </a>
-                <div class="dropdown-divider"></div>
-                <button class="dropdown-item" (click)="logout()">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  Sign Out
-                </button>
               </div>
-            }
-          </div>
+              <div hlmDropdownMenuSeparator></div>
+              <button hlmDropdownMenuItem (click)="logout()" class="flex items-center gap-2 w-full">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                Sign Out
+              </button>
+            </div>
+          </ng-template>
         } @else {
           <!-- Login Button (Not Authenticated) -->
-          <a routerLink="/login" class="login-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a routerLink="/login" hlmBtn variant="default" size="sm" class="gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -146,18 +171,20 @@
   </nav>
 </header>
 
-<!-- Main Content - Router Outlet -->
-<main class="main-content">
+<!-- Main Content -->
+<main class="min-h-[calc(100vh-8rem)]">
   <router-outlet></router-outlet>
 </main>
 
-<!-- Toast Notifications - Global component for user feedback -->
+<!-- Toast Notifications -->
 <app-toast-notification></app-toast-notification>
 
-<!-- Confirm Dialog - Global confirmation modal -->
+<!-- Confirm Dialog -->
 <app-confirm-dialog></app-confirm-dialog>
 
 <!-- Footer -->
-<footer class="app-footer">
-  <div class="footer-content">JobTracker © 2026 - Track Your Job Search Journey</div>
+<footer class="border-t border-border bg-background py-6">
+  <div class="container mx-auto px-4 text-center text-sm text-muted-foreground">
+    JobTracker © 2026 - Track Your Job Search Journey
+  </div>
 </footer>

@@ -1,19 +1,39 @@
-<div class="form-container">
+<div class="container mx-auto px-4 py-8">
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="loading-state">
-      <div class="spinner"></div>
+    <div class="flex flex-col items-center justify-center py-12 text-muted-foreground">
+      <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+          fill="none"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
       <p>Loading company data...</p>
     </div>
   }
 
   <!-- Form -->
   @if (!isLoading()) {
-    <div class="form-card flex flex-col max-h-[90vh]">
+    <section hlmCard class="max-w-2xl mx-auto flex flex-col max-h-[90vh]">
       <!-- Header -->
-      <div class="form-header flex-shrink-0">
-        <div class="header-content">
-          <svg class="header-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div hlmCardHeader class="flex-shrink-0">
+        <div class="flex items-start gap-4">
+          <svg
+            class="h-8 w-8 text-primary flex-shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -22,10 +42,10 @@
             />
           </svg>
           <div>
-            <h1 class="form-title">
+            <h1 hlmCardTitle class="text-2xl">
               {{ isEditMode() ? 'Edit Company' : 'Add New Company' }}
             </h1>
-            <p class="form-subtitle">
+            <p hlmCardDescription>
               {{
                 isEditMode()
                   ? 'Update company information'
@@ -38,8 +58,10 @@
 
       <!-- Error Alert -->
       @if (error()) {
-        <div class="error-alert flex-shrink-0">
-          <svg class="error-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div
+          class="mx-6 mb-4 flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-destructive"
+        >
+          <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -55,17 +77,15 @@
       <form
         [formGroup]="companyForm"
         (ngSubmit)="onSubmit()"
-        class="form-content flex-1 overflow-y-auto"
+        hlmCardContent
+        class="flex-1 overflow-y-auto space-y-8"
       >
         <!-- Company Information Section -->
-        <div class="form-section">
-          <h2 class="text-sm font-medium text-primary uppercase tracking-wider mb-4">
-            <svg
-              class="section-icon inline-block mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+        <div class="space-y-4">
+          <h2
+            class="flex items-center gap-2 text-sm font-medium text-primary uppercase tracking-wider"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -77,9 +97,9 @@
           </h2>
 
           <!-- Company Name -->
-          <div class="form-group">
-            <label hlmLabel for="name" class="mb-1.5 block">
-              Company Name <span class="required">*</span>
+          <div class="space-y-2">
+            <label hlmLabel for="name">
+              Company Name <span class="text-destructive">*</span>
             </label>
             <input
               hlmInput
@@ -87,11 +107,11 @@
               id="name"
               formControlName="name"
               class="w-full"
-              [class.input-error]="name?.invalid && name?.touched"
+              [class.border-destructive]="name?.invalid && name?.touched"
               placeholder="e.g., Google, Microsoft, Apple"
             />
             @if (name?.invalid && name?.touched) {
-              <p class="error-message">
+              <p class="text-sm text-destructive">
                 @if (name?.errors?.['required']) {
                   Company name is required
                 }
@@ -103,10 +123,15 @@
           </div>
 
           <!-- Website -->
-          <div class="form-group">
-            <label hlmLabel for="website" class="mb-1.5 block"> Website </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="website">Website</label>
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -126,10 +151,15 @@
           </div>
 
           <!-- Address -->
-          <div class="form-group">
-            <label hlmLabel for="address" class="mb-1.5 block"> Address </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="address">Address</label>
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -155,9 +185,13 @@
           </div>
 
           <!-- Industry -->
-          <div class="form-group">
-            <label for="industry" class="form-label mb-1.5 block"> Industry </label>
-            <select id="industry" formControlName="industry" class="form-input form-select w-full">
+          <div class="space-y-2">
+            <label hlmLabel for="industry">Industry</label>
+            <select
+              id="industry"
+              formControlName="industry"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
               <option value="">Select an industry...</option>
               @for (industry of industryOptions; track industry) {
                 <option [value]="industry">{{ industry }}</option>
@@ -166,32 +200,30 @@
           </div>
 
           <!-- Tech Stack -->
-          <div class="form-group">
-            <label hlmLabel class="mb-1.5 block"> Tech Stack </label>
-            <div class="tech-stack-input">
-              <div class="tech-tags-container">
+          <div class="space-y-2">
+            <label hlmLabel>Tech Stack</label>
+            <div class="space-y-3">
+              <div class="flex flex-wrap gap-2">
                 @for (tech of techStack(); track tech; let i = $index) {
-                  <span class="tech-tag-input">
+                  <span hlmBadge variant="secondary" class="gap-1">
                     {{ tech }}
                     <button
-                      hlmBtn
-                      variant="ghost"
-                      size="icon-xs"
                       type="button"
                       (click)="removeTech(i)"
+                      class="ml-1 hover:text-destructive"
                     >
                       ×
                     </button>
                   </span>
                 }
               </div>
-              <div class="input-with-button">
+              <div class="flex gap-2">
                 <input
                   hlmInput
                   type="text"
                   placeholder="Type a technology and press Enter..."
                   [value]="newTech()"
-                  class="w-full"
+                  class="flex-1"
                   (input)="newTech.set($any($event.target).value)"
                   (keydown)="onTechKeydown($event)"
                 />
@@ -202,14 +234,11 @@
         </div>
 
         <!-- HR Contact Section -->
-        <div class="form-section">
-          <h2 class="text-sm font-medium text-primary uppercase tracking-wider mb-4">
-            <svg
-              class="section-icon inline-block mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+        <div class="space-y-4">
+          <h2
+            class="flex items-center gap-2 text-sm font-medium text-primary uppercase tracking-wider"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -218,14 +247,19 @@
               />
             </svg>
             Contact Information
-            <span class="optional-badge ml-2">Optional</span>
+            <span hlmBadge variant="outline" class="text-xs">Optional</span>
           </h2>
 
           <!-- HR Contact Name -->
-          <div class="form-group">
-            <label hlmLabel for="hrContactName" class="mb-1.5 block"> HR Contact Name </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="hrContactName">HR Contact Name</label>
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -245,10 +279,15 @@
           </div>
 
           <!-- HR Contact Email -->
-          <div class="form-group">
-            <label hlmLabel for="hrContactEmail" class="mb-1.5 block"> HR Contact Email </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="hrContactEmail">HR Contact Email</label>
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -262,22 +301,25 @@
                 id="hrContactEmail"
                 formControlName="hrContactEmail"
                 class="w-full pl-10"
-                [class.input-error]="hrContactEmail?.invalid && hrContactEmail?.touched"
+                [class.border-destructive]="hrContactEmail?.invalid && hrContactEmail?.touched"
                 placeholder="hr@example.com"
               />
             </div>
             @if (hrContactEmail?.invalid && hrContactEmail?.touched) {
-              <p class="error-message">Please enter a valid email address</p>
+              <p class="text-sm text-destructive">Please enter a valid email address</p>
             }
           </div>
 
           <!-- HR LinkedIn -->
-          <div class="form-group">
-            <label hlmLabel for="hrContactLinkedIn" class="mb-1.5 block">
-              HR LinkedIn Profile
-            </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="hrContactLinkedIn">HR LinkedIn Profile</label>
+            <div class="relative">
+              <svg
+                class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -298,10 +340,8 @@
         </div>
       </form>
 
-      <!-- Sticky Footer - Outside scrollable area -->
-      <div
-        class="sticky bottom-0 z-10 bg-white/90 dark:bg-zinc-900/90 backdrop-blur border-t border-zinc-200 dark:border-zinc-800 p-6 flex justify-end gap-3 flex-shrink-0"
-      >
+      <!-- Sticky Footer -->
+      <div hlmCardFooter class="flex justify-end gap-3 border-t bg-card/90 backdrop-blur">
         <button hlmBtn variant="ghost" type="button" (click)="goBack()">Cancel</button>
 
         <button
@@ -309,9 +349,25 @@
           type="submit"
           [disabled]="isSubmitting() || companyForm.invalid"
           (click)="onSubmit()"
+          class="gap-2"
         >
           @if (isSubmitting()) {
-            <div class="btn-spinner"></div>
+            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+                fill="none"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
             <span>Saving...</span>
           } @else {
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,6 +382,6 @@
           }
         </button>
       </div>
-    </div>
+    </section>
   }
 </div>

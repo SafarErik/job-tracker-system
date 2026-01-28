@@ -1,19 +1,30 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-foreground pb-12 font-sans">
+<div class="min-h-screen bg-background text-foreground pb-12 font-sans">
   <!-- Loading State -->
   @if (isLoading()) {
-    <div
-      class="loading-state flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground"
-    >
-      <div class="spinner"></div>
+    <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
+      <svg class="h-8 w-8 animate-spin text-primary" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+          fill="none"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
       <p>Loading application...</p>
     </div>
   }
 
   <!-- Error State -->
   @if (error()) {
-    <div
-      class="error-state flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground"
-    >
+    <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
       <p>{{ error() }}</p>
       <button hlmBtn variant="outline" (click)="goBack()">← Back to Applications</button>
     </div>
@@ -22,7 +33,7 @@
   <!-- Main Content -->
   @if (application() && !isLoading()) {
     <!-- Large Header - Unified Theme -->
-    <header class="px-8 pt-8 pb-6 max-w-7xl mx-auto bg-zinc-50 dark:bg-zinc-950">
+    <header class="px-8 pt-8 pb-6 max-w-7xl mx-auto bg-background">
       <button
         hlmBtn
         variant="ghost"
@@ -35,7 +46,7 @@
 
       <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-baseline gap-4">
-          <h1 class="text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+          <h1 class="text-4xl font-extrabold tracking-tight text-foreground">
             {{ application()!.position }}
           </h1>
 
@@ -99,31 +110,25 @@
         >
           <!-- Overview Tab -->
           @if (activeTab() === 'overview') {
-            <div class="overview-grid">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <!-- Metadata Card -->
-              <div class="card p-0 border-0 shadow-none bg-transparent">
+              <div class="p-0">
                 <h2 class="text-lg font-semibold tracking-tight text-foreground mb-6">
                   Application Details
                 </h2>
                 <div class="space-y-4">
-                  <div
-                    class="flex justify-between py-3 border-b border-zinc-100 dark:border-zinc-800"
-                  >
+                  <div class="flex justify-between py-3 border-b border-border">
                     <span class="text-muted-foreground">Applied</span>
                     <span class="font-medium">{{ formatDate(application()!.appliedAt) }}</span>
                   </div>
                   @if (application()!.location) {
-                    <div
-                      class="flex justify-between py-3 border-b border-zinc-100 dark:border-zinc-800"
-                    >
+                    <div class="flex justify-between py-3 border-b border-border">
                       <span class="text-muted-foreground">Location</span>
                       <span class="font-medium">{{ application()!.location }}</span>
                     </div>
                   }
                   @if (application()!.salaryMin || application()!.salaryMax) {
-                    <div
-                      class="flex justify-between py-3 border-b border-zinc-100 dark:border-zinc-800"
-                    >
+                    <div class="flex justify-between py-3 border-b border-border">
                       <span class="text-muted-foreground">Salary Range</span>
                       <span class="font-medium">
                         ${{ application()!.salaryMin?.toLocaleString() || '?' }} - ${{
@@ -133,9 +138,7 @@
                     </div>
                   }
                   @if (application()!.jobUrl) {
-                    <div
-                      class="flex justify-between py-3 border-b border-zinc-100 dark:border-zinc-800"
-                    >
+                    <div class="flex justify-between py-3 border-b border-border">
                       <span class="text-muted-foreground">Job Posting</span>
                       <a
                         [href]="application()!.jobUrl"
@@ -151,9 +154,9 @@
 
               <!-- Match Score Card -->
               <div
-                class="card p-6 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg flex flex-col items-center text-center"
+                class="p-6 bg-muted/50 border border-border rounded-lg flex flex-col items-center text-center"
               >
-                <h2 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-white mb-2">
+                <h2 class="text-lg font-semibold tracking-tight text-foreground mb-2">
                   Match Efficiency
                 </h2>
                 <div class="my-6 relative flex items-center justify-center">
@@ -165,7 +168,7 @@
                       stroke="currentColor"
                       stroke-width="8"
                       fill="transparent"
-                      class="text-zinc-200 dark:text-zinc-700"
+                      class="text-muted"
                     />
                     <circle
                       cx="64"
@@ -181,7 +184,7 @@
                       class="text-primary transition-all duration-1000 ease-out"
                     />
                   </svg>
-                  <span class="absolute text-3xl font-bold text-zinc-900 dark:text-white"
+                  <span class="absolute text-3xl font-bold text-foreground"
                     >{{ application()!.matchScore ?? 0 }}%</span
                   >
                 </div>
@@ -195,28 +198,24 @@
               </div>
 
               <!-- Timeline Card -->
-              <div class="card p-0 border-0 shadow-none bg-transparent timeline-card">
-                <h2 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-white mb-6">
+              <div class="p-0">
+                <h2 class="text-lg font-semibold tracking-tight text-foreground mb-6">
                   Activity Timeline
                 </h2>
-                <div
-                  class="relative border-l-2 border-zinc-200 dark:border-zinc-700 ml-3 space-y-8 pl-6 py-2"
-                >
+                <div class="relative border-l-2 border-border ml-3 space-y-8 pl-6 py-2">
                   @for (event of timeline(); track event.id) {
                     <div class="relative">
                       <span
                         class="absolute -left-[31px] top-1 h-4 w-4 rounded-full border-2 border-card bg-primary"
                       ></span>
                       <div class="flex flex-col">
-                        <span class="text-sm font-medium text-zinc-900 dark:text-white">{{
-                          event.title
-                        }}</span>
+                        <span class="text-sm font-medium text-foreground">{{ event.title }}</span>
                         @if (event.description) {
                           <span class="text-sm text-muted-foreground mt-1">{{
                             event.description
                           }}</span>
                         }
-                        <span class="text-xs text-zinc-400 mt-1">{{
+                        <span class="text-xs text-muted-foreground mt-1">{{
                           formatDate(event.timestamp)
                         }}</span>
                       </div>
@@ -231,14 +230,15 @@
           @if (activeTab() === 'context') {
             <div class="max-w-3xl mx-auto">
               <div class="text-center mb-8">
-                <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-2">Job Context</h2>
+                <h2 class="text-2xl font-bold text-foreground mb-2">Job Context</h2>
                 <p class="text-muted-foreground">
                   Paste the full job description to power AI insights.
                 </p>
               </div>
 
               <textarea
-                class="w-full min-h-[400px] p-4 bg-muted border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none resize-y font-mono text-sm leading-relaxed"
+                hlmInput
+                class="w-full min-h-[400px] p-4 resize-y font-mono text-sm leading-relaxed"
                 [value]="jobDescriptionInput()"
                 (input)="jobDescriptionInput.set($any($event.target).value)"
                 placeholder="Paste job description here..."
@@ -247,7 +247,7 @@
               <button
                 hlmBtn
                 size="lg"
-                class="w-full mt-6 bg-primary hover:bg-primary/90 text-primary-foreground"
+                class="w-full mt-6"
                 [disabled]="isAnalyzing() || !jobDescriptionInput().trim()"
                 (click)="analyzeJobDescription()"
               >
@@ -289,26 +289,40 @@
                   </button>
                 </section>
               } @else {
-                <div class="coach-content">
+                <div class="space-y-6">
                   <!-- Gap Analysis -->
-                  <div class="card">
-                    <h2 class="card-title">Gap Analysis</h2>
-                    <p class="gap-text">{{ aiAnalysis()!.gapAnalysis }}</p>
+                  <div class="p-6 rounded-xl border border-border bg-card">
+                    <h2 class="text-lg font-semibold text-foreground mb-4">Gap Analysis</h2>
+                    <p class="text-muted-foreground mb-6">{{ aiAnalysis()!.gapAnalysis }}</p>
 
-                    <div class="skills-comparison">
-                      <div class="skills-section matched">
-                        <h3>✓ Matched Skills</h3>
-                        <div class="skills-grid">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div class="space-y-3">
+                        <h3 class="text-sm font-medium text-green-600 dark:text-green-400">
+                          ✓ Matched Skills
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
                           @for (skill of aiAnalysis()!.matchedSkills; track skill) {
-                            <span class="skill-badge matched">{{ skill }}</span>
+                            <span
+                              hlmBadge
+                              variant="secondary"
+                              class="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                              >{{ skill }}</span
+                            >
                           }
                         </div>
                       </div>
-                      <div class="skills-section missing">
-                        <h3>⚠ Consider Adding</h3>
-                        <div class="skills-grid">
+                      <div class="space-y-3">
+                        <h3 class="text-sm font-medium text-amber-600 dark:text-amber-400">
+                          ⚠ Consider Adding
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
                           @for (skill of aiAnalysis()!.missingSkills; track skill) {
-                            <span class="skill-badge missing">{{ skill }}</span>
+                            <span
+                              hlmBadge
+                              variant="secondary"
+                              class="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                              >{{ skill }}</span
+                            >
                           }
                         </div>
                       </div>
@@ -316,27 +330,40 @@
                   </div>
 
                   <!-- Resume Enhancements -->
-                  <div class="card">
-                    <h2 class="card-title">Resume Enhancements</h2>
-                    <div class="enhancements-list">
+                  <div class="p-6 rounded-xl border border-border bg-card">
+                    <h2 class="text-lg font-semibold text-foreground mb-4">Resume Enhancements</h2>
+                    <div class="space-y-4">
                       @for (enhancement of aiAnalysis()!.resumeEnhancements; track enhancement.id) {
-                        <div class="enhancement-card">
-                          <div class="enhancement-original">
-                            <span class="enhancement-label">Original</span>
-                            <p>{{ enhancement.originalBullet }}</p>
+                        <div class="p-4 rounded-lg bg-muted/50 space-y-3">
+                          <div class="flex flex-col md:flex-row gap-4 items-start">
+                            <div class="flex-1 space-y-1">
+                              <span
+                                class="text-xs font-medium text-muted-foreground uppercase tracking-wider"
+                                >Original</span
+                              >
+                              <p class="text-sm">{{ enhancement.originalBullet }}</p>
+                            </div>
+                            <span class="hidden md:block text-muted-foreground">→</span>
+                            <div class="flex-1 space-y-1">
+                              <span
+                                class="text-xs font-medium text-primary uppercase tracking-wider"
+                                >Rebranded</span
+                              >
+                              <p class="text-sm font-medium">{{ enhancement.rebrandedBullet }}</p>
+                              <button
+                                hlmBtn
+                                variant="ghost"
+                                size="sm"
+                                class="mt-2"
+                                (click)="copyToClipboard(enhancement.rebrandedBullet)"
+                              >
+                                📋 Copy
+                              </button>
+                            </div>
                           </div>
-                          <div class="enhancement-arrow">→</div>
-                          <div class="enhancement-rebranded">
-                            <span class="enhancement-label">Rebranded</span>
-                            <p>{{ enhancement.rebrandedBullet }}</p>
-                            <button
-                              class="btn-copy"
-                              (click)="copyToClipboard(enhancement.rebrandedBullet)"
-                            >
-                              📋 Copy
-                            </button>
-                          </div>
-                          <p class="enhancement-reasoning">💡 {{ enhancement.reasoning }}</p>
+                          <p class="text-xs text-muted-foreground">
+                            💡 {{ enhancement.reasoning }}
+                          </p>
                         </div>
                       }
                     </div>
@@ -348,62 +375,84 @@
 
           <!-- Documents Studio Tab -->
           @if (activeTab() === 'documents') {
-            <div class="tab-panel animate-fade-in">
-              <div class="documents-grid">
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Resume Manager -->
-                <div class="card">
+                <div class="p-6 rounded-xl border border-border bg-card">
                   <h2 class="text-lg font-semibold tracking-tight text-foreground mb-4">
                     Resume Manager
                   </h2>
-                  <div class="resume-selector">
-                    <label hlmLabel>Active Resume for this Application</label>
-                    <select
-                      class="select-input"
-                      [value]="selectedResumeId() || ''"
-                      (change)="selectedResumeId.set($any($event.target).value || null)"
-                    >
-                      <option value="">-- Select Resume --</option>
-                      @for (doc of documents(); track doc.id) {
-                        <option [value]="doc.id">{{ doc.originalFileName }}</option>
-                      }
-                    </select>
-                  </div>
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <label hlmLabel>Active Resume for this Application</label>
+                      <select
+                        hlmInput
+                        class="w-full"
+                        [value]="selectedResumeId() || ''"
+                        (change)="selectedResumeId.set($any($event.target).value || null)"
+                      >
+                        <option value="">-- Select Resume --</option>
+                        @for (doc of documents(); track doc.id) {
+                          <option [value]="doc.id">{{ doc.originalFileName }}</option>
+                        }
+                      </select>
+                    </div>
 
-                  <div class="upload-zone">
-                    <p>📁 Drag & drop a tailored PDF here</p>
-                    <span class="upload-hint">or click to browse</span>
+                    <div
+                      class="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
+                    >
+                      <p class="text-muted-foreground">📁 Drag & drop a tailored PDF here</p>
+                      <span class="text-xs text-muted-foreground">or click to browse</span>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Cover Letter Generator -->
-                <div class="card cover-letter-card">
+                <div class="p-6 rounded-xl border border-border bg-card">
                   <h2 class="text-lg font-semibold tracking-tight text-foreground mb-4">
                     Cover Letter
                   </h2>
 
                   <textarea
-                    class="cover-letter-input"
+                    hlmInput
+                    class="w-full min-h-[300px] resize-y"
                     [value]="coverLetter().content"
                     (input)="updateCoverLetter($any($event.target).value)"
                     placeholder="Your cover letter will appear here..."
                     rows="15"
                   ></textarea>
 
-                  <div class="cover-letter-actions">
+                  <div class="flex gap-3 mt-4">
                     <button
-                      class="btn-primary"
+                      hlmBtn
                       [disabled]="isGeneratingCoverLetter()"
                       (click)="generateCoverLetter()"
                     >
                       @if (isGeneratingCoverLetter()) {
-                        <span class="spinner-sm"></span>
+                        <svg class="h-4 w-4 mr-2 animate-spin" viewBox="0 0 24 24">
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                            fill="none"
+                          ></circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
                         Generating...
                       } @else {
                         ✨ Generate Draft
                       }
                     </button>
                     <button
-                      class="btn-secondary"
+                      hlmBtn
+                      variant="outline"
                       [disabled]="!coverLetter().content"
                       (click)="saveCoverLetterAsPdf()"
                     >
@@ -417,15 +466,31 @@
 
           <!-- Interview Prep Tab -->
           @if (activeTab() === 'interview') {
-            <div class="tab-panel animate-fade-in">
-              <div class="interview-container">
+            <div class="space-y-6">
+              <div class="flex flex-col items-center gap-6">
                 <button
-                  class="btn-primary generate-questions-btn"
+                  hlmBtn
+                  size="lg"
                   [disabled]="isGeneratingQuestions()"
                   (click)="generateInterviewQuestions()"
                 >
                   @if (isGeneratingQuestions()) {
-                    <span class="spinner-sm"></span>
+                    <svg class="h-4 w-4 mr-2 animate-spin" viewBox="0 0 24 24">
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                        fill="none"
+                      ></circle>
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
                     Generating Questions...
                   } @else {
                     🎤 Generate Interview Questions
@@ -433,24 +498,27 @@
                 </button>
 
                 @if (interviewQuestions().length) {
-                  <div class="questions-list">
+                  <div class="w-full space-y-4">
                     @for (q of interviewQuestions(); track q.id) {
-                      <div class="question-card" [class.expanded]="expandedQuestionId() === q.id">
-                        <button class="question-header" (click)="toggleQuestion(q.id)">
-                          <div class="question-info">
-                            <span class="question-category" [class]="q.category">{{
-                              q.category
-                            }}</span>
-                            <span class="question-text">{{ q.question }}</span>
+                      <div
+                        class="rounded-xl border border-border bg-card overflow-hidden"
+                        [class.ring-2]="expandedQuestionId() === q.id"
+                        [class.ring-primary/20]="expandedQuestionId() === q.id"
+                      >
+                        <button
+                          class="w-full p-4 flex items-center justify-between text-left hover:bg-muted/50 transition-colors"
+                          (click)="toggleQuestion(q.id)"
+                        >
+                          <div class="flex items-center gap-3">
+                            <span hlmBadge variant="outline" class="text-xs">{{ q.category }}</span>
+                            <span class="font-medium text-foreground">{{ q.question }}</span>
                           </div>
                           <svg
-                            class="expand-icon"
-                            [class.rotated]="expandedQuestionId() === q.id"
+                            class="h-5 w-5 text-muted-foreground transition-transform"
+                            [class.rotate-180]="expandedQuestionId() === q.id"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
-                            width="20"
-                            height="20"
                           >
                             <path
                               stroke-linecap="round"
@@ -462,18 +530,23 @@
                         </button>
 
                         @if (expandedQuestionId() === q.id) {
-                          <div class="question-body">
+                          <div class="p-4 border-t border-border bg-muted/30 space-y-4">
                             @if (q.tips) {
-                              <p class="question-tip">💡 {{ q.tips }}</p>
+                              <p class="text-sm text-muted-foreground bg-primary/5 p-3 rounded-lg">
+                                💡 {{ q.tips }}
+                              </p>
                             }
-                            <label hlmLabel>Your Answer Draft</label>
-                            <textarea
-                              class="answer-input"
-                              [value]="q.draftAnswer"
-                              (input)="updateAnswer(q.id, $any($event.target).value)"
-                              placeholder="Draft your answer here..."
-                              rows="5"
-                            ></textarea>
+                            <div class="space-y-2">
+                              <label hlmLabel>Your Answer Draft</label>
+                              <textarea
+                                hlmInput
+                                class="w-full resize-y"
+                                [value]="q.draftAnswer"
+                                (input)="updateAnswer(q.id, $any($event.target).value)"
+                                placeholder="Draft your answer here..."
+                                rows="5"
+                              ></textarea>
+                            </div>
                           </div>
                         }
                       </div>
@@ -486,7 +559,7 @@
 
           <!-- Strategy Tab -->
           @if (activeTab() === 'strategy') {
-            <div class="tab-panel animate-fade-in">
+            <div class="space-y-6">
               <div class="strategy-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Card A: The Offer -->
                 <!-- Card A: The Offer -->

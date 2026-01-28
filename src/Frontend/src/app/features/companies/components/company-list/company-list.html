@@ -1,80 +1,127 @@
-<div class="company-list-container">
+<div class="container mx-auto px-4 py-8 min-h-screen">
   <!-- Header -->
-  <div class="header-section">
-    <div class="header-content">
-      <div class="title-wrapper">
-        <h1 class="page-title">🏢 Companies Database</h1>
-        <button class="add-company-btn" (click)="addNewCompany()" type="button">
-          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Add Company
-        </button>
+  <div class="mb-8">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground">🏢 Companies Database</h1>
+        <p class="text-muted-foreground mt-1">Manage and track all companies you've applied to</p>
       </div>
-      <p class="page-subtitle">Manage and track all companies you've applied to</p>
+      <button hlmBtn (click)="addNewCompany()" type="button" class="gap-2">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+        Add Company
+      </button>
     </div>
   </div>
 
   <!-- Search Bar -->
-  <div class="search-section">
-    <div class="search-wrapper">
-      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  <div class="mb-8">
+    <div class="relative max-w-md">
+      <svg
+        class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
       </svg>
-      <label hlmLabel for="company-search" class="visually-hidden">Search companies by name, website, or address</label>
-      <input hlmInput id="company-search" type="text" placeholder="Search companies by name, website, or address..."
-        class="pl-10" (input)="onSearchChange($event)" [value]="searchTerm()" />
+      <label hlmLabel for="company-search" class="sr-only"
+        >Search companies by name, website, or address</label
+      >
+      <input
+        hlmInput
+        id="company-search"
+        type="text"
+        placeholder="Search companies by name, website, or address..."
+        class="pl-10 w-full"
+        (input)="onSearchChange($event)"
+        [value]="searchTerm()"
+      />
     </div>
   </div>
 
   <!-- Loading State -->
   @if (isLoading()) {
-  <div class="loading-container">
-    <div class="spinner"></div>
-    <p>Loading companies...</p>
-  </div>
+    <div class="flex flex-col items-center justify-center py-12 text-muted-foreground">
+      <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+          fill="none"
+        ></circle>
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      <p>Loading companies...</p>
+    </div>
   }
 
   <!-- Error State -->
   @if (error()) {
-  <div class="error-container">
-    <p class="error-message">{{ error() }}</p>
-    <button (click)="retry()" class="retry-btn">Try Again</button>
-  </div>
+    <div class="flex flex-col items-center justify-center py-12 gap-4">
+      <p class="text-destructive">{{ error() }}</p>
+      <button hlmBtn variant="outline" (click)="retry()">Try Again</button>
+    </div>
   }
 
   <!-- Companies Table -->
   @if (!isLoading() && !error()) {
-  <div class="table-container">
-    @if (filteredCompanies.length === 0) {
-    <div class="empty-state">
-      <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-      <h3>No companies found</h3>
-      <p>
-        @if (searchTerm()) {
-        Try adjusting your search criteria
-        } @else {
-        Start adding companies from your job applications
-        }
-      </p>
-    </div>
-    } @else {
-    <!-- Company Grid -->
-    <div class="companies-grid">
-      @for (company of filteredCompanies; track company.id) {
-      <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+    <div>
+      @if (filteredCompanies.length === 0) {
+        <div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
+          <svg
+            class="h-16 w-16 mb-4 opacity-50"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            />
+          </svg>
+          <h3 class="text-lg font-semibold text-foreground mb-1">No companies found</h3>
+          <p>
+            @if (searchTerm()) {
+              Try adjusting your search criteria
+            } @else {
+              Start adding companies from your job applications
+            }
+          </p>
+        </div>
+      } @else {
+        <!-- Company Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (company of filteredCompanies; track company.id) {
+            <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+          }
+        </div>
+
+        <!-- Results Count -->
+        <div class="text-center text-sm text-muted-foreground mt-6">
+          Showing {{ filteredCompanies.length }} of {{ companies().length }} companies
+        </div>
       }
     </div>
-
-    <!-- Results Count -->
-    <div class="results-count">
-      Showing {{ filteredCompanies.length }} of {{ companies().length }} companies
-    </div>
-    }
-  </div>
   }
 </div>

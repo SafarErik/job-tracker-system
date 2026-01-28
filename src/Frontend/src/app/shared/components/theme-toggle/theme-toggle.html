@@ -1,5 +1,8 @@
 <button
-  class="theme-toggle-btn"
+  hlmBtn
+  variant="ghost"
+  size="icon"
+  class="relative h-9 w-9"
   (click)="onToggleTheme()"
   [attr.aria-label]="themeLabel()"
   [title]="themeLabel()"
@@ -8,14 +11,17 @@
   [attr.aria-checked]="themeMode() === 'dark'"
 >
   <!-- Icon container with transition effects (decorative, hidden from AT) -->
-  <span class="theme-icon-wrapper" aria-hidden="true">
+  <span class="relative h-5 w-5" aria-hidden="true">
     <!-- Light mode icon -->
     <span
-      class="theme-icon"
-      [class.theme-icon-active]="themeMode() === 'light'"
-      [class.theme-icon-hidden]="themeMode() !== 'light'"
+      class="absolute inset-0 transition-all duration-300"
+      [class.opacity-100]="themeMode() === 'light'"
+      [class.scale-100]="themeMode() === 'light'"
+      [class.opacity-0]="themeMode() !== 'light'"
+      [class.scale-0]="themeMode() !== 'light'"
     >
       <svg
+        class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
@@ -39,11 +45,14 @@
 
     <!-- Dark mode icon -->
     <span
-      class="theme-icon"
-      [class.theme-icon-active]="themeMode() === 'dark'"
-      [class.theme-icon-hidden]="themeMode() !== 'dark'"
+      class="absolute inset-0 transition-all duration-300"
+      [class.opacity-100]="themeMode() === 'dark'"
+      [class.scale-100]="themeMode() === 'dark'"
+      [class.opacity-0]="themeMode() !== 'dark'"
+      [class.scale-0]="themeMode() !== 'dark'"
     >
       <svg
+        class="h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
@@ -58,6 +67,6 @@
     </span>
   </span>
 
-  <!-- Label text (visible on hover/focus) -->
-  <span class="theme-label">{{ themeLabel() }}</span>
+  <!-- Label text (screen reader only) -->
+  <span class="sr-only">{{ themeLabel() }}</span>
 </button>

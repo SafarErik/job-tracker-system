@@ -1,52 +1,50 @@
 <!-- Confirmation Dialog Backdrop -->
 <div
   *ngIf="isVisible"
-  class="confirm-backdrop fixed inset-0 backdrop-blur-md flex items-center justify-center z-50 p-4"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
   (click)="onBackdropClick($event)"
   (keydown)="onKeyDown($event)"
   tabindex="-1"
 >
   <!-- Simple Dialog Container -->
   <div
+    hlmCard
     #dialogElement
     role="dialog"
     aria-modal="true"
     aria-labelledby="confirmDialogTitle"
     aria-describedby="confirmDialogMessage"
     tabindex="-1"
-    class="confirm-dialog bg-white rounded-lg shadow-xl max-w-md w-full transform transition-all"
+    class="w-full max-w-md transform transition-all"
     (click)="$event.stopPropagation()"
   >
     <!-- Content Section -->
-    <div class="p-6">
+    <div hlmCardContent class="pt-6">
       <!-- Title -->
-      <h3 id="confirmDialogTitle" class="text-lg font-bold text-gray-900 mb-3">
+      <h3 hlmCardTitle id="confirmDialogTitle" class="mb-3 text-lg font-bold">
         {{ title }}
       </h3>
 
       <!-- Message -->
-      <p id="confirmDialogMessage" class="text-gray-600 leading-relaxed whitespace-pre-line">
+      <p hlmCardDescription id="confirmDialogMessage" class="whitespace-pre-line leading-relaxed">
         {{ message }}
       </p>
     </div>
 
     <!-- Actions Section -->
-    <div class="flex gap-3 px-6 pb-6">
+    <div hlmCardFooter class="flex gap-3">
       <!-- Cancel Button -->
-      <button
-        type="button"
-        (click)="cancel()"
-        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-      >
+      <button hlmBtn variant="outline" type="button" (click)="cancel()" class="flex-1">
         {{ cancelText }}
       </button>
 
       <!-- Confirm Button -->
       <button
+        hlmBtn
+        [variant]="isDestructive ? 'destructive' : 'default'"
         type="button"
         (click)="confirm()"
-        [class]="confirmButtonClass"
-        class="flex-1 px-4 py-2 font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2"
+        class="flex-1"
       >
         {{ confirmText }}
       </button>

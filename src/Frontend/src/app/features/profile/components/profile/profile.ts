@@ -19,12 +19,20 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, ReactiveFormsModule, ...HlmButtonImports, ...HlmInputImports, ...HlmLabelImports, ...HlmCardImports],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+    ...HlmBadgeImports,
+  ],
   templateUrl: './profile.html',
-  styleUrl: './profile.css',
 })
 export class ProfileComponent implements OnInit {
   private profileService = inject(ProfileService);

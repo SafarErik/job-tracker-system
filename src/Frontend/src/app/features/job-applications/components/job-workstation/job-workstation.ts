@@ -15,6 +15,9 @@ import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 import {
     AiAnalysisResult,
     InterviewQuestion,
@@ -156,9 +159,7 @@ export class JobWorkstationComponent implements OnInit {
         this.isLoading.set(true);
         this.applicationService.getApplicationById(id).subscribe({
             next: (app) => {
-                // Add mock matchScore for demo
-                const enrichedApp = { ...app, matchScore: Math.floor(Math.random() * 40) + 60 };
-                this.application.set(enrichedApp);
+                this.application.set(app);
                 this.jobDescriptionInput.set(app.jobDescription || '');
                 this.generateMockTimeline(app);
                 this.isLoading.set(false);
@@ -251,6 +252,49 @@ export class JobWorkstationComponent implements OnInit {
                 return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
             default:
                 return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700`;
+        }
+    }
+
+    getJobTypeLabel(type: JobType): string {
+        switch (type) {
+            case JobType.FullTime: return 'Full-time';
+            case JobType.PartTime: return 'Part-time';
+            case JobType.Internship: return 'Internship';
+            case JobType.Contract: return 'Contract';
+            case JobType.Freelance: return 'Freelance';
+            default: return 'Unknown';
+        }
+    }
+
+    getWorkplaceLabel(type: WorkplaceType): string {
+        switch (type) {
+            case WorkplaceType.OnSite: return 'On-site';
+            case WorkplaceType.Remote: return 'Remote';
+            case WorkplaceType.Hybrid: return 'Hybrid';
+            default: return 'Unknown';
+        }
+    }
+
+    getPriorityLabel(priority: JobPriority): string {
+        switch (priority) {
+            case JobPriority.High: return 'High Priority';
+            case JobPriority.Medium: return 'Medium Priority';
+            case JobPriority.Low: return 'Low Priority';
+            default: return 'Medium';
+        }
+    }
+
+    getPriorityClass(priority: JobPriority): string {
+        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
+        switch (priority) {
+            case JobPriority.High:
+                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+            case JobPriority.Medium:
+                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+            case JobPriority.Low:
+                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+            default:
+                return `${base} bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700`;
         }
     }
 

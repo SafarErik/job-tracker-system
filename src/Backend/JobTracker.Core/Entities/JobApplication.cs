@@ -76,6 +76,16 @@ public class JobApplication
     public WorkplaceType WorkplaceType { get; set; } = WorkplaceType.OnSite;
 
     /// <summary>
+    /// Priority of this application (Low, Medium, High)
+    /// </summary>
+    public JobPriority Priority { get; set; } = JobPriority.Medium;
+
+    /// <summary>
+    /// AI computed match score (0-100)
+    /// </summary>
+    public int MatchScore { get; set; } = 0;
+
+    /// <summary>
     /// Offered or expected salary (nullable)
     /// </summary>
     public decimal? SalaryOffer { get; set; }

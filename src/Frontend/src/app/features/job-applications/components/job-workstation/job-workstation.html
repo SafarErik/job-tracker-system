@@ -56,7 +56,7 @@
 
       <p class="text-muted-foreground text-sm">
         Applied on {{ formatDate(application()!.appliedAt) }} •
-        {{ application()!.location || 'Remote' }}
+        {{ getWorkplaceLabel(application()!.workplaceType) }}
       </p>
     </div>
   </header>
@@ -91,22 +91,21 @@
                 <span class="text-muted-foreground">Applied</span>
                 <span class="font-medium">{{ formatDate(application()!.appliedAt) }}</span>
               </div>
-              @if (application()!.location) {
               <div class="flex justify-between py-3 border-b border-border">
-                <span class="text-muted-foreground">Location</span>
-                <span class="font-medium">{{ application()!.location }}</span>
+                <span class="text-muted-foreground">Workplace</span>
+                <span class="font-medium">{{ getWorkplaceLabel(application()!.workplaceType) }}</span>
               </div>
-              }
-              @if (application()!.salaryMin || application()!.salaryMax) {
               <div class="flex justify-between py-3 border-b border-border">
-                <span class="text-muted-foreground">Salary Range</span>
-                <span class="font-medium">
-                  ${{ application()!.salaryMin?.toLocaleString() || '?' }} - ${{
-                  application()!.salaryMax?.toLocaleString() || '?'
-                  }}
+                <span class="text-muted-foreground">Priority</span>
+                <span [class]="getPriorityClass(application()!.priority)"
+                  class="px-2 py-0.5 rounded-full text-xs font-semibold">
+                  {{ getPriorityLabel(application()!.priority) }}
                 </span>
               </div>
-              }
+              <div class="flex justify-between py-3 border-b border-border">
+                <span class="text-muted-foreground">Match Score</span>
+                <span class="font-medium">{{ application()!.matchScore }}%</span>
+              </div>
               @if (application()!.jobUrl) {
               <div class="flex justify-between py-3 border-b border-border">
                 <span class="text-muted-foreground">Job Posting</span>
@@ -128,10 +127,10 @@
                   class="text-muted" />
                 <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent"
                   [attr.stroke-dasharray]="351.86" [attr.stroke-dashoffset]="
-                        351.86 - (351.86 * (application()!.matchScore ?? 0)) / 100
+                        351.86 - (351.86 * application()!.matchScore) / 100
                       " class="text-primary transition-all duration-1000 ease-out" />
               </svg>
-              <span class="absolute text-3xl font-bold text-foreground">{{ application()!.matchScore ?? 0 }}%</span>
+              <span class="absolute text-3xl font-bold text-foreground">{{ application()!.matchScore }}%</span>
             </div>
             <p class="text-sm text-muted-foreground max-w-[200px]">
               @if (!aiAnalysis()) {

@@ -41,9 +41,19 @@
         <h1 hlmCardTitle class="text-xl font-bold">{{ application()!.position }}</h1>
         <p hlmCardDescription class="mt-1">{{ application()!.companyName }}</p>
       </div>
-      <span [ngClass]="getStatusClass(application()!.status)" hlmBadge>
-        {{ getStatusLabel(application()!.status) }}
-      </span>
+      <div class="flex flex-col items-end gap-2">
+        <span [ngClass]="getStatusClass(application()!.status)" hlmBadge>
+          {{ getStatusLabel(application()!.status) }}
+        </span>
+        <div class="flex gap-2">
+          <span [ngClass]="getPriorityClass(application()!.priority)" hlmBadge>
+            {{ getPriorityLabel(application()!.priority) }}
+          </span>
+          <span [ngClass]="getMatchScoreClass(application()!.matchScore || 0)" hlmBadge>
+            {{ application()!.matchScore || 0 }}% Match
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -136,6 +146,36 @@
             <p class="text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-1">Workplace
             </p>
             <p class="text-sm font-semibold">{{ getWorkplaceLabel(application()!.workplaceType) }}</p>
+          </div>
+        </div>
+
+        <!-- Priority -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-1">Priority
+            </p>
+            <p class="text-sm font-semibold">{{ getPriorityLabel(application()!.priority) }}</p>
+          </div>
+        </div>
+
+        <!-- Match Score -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-[10px] uppercase tracking-wider text-muted-foreground font-bold leading-none mb-1">Match
+              Score
+            </p>
+            <p class="text-sm font-semibold">{{ application()!.matchScore || 0 }}%</p>
           </div>
         </div>
       </div>

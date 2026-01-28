@@ -208,6 +208,50 @@
             </div>
           </div>
 
+          <!-- Priority & Match Score Grid -->
+          <div class="grid grid-cols-2 gap-4 mt-1 pb-1">
+            <!-- Priority -->
+            <div class="space-y-2">
+              <label hlmLabel for="priority">Priority</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                <button id="priority" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
+                  (click)="openPriorityDropdown()" (blur)="closePriorityDropdown()">
+                  <span>{{ selectedPriorityLabel }}</span>
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="isPriorityDropdownOpen"
+                class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md min-w-[200px]">
+                <button type="button"
+                  class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  *ngFor="let option of priorityOptions" (click)="selectPriority(option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Match Score -->
+            <div class="space-y-2">
+              <label hlmLabel for="matchScore">Match Score (%)</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <input hlmInput id="matchScore" type="number" formControlName="matchScore" placeholder="0-100"
+                  class="w-full pl-10 h-10" min="0" max="100" />
+              </div>
+            </div>
+          </div>
+
           <!-- CV / Resume Selection -->
           <div class="space-y-2">
             <label hlmLabel for="documentId">CV / Resume

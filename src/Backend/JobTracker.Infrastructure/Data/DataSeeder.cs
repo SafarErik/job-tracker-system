@@ -270,6 +270,11 @@ public static class DataSeeder
             var position = positions[random.Next(positions.Length)];
             var status = statuses[random.Next(statuses.Length)];
             var daysAgo = random.Next(1, 60);
+            
+            // Randomly select new metadata
+            var jobTypes = Enum.GetValues<JobType>();
+            var workplaceTypes = Enum.GetValues<WorkplaceType>();
+            var priorities = Enum.GetValues<JobPriority>();
 
             var application = new JobApplication
             {
@@ -281,6 +286,10 @@ public static class DataSeeder
                              $"This role offers exciting opportunities for career growth.",
                 AppliedAt = DateTime.UtcNow.AddDays(-daysAgo),
                 Status = status,
+                JobType = jobTypes[random.Next(jobTypes.Length)],
+                WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
+                Priority = priorities[random.Next(priorities.Length)],
+                MatchScore = random.Next(40, 95), // Random but realistic scores
                 SalaryOffer = status == JobApplicationStatus.Offer 
                     ? random.Next(600000, 1200000) 
                     : null

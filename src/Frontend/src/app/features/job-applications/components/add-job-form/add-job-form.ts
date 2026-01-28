@@ -12,6 +12,7 @@ import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 
 // Spartan UI Imports
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -92,6 +93,14 @@ export class AddJobFormComponent {
         { value: WorkplaceType.Hybrid, label: 'Hybrid' },
     ];
 
+    priorityOptions = [
+        { value: JobPriority.Low, label: 'Low' },
+        { value: JobPriority.Medium, label: 'Medium' },
+        { value: JobPriority.High, label: 'High' },
+    ];
+
+    isPriorityDropdownOpen = signal(false);
+
     constructor(
         private fb: FormBuilder,
         private applicationService: ApplicationService,
@@ -107,6 +116,8 @@ export class AddJobFormComponent {
             status: [JobApplicationStatus.Applied, [Validators.required]],
             jobType: [JobType.FullTime, [Validators.required]],
             workplaceType: [WorkplaceType.OnSite, [Validators.required]],
+            priority: [JobPriority.Medium, [Validators.required]],
+            matchScore: [0, [Validators.min(0), Validators.max(100)]],
             location: ['', []],
             // Removed salaryMin/Max as requested
         });
@@ -213,6 +224,11 @@ export class AddJobFormComponent {
         this.isWorkplaceTypeDropdownOpen.set(false);
     }
 
+    selectPriority(value: number) {
+        this.form.patchValue({ priority: value });
+        this.isPriorityDropdownOpen.set(false);
+    }
+
     get selectedStatusLabel(): string {
         const value = Number(this.form.get('status')?.value);
         return this.statusOptions.find((o) => o.value === value)?.label ?? 'Select status';
@@ -226,6 +242,11 @@ export class AddJobFormComponent {
     get selectedWorkplaceTypeLabel(): string {
         const value = Number(this.form.get('workplaceType')?.value);
         return this.workplaceTypeOptions.find((o) => o.value === value)?.label ?? 'Select location';
+    }
+
+    get selectedPriorityLabel(): string {
+        const value = Number(this.form.get('priority')?.value);
+        return this.priorityOptions.find((o) => o.value === value)?.label ?? 'Select priority';
     }
 
     // --- Focus Handling ---

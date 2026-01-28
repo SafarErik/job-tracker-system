@@ -77,9 +77,18 @@ public class JobApplicationDto
 
     /// <summary>
     /// Skill match percentage against user's skills (0-100)
-    /// Calculated by comparing job skills with user skills
     /// </summary>
-    public int? SkillMatchPercentage { get; set; }
+    public int MatchScore { get; set; }
+
+    /// <summary>
+    /// Priority of this application (Low, Medium, High)
+    /// </summary>
+    public JobPriority Priority { get; set; }
+
+    /// <summary>
+    /// Offered or expected salary (nullable)
+    /// </summary>
+    public decimal? SalaryOffer { get; set; }
 }
 
 /// <summary>
@@ -106,6 +115,12 @@ public class CreateJobApplicationDto
     public JobType JobType { get; set; } = JobType.FullTime;
 
     public WorkplaceType WorkplaceType { get; set; } = WorkplaceType.OnSite;
+
+    public JobPriority Priority { get; set; } = JobPriority.Medium;
+
+    public int MatchScore { get; set; } = 0;
+
+    public decimal? SalaryOffer { get; set; }
 
     /// <summary>
     /// Reference to the CV/Resume to use for this application
@@ -144,4 +159,10 @@ public class UpdateJobApplicationDto
     public JobType? JobType { get; set; }
 
     public WorkplaceType? WorkplaceType { get; set; }
+
+    public JobPriority? Priority { get; set; }
+
+    public int? MatchScore { get; set; }
+
+    public decimal? SalaryOffer { get; set; }
 }

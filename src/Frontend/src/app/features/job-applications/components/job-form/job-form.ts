@@ -20,6 +20,7 @@ import { Document } from '../../../documents/models/document.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 
 // Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -167,6 +168,12 @@ export class JobFormComponent implements OnInit {
     { value: WorkplaceType.Hybrid, label: 'Hybrid' },
   ];
 
+  priorityOptions = [
+    { value: JobPriority.Low, label: 'Low Priority' },
+    { value: JobPriority.Medium, label: 'Medium Priority' },
+    { value: JobPriority.High, label: 'High Priority' },
+  ];
+
   /**
    * Constructor with Dependency Injection
    *
@@ -193,6 +200,8 @@ export class JobFormComponent implements OnInit {
       status: [JobApplicationStatus.Applied, [Validators.required]],
       jobType: [JobType.FullTime, [Validators.required]],
       workplaceType: [WorkplaceType.OnSite, [Validators.required]],
+      priority: [JobPriority.Medium, [Validators.required]],
+      matchScore: [0, [Validators.min(0), Validators.max(100)]],
       jobUrl: ['', []], // Optional
       jobDescription: ['', []], // Job posting text for AI analysis
       description: ['', []], // Private notes (salary, thoughts)
@@ -276,6 +285,8 @@ export class JobFormComponent implements OnInit {
           documentId: application.documentId || null,
           jobType: application.jobType,
           workplaceType: application.workplaceType,
+          priority: application.priority,
+          matchScore: application.matchScore || 0,
         });
         this.syncCompanySearch();
         this.isLoading = false;
@@ -434,6 +445,22 @@ export class JobFormComponent implements OnInit {
     this.isWorkplaceTypeDropdownOpen = false;
   }
 
+  isPriorityDropdownOpen = false;
+  openPriorityDropdown() {
+    this.isPriorityDropdownOpen = true;
+  }
+
+  closePriorityDropdown() {
+    setTimeout(() => {
+      this.isPriorityDropdownOpen = false;
+    }, 150);
+  }
+
+  selectPriority(value: number) {
+    this.jobForm.patchValue({ priority: value });
+    this.isPriorityDropdownOpen = false;
+  }
+
   get selectedStatusLabel(): string {
     const value = Number(this.jobForm.get('status')?.value);
     return this.statusOptions.find((option) => option.value === value)?.label ?? 'Select status';
@@ -449,6 +476,11 @@ export class JobFormComponent implements OnInit {
     return (
       this.workplaceTypeOptions.find((option) => option.value === value)?.label ?? 'Select location'
     );
+  }
+
+  get selectedPriorityLabel(): string {
+    const value = Number(this.jobForm.get('priority')?.value);
+    return this.priorityOptions.find((option) => option.value === value)?.label ?? 'Select priority';
   }
 
   openDocumentDropdown() {

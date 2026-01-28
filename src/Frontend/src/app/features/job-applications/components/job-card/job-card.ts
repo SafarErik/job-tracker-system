@@ -20,6 +20,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 
 /**
  * Job Card Component
@@ -302,6 +303,44 @@ export class JobCardComponent {
             default:
                 return 'Unknown';
         }
+    });
+
+    // Computed: Priority Label
+    priorityLabel = computed(() => {
+        const priority = this.application().priority;
+        switch (priority) {
+            case JobPriority.High:
+                return 'High Priority';
+            case JobPriority.Medium:
+                return 'Medium Priority';
+            case JobPriority.Low:
+                return 'Low Priority';
+            default:
+                return 'Medium';
+        }
+    });
+
+    // Computed: Priority Color (Tailwind classes)
+    priorityColorClasses = computed(() => {
+        const priority = this.application().priority;
+        switch (priority) {
+            case JobPriority.High:
+                return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+            case JobPriority.Medium:
+                return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+            case JobPriority.Low:
+                return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+            default:
+                return 'bg-muted text-muted-foreground';
+        }
+    });
+
+    // Computed: Match Score Color
+    matchScoreColorClasses = computed(() => {
+        const score = this.application().matchScore || 0;
+        if (score >= 80) return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
+        if (score >= 50) return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+        return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20';
     });
 
     // Format date

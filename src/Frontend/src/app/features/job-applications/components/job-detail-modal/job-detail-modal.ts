@@ -7,6 +7,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 
 // Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -141,6 +142,45 @@ export class JobDetailModalComponent implements OnInit {
       case WorkplaceType.Hybrid: return 'Hybrid';
       default: return 'Unknown';
     }
+  }
+
+  /**
+   * Get human-readable priority label
+   */
+  getPriorityLabel(priority: JobPriority): string {
+    switch (priority) {
+      case JobPriority.High: return 'High Priority';
+      case JobPriority.Medium: return 'Medium Priority';
+      case JobPriority.Low: return 'Low Priority';
+      default: return 'Medium';
+    }
+  }
+
+  /**
+   * Get CSS class for priority badge
+   */
+  getPriorityClass(priority: JobPriority): string {
+    const base = 'px-2.5 py-0.5 rounded-full text-xs font-semibold border border-transparent transition-all';
+    switch (priority) {
+      case JobPriority.High:
+        return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+      case JobPriority.Medium:
+        return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+      case JobPriority.Low:
+        return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+      default:
+        return `${base} bg-muted text-muted-foreground`;
+    }
+  }
+
+  /**
+   * Get CSS class for match score
+   */
+  getMatchScoreClass(score: number): string {
+    const base = 'px-2.5 py-0.5 rounded-full text-xs font-semibold border border-transparent transition-all';
+    if (score >= 80) return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`;
+    if (score >= 50) return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+    return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
   }
 
   /**

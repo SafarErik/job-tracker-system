@@ -218,6 +218,44 @@
                         }
                     </div>
                 </div>
+
+                <!-- Priority Dropdown -->
+                <div class="space-y-2">
+                    <label hlmLabel
+                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Priority</label>
+                    <div class="relative">
+                        <button type="button" hlmBtn variant="outline"
+                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
+                            (click)="isPriorityDropdownOpen.set(!isPriorityDropdownOpen())">
+                            <span class="text-sm font-medium">{{ selectedPriorityLabel }}</span>
+                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        @if (isPriorityDropdownOpen()) {
+                        <div
+                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div class="p-1">
+                                @for (opt of priorityOptions; track opt.value) {
+                                <button type="button" (click)="selectPriority(opt.value)"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
+                                    {{ opt.label }}
+                                </button>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Score -->
+            <div class="space-y-2">
+                <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Match
+                    Score (%)</label>
+                <input hlmInput formControlName="matchScore" type="number" placeholder="0-100"
+                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50" />
             </div>
         </div>
 

@@ -1,7 +1,7 @@
-<div class="min-h-screen bg-background text-foreground pb-12 font-sans">
+<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20">
   <!-- Loading State -->
   @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground animate-pulse">
+  <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
     <ng-icon name="lucideLoader2" class="text-4xl animate-spin text-primary"></ng-icon>
     <p class="text-sm font-medium">Initializing Mission Control...</p>
   </div>
@@ -20,99 +20,131 @@
 
   <!-- Main Content -->
   @if (application() && !isLoading()) {
-  <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-8 animate-in fade-in duration-500">
+  <div class="max-w-[1400px] mx-auto px-6 lg:px-8 pt-8 space-y-8">
 
-    <!-- HEADER: Command Center Style -->
-    <div class="mb-8 flex flex-col gap-6">
-      <!-- Top Row: Breadcrumb & Actions -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- 1. Breadcrumbs -->
+    <nav hlmBreadcrumb class="text-sm text-muted-foreground">
+      <ol hlmBreadcrumbList>
+        <li hlmBreadcrumbItem><a hlmBreadcrumbLink link="/" class="hover:text-primary transition-colors">Home</a></li>
+        <li hlmBreadcrumbSeparator><ng-icon name="lucideChevronRight"></ng-icon></li>
+        <li hlmBreadcrumbItem><a hlmBreadcrumbLink link="/applications"
+            class="hover:text-primary transition-colors">Applications</a></li>
+        <li hlmBreadcrumbSeparator><ng-icon name="lucideChevronRight"></ng-icon></li>
+        <li hlmBreadcrumbItem><span hlmBreadcrumbPage class="font-medium text-foreground">{{ application()!.companyName
+            }}</span></li>
+      </ol>
+    </nav>
 
-        <!-- Breadcrumb -->
-        <nav hlmBreadcrumb>
-          <ol hlmBreadcrumbList>
-            <li hlmBreadcrumbItem>
-              <a hlmBreadcrumbLink routerLink="/">Home</a>
-            </li>
-            <li hlmBreadcrumbSeparator>
-              <ng-icon name="lucideChevronRight"></ng-icon>
-            </li>
-            <li hlmBreadcrumbItem>
-              <a hlmBreadcrumbLink routerLink="/applications">Applications</a>
-            </li>
-            <li hlmBreadcrumbSeparator>
-              <ng-icon name="lucideChevronRight"></ng-icon>
-            </li>
-            <li hlmBreadcrumbItem>
-              <span hlmBreadcrumbPage>{{ application()!.companyName }}</span>
-            </li>
-          </ol>
-        </nav>
-
-        <!-- Primary Badges -->
-        <div class="flex items-center gap-3">
-          <span
-            class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20 flex items-center gap-1.5">
-            <ng-icon name="lucideActivity" size="14"></ng-icon>
-            {{ application()!.matchScore }}% Match
-          </span>
-          <span [class]="getStatusClass(application()!.status)" class="rounded-full !px-3 !py-1 !text-xs !font-bold">
-            {{ getStatusLabel(application()!.status) }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Title Section -->
-      <div class="flex flex-col gap-2">
-        <div class="flex flex-wrap items-baseline gap-4">
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-            {{ application()!.position }}
-          </h1>
-          <span class="text-2xl font-medium text-muted-foreground">
-            at <span class="text-foreground">{{ application()!.companyName }}</span>
-          </span>
+    <!-- 2. Header & Controls -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2">
+      <div class="space-y-3">
+        <div class="flex items-baseline gap-4 flex-wrap">
+          <h1 class="text-4xl md:text-5xl font-black tracking-tight text-foreground">{{ application()!.position }}</h1>
+          <span class="text-2xl text-muted-foreground font-light">at</span>
+          <a [routerLink]="['/companies', application()!.companyId]"
+            class="text-3xl font-bold text-primary hover:text-primary/80 transition-colors hover:underline decoration-2 underline-offset-4">
+            {{ application()!.companyName }}
+          </a>
         </div>
 
-        <div class="flex items-center gap-6 text-sm text-muted-foreground mt-1">
-          <div class="flex items-center gap-2">
-            <ng-icon name="lucideCalendar" class="text-primary"></ng-icon>
-            Applied {{ formatDate(application()!.appliedAt) }}
-          </div>
-          <div class="flex items-center gap-2">
-            <ng-icon name="lucideMapPin" class="text-primary"></ng-icon>
-            {{ getWorkplaceLabel(application()!.workplaceType) }}
-          </div>
+        <!-- INLINE EDITING ROW (Dropdowns) -->
+        <div class="flex flex-wrap gap-3 items-center">
+
+          <!-- Status Dropdown -->
+          <button [class]="getStatusClass(application()!.status)" [hlmDropdownMenuTrigger]="statusMenu"
+            class="flex items-center gap-2 pr-2 shadow-sm hover:shadow-md cursor-pointer">
+            <span>{{ getStatusLabel(application()!.status) }}</span>
+            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
+          </button>
+          <ng-template #statusMenu>
+            <hlm-dropdown-menu class="w-48">
+              <hlm-dropdown-menu-label>Update Status</hlm-dropdown-menu-label>
+              <hlm-dropdown-menu-separator></hlm-dropdown-menu-separator>
+              @for (option of statusOptions; track option.value) {
+              <button hlmDropdownMenuItem (click)="selectStatus(option.value)">
+                {{ option.label }}
+              </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
+
+          <!-- Priority Dropdown -->
+          <button [class]="getPriorityClass(application()!.priority)" [hlmDropdownMenuTrigger]="priorityMenu"
+            class="flex items-center gap-2 rounded-lg pr-2 cursor-pointer shadow-sm hover:shadow-md">
+            <span>{{ getPriorityLabel(application()!.priority) }}</span>
+            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
+          </button>
+          <ng-template #priorityMenu>
+            <hlm-dropdown-menu class="w-40">
+              <hlm-dropdown-menu-label>Set Priority</hlm-dropdown-menu-label>
+              <hlm-dropdown-menu-separator></hlm-dropdown-menu-separator>
+              @for (option of priorityOptions; track option.value) {
+              <button hlmDropdownMenuItem (click)="selectPriority(option.value)">
+                {{ option.label }}
+              </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
+
+          <!-- Workplace Dropdown -->
+          <button
+            class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 text-sm font-bold border border-border/60 hover:bg-muted transition-all shadow-sm cursor-pointer"
+            [hlmDropdownMenuTrigger]="workplaceMenu">
+            <ng-icon name="lucideMapPin" size="14" class="text-muted-foreground"></ng-icon>
+            <span>{{ getWorkplaceLabel(application()!.workplaceType) }}</span>
+            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
+          </button>
+          <ng-template #workplaceMenu>
+            <hlm-dropdown-menu class="w-40">
+              <hlm-dropdown-menu-label>Workplace Type</hlm-dropdown-menu-label>
+              <hlm-dropdown-menu-separator></hlm-dropdown-menu-separator>
+              @for (option of workplaceOptions; track option.value) {
+              <button hlmDropdownMenuItem (click)="selectWorkplace(option.value)">
+                {{ option.label }}
+              </button>
+              }
+            </hlm-dropdown-menu>
+          </ng-template>
+
           @if (application()!.jobUrl) {
+          <div class="h-4 w-px bg-border mx-1"></div>
           <a [href]="application()!.jobUrl" target="_blank"
-            class="flex items-center gap-2 hover:text-primary transition-colors hover:underline">
-            <ng-icon name="lucideExternalLink" class="text-primary"></ng-icon>
-            Job Posting
+            class="text-sm font-medium text-muted-foreground hover:text-primary flex items-center gap-1.5 transition-colors">
+            Job Posting <ng-icon name="lucideExternalLink" size="12"></ng-icon>
           </a>
           }
         </div>
       </div>
 
-      <!-- Modern Tab Bar (Dock Style) -->
-      <div
-        class="flex flex-wrap items-center gap-1 p-1.5 rounded-2xl bg-muted/40 border border-border/40 w-fit backdrop-blur-sm">
+      <!-- Match Score -->
+      <div class="flex flex-col items-end">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-[0.65rem] uppercase tracking-[0.25em] font-black text-muted-foreground/80">Match
+            Efficiency</span>
+          <ng-icon name="lucideActivity" size="14" class="text-emerald-500"></ng-icon>
+        </div>
+        <div
+          class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-500 to-teal-600 drop-shadow-sm">
+          {{ application()!.matchScore }}%
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Navigation Tabs (Dock Style) -->
+    <div
+      class="sticky top-20 z-40 bg-background/80 backdrop-blur-md rounded-2xl border border-border/40 p-1.5 w-fit shadow-lg shadow-black/5 mx-auto lg:mx-0">
+      <div class="flex items-center gap-1">
         @for (tab of tabs; track tab.id) {
         <button (click)="setActiveTab(tab.id)"
           class="group relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 overflow-hidden"
           [class.text-primary]="activeTab() === tab.id" [class.text-muted-foreground]="activeTab() !== tab.id">
 
-          <!-- Active Background Pill -->
           @if (activeTab() === tab.id) {
-          <div
-            class="absolute inset-0 bg-background shadow-sm border border-border/50 rounded-xl animate-in fade-in zoom-in-105 duration-200">
-          </div>
+          <div class="absolute inset-0 bg-secondary shadow-sm rounded-xl"></div>
           }
 
-          <!-- Hover Effect -->
-          <div class="absolute inset-0 bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
-          </div>
-
-          <!-- Content -->
           <span class="relative z-10 flex items-center gap-2">
-            <ng-icon [name]="tab.icon" size="16" [class.stroke-[2.5px]]="activeTab() === tab.id"></ng-icon>
+            <ng-icon [name]="tab.icon" size="16"></ng-icon>
             {{ tab.label }}
           </span>
         </button>
@@ -120,252 +152,111 @@
       </div>
     </div>
 
-    <!-- CONTENT AREA -->
-    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
 
-      <!-- OVERVIEW (BENTO GRID) -->
-      @if (activeTab() === 'overview') {
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 pb-20">
+    <!-- 4. CONTENT AREA (Bento Grid) -->
+    <div class="min-h-[500px]">
+      <!-- AI COACH TAB (Resume Optimizer) -->
+      @if (activeTab() === 'coach') {
+      <div class="space-y-8 max-w-6xl mx-auto">
 
-        <!-- Left Column (Main Info) -->
-        <div class="md:col-span-12 lg:col-span-8 flex flex-col gap-6">
-
-          <!-- Application Details Card -->
-          <div
-            class="rounded-3xl border border-border/40 bg-card p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
-            <div class="flex items-center gap-3 mb-6">
-              <div class="p-2.5 rounded-xl bg-primary/10 text-primary">
-                <ng-icon name="lucideClipboardList" size="20"></ng-icon>
-              </div>
-              <h2 class="text-xl font-bold tracking-tight">Application Details</h2>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-4">
-              <div class="flex flex-col gap-1.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Workplace Model</span>
-                <span class="text-base font-medium flex items-center gap-2">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                  {{ getWorkplaceLabel(application()!.workplaceType) }}
-                </span>
-              </div>
-
-              <div class="flex flex-col gap-1.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Priority Level</span>
-                <span [class]="getPriorityClass(application()!.priority)" class="w-fit rounded-lg !px-3">
-                  {{ getPriorityLabel(application()!.priority) }}
-                </span>
-              </div>
-
-              <div class="flex flex-col gap-1.5">
-                <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">Job Type</span>
-                <span class="text-base font-medium text-foreground">
-                  {{ getJobTypeLabel(application()!.jobType) }}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- AI Insights Box -->
-          <div
-            class="group relative rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 p-8 overflow-hidden hover:border-indigo-500/40 transition-all duration-500">
-            <!-- Decorative Icon -->
-            <ng-icon name="lucideSparkles"
-              class="absolute -right-6 -top-6 text-[120px] text-indigo-500/5 rotate-12 group-hover:rotate-[24deg] transition-transform duration-700"></ng-icon>
-
-            <div class="relative z-10">
-              <h3 class="text-xl font-bold mb-3 flex items-center gap-2 text-foreground">
-                AI Coach Ready
-                <span class="flex h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></span>
-              </h3>
-
-              @if (!aiAnalysis()) {
-              <p class="text-sm text-muted-foreground mb-6 max-w-lg leading-relaxed">
-                Provide the job description to unlock custom interview questions, gap analysis, and resume tailoring
-                strategies tailored specifically to this role.
-              </p>
-              <button (click)="setActiveTab('context')"
-                class="bg-foreground text-background hover:bg-foreground/90 px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/10 hover:shadow-indigo-500/20 hover:-translate-y-0.5 transition-all">
-                Input Job Context →
-              </button>
-              } @else {
-              <p class="text-sm text-muted-foreground mb-6 max-w-lg leading-relaxed">
-                Your extensive analysis matches this role with a <strong class="text-foreground">{{
-                  aiAnalysis()!.matchScore }}% score</strong>. Review your custom strategy now.
-              </p>
-              <div class="flex gap-3">
-                <button (click)="setActiveTab('coach')"
-                  class="bg-indigo-600 text-white hover:bg-indigo-500 px-5 py-2.5 rounded-xl text-sm font-bold shadow-md transition-all">
-                  View Coach Insights
-                </button>
-                <button (click)="setActiveTab('interview')"
-                  class="bg-card border border-border hover:bg-muted px-5 py-2.5 rounded-xl text-sm font-bold transition-all">
-                  Practice Interview
-                </button>
-              </div>
-              }
-            </div>
-          </div>
-
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-black mb-2 flex items-center justify-center gap-3">
+            <ng-icon name="lucideSparkles" class="text-amber-400"></ng-icon>
+            Resume Optimizer
+          </h2>
+          <p class="text-muted-foreground">AI-powered suggestions to align your experience with this specific role.</p>
         </div>
 
-        <!-- Right Column (Stats) -->
-        <div class="md:col-span-12 lg:col-span-4 flex flex-col gap-6">
-
-          <!-- Match Efficiency Gauge -->
-          <div
-            class="rounded-3xl border border-border/40 bg-card p-8 flex flex-col items-center justify-center text-center gap-6 shadow-sm">
-            <span class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Match Efficiency</span>
-
-            <div class="relative h-40 w-40 flex items-center justify-center">
-              <span class="text-4xl font-black tracking-tighter text-foreground">{{ application()!.matchScore }}%</span>
-              <!-- Ring Background -->
-              <svg class="absolute inset-0 h-full w-full -rotate-90">
-                <circle cx="80" cy="80" r="70" fill="none" stroke="currentColor" stroke-width="12"
-                  class="text-muted/20" />
-                <!-- Progress Ring -->
-                <circle cx="80" cy="80" r="70" fill="none" stroke="currentColor" stroke-width="12"
-                  [attr.stroke-dasharray]="440"
-                  [attr.stroke-dashoffset]="440 - (440 * (application()!.matchScore || 0)) / 100"
-                  class="text-primary transition-all duration-1000 ease-out drop-shadow-sm" stroke-linecap="round" />
-              </svg>
-            </div>
-
-            <p class="text-xs text-muted-foreground px-4 leading-relaxed">
-              Based on keyword matching between your profile and the job description.
-            </p>
-          </div>
-
-          <!-- Activity Timeline -->
-          <div class="rounded-3xl border border-border/40 bg-card p-6 shadow-sm h-full">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
-              <ng-icon name="lucideCalendar" size="14"></ng-icon>
-              Activity Timeline
-            </h3>
-
-            <div class="flex flex-col gap-0 border-l border-border/60 ml-3 pl-6 pb-2">
-              @for (event of timeline(); track event.id; let first = $first) {
-              <div class="relative pb-8 last:pb-0 group">
-                <!-- Dot -->
-                <div
-                  class="absolute -left-[30px] top-1.5 h-3 w-3 rounded-full bg-background border-2 border-primary z-10 transition-transform group-hover:scale-125"
-                  [class.bg-primary]="first" [class.animate-pulse]="first">
-                  @if(first) {
-                  <div class="absolute inset-0 rounded-full bg-primary/40 animate-ping"></div>
-                  }
-                </div>
-
-                <div class="flex flex-col gap-0.5">
-                  <span class="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-                    {{ event.title }}
-                  </span>
-                  @if (event.description) {
-                  <span class="text-xs text-muted-foreground/80 line-clamp-2">{{ event.description }}</span>
-                  }
-                  <span class="text-[10px] font-mono text-muted-foreground/60 mt-1 uppercase tracking-wider">
-                    {{ formatDate(event.timestamp) }}
-                  </span>
-                </div>
-              </div>
-              }
-            </div>
-          </div>
-
-        </div>
-      </div>
-      }
-
-      <!-- OTHER TABS (Placeholder reuse of existing logic for now, wrapped in new container) -->
-      @if (activeTab() !== 'overview') {
-      <div class="bg-card rounded-3xl border border-border p-8 min-h-[500px] shadow-sm">
-        @if (activeTab() === 'context') {
-        <!-- Job Context Reuse -->
-        <div class="max-w-3xl mx-auto">
-          <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <ng-icon name="lucideFileSearch" size="32"></ng-icon>
-            </div>
-            <h2 class="text-2xl font-bold text-foreground mb-2">Job Context Engine</h2>
-            <p class="text-muted-foreground">
-              Paste the full job description below to power the AI Coach.
-            </p>
-          </div>
-
-          <textarea hlmInput
-            class="w-full min-h-[400px] p-6 rounded-2xl border-border bg-muted/20 resize-y font-mono text-sm leading-relaxed focus:bg-background transition-all"
-            [value]="jobDescriptionInput()" (input)="jobDescriptionInput.set($any($event.target).value)"
-            placeholder="Paste job description here..."></textarea>
-
-          <button hlmBtn size="lg" class="w-full mt-6 h-12 text-base rounded-xl font-bold shadow-lg shadow-primary/20"
-            [disabled]="isAnalyzing() || !jobDescriptionInput().trim()" (click)="analyzeJobDescription()">
-            @if (isAnalyzing()) {
-            <ng-icon name="lucideLoader2" class="mr-2 animate-spin"></ng-icon> Analyzing...
-            } @else {
-            Analyze & Generate Insights
-            }
-          </button>
-        </div>
-        }
-
-        @if (activeTab() === 'coach') {
-        <!-- Coach Reuse (Simplified Wrapper) -->
         @if (!aiAnalysis()) {
-        <div class="flex flex-col items-center justify-center text-center py-20">
-          <ng-icon name="lucideSparkles" class="text-6xl text-muted-foreground/20 mb-6"></ng-icon>
-          <h3 class="text-xl font-bold mb-2">Analysis Required</h3>
-          <p class="text-muted-foreground mb-6">Please provide job context first.</p>
-          <button hlmBtn variant="secondary" (click)="setActiveTab('context')">Go to Job Context</button>
+        <div class="text-center py-20 bg-card rounded-3xl border border-border/40 border-dashed">
+          <ng-icon name="lucideBrain" size="48" class="text-muted-foreground/30 mb-4"></ng-icon>
+          <h3 class="text-xl font-bold mb-2">No Analysis Yet</h3>
+          <p class="text-muted-foreground mb-6">Go to the <strong>Job Context</strong> tab and clicking "Generate
+            Insights" to unlock this feature.</p>
+          <button hlmBtn variant="outline" (click)="setActiveTab('context')">Go to Job Context</button>
         </div>
         } @else {
-        <!-- Gap Analysis & Skills -->
-        <div class="space-y-8">
-          <div class="p-6 rounded-2xl bg-muted/30 border border-border">
-            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-              <ng-icon name="lucideTarget" class="text-primary"></ng-icon> Gap Analysis
-            </h3>
-            <p class="text-muted-foreground leading-relaxed">{{ aiAnalysis()!.gapAnalysis }}</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="p-6 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
-              <h3 class="font-bold text-emerald-600 mb-4">Matched Skills</h3>
-              <div class="flex flex-wrap gap-2">
-                @for (skill of aiAnalysis()!.matchedSkills; track skill) {
-                <span
-                  class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
-                  {{ skill }}
-                </span>
-                }
-              </div>
+        <div class="grid grid-cols-1 gap-8">
+          @for (enhancement of aiAnalysis()?.resumeEnhancements; track enhancement.id) {
+          <div
+            class="bg-card rounded-3xl border border-border/40 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <!-- Reasoning Header -->
+            <div class="bg-indigo-500/5 border-b border-indigo-500/10 p-4 flex items-center gap-3">
+              <ng-icon name="lucideLightbulb" class="text-indigo-500" size="18"></ng-icon>
+              <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+                <strong>AI Insight:</strong> {{ enhancement.reasoning }}
+              </span>
             </div>
 
-            <div class="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20">
-              <h3 class="font-bold text-amber-600 mb-4">Missing Skills</h3>
-              <div class="flex flex-wrap gap-2">
-                @for (skill of aiAnalysis()!.missingSkills; track skill) {
-                <span
-                  class="px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs font-bold border border-amber-500/20">
-                  {{ skill }}
-                </span>
-                }
+            <div class="grid grid-cols-1 lg:grid-cols-2">
+              <!-- Original -->
+              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-rose-500/5">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-xs font-bold uppercase tracking-widest text-rose-600 dark:text-rose-400">Original</span>
+                  <ng-icon name="lucideArrowRight" class="lg:hidden text-muted-foreground"></ng-icon>
+                </div>
+                <p
+                  class="text-muted-foreground line-through decoration-rose-500/50 decoration-2 font-mono text-sm leading-relaxed">
+                  "{{ enhancement.originalBullet }}"
+                </p>
+              </div>
+
+              <!-- Rebranded -->
+              <div class="p-8 bg-emerald-500/5 relative group">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-xs font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <ng-icon name="lucideSparkles" size="14"></ng-icon> Optimized
+                  </span>
+                  <button hlmBtn size="sm" variant="ghost"
+                    class="h-6 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10"
+                    (click)="copyToClipboard(enhancement.rebrandedBullet)">
+                    Copy
+                  </button>
+                </div>
+                <textarea readonly
+                  class="w-full h-24 bg-transparent border-none resize-none focus:ring-0 text-foreground font-medium text-lg leading-relaxed outline-none">
+{{ enhancement.rebrandedBullet }}
+                                </textarea>
+
+                <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span class="text-[10px] text-emerald-600/60 font-mono">Click to copy</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        }
-        }
-
-        <!-- Other tabs simply show placeholder or partial implementation for brevity as primarily requested Bento/Header was the goal -->
-        @if (activeTab() === 'documents' || activeTab() === 'interview' || activeTab() === 'strategy') {
-        <div class="flex flex-col items-center justify-center py-20 text-center">
-          <ng-icon [name]="activeTabIcon()" class="text-6xl text-muted-foreground/20 mb-6"></ng-icon>
-          <h3 class="text-xl font-bold mb-2">{{ activeTabLabel() }} Module</h3>
-          <p class="text-muted-foreground">This module is fully operational. (Rendering simplified view for design
-            check)</p>
+          }
         </div>
         }
       </div>
       }
+      @if (activeTab() === 'overview') {
+      <div class="p-8 border rounded-3xl bg-card">
+        <h2 class="text-xl font-bold mb-4">Overview Tab Active</h2>
+        <p>Applied On: {{ formatDate(application()!.appliedAt) }}</p>
+        <p>Job Type: {{ getJobTypeLabel(application()!.jobType) }}</p>
+      </div>
+      }
+      @else {
+      <div class="p-8 border rounded-3xl bg-card">
+        <h2 class="text-xl font-bold mb-4">{{ activeTab() | titlecase }} Tab Content Placeholder</h2>
+        <p>Content temporarily simplified for debugging.</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
 
+  @if (!application() && !isLoading() && !error()) {
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-20 text-center">
+    <div class="bg-card rounded-3xl border border-border/40 p-12 max-w-md mx-auto shadow-sm">
+      <div class="p-4 rounded-full bg-primary/10 w-fit mx-auto mb-6 text-primary">
+        <ng-icon name="lucideFileSearch" size="32"></ng-icon>
+      </div>
+      <h2 class="text-2xl font-bold mb-2">No Application Selected</h2>
+      <p class="text-muted-foreground mb-8">Select an application from the dashboard to launch the Career Co-pilot.</p>
+      <button hlmBtn (click)="goBack()" class="w-full">Go to Dashboard</button>
     </div>
   </div>
   }

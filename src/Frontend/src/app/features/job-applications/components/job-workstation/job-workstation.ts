@@ -7,7 +7,8 @@ import {
     inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ApplicationService } from '../../services/application.service';
@@ -36,6 +37,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -50,7 +52,17 @@ import {
     lucideMapPin,
     lucideChevronRight,
     lucideExternalLink,
-    lucideClipboardList
+    lucideClipboardList,
+    lucideChevronDown,
+    lucideDownload,
+    lucideFileText,
+    lucideBrain,
+    lucideLightbulb,
+    lucideTarget,
+    lucideLoader2,
+    lucideChevronLeft,
+    lucideActivity,
+    lucideArrowRight
 } from '@ng-icons/lucide';
 
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
@@ -60,6 +72,7 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
     imports: [
         CommonModule,
         FormsModule,
+        RouterLink,
         NgIcon,
         ...HlmLabelImports,
         ...HlmTabsImports,
@@ -68,7 +81,8 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
         ...HlmCardImports,
         ...HlmButtonImports,
         ...HlmBadgeImports,
-        ...HlmBreadCrumbImports
+        ...HlmBreadCrumbImports,
+        ...HlmDropdownMenuImports
     ],
     providers: [
         provideIcons({
@@ -82,15 +96,26 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
             lucideMapPin,
             lucideChevronRight,
             lucideExternalLink,
-            lucideClipboardList
+            lucideClipboardList,
+            lucideChevronDown,
+            lucideDownload,
+            lucideFileText,
+            lucideBrain,
+            lucideLightbulb,
+            lucideTarget,
+            lucideLoader2,
+            lucideChevronLeft,
+            lucideActivity,
+            lucideArrowRight
         })
     ],
     templateUrl: './job-workstation.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobWorkstationComponent implements OnInit {
-    private readonly route = inject(ActivatedRoute);
+    public readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    private readonly location = inject(Location);
     private readonly applicationService = inject(ApplicationService);
     private readonly documentService = inject(DocumentService);
     private readonly notificationService = inject(NotificationService);
@@ -124,6 +149,20 @@ export class JobWorkstationComponent implements OnInit {
     ];
     isStatusDropdownOpen = signal(false);
 
+    // Priority Options
+    priorityOptions = [
+        { value: JobPriority.High, label: 'High Priority' },
+        { value: JobPriority.Medium, label: 'Medium Priority' },
+        { value: JobPriority.Low, label: 'Low Priority' },
+    ];
+
+    // Workplace Options
+    workplaceOptions = [
+        { value: WorkplaceType.OnSite, label: 'On-site' },
+        { value: WorkplaceType.Remote, label: 'Remote' },
+        { value: WorkplaceType.Hybrid, label: 'Hybrid' },
+    ];
+
     // Job Context tab
     jobDescriptionInput = signal('');
     isAnalyzing = signal(false);
@@ -137,9 +176,11 @@ export class JobWorkstationComponent implements OnInit {
     coverLetter = signal<CoverLetterDraft>({ content: '', isEdited: false });
     isGeneratingCoverLetter = signal(false);
 
-    // Interview Prep tab
+    // Interview Prep tab (Flashcards)
     interviewQuestions = signal<InterviewQuestion[]>([]);
     isGeneratingQuestions = signal(false);
+    activeFlashcardIndex = signal(0);
+    isFlashcardFlipped = signal(false);
     expandedQuestionId = signal<string | null>(null);
 
     // Timeline
@@ -185,7 +226,10 @@ export class JobWorkstationComponent implements OnInit {
     });
 
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id');
+        // Check local snapshot OR parent snapshot for the ID
+        const id = this.route.snapshot.paramMap.get('id') ||
+            this.route.parent?.snapshot.paramMap.get('id');
+
         if (id) {
             const parsedId = Number.parseInt(id, 10);
             if (!isNaN(parsedId)) {
@@ -196,6 +240,7 @@ export class JobWorkstationComponent implements OnInit {
                 this.isLoading.set(false);
             }
         } else {
+            console.error('No ID found in route!');
             this.isLoading.set(false);
         }
     }
@@ -269,6 +314,34 @@ export class JobWorkstationComponent implements OnInit {
                 this.notificationService.success('Status updated', 'Success');
             },
             error: () => this.notificationService.error('Failed to update status', 'Error'),
+        });
+    }
+
+    // Priority Selection
+    selectPriority(priority: JobPriority): void {
+        const app = this.application();
+        if (!app) return;
+
+        this.applicationService.updateApplication(app.id, { ...app, priority }).subscribe({
+            next: () => {
+                this.application.set({ ...app, priority });
+                this.notificationService.success('Priority updated', 'Success');
+            },
+            error: () => this.notificationService.error('Failed to update priority', 'Error'),
+        });
+    }
+
+    // Workplace Selection
+    selectWorkplace(workplaceType: WorkplaceType): void {
+        const app = this.application();
+        if (!app) return;
+
+        this.applicationService.updateApplication(app.id, { ...app, workplaceType }).subscribe({
+            next: () => {
+                this.application.set({ ...app, workplaceType });
+                this.notificationService.success('Workplace updated', 'Success');
+            },
+            error: () => this.notificationService.error('Failed to update workplace', 'Error'),
         });
     }
 
@@ -493,6 +566,26 @@ Best regards,
         );
     }
 
+    // Flashcard methods
+    flipFlashcard(): void {
+        this.isFlashcardFlipped.update(v => !v);
+    }
+
+    nextFlashcard(): void {
+        if (this.activeFlashcardIndex() < this.interviewQuestions().length - 1) {
+            this.activeFlashcardIndex.update(i => i + 1);
+            this.isFlashcardFlipped.set(false);
+        }
+    }
+
+    prevFlashcard(): void {
+        if (this.activeFlashcardIndex() > 0) {
+            this.activeFlashcardIndex.update(i => i - 1);
+            this.isFlashcardFlipped.set(false);
+        }
+    }
+
+
     // Utility
     copyToClipboard(text: string): void {
         navigator.clipboard.writeText(text)
@@ -514,7 +607,7 @@ Best regards,
     }
 
     goBack(): void {
-        this.router.navigate(['/applications']);
+        this.location.back();
     }
 
     private delay(ms: number): Promise<void> {

@@ -1,31 +1,33 @@
-<div class="form-container">
-  <!-- Modern Form Card -->
-  <div class="form-card">
-    <!-- Form Header with Gradient -->
-    <div class="form-header">
-      <div class="header-content">
-        <svg class="header-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
+<div class="min-h-screen bg-background py-8 px-4">
+  <!-- Modern Form Card using Spartan -->
+  <section hlmCard class="max-w-2xl mx-auto flex flex-col max-h-[90vh]">
+    <!-- Form Header -->
+    <div hlmCardHeader class="flex-shrink-0">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+          <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
         <div>
-          <h1 class="form-title">
+          <h1 hlmCardTitle class="text-xl">
             {{ isEditMode ? 'Edit Application' : 'Add New Application' }}
           </h1>
-          <p class="form-subtitle">
+          <p hlmCardDescription>
             {{ isEditMode ? 'Update your application details' : 'Track your job hunting progress' }}
           </p>
         </div>
       </div>
     </div>
 
-    <!-- Form Content -->
-    <div class="form-content">
-      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
+    <!-- Scrollable Form Content -->
+    <div hlmCardContent class="flex-1 overflow-y-auto space-y-6">
+      <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="flex flex-col h-full">
         <!-- Application Details Section -->
-        <div class="form-section">
-          <h2 class="section-title">
-            <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="space-y-4">
+          <h2 class="text-sm font-medium text-primary uppercase tracking-wider flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -33,84 +35,87 @@
           </h2>
 
           <!-- Position Title -->
-          <div class="form-group">
-            <label for="position" class="form-label">
-              Position Title <span class="required">*</span>
-            </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="position">Position Title <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <input id="position" type="text" formControlName="position" placeholder="e.g. Senior Backend Developer"
-                class="form-input with-icon" [class.input-error]="
-                  jobForm.get('position')?.invalid && jobForm.get('position')?.touched
-                " (input)="onPositionSearchChange($event.target.value)" (focus)="openPositionDropdown()"
+              <input hlmInput id="position" type="text" formControlName="position"
+                placeholder="e.g. Senior Backend Developer" class="w-full pl-10"
+                (input)="onPositionSearchChange($event.target.value)" (focus)="openPositionDropdown()"
                 (blur)="closePositionDropdown()" />
             </div>
-            <div class="position-dropdown" *ngIf="isPositionDropdownOpen && filteredPositions.length > 0">
-              <button type="button" class="position-option" *ngFor="let position of filteredPositions"
-                (click)="selectPosition(position)">
+            <div *ngIf="isPositionDropdownOpen && filteredPositions.length > 0"
+              class="absolute z-50 mt-1 w-full rounded-md border border-border bg-popover shadow-md">
+              <button type="button"
+                class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                *ngFor="let position of filteredPositions" (click)="selectPosition(position)">
                 {{ position }}
               </button>
             </div>
-            <p *ngIf="jobForm.get('position')?.invalid && jobForm.get('position')?.touched" class="error-message">
+            <p *ngIf="jobForm.get('position')?.invalid && jobForm.get('position')?.touched"
+              class="text-xs text-destructive">
               Position title is required (min 3 chars).
             </p>
           </div>
 
           <!-- Company -->
-          <div class="form-group">
-            <label for="company" class="form-label">
-              Company <span class="required">*</span>
-            </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="company">Company <span class="text-destructive">*</span></label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
-              <input id="company" type="text" formControlName="companySearch" placeholder="Start typing a company..."
-                class="form-input with-icon" (input)="onCompanySearchChange($event.target.value)"
-                (focus)="openCompanyDropdown()" (blur)="closeCompanyDropdown()" />
+              <input hlmInput id="company" type="text" formControlName="companySearch"
+                placeholder="Start typing a company..." class="w-full pl-10"
+                (input)="onCompanySearchChange($event.target.value)" (focus)="openCompanyDropdown()"
+                (blur)="closeCompanyDropdown()" />
             </div>
-            <div class="company-dropdown"
-              *ngIf="isCompanyDropdownOpen && (filteredCompanies.length > 0 || canCreateCompany)">
-              <button type="button" class="company-option" *ngFor="let company of filteredCompanies"
-                (click)="selectCompany(company)">
+            <div *ngIf="isCompanyDropdownOpen && (filteredCompanies.length > 0 || canCreateCompany)"
+              class="absolute z-50 mt-1 w-full rounded-md border border-border bg-popover shadow-md max-h-48 overflow-y-auto">
+              <button type="button"
+                class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground flex justify-between items-center"
+                *ngFor="let company of filteredCompanies" (click)="selectCompany(company)">
                 <span>{{ company.name }}</span>
-                <span class="company-meta">{{ company.totalApplications }} applications</span>
+                <span class="text-xs text-muted-foreground">{{ company.totalApplications }} applications</span>
               </button>
-              <button type="button" class="company-option create" *ngIf="canCreateCompany"
+              <button type="button" *ngIf="canCreateCompany"
+                class="w-full text-left px-3 py-2 text-sm text-primary hover:bg-accent font-medium"
                 (click)="createCompanyFromSearch()">
                 + Add "{{ companySearchTerm }}" to companies
               </button>
             </div>
-            <p *ngIf="jobForm.get('companyId')?.invalid && jobForm.get('companyId')?.touched" class="error-message">
+            <p *ngIf="jobForm.get('companyId')?.invalid && jobForm.get('companyId')?.touched"
+              class="text-xs text-destructive">
               Please select a company.
             </p>
           </div>
 
           <!-- Job URL -->
-          <div class="form-group">
-            <label for="jobUrl" class="form-label">
-              Job Posting URL
-              <span class="optional-badge">Optional</span>
-            </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="jobUrl">Job Posting URL
+              <span class="text-xs text-muted-foreground font-normal">(Optional)</span></label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               </svg>
-              <input id="jobUrl" type="url" formControlName="jobUrl" placeholder="https://linkedin.com/jobs/..."
-                class="form-input with-icon" />
+              <input hlmInput id="jobUrl" type="url" formControlName="jobUrl"
+                placeholder="https://linkedin.com/jobs/..." class="w-full pl-10" />
             </div>
           </div>
         </div>
 
         <!-- Status & CV Section -->
-        <div class="form-section">
-          <h2 class="section-title">
-            <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="space-y-4 mt-6">
+          <h2 class="text-sm font-medium text-primary uppercase tracking-wider flex items-center gap-2">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
             </svg>
@@ -118,77 +123,197 @@
           </h2>
 
           <!-- Status -->
-          <div class="form-group">
-            <label for="status" class="form-label">Current Status</label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="space-y-2">
+            <label hlmLabel for="status">Current Status</label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <button id="status" type="button" class="form-input with-icon select-trigger"
+              <button id="status" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
                 (click)="openStatusDropdown()" (blur)="closeStatusDropdown()">
                 <span>{{ selectedStatusLabel }}</span>
-                <span class="select-chevron">▾</span>
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
             </div>
-            <div class="select-dropdown" *ngIf="isStatusDropdownOpen">
-              <button type="button" class="select-option" *ngFor="let option of statusOptions"
-                (click)="selectStatus(option.value)">
+            <div *ngIf="isStatusDropdownOpen"
+              class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md">
+              <button type="button"
+                class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                *ngFor="let option of statusOptions" (click)="selectStatus(option.value)">
                 {{ option.label }}
               </button>
             </div>
           </div>
 
-          <!-- CV / Resume Selection (dropdown only - upload moved to Workstation) -->
-          <div class="form-group">
-            <label for="documentId" class="form-label">
-              CV / Resume
-              <span class="optional-badge">Optional</span>
-            </label>
-            <div class="input-with-icon">
-              <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Type & Workplace Grid -->
+          <div class="grid grid-cols-2 gap-4 pb-1">
+            <!-- Job Type -->
+            <div class="space-y-2">
+              <label hlmLabel for="jobType">Employment Type</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <button id="jobType" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
+                  (click)="openJobTypeDropdown()" (blur)="closeJobTypeDropdown()">
+                  <span>{{ selectedJobTypeLabel }}</span>
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="isJobTypeDropdownOpen"
+                class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md min-w-[200px]">
+                <button type="button"
+                  class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  *ngFor="let option of jobTypeOptions" (click)="selectJobType(option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Workplace Type -->
+            <div class="space-y-2">
+              <label hlmLabel for="workplaceType">Workplace</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <button id="workplaceType" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
+                  (click)="openWorkplaceTypeDropdown()" (blur)="closeWorkplaceTypeDropdown()">
+                  <span>{{ selectedWorkplaceTypeLabel }}</span>
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="isWorkplaceTypeDropdownOpen"
+                class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md min-w-[200px]">
+                <button type="button"
+                  class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  *ngFor="let option of workplaceTypeOptions" (click)="selectWorkplaceType(option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Priority & Match Score Grid -->
+          <div class="grid grid-cols-2 gap-4 mt-1 pb-1">
+            <!-- Priority -->
+            <div class="space-y-2">
+              <label hlmLabel for="priority">Priority</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                <button id="priority" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
+                  (click)="openPriorityDropdown()" (blur)="closePriorityDropdown()">
+                  <span>{{ selectedPriorityLabel }}</span>
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="isPriorityDropdownOpen"
+                class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md min-w-[200px]">
+                <button type="button"
+                  class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  *ngFor="let option of priorityOptions" (click)="selectPriority(option.value)">
+                  {{ option.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Match Score -->
+            <div class="space-y-2">
+              <label hlmLabel for="matchScore">Match Score (%)</label>
+              <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <input hlmInput id="matchScore" type="number" formControlName="matchScore" placeholder="0-100"
+                  class="w-full pl-10 h-10" min="0" max="100" />
+              </div>
+            </div>
+          </div>
+
+          <!-- CV / Resume Selection -->
+          <div class="space-y-2">
+            <label hlmLabel for="documentId">CV / Resume
+              <span class="text-xs text-muted-foreground font-normal">(Optional)</span></label>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
-              <button id="documentId" type="button" class="form-input with-icon select-trigger"
+              <button id="documentId" type="button" hlmBtn variant="outline" class="w-full justify-between pl-10"
                 (click)="openDocumentDropdown()" (blur)="closeDocumentDropdown()">
                 <span>{{ selectedDocumentLabel }}</span>
-                <span class="select-chevron">▾</span>
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
             </div>
-            <div class="select-dropdown" *ngIf="isDocumentDropdownOpen">
-              <button type="button" class="select-option" (click)="selectDocument(null)">
+            <div *ngIf="isDocumentDropdownOpen"
+              class="absolute z-50 mt-1 rounded-md border border-border bg-popover shadow-md">
+              <button type="button"
+                class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                (click)="selectDocument(null)">
                 No CV selected
               </button>
-              <button type="button" class="select-option" *ngFor="let doc of documents"
-                (click)="selectDocument(doc.id)">
+              <button type="button"
+                class="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                *ngFor="let doc of documents" (click)="selectDocument(doc.id)">
                 {{ doc.originalFileName }}
               </button>
             </div>
           </div>
         </div>
-
-        <!-- Form Actions -->
-        <div class="form-actions">
-          <a routerLink="/" class="btn btn-secondary">
-            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to List
-          </a>
-
-          <button type="submit" [disabled]="jobForm.invalid || isSubmitting" class="btn btn-primary">
-            <span *ngIf="isSubmitting" class="btn-spinner"></span>
-            <svg *ngIf="!isSubmitting" class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span *ngIf="!isSubmitting">{{
-              isEditMode ? 'Update Application' : 'Save Application'
-              }}</span>
-            <span *ngIf="isSubmitting">{{ isEditMode ? 'Updating...' : 'Saving...' }}</span>
-          </button>
-        </div>
       </form>
     </div>
-  </div>
+
+    <!-- Sticky Footer -->
+    <div hlmCardFooter class="flex justify-end gap-3 border-t border-border bg-card/90 backdrop-blur flex-shrink-0">
+      <a routerLink="/" hlmBtn variant="ghost">Cancel</a>
+      <button hlmBtn type="submit" [disabled]="jobForm.invalid || isSubmitting" (click)="onSubmit()" class="gap-2">
+        @if (isSubmitting) {
+        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        } @else {
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        }
+        <span>{{
+          isSubmitting
+          ? isEditMode
+          ? 'Updating...'
+          : 'Saving...'
+          : isEditMode
+          ? 'Update Application'
+          : 'Save Application'
+          }}</span>
+      </button>
+    </div>
+  </section>
 </div>

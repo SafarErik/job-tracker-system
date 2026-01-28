@@ -431,7 +431,9 @@ test-results/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+# Icon 
+# (Commented out because it ignores the /icon folder in UI components)
+# Icon
 
 
 # Thumbnails

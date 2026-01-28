@@ -15,6 +15,9 @@ import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
 import {
     AiAnalysisResult,
     InterviewQuestion,
@@ -24,13 +27,20 @@ import {
 } from '../../models/ai-analysis.model';
 import { Document } from '../../../documents/models/document.model';
 
+// Spartan UI
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmTabsImports } from '@spartan-ng/helm/tabs';
+import { BrnTabsImports } from '@spartan-ng/brain/tabs';
+import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
 
 @Component({
     selector: 'app-job-workstation',
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, ...HlmLabelImports, ...HlmTabsImports, ...BrnTabsImports, ...HlmSeparatorImports, ...HlmCardImports, ...HlmButtonImports],
     templateUrl: './job-workstation.html',
-    styleUrl: './job-workstation.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobWorkstationComponent implements OnInit {
@@ -62,7 +72,8 @@ export class JobWorkstationComponent implements OnInit {
         { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
         { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
         { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
-        { value: JobApplicationStatus.Offer, label: 'Offer' },
+        { value: JobApplicationStatus.Offer, label: 'Offer Received' },
+        { value: JobApplicationStatus.Accepted, label: 'Accepted' },
         { value: JobApplicationStatus.Rejected, label: 'Rejected' },
         { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
     ];
@@ -148,9 +159,7 @@ export class JobWorkstationComponent implements OnInit {
         this.isLoading.set(true);
         this.applicationService.getApplicationById(id).subscribe({
             next: (app) => {
-                // Add mock matchScore for demo
-                const enrichedApp = { ...app, matchScore: Math.floor(Math.random() * 40) + 60 };
-                this.application.set(enrichedApp);
+                this.application.set(app);
                 this.jobDescriptionInput.set(app.jobDescription || '');
                 this.generateMockTimeline(app);
                 this.isLoading.set(false);
@@ -190,8 +199,8 @@ export class JobWorkstationComponent implements OnInit {
     }
 
     // Tab navigation
-    setActiveTab(tab: WorkstationTab): void {
-        this.activeTab.set(tab);
+    setActiveTab(tab: string | WorkstationTab): void {
+        this.activeTab.set(tab as WorkstationTab);
         this.isMobileMenuOpen.set(false);
     }
 
@@ -223,16 +232,70 @@ export class JobWorkstationComponent implements OnInit {
     }
 
     getStatusClass(status: JobApplicationStatus): string {
-        const classes: Record<number, string> = {
-            [JobApplicationStatus.Applied]: 'bg-blue-500/20 text-blue-400',
-            [JobApplicationStatus.PhoneScreen]: 'bg-purple-500/20 text-purple-400',
-            [JobApplicationStatus.TechnicalTask]: 'bg-orange-500/20 text-orange-400',
-            [JobApplicationStatus.Interviewing]: 'bg-cyan-500/20 text-cyan-400',
-            [JobApplicationStatus.Offer]: 'bg-green-500/20 text-green-400',
-            [JobApplicationStatus.Rejected]: 'bg-red-500/20 text-red-400',
-            [JobApplicationStatus.Ghosted]: 'bg-slate-500/20 text-slate-400',
-        };
-        return classes[status] || 'bg-slate-500/20 text-slate-400';
+        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
+        switch (status) {
+            case JobApplicationStatus.Applied:
+                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+            case JobApplicationStatus.PhoneScreen:
+                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20`;
+            case JobApplicationStatus.TechnicalTask:
+                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20`;
+            case JobApplicationStatus.Interviewing:
+                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20`;
+            case JobApplicationStatus.Offer:
+                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30`;
+            case JobApplicationStatus.Accepted:
+                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`;
+            case JobApplicationStatus.Rejected:
+                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+            case JobApplicationStatus.Ghosted:
+                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
+            default:
+                return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700`;
+        }
+    }
+
+    getJobTypeLabel(type: JobType): string {
+        switch (type) {
+            case JobType.FullTime: return 'Full-time';
+            case JobType.PartTime: return 'Part-time';
+            case JobType.Internship: return 'Internship';
+            case JobType.Contract: return 'Contract';
+            case JobType.Freelance: return 'Freelance';
+            default: return 'Unknown';
+        }
+    }
+
+    getWorkplaceLabel(type: WorkplaceType): string {
+        switch (type) {
+            case WorkplaceType.OnSite: return 'On-site';
+            case WorkplaceType.Remote: return 'Remote';
+            case WorkplaceType.Hybrid: return 'Hybrid';
+            default: return 'Unknown';
+        }
+    }
+
+    getPriorityLabel(priority: JobPriority): string {
+        switch (priority) {
+            case JobPriority.High: return 'High Priority';
+            case JobPriority.Medium: return 'Medium Priority';
+            case JobPriority.Low: return 'Low Priority';
+            default: return 'Medium';
+        }
+    }
+
+    getPriorityClass(priority: JobPriority): string {
+        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
+        switch (priority) {
+            case JobPriority.High:
+                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+            case JobPriority.Medium:
+                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+            case JobPriority.Low:
+                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+            default:
+                return `${base} bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700`;
+        }
     }
 
     // Job Context - AI Analysis

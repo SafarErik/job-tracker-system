@@ -60,7 +60,11 @@ public class JobApplicationsController : ControllerBase
             CompanyId = app.CompanyId,
             CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName
+            DocumentName = app.Document?.OriginalFileName,
+            WorkplaceType = app.WorkplaceType,
+            Priority = app.Priority,
+            MatchScore = app.MatchScore,
+            SalaryOffer = app.SalaryOffer
         });
 
         return Ok(dtos);
@@ -102,7 +106,12 @@ public class JobApplicationsController : ControllerBase
             CompanyId = app.CompanyId,
             CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName
+            DocumentName = app.Document?.OriginalFileName,
+            JobType = app.JobType,
+            WorkplaceType = app.WorkplaceType,
+            Priority = app.Priority,
+            MatchScore = app.MatchScore,
+            SalaryOffer = app.SalaryOffer
         };
 
         return Ok(dto);
@@ -128,6 +137,11 @@ public class JobApplicationsController : ControllerBase
             JobUrl = createDto.JobUrl,
             Description = createDto.Description,
             Status = createDto.Status,
+            JobType = createDto.JobType,
+            WorkplaceType = createDto.WorkplaceType,
+            Priority = createDto.Priority,
+            MatchScore = createDto.MatchScore,
+            SalaryOffer = createDto.SalaryOffer,
             DocumentId = createDto.DocumentId,
             AppliedAt = DateTime.UtcNow
         };
@@ -154,7 +168,12 @@ public class JobApplicationsController : ControllerBase
             CompanyId = application.CompanyId,
             CompanyName = application.Company?.Name ?? "Unknown Company",
             DocumentId = application.DocumentId,
-            DocumentName = documentName
+            DocumentName = documentName,
+            JobType = application.JobType,
+            WorkplaceType = application.WorkplaceType,
+            Priority = application.Priority,
+            MatchScore = application.MatchScore,
+            SalaryOffer = application.SalaryOffer
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -200,6 +219,21 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
+
+        if (updateDto.JobType.HasValue)
+            existingApp.JobType = updateDto.JobType.Value;
+
+        if (updateDto.WorkplaceType.HasValue)
+            existingApp.WorkplaceType = updateDto.WorkplaceType.Value;
+
+        if (updateDto.Priority.HasValue)
+            existingApp.Priority = updateDto.Priority.Value;
+
+        if (updateDto.MatchScore.HasValue)
+            existingApp.MatchScore = updateDto.MatchScore.Value;
+
+        if (updateDto.SalaryOffer.HasValue)
+            existingApp.SalaryOffer = updateDto.SalaryOffer.Value;
         
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;

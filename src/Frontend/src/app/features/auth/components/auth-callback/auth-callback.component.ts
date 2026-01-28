@@ -19,111 +19,61 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+
 @Component({
   selector: 'app-auth-callback',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   template: `
-    <div class="callback-container">
-      <div class="callback-card">
-        @if (error) {
-          <!-- Error State -->
-          <div class="error-state">
-            <div class="error-icon">❌</div>
-            <h2>Authentication Failed</h2>
-            <p>{{ error }}</p>
-            <button class="retry-btn" (click)="goToLogin()">Back to Login</button>
-          </div>
-        } @else {
-          <!-- Loading State -->
-          <div class="loading-state">
-            <div class="spinner"></div>
-            <h2>Completing Sign In</h2>
-            <p>Please wait while we verify your credentials...</p>
-          </div>
-        }
+    <div
+      class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 p-4"
+    >
+      <div hlmCard class="w-full max-w-md text-center">
+        <div hlmCardContent class="p-8">
+          @if (error) {
+            <!-- Error State -->
+            <div class="flex flex-col items-center">
+              <div class="text-5xl">❌</div>
+              <h2 class="mt-6 text-xl font-semibold text-foreground">Authentication Failed</h2>
+              <p class="mt-2 text-muted-foreground">{{ error }}</p>
+              <button hlmBtn class="mt-6" (click)="goToLogin()">Back to Login</button>
+            </div>
+          } @else {
+            <!-- Loading State -->
+            <div class="flex flex-col items-center">
+              <svg
+                class="h-12 w-12 animate-spin text-primary"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <h2 class="mt-6 text-xl font-semibold text-foreground">Completing Sign In</h2>
+              <p class="mt-2 text-muted-foreground">
+                Please wait while we verify your credentials...
+              </p>
+            </div>
+          }
+        </div>
       </div>
     </div>
   `,
-  styles: [
-    `
-      .callback-container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
-        padding: 1rem;
-      }
-
-      .callback-card {
-        background: var(--color-bg-primary);
-        padding: 3rem;
-        border-radius: 1.5rem;
-        text-align: center;
-        max-width: 400px;
-        width: 100%;
-        box-shadow: var(--shadow-xl);
-      }
-
-      :host-context(.dark) .callback-card {
-        background: rgba(17, 24, 39, 0.9);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .loading-state h2,
-      .error-state h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: var(--color-text-primary);
-        margin: 1.5rem 0 0.5rem;
-      }
-
-      .loading-state p,
-      .error-state p {
-        color: var(--color-text-secondary);
-        margin: 0;
-      }
-
-      .spinner {
-        width: 3rem;
-        height: 3rem;
-        border: 3px solid var(--color-border-primary);
-        border-top-color: var(--color-primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .error-icon {
-        font-size: 3rem;
-      }
-
-      .retry-btn {
-        margin-top: 1.5rem;
-        padding: 0.75rem 2rem;
-        background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
-        color: white;
-        border: none;
-        border-radius: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .retry-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-      }
-    `,
-  ],
 })
 export class AuthCallbackComponent implements OnInit {
   error: string | null = null;

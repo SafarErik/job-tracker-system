@@ -1,4 +1,7 @@
 import { JobApplicationStatus } from './application-status.enum';
+import { JobType } from './job-type.enum';
+import { WorkplaceType } from './workplace-type.enum';
+import { JobPriority } from './job-priority.enum';
 
 export interface JobApplication {
   id: number;
@@ -13,10 +16,11 @@ export interface JobApplication {
   documentId?: string | null;
   documentName?: string | null;
   // Workstation fields (frontend-computed or optional from backend)
-  matchScore?: number; // 0-100, computed from AI analysis
-  location?: string;
-  salaryMin?: number;
-  salaryMax?: number;
+  jobType: JobType;
+  workplaceType: WorkplaceType;
+  priority: JobPriority;
+  matchScore: number;
+  salaryOffer?: number;
 }
 
 export interface CreateJobApplication {
@@ -27,5 +31,9 @@ export interface CreateJobApplication {
   description?: string; // Private notes (salary, thoughts, etc.)
   status: JobApplicationStatus;
   documentId?: string | null;
+  jobType?: JobType;
+  workplaceType?: WorkplaceType;
+  priority?: JobPriority;
+  matchScore?: number;
 }
 

@@ -5,6 +5,10 @@ import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+
 /**
  * Calendar Day Interface
  * Represents a single day in the calendar with its applications
@@ -32,9 +36,8 @@ interface CalendarDay {
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './calendar-view.html',
-  styleUrl: './calendar-view.css',
 })
 export class CalendarViewComponent implements OnChanges {
   /**
@@ -189,21 +192,21 @@ export class CalendarViewComponent implements OnChanges {
   getStatusColor(status: JobApplicationStatus): string {
     switch (status) {
       case JobApplicationStatus.Applied:
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300';
       case JobApplicationStatus.PhoneScreen:
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
       case JobApplicationStatus.TechnicalTask:
-        return 'bg-indigo-100 text-indigo-800';
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
       case JobApplicationStatus.Interviewing:
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300';
       case JobApplicationStatus.Offer:
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
       case JobApplicationStatus.Rejected:
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
       case JobApplicationStatus.Ghosted:
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
     }
   }
 
@@ -213,19 +216,19 @@ export class CalendarViewComponent implements OnChanges {
   getStatusDotColor(status: JobApplicationStatus): string {
     switch (status) {
       case JobApplicationStatus.Applied:
-        return 'bg-blue-400';
+        return 'bg-indigo-400';
       case JobApplicationStatus.PhoneScreen:
         return 'bg-purple-400';
       case JobApplicationStatus.TechnicalTask:
-        return 'bg-indigo-400';
+        return 'bg-blue-400';
       case JobApplicationStatus.Interviewing:
-        return 'bg-yellow-400';
+        return 'bg-amber-400';
       case JobApplicationStatus.Offer:
         return 'bg-green-400';
       case JobApplicationStatus.Rejected:
         return 'bg-red-400';
       case JobApplicationStatus.Ghosted:
-        return 'bg-orange-500';
+        return 'bg-zinc-400';
       default:
         return 'bg-gray-400';
     }

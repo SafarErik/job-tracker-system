@@ -24,9 +24,7 @@
                 "glob": "**/*",
                 "input": "public"
               },
-              "src/web.config",
-              "src/Frontend/server.js",
-              "src/Frontend/package.json"
+              "src/web.config"
             ],
             "styles": [
               "src/styles.css"

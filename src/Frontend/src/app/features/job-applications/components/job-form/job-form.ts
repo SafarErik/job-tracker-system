@@ -18,6 +18,15 @@ import { Company } from '../../../companies/models/company.model';
 import { Skill } from '../../../skills/models/skill.model';
 import { Document } from '../../../documents/models/document.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobType } from '../../models/job-type.enum';
+import { WorkplaceType } from '../../models/workplace-type.enum';
+import { JobPriority } from '../../models/job-priority.enum';
+
+// Spartan UI
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmCardImports } from '@spartan-ng/helm/card';
 
 /**
  * JobFormComponent - Dual-purpose form for creating and editing job applications
@@ -42,10 +51,16 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
  */
 @Component({
   selector: 'app-job-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+  ],
   templateUrl: './job-form.html',
-  styleUrl: './job-form.css',
 })
 export class JobFormComponent implements OnInit {
   // ============================================
@@ -72,6 +87,8 @@ export class JobFormComponent implements OnInit {
   isCompanyDropdownOpen = false;
   companySearchTerm = '';
   isStatusDropdownOpen = false;
+  isJobTypeDropdownOpen = false;
+  isWorkplaceTypeDropdownOpen = false;
   isDocumentDropdownOpen = false;
   isUploadingDocument = false;
   uploadProgress = 0;
@@ -134,6 +151,27 @@ export class JobFormComponent implements OnInit {
     { value: JobApplicationStatus.Offer, label: 'Offer Received' },
     { value: JobApplicationStatus.Rejected, label: 'Rejected' },
     { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
+    { value: JobApplicationStatus.Accepted, label: 'Accepted' },
+  ];
+
+  jobTypeOptions = [
+    { value: JobType.FullTime, label: 'Full-time' },
+    { value: JobType.PartTime, label: 'Part-time' },
+    { value: JobType.Internship, label: 'Internship' },
+    { value: JobType.Contract, label: 'Contract' },
+    { value: JobType.Freelance, label: 'Freelance' },
+  ];
+
+  workplaceTypeOptions = [
+    { value: WorkplaceType.OnSite, label: 'On-site' },
+    { value: WorkplaceType.Remote, label: 'Remote' },
+    { value: WorkplaceType.Hybrid, label: 'Hybrid' },
+  ];
+
+  priorityOptions = [
+    { value: JobPriority.Low, label: 'Low Priority' },
+    { value: JobPriority.Medium, label: 'Medium Priority' },
+    { value: JobPriority.High, label: 'High Priority' },
   ];
 
   /**
@@ -160,6 +198,10 @@ export class JobFormComponent implements OnInit {
       companyId: [null, [Validators.required]],
       companySearch: [''],
       status: [JobApplicationStatus.Applied, [Validators.required]],
+      jobType: [JobType.FullTime, [Validators.required]],
+      workplaceType: [WorkplaceType.OnSite, [Validators.required]],
+      priority: [JobPriority.Medium, [Validators.required]],
+      matchScore: [0, [Validators.min(0), Validators.max(100)]],
       jobUrl: ['', []], // Optional
       jobDescription: ['', []], // Job posting text for AI analysis
       description: ['', []], // Private notes (salary, thoughts)
@@ -241,6 +283,10 @@ export class JobFormComponent implements OnInit {
           jobDescription: application.jobDescription || '',
           description: application.description || '',
           documentId: application.documentId || null,
+          jobType: application.jobType,
+          workplaceType: application.workplaceType,
+          priority: application.priority,
+          matchScore: application.matchScore || 0,
         });
         this.syncCompanySearch();
         this.isLoading = false;
@@ -369,9 +415,72 @@ export class JobFormComponent implements OnInit {
     this.isStatusDropdownOpen = false;
   }
 
+  openJobTypeDropdown() {
+    this.isJobTypeDropdownOpen = true;
+  }
+
+  closeJobTypeDropdown() {
+    setTimeout(() => {
+      this.isJobTypeDropdownOpen = false;
+    }, 150);
+  }
+
+  selectJobType(value: number) {
+    this.jobForm.patchValue({ jobType: value });
+    this.isJobTypeDropdownOpen = false;
+  }
+
+  openWorkplaceTypeDropdown() {
+    this.isWorkplaceTypeDropdownOpen = true;
+  }
+
+  closeWorkplaceTypeDropdown() {
+    setTimeout(() => {
+      this.isWorkplaceTypeDropdownOpen = false;
+    }, 150);
+  }
+
+  selectWorkplaceType(value: number) {
+    this.jobForm.patchValue({ workplaceType: value });
+    this.isWorkplaceTypeDropdownOpen = false;
+  }
+
+  isPriorityDropdownOpen = false;
+  openPriorityDropdown() {
+    this.isPriorityDropdownOpen = true;
+  }
+
+  closePriorityDropdown() {
+    setTimeout(() => {
+      this.isPriorityDropdownOpen = false;
+    }, 150);
+  }
+
+  selectPriority(value: number) {
+    this.jobForm.patchValue({ priority: value });
+    this.isPriorityDropdownOpen = false;
+  }
+
   get selectedStatusLabel(): string {
     const value = Number(this.jobForm.get('status')?.value);
     return this.statusOptions.find((option) => option.value === value)?.label ?? 'Select status';
+  }
+
+  get selectedJobTypeLabel(): string {
+    const value = Number(this.jobForm.get('jobType')?.value);
+    return this.jobTypeOptions.find((option) => option.value === value)?.label ?? 'Select type';
+  }
+
+  get selectedWorkplaceTypeLabel(): string {
+    const value = Number(this.jobForm.get('workplaceType')?.value);
+    return (
+      this.workplaceTypeOptions.find((option) => option.value === value)?.label ?? 'Select location'
+    );
+  }
+
+  get selectedPriorityLabel(): string {
+    const value = Number(this.jobForm.get('priority')?.value);
+    return this.priorityOptions.find((option) => option.value === value)?.label ?? 'Select priority';
   }
 
   openDocumentDropdown() {
@@ -586,11 +695,14 @@ Warm regards,
     const content = this.coverLetterDraft();
     if (!content) return;
 
-    navigator.clipboard.writeText(content).then(() => {
-      this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
-    }).catch(() => {
-      this.notificationService.error('Failed to copy to clipboard', 'Error');
-    });
+    navigator.clipboard
+      .writeText(content)
+      .then(() => {
+        this.notificationService.success('Cover letter copied to clipboard!', 'Copied');
+      })
+      .catch(() => {
+        this.notificationService.error('Failed to copy to clipboard', 'Error');
+      });
   }
 
   saveAsPdf(): void {
@@ -606,4 +718,3 @@ Warm regards,
     );
   }
 }
-

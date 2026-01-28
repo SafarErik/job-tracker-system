@@ -5,11 +5,15 @@ import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 
+// Spartan UI
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports],
   templateUrl: './documents-list.html',
-  styleUrl: './documents-list.css',
 })
 export class DocumentsListComponent implements OnInit {
   private documentService = inject(DocumentService);

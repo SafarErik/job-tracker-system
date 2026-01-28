@@ -247,12 +247,21 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Property<Guid?>("DocumentId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("JobType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("JobUrl")
                         .HasColumnType("text");
+
+                    b.Property<int>("MatchScore")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("SalaryOffer")
                         .HasColumnType("numeric");
@@ -263,6 +272,9 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("WorkplaceType")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

@@ -5,12 +5,25 @@ import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { Company, CreateCompany, UpdateCompany } from '../../models/company.model';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 
 @Component({
   selector: 'app-company-form',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmCardImports,
+    ...HlmBadgeImports,
+  ],
   templateUrl: './company-form.html',
-  styleUrl: './company-form.css',
 })
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup;
@@ -161,4 +174,3 @@ export class CompanyFormComponent implements OnInit {
     return this.companyForm.get('hrContactEmail');
   }
 }
-

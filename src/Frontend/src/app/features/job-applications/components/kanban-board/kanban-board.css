@@ -1,156 +1,23 @@
-/* Kanban Board Styles */
+@reference "../../../../../styles.css";
 
-.kanban-board-container {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
+/* Kanban Board - Open Air Premium Design */
 
-/* Non-blocking update indicator */
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.animate-slide-in {
-  animation: slide-in 0.2s ease-out;
-}
-
-/* Column Scrolling */
-.column-content {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-.column-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.column-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.column-content::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-  transition: background-color 0.2s;
-}
-
-.column-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.8);
-}
-
-/* Card Drag Effects */
-.job-card {
-  transition:
-    transform 0.15s cubic-bezier(0.2, 0, 0, 1),
-    box-shadow 0.15s cubic-bezier(0.2, 0, 0, 1);
-  cursor: grab; /* Show grab cursor to indicate draggability */
-  will-change: transform; /* Performance optimization for frequent transforms */
-}
-
-/* Active dragging cursor */
-.job-card:active {
-  cursor: grabbing;
-}
-
-/* Enhanced drag preview with rotation and shadow */
+/* Dragging item visual enhancement */
 .cdk-drag-preview {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border-radius: 0.5rem;
-  opacity: 0.95;
-  transform: rotate(2deg) scale(1.05);
-  cursor: grabbing;
-  /* Add a subtle border to make it stand out */
-  border: 2px solid rgba(99, 102, 241, 0.5);
+    @apply rotate-2 scale-105 shadow-2xl;
 }
 
+/* Disable pointer events on placeholder */
+.cdk-drag-placeholder {
+    @apply opacity-0;
+}
+
+/* Animate items when list changes */
 .cdk-drag-animating {
-  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
+    @apply transition-transform duration-200 ease-out;
 }
 
-.cdk-drop-list-dragging .job-card:not(.cdk-drag-placeholder) {
-  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-/* Drag Placeholder - Visual feedback where card will be dropped */
-.drag-placeholder {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-  border: 2px dashed rgba(99, 102, 241, 0.5);
-  border-radius: 0.5rem;
-  min-height: 100px;
-  transition: all 150ms cubic-bezier(0.2, 0, 0, 1);
-  /* Pulsing animation to draw attention */
-  animation: placeholderPulse 1.2s ease-in-out infinite;
-}
-
-@keyframes placeholderPulse {
-  0%,
-  100% {
-    opacity: 0.5;
-    transform: scale(0.98);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-}
-
-/* Drop Zone Highlight - Visual feedback when hovering over a column */
-.cdk-drop-list-receiving {
-  background-color: rgba(59, 130, 246, 0.08) !important;
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  /* Add subtle shadow to indicate active drop zone */
-  box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.2);
-  transition: all 100ms ease;
-}
-
-/* Responsive Design */
-@media (max-width: 1536px) {
-  .kanban-column {
-    width: 18rem; /* w-72 */
-  }
-}
-
-@media (max-width: 1280px) {
-  .kanban-column {
-    width: 16rem; /* w-64 */
-  }
-}
-
-@media (max-width: 1024px) {
-  .kanban-board {
-    padding-bottom: 2rem;
-  }
-
-  .kanban-column {
-    width: 20rem; /* w-80 - Better for tablet */
-  }
-}
-
-@media (max-width: 768px) {
-  .kanban-board-container {
-    padding: 0.5rem;
-  }
-
-  .kanban-board {
-    gap: 0.5rem;
-  }
-
-  .kanban-column {
-    width: 18rem; /* w-72 */
-  }
-}
-
-/* Line Clamp Support (for older browsers) */
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+/* Smooth reordering animation */
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+    @apply transition-transform duration-200;
 }

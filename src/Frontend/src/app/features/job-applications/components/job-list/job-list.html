@@ -8,36 +8,26 @@
   - {{ variable }} - Display data (interpolation)
 -->
 
-<div class="container mx-auto px-4 py-8 bg-secondary min-h-screen">
-  <!-- Personalized Welcome Banner -->
-  <div class="welcome-banner">
-    <div class="welcome-content">
-      <div class="welcome-icon">👋</div>
-      <div class="welcome-text">
-        <h2 class="welcome-title">{{ getWelcomeMessage() }}</h2>
-        <p class="welcome-subtitle">{{ getWelcomeSubtitle() }}</p>
-      </div>
-    </div>
-    <div class="welcome-decoration">
-      <div class="sparkle">✨</div>
-    </div>
-  </div>
-
-  <!-- Modern Page Header with Gradient -->
-  <div class="modern-header mb-8">
-    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
-      <div class="header-content">
-        <h1 class="text-4xl font-bold text-white mb-2">My Job Applications</h1>
-        <p class="text-white text-opacity-90">Track and manage your job search progress</p>
+<div class="container mx-auto px-4 py-8 min-h-screen">
+  <!-- Page Header - Power Header -->
+  <div class="mb-8">
+    <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+      <!-- Left: Title & Subtitle -->
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          My Applications<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mb-1 ml-0.5"></span>
+        </h1>
+        <p class="text-muted-foreground mt-1">{{ getWelcomeSubtitle() }}</p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3">
-        <!-- Modern View Switcher with Gradient -->
-        <div class="modern-view-switcher">
+      <!-- Right: View Switcher + Add New -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <!-- View Switcher -->
+        <div class="inline-flex rounded-lg border border-border bg-card p-1">
           <!-- Grid View Button -->
-          <button (click)="switchView(ViewMode.Grid)" [class.active]="isViewActive(ViewMode.Grid)" class="view-btn"
-            title="Grid View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2 border-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
@@ -45,9 +35,9 @@
           </button>
 
           <!-- Kanban View Button -->
-          <button (click)="switchView(ViewMode.Kanban)" [class.active]="isViewActive(ViewMode.Kanban)" class="view-btn"
-            title="Kanban Board View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2 border-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
@@ -55,9 +45,9 @@
           </button>
 
           <!-- Calendar View Button -->
-          <button (click)="switchView(ViewMode.Calendar)" [class.active]="isViewActive(ViewMode.Calendar)"
-            class="view-btn" title="Calendar View" type="button">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'outline'" size="sm"
+            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2 border-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -65,9 +55,9 @@
           </button>
         </div>
 
-        <!-- Modern Add New Button -->
-        <a routerLink="/new" class="modern-add-btn">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- Iconic Add New Button -->
+        <a routerLink="/new" hlmBtn size="lg" variant="default" class="gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add New
@@ -76,165 +66,83 @@
     </div>
   </div>
 
-  <!-- Modern Quick Stats Dashboard -->
-  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="modern-stats-container mb-8">
-    <div class="stats-header">
-      <h2 class="stats-title">
-        <svg class="stats-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        Quick Stats
-      </h2>
-      <span class="stats-subtitle">Real-time insights</span>
-    </div>
-
-    <div class="stats-grid">
-      <!-- Total Applications -->
-      <div class="stat-card">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <span class="stat-label">Total</span>
-        </div>
-        <p class="stat-value">{{ applications.length }}</p>
-        <p class="stat-description">Applications</p>
-      </div>
-
-      <!-- Active Applications -->
-      <div class="stat-card stat-active">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
-          <span class="stat-label stat-label-active">Active</span>
-        </div>
-        <p class="stat-value stat-value-active">{{ getActiveCount(applications) }}</p>
-        <p class="stat-description">In Progress</p>
-      </div>
-
-      <!-- Interviewing -->
-      <div class="stat-card stat-interview">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          <span class="stat-label stat-label-interview">Interview</span>
-        </div>
-        <p class="stat-value stat-value-interview">
-          {{
-          getStatusCount(Status.Interviewing, applications) +
-          getStatusCount(Status.PhoneScreen, applications) +
-          getStatusCount(Status.TechnicalTask, applications)
-          }}
-        </p>
-        <p class="stat-description">Stages</p>
-      </div>
-
-      <!-- Offers -->
-      <div class="stat-card stat-offers">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-          </svg>
-          <span class="stat-label stat-label-offers">Offers</span>
-        </div>
-        <p class="stat-value stat-value-offers">{{ getStatusCount(Status.Offer, applications) }}</p>
-        <p class="stat-description">Received</p>
-      </div>
-
-      <!-- Rejected -->
-      <div class="stat-card stat-rejected">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-          <span class="stat-label stat-label-rejected">Rejected</span>
-        </div>
-        <p class="stat-value stat-value-rejected">
-          {{ getStatusCount(Status.Rejected, applications) }}
-        </p>
-        <p class="stat-description">Declined</p>
-      </div>
-
-      <!-- Response Rate -->
-      <div class="stat-card stat-response">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-          </svg>
-          <span class="stat-label stat-label-response">Response</span>
-        </div>
-        <p class="stat-value stat-value-response">{{ getResponseRate(applications) }}%</p>
-        <p class="stat-description">Reply Rate</p>
-      </div>
-
-      <!-- Success Rate -->
-      <div class="stat-card stat-success">
-        <div class="stat-header">
-          <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-          </svg>
-          <span class="stat-label stat-label-success">Success</span>
-        </div>
-        <p class="stat-value stat-value-success">{{ getSuccessRate(applications) }}%</p>
-        <p class="stat-description">Offer Rate</p>
-      </div>
-    </div>
+  <!-- Quick Stats Dashboard - Neo-Professional -->
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="mb-8">
+    <app-dashboard-metrics [total]="applications.length" [active]="getActiveCount(applications)"
+      [interviews]="getInterviewCount(applications)" [offers]="getStatusCount(Status.Offer, applications)"
+      [rejected]="getStatusCount(Status.Rejected, applications)" [responseRate]="getResponseRate(applications)"
+      [successRate]="getSuccessRate(applications)"></app-dashboard-metrics>
   </div>
 
   <!-- Search & Filter Bar -->
-  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="search-filter-bar mb-8">
-    <div class="search-input">
-      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div *ngIf="!isLoading && !errorMessage && applications.length > 0" class="flex flex-col sm:flex-row gap-4 mb-8">
+    <!-- Search Input -->
+    <div class="relative flex-1">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
+        stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M21 21l-4.35-4.35m1.6-5.4a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-      <input #searchInput type="text" placeholder="Search by position, company, notes, or URL..." [value]="searchTerm"
+      <label hlmLabel for="search-applications" class="sr-only">Search applications</label>
+      <input hlmInput id="search-applications" #searchInput type="text"
+        placeholder="Search by position, company, notes, or URL..." [value]="searchTerm" class="pl-10 pr-8 w-full"
         (input)="onSearchChange(searchInput.value)" />
-      <button *ngIf="searchTerm" class="clear-search" (click)="onSearchChange('')" type="button"
-        aria-label="Clear search">
-        ×
+      <button *ngIf="searchTerm"
+        class="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        (click)="onSearchChange('')" type="button" aria-label="Clear search">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
     </div>
 
-    <div class="filter-group">
-      <div class="filter-dropdown">
-        <button type="button" class="filter-trigger" (click)="openStatusFilter()" (blur)="closeStatusFilter()">
+    <!-- Filter Group -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Status Filter Dropdown -->
+      <div class="relative">
+        <button type="button" hlmBtn variant="outline" class="gap-2" (click)="openStatusFilter()"
+          (blur)="closeStatusFilter()">
           <span>{{ selectedStatusFilterLabel }}</span>
-          <span class="filter-chevron">▾</span>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
-        <div class="filter-menu" *ngIf="isStatusFilterOpen">
-          <button *ngFor="let filter of statusFilters" type="button" class="filter-option"
+        <div *ngIf="isStatusFilterOpen"
+          class="absolute top-full left-0 mt-1 z-50 min-w-40 rounded-md border border-border bg-popover p-1 shadow-md">
+          <button *ngFor="let filter of statusFilters" type="button"
+            class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
             (click)="selectStatusFilter(filter.value)">
             {{ filter.label }}
           </button>
         </div>
       </div>
 
-      <div class="filter-dropdown">
-        <button type="button" class="filter-trigger" (click)="toggleCompanyFilter()">
+      <!-- Company Filter Dropdown -->
+      <div class="relative">
+        <button type="button" hlmBtn variant="outline" class="gap-2" (click)="toggleCompanyFilter()">
           <span>{{ selectedCompanyFilterLabel }}</span>
-          <span class="filter-chevron">▾</span>
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
-        <div class="filter-menu" *ngIf="isCompanyFilterOpen">
-          <button type="button" class="filter-option" (mousedown)="selectCompanyFilter('all')">
+        <div *ngIf="isCompanyFilterOpen"
+          class="absolute top-full left-0 mt-1 z-50 min-w-40 max-h-60 overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-md">
+          <button type="button"
+            class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            (mousedown)="selectCompanyFilter('all')">
             All Companies
           </button>
-          <button *ngFor="let company of companyOptions" type="button" class="filter-option"
+          <button *ngFor="let company of companyOptions" type="button"
+            class="w-full text-left px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
             (mousedown)="selectCompanyFilter(company.id)">
             {{ company.name }}
           </button>
         </div>
       </div>
 
-      <button *ngIf="hasActiveFilters" class="filter-clear" (click)="clearFilters()">
+      <!-- Clear Filters Button -->
+      <button *ngIf="hasActiveFilters" hlmBtn variant="ghost" size="sm" class="text-destructive hover:text-destructive"
+        (click)="clearFilters()">
         Clear filters
       </button>
     </div>
@@ -246,7 +154,7 @@
     Angular removes it completely from the DOM when false
   -->
   <div *ngIf="isLoading" class="text-center py-12">
-    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
     <p class="mt-4 text-gray-600">Loading applications...</p>
   </div>
 
@@ -271,14 +179,14 @@
   <!-- Empty State -->
   <!-- Shown when: not loading, no error, and applications array is empty -->
   <div *ngIf="!isLoading && !errorMessage && applications.length === 0"
-    class="bg-white rounded-lg shadow-lg p-12 text-center">
-    <div class="text-6xl mb-4">📭</div>
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">No Applications Yet</h2>
+    class="bg-card rounded-lg shadow-lg p-12 text-center">
+    <div class="text-6xl mb-4">📝</div>
+    <h2 class="text-2xl font-bold text-foreground mb-2">No Applications Yet</h2>
     <p class="text-gray-600 mb-6">
       Start tracking your job search journey by adding your first application.
     </p>
     <a routerLink="/new"
-      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition">
+      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg>
@@ -289,11 +197,13 @@
   <!-- Empty Search Results -->
   <div *ngIf="
       !isLoading && !errorMessage && applications.length > 0 && visibleApplications.length === 0
-    " class="bg-white rounded-lg shadow-lg p-12 text-center">
+    " class="bg-card border border-border rounded-lg shadow-lg p-12 text-center">
     <div class="text-5xl mb-4">🔍</div>
-    <h2 class="text-2xl font-bold text-gray-900 mb-2">No Results</h2>
-    <p class="text-gray-600 mb-6">We couldn't find any applications matching your filters.</p>
-    <button class="filter-clear" (click)="clearFilters()">Clear filters</button>
+    <h2 class="text-2xl font-bold text-foreground mb-2">No Results</h2>
+    <p class="text-muted-foreground mb-6">
+      We couldn't find any applications matching your filters.
+    </p>
+    <button hlmBtn variant="outline" (click)="clearFilters()">Clear filters</button>
   </div>
 
   <!-- View Content -->
@@ -301,8 +211,10 @@
     <!-- Grid View -->
     <div *ngIf="currentView === ViewMode.Grid">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <app-job-card *ngFor="let app of visibleApplications" [application]="app"
-          (openWorkstation)="viewApplicationDetail($event)"></app-job-card>
+        <app-job-card *ngFor="let app of visibleApplications; let i = index" [application]="app"
+          (openWorkstation)="viewApplicationDetail($event)"
+          class="animate-in fade-in slide-in-from-bottom-8 duration-500 fill-mode-both"
+          [style.animation-delay]="i * 100 + 'ms'"></app-job-card>
       </div>
     </div>
 

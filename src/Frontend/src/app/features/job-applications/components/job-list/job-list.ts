@@ -15,6 +15,12 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
 import { JobCardComponent } from '../job-card/job-card';
+import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
+
+// Spartan UI
+import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmLabelImports } from '@spartan-ng/helm/label';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 /**
  * View Mode Enum
@@ -41,16 +47,18 @@ export enum ViewMode {
  */
 @Component({
   selector: 'app-job-list',
-  standalone: true, // New Angular feature: no need for NgModule
   imports: [
-    CommonModule, // Provides *ngFor, *ngIf, pipes, etc.
-    RouterLink, // Required for routerLink directive in template
-    KanbanBoardComponent, // Kanban view
-    CalendarViewComponent, // Calendar view
-    JobCardComponent, // Enhanced job card
+    CommonModule,
+    RouterLink,
+    KanbanBoardComponent,
+    CalendarViewComponent,
+    JobCardComponent,
+    DashboardMetricsComponent,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmButtonImports,
   ],
   templateUrl: './job-list.html',
-  styleUrl: './job-list.css',
 })
 export class JobList implements OnInit {
   // ============================================
@@ -113,6 +121,7 @@ export class JobList implements OnInit {
     { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
     { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
     { value: JobApplicationStatus.Offer, label: 'Offer Received' },
+    { value: JobApplicationStatus.Accepted, label: 'Accepted' },
     { value: JobApplicationStatus.Rejected, label: 'Rejected' },
     { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
   ];
@@ -356,23 +365,26 @@ export class JobList implements OnInit {
    * This is a helper method to make the HTML cleaner
    */
   getStatusClass(status: JobApplicationStatus): string {
+    const base = 'px-2 py-0.5 rounded-full text-xs font-medium border border-transparent transition-all';
     switch (status) {
       case JobApplicationStatus.Applied:
-        return 'bg-blue-100 text-blue-800';
+        return `${base} bg-blue-500/10 text-blue-700 dark:text-blue-400`;
       case JobApplicationStatus.PhoneScreen:
-        return 'bg-purple-100 text-purple-800';
+        return `${base} bg-indigo-500/10 text-indigo-700 dark:text-indigo-400`;
       case JobApplicationStatus.TechnicalTask:
-        return 'bg-yellow-100 text-yellow-800';
+        return `${base} bg-orange-500/10 text-orange-700 dark:text-orange-400`;
       case JobApplicationStatus.Interviewing:
-        return 'bg-indigo-100 text-indigo-800';
+        return `${base} bg-violet-500/10 text-violet-700 dark:text-violet-400`;
       case JobApplicationStatus.Offer:
-        return 'bg-green-100 text-green-800';
+        return `${base} bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20`;
+      case JobApplicationStatus.Accepted:
+        return `${base} bg-emerald-500/10 text-emerald-700 dark:text-emerald-400`;
       case JobApplicationStatus.Rejected:
-        return 'bg-red-100 text-red-800';
+        return `${base} bg-rose-500/10 text-rose-700 dark:text-rose-400`;
       case JobApplicationStatus.Ghosted:
-        return 'bg-orange-100 text-orange-800';
+        return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
       default:
-        return 'bg-gray-100 text-gray-800';
+        return `${base} bg-muted text-muted-foreground`;
     }
   }
 
@@ -394,6 +406,8 @@ export class JobList implements OnInit {
         return 'Interviewing';
       case JobApplicationStatus.Offer:
         return 'Offer Received';
+      case JobApplicationStatus.Accepted:
+        return 'Accepted';
       case JobApplicationStatus.Rejected:
         return 'Rejected';
       case JobApplicationStatus.Ghosted:
@@ -459,6 +473,18 @@ export class JobList implements OnInit {
     return list.filter(
       (app) =>
         app.status !== JobApplicationStatus.Rejected && app.status !== JobApplicationStatus.Ghosted,
+    ).length;
+  }
+
+  /**
+   * Get count of applications in any interview stage
+   */
+  getInterviewCount(list: JobApplication[] = this.visibleApplications): number {
+    return list.filter(
+      (app) =>
+        app.status === JobApplicationStatus.PhoneScreen ||
+        app.status === JobApplicationStatus.TechnicalTask ||
+        app.status === JobApplicationStatus.Interviewing,
     ).length;
   }
 

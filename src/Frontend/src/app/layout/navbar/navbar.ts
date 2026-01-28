@@ -15,6 +15,7 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 // Core services
 import { AuthService } from '../../core/auth';
 import { ThemeService } from '../../core/services/theme.service';
+import { LogoComponent } from '../../shared/components/logo/logo';
 
 // Spartan UI Components
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -26,6 +27,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
   imports: [
     RouterLink,
     RouterLinkActive,
+    LogoComponent,
 
     ...HlmButtonImports,
     ...HlmSeparatorImports,
@@ -43,13 +45,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
             routerLink="/"
             class="flex items-center gap-2.5 font-semibold text-foreground transition-all duration-200 ease-out hover:opacity-80"
           >
-            <!-- Indigo Square Icon -->
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <svg class="h-4 w-4 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <span class="text-lg font-semibold tracking-tight">JobTracker</span>
+            <app-logo size="sm"></app-logo>
           </a>
 
           <!-- Center Navigation Links -->

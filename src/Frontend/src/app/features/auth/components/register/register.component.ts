@@ -17,6 +17,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
+import { LogoComponent } from '../../../../shared/components/logo/logo';
 import {
   FormBuilder,
   FormGroup,
@@ -41,6 +42,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
     ...HlmInputImports,
     ...HlmLabelImports,
     ...HlmCardImports,
+    LogoComponent,
   ],
   templateUrl: './register.component.html',
 })
@@ -108,13 +110,13 @@ export class RegisterComponent {
     return valid
       ? null
       : {
-          passwordStrength: {
-            hasUppercase,
-            hasLowercase,
-            hasDigit,
-            hasSpecial,
-          },
-        };
+        passwordStrength: {
+          hasUppercase,
+          hasLowercase,
+          hasDigit,
+          hasSpecial,
+        },
+      };
   }
 
   /**

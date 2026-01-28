@@ -24,28 +24,34 @@ export const routes: Routes = [
   // PUBLIC ROUTES (Guest only - redirect if logged in)
   // ============================================
   {
-    path: 'login',
+    path: '',
     loadComponent: () =>
-      import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
+      import('./features/auth/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
     canActivate: [guestGuard],
-    title: 'Login - JobTracker',
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./features/auth/components/register/register.component').then(
-        (m) => m.RegisterComponent,
-      ),
-    canActivate: [guestGuard],
-    title: 'Register - JobTracker',
-  },
-  {
-    path: 'auth/callback',
-    loadComponent: () =>
-      import('./features/auth/components/auth-callback/auth-callback.component').then(
-        (m) => m.AuthCallbackComponent,
-      ),
-    title: 'Signing In... - JobTracker',
+    children: [
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
+        title: 'Login - JobTracker',
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./features/auth/components/register/register.component').then(
+            (m) => m.RegisterComponent,
+          ),
+        title: 'Register - JobTracker',
+      },
+      {
+        path: 'auth/callback',
+        loadComponent: () =>
+          import('./features/auth/components/auth-callback/auth-callback.component').then(
+            (m) => m.AuthCallbackComponent,
+          ),
+        title: 'Signing In... - JobTracker',
+      },
+    ],
   },
 
   // ============================================

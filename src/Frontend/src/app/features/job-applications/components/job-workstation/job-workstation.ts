@@ -34,12 +34,57 @@ import { BrnTabsImports } from '@spartan-ng/brain/tabs';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
+import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
+
+// Icons
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+    lucideLayoutDashboard,
+    lucideFileSearch,
+    lucideSparkles,
+    lucideFolderKanban,
+    lucideMic2,
+    lucideSwords,
+    lucideCalendar,
+    lucideMapPin,
+    lucideChevronRight,
+    lucideExternalLink,
+    lucideClipboardList
+} from '@ng-icons/lucide';
 
 type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
 
 @Component({
     selector: 'app-job-workstation',
-    imports: [CommonModule, FormsModule, ...HlmLabelImports, ...HlmTabsImports, ...BrnTabsImports, ...HlmSeparatorImports, ...HlmCardImports, ...HlmButtonImports],
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgIcon,
+        ...HlmLabelImports,
+        ...HlmTabsImports,
+        ...BrnTabsImports,
+        ...HlmSeparatorImports,
+        ...HlmCardImports,
+        ...HlmButtonImports,
+        ...HlmBadgeImports,
+        ...HlmBreadCrumbImports
+    ],
+    providers: [
+        provideIcons({
+            lucideLayoutDashboard,
+            lucideFileSearch,
+            lucideSparkles,
+            lucideFolderKanban,
+            lucideMic2,
+            lucideSwords,
+            lucideCalendar,
+            lucideMapPin,
+            lucideChevronRight,
+            lucideExternalLink,
+            lucideClipboardList
+        })
+    ],
     templateUrl: './job-workstation.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -58,12 +103,12 @@ export class JobWorkstationComponent implements OnInit {
     // Tab state
     activeTab = signal<WorkstationTab>('overview');
     tabs: { id: WorkstationTab; label: string; icon: string }[] = [
-        { id: 'overview', label: 'Overview', icon: '📊' },
-        { id: 'context', label: 'Job Context', icon: '📄' },
-        { id: 'coach', label: 'AI Career Coach', icon: '🤖' },
-        { id: 'documents', label: 'Documents Studio', icon: '📁' },
-        { id: 'interview', label: 'Interview Prep', icon: '🎤' },
-        { id: 'strategy', label: 'Strategy', icon: '🎯' },
+        { id: 'overview', label: 'Overview', icon: 'lucideLayoutDashboard' },
+        { id: 'context', label: 'Job Context', icon: 'lucideFileSearch' },
+        { id: 'coach', label: 'AI Coach', icon: 'lucideSparkles' },
+        { id: 'documents', label: 'Documents', icon: 'lucideFolderKanban' },
+        { id: 'interview', label: 'Interview Prep', icon: 'lucideMic2' },
+        { id: 'strategy', label: 'Strategy', icon: 'lucideSwords' },
     ];
 
     // Status management

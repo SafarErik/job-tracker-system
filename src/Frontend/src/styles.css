@@ -92,8 +92,8 @@
 
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -101,11 +101,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full;
+    @apply bg-zinc-300/50 dark:bg-zinc-600/50 rounded-full transition-colors cursor-pointer;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/40;
+    @apply bg-zinc-400/80 dark:bg-zinc-500/80;
   }
 }
 

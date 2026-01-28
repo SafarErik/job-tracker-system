@@ -101,6 +101,9 @@
       ],
       "@spartan-ng/helm/combobox": [
         "./libs/ui/combobox/src/index"
+      ],
+      "@spartan-ng/helm/breadcrumb": [
+        "./libs/ui/breadcrumb/src/index.ts"
       ]
     }
   },

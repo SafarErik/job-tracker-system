@@ -129,7 +129,26 @@
   --ring: #8B80F8;
 }
 
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
+  }
+}
+
 /* Base Utility Resets */
 body {
-  @apply bg-background text-foreground antialiased font-sans;
+  @apply bg-background text-foreground antialiased font-sans custom-scrollbar;
 }

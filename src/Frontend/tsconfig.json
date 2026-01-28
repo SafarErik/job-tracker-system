@@ -12,7 +12,11 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
+    "baseUrl": "./",
     "paths": {
+      "@ui/*": [
+        "libs/ui/*"
+      ],
       "@spartan-ng/helm/button": [
         "./libs/ui/button/src/index.ts"
       ],
@@ -81,6 +85,9 @@
       ],
       "@spartan-ng/helm/progress": [
         "./libs/ui/progress/src/index.ts"
+      ],
+      "@spartan-ng/helm/alert": [
+        "./libs/ui/alert/src/index.ts"
       ]
     }
   },

@@ -5,10 +5,13 @@ import {
   NotificationService,
   NotificationMessage,
 } from '../../../core/services/notification.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheckCircle, lucideXCircle, lucideAlertTriangle, lucideInfo, lucideX } from '@ng-icons/lucide';
 
 // Spartan UI
+import { HlmAlertImports } from '@spartan-ng/helm/alert';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmIconImports } from '@spartan-ng/helm/icon';
 
 /**
  * ToastNotification Component
@@ -25,7 +28,8 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 @Component({
   selector: 'app-toast-notification',
   standalone: true,
-  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
+  imports: [CommonModule, NgIcon, ...HlmAlertImports, ...HlmButtonImports, ...HlmIconImports],
+  providers: [provideIcons({ lucideCheckCircle, lucideXCircle, lucideAlertTriangle, lucideInfo, lucideX })],
   templateUrl: './toast-notification.html',
 })
 export class ToastNotificationComponent implements OnInit, OnDestroy {
@@ -44,7 +48,7 @@ export class ToastNotificationComponent implements OnInit, OnDestroy {
    */
   private nextId = 0;
 
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(private readonly notificationService: NotificationService) { }
 
   ngOnInit(): void {
     // Subscribe to notification service
@@ -82,38 +86,38 @@ export class ToastNotificationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get Tailwind classes for notification type
+   * Get HlmAlert variant for notification type
    */
-  getNotificationClasses(type: string): string {
+  getVariant(type: string): 'default' | 'destructive' | 'success' | 'warning' | 'info' {
     switch (type) {
       case 'success':
-        return 'border-l-4 border-l-green-500';
+        return 'success';
       case 'error':
-        return 'border-l-4 border-l-destructive';
+        return 'destructive';
       case 'warning':
-        return 'border-l-4 border-l-yellow-500';
+        return 'warning';
       case 'info':
-        return 'border-l-4 border-l-primary';
+        return 'info';
       default:
-        return '';
+        return 'default';
     }
   }
 
   /**
-   * Get icon for notification type
+   * Get icon name for notification type
    */
   getIcon(type: string): string {
     switch (type) {
       case 'success':
-        return '✓';
+        return 'lucideCheckCircle';
       case 'error':
-        return '✕';
+        return 'lucideXCircle';
       case 'warning':
-        return '⚠';
+        return 'lucideAlertTriangle';
       case 'info':
-        return 'ℹ';
+        return 'lucideInfo';
       default:
-        return '•';
+        return 'lucideInfo';
     }
   }
 }

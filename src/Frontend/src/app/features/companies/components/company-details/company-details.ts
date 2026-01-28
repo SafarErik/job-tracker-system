@@ -5,10 +5,10 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { CompanyDetail, CompanyNews } from '../../models/company.model';
-import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmBadgeImports } from '@spartan-ng/helm/badge';
-import { HlmInputImports } from '@spartan-ng/helm/input';
+import { HlmButtonImports } from '@ui/button';
+import { HlmCardImports } from '@ui/card';
+import { HlmBadgeImports } from '@ui/badge';
+import { HlmInputImports } from '@ui/input';
 
 @Component({
   selector: 'app-company-details',
@@ -40,7 +40,7 @@ export class CompanyDetailsComponent implements OnInit {
     private readonly companyService: CompanyService,
     private readonly intelligenceService: CompanyIntelligenceService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

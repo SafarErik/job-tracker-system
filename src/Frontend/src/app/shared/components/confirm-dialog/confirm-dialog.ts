@@ -2,8 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Spartan UI
-import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
+import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 
 /**
  * ConfirmDialog Component
@@ -20,7 +19,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
+  imports: [CommonModule, ...HlmAlertDialogImports],
   templateUrl: './confirm-dialog.html',
 })
 export class ConfirmDialogComponent {

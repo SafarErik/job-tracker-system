@@ -24,7 +24,7 @@
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
 
         <!-- Company Input (Combobox) -->
-        <div class="space-y-2 relative z-20">
+        <div class="space-y-2">
             <label hlmLabel
                 class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Company</label>
             <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Position Input (Combobox) -->
-        <div class="space-y-2 relative z-10">
+        <div class="space-y-2">
             <label hlmLabel
                 class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Position</label>
             <hlm-combobox (valueChange)="onPositionSelected($event)">

@@ -34,6 +34,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,

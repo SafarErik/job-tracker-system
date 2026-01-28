@@ -29,7 +29,7 @@
                 class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Company</label>
             <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
                 <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
-                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50 hlm-input-group"
+                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
                     [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
 
                 <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
@@ -60,7 +60,7 @@
                 class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Position</label>
             <hlm-combobox (valueChange)="onPositionSelected($event)">
                 <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend Engineer"
-                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50 hlm-input-group"
+                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
                     [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
 
                 <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
@@ -127,8 +127,8 @@
                 </div>
                 }
             </div>
-            <!-- Metadata Grid: Status, Type, Workplace -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Metadata Grid: Status, Type, Workplace, Priority -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Status Dropdown -->
                 <div class="space-y-2">
                     <label hlmLabel

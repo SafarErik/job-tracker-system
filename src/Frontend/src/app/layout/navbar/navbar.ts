@@ -36,7 +36,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
   template: `
     <!-- Refined Glass Navigation Header -->
     <header
-      class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-md transition-all duration-300"
+      class="fixed top-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-md transition-all duration-300"
     >
       <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
         

@@ -28,6 +28,7 @@ import { LogoComponent } from '../../../../shared/components/logo/logo';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,

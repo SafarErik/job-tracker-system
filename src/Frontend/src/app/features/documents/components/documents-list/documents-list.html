@@ -76,10 +76,10 @@
 
   <!-- Error State -->
   @if (error()) {
-  <div class="flex flex-col items-center justify-center py-16 gap-4">
-    <span class="text-4xl">⚠️</span>
-    <p class="text-destructive">{{ error() }}</p>
-    <button hlmBtn variant="outline" (click)="loadDocuments()">Try Again</button>
+  <div class="mb-8">
+    <app-error-state title="Documents Unavailable" [message]="error()!" icon="lucideFileWarning"
+      (retry)="loadDocuments()">
+    </app-error-state>
   </div>
   }
 

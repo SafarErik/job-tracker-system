@@ -88,6 +88,10 @@
   /* Subtle dark border */
   --input: #2E3346;
   --ring: #7C7CFF;
+
+  --destructive: 343 100% 60%;
+  /* #FF3366 - Soft Rose Red */
+  --destructive-foreground: 343 100% 98%;
 }
 
 @utility custom-scrollbar {

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -11,12 +12,12 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideFileUp } from '@ng-icons/lucide';
+import { lucideFileUp, lucideFileWarning } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports, NgIcon],
-  providers: [provideIcons({ lucideFileUp })],
+  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports, NgIcon, ErrorStateComponent],
+  providers: [provideIcons({ lucideFileUp, lucideFileWarning })],
   templateUrl: './documents-list.html',
 })
 export class DocumentsListComponent implements OnInit {

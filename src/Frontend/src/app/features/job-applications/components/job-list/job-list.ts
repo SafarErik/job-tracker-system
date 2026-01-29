@@ -16,6 +16,7 @@ import { KanbanBoardComponent } from '../kanban-board/kanban-board';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
 import { JobCardComponent } from '../job-card/job-card';
 import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -23,7 +24,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBriefcase, lucidePlus } from '@ng-icons/lucide';
+import { lucideBriefcase, lucidePlus, lucideDatabaseZap } from '@ng-icons/lucide';
 
 /**
  * View Mode Enum
@@ -57,12 +58,13 @@ export enum ViewMode {
     CalendarViewComponent,
     JobCardComponent,
     DashboardMetricsComponent,
+    ErrorStateComponent,
     ...HlmInputImports,
     ...HlmLabelImports,
     ...HlmButtonImports,
     NgIcon,
   ],
-  providers: [provideIcons({ lucideBriefcase, lucidePlus })],
+  providers: [provideIcons({ lucideBriefcase, lucidePlus, lucideDatabaseZap })],
   templateUrl: './job-list.html',
 })
 export class JobList implements OnInit {

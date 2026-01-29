@@ -30,6 +30,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<JobApplication> JobApplications { get; set; }
 
+    public DbSet<CompanyContact> CompanyContacts { get; set; }
+
     public DbSet<Document> Documents { get; set; }
 
     // ============================================
@@ -82,6 +84,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(d => d.JobApplications)
                 .HasForeignKey(j => j.DocumentId)
                 .OnDelete(DeleteBehavior.SetNull); // Keep application if document is deleted
+
+            // Configure relationship with CompanyContact (Primary Contact)
+            entity.HasOne(j => j.PrimaryContact)
+                .WithMany(c => c.JobApplications)
+                .HasForeignKey(j => j.PrimaryContactId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // ============================================
@@ -115,6 +123,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasMany(s => s.Users)
             .WithMany(u => u.Skills)
             .UsingEntity(j => j.ToTable("UserSkills"));
+
+        // ============================================
+        // COMPANY CONTACT CONFIGURATION
+        // ============================================
+
+        modelBuilder.Entity<CompanyContact>(entity =>
+        {
+            entity.HasOne(c => c.Company)
+                .WithMany(co => co.Contacts)
+                .HasForeignKey(c => c.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // ============================================
         // INDEXES FOR PERFORMANCE

@@ -17,24 +17,23 @@ public class CompanyDto
     public string? Address { get; set; }
     
     /// <summary>
-    /// HR contact person's name
-    /// </summary>
-    public string? HRContactName { get; set; }
-    
-    /// <summary>
-    /// HR contact email for communication
-    /// </summary>
-    public string? HRContactEmail { get; set; }
-    
-    /// <summary>
-    /// HR contact's LinkedIn profile URL
-    /// </summary>
-    public string? HRContactLinkedIn { get; set; }
-    
-    /// <summary>
     /// Total number of applications submitted to this company
     /// </summary>
     public int TotalApplications { get; set; }
+
+    public string? Industry { get; set; }
+
+    public List<string> TechStack { get; set; } = new();
+
+    /// <summary>
+    /// Company Priority (Tier1, Tier2, Tier3)
+    /// </summary>
+    public string Priority { get; set; } = "Tier3";
+
+    /// <summary>
+    /// Recent job applications for this company
+    /// </summary>
+    public List<JobApplicationHistoryDto> RecentApplications { get; set; } = new();
 }
 
 /// <summary>
@@ -51,21 +50,30 @@ public class CompanyDetailDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
-    
-    public string? HRContactEmail { get; set; }
-    
-    public string? HRContactLinkedIn { get; set; }
     
     /// <summary>
     /// Total number of applications to this company
     /// </summary>
     public int TotalApplications { get; set; }
+
+    public string? Industry { get; set; }
+
+    public List<string> TechStack { get; set; } = new();
+
+    /// <summary>
+    /// Company Priority (Tier1, Tier2, Tier3)
+    /// </summary>
+    public string Priority { get; set; } = "Tier3";
     
     /// <summary>
     /// History of all applications to this company
     /// </summary>
     public List<JobApplicationHistoryDto> ApplicationHistory { get; set; } = new();
+
+    /// <summary>
+    /// List of points of contact at the company
+    /// </summary>
+    public List<CompanyContactDto> Contacts { get; set; } = new();
 }
 
 /// <summary>
@@ -101,13 +109,17 @@ public class CreateCompanyDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
-    
-    [EmailAddress(ErrorMessage = "Invalid email format")]
-    public string? HRContactEmail { get; set; }
-    
-    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
-    public string? HRContactLinkedIn { get; set; }
+
+    public string? Industry { get; set; }
+
+    public List<string>? TechStack { get; set; }
+
+    public string Priority { get; set; } = "Tier3";
+
+    /// <summary>
+    /// Optional list of contacts to add during creation
+    /// </summary>
+    public List<CompanyContactDto>? Contacts { get; set; }
 }
 
 /// <summary>
@@ -124,11 +136,32 @@ public class UpdateCompanyDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
+
+    public string? Industry { get; set; }
+
+    public List<string>? TechStack { get; set; }
+
+    public string? Priority { get; set; }
+
+    /// <summary>
+    /// Optional list of contacts to update or add
+    /// </summary>
+    public List<CompanyContactDto>? Contacts { get; set; }
+}
+
+/// <summary>
+/// DTO for returning company contact information.
+/// </summary>
+public class CompanyContactDto
+{
+    public int Id { get; set; }
     
-    [EmailAddress(ErrorMessage = "Invalid email format")]
-    public string? HRContactEmail { get; set; }
+    [Required]
+    public string Name { get; set; } = string.Empty;
     
-    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
-    public string? HRContactLinkedIn { get; set; }
+    public string? Email { get; set; }
+    
+    public string? LinkedIn { get; set; }
+    
+    public string? Role { get; set; }
 }

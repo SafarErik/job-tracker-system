@@ -20,6 +20,7 @@ public class CompanyRepository : ICompanyRepository
     {
         return await _context.Companies
             .Include(c => c.JobApplications)
+            .Include(c => c.Contacts)
             .ToListAsync();
     }
 
@@ -28,6 +29,7 @@ public class CompanyRepository : ICompanyRepository
         return await _context.Companies
             .Where(c => c.UserId == userId)
             .Include(c => c.JobApplications)
+            .Include(c => c.Contacts)
             .ToListAsync();
     }
 
@@ -35,6 +37,7 @@ public class CompanyRepository : ICompanyRepository
     {
         return await _context.Companies
             .Include(c => c.JobApplications)
+            .Include(c => c.Contacts)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 

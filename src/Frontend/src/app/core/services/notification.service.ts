@@ -117,6 +117,7 @@ export class NotificationService {
       isDangerous?: boolean;
     },
   ): Promise<boolean> {
+    console.log('NotificationService.confirm called. Dialog present:', !!this.confirmDialog);
     // Use custom dialog if available
     if (this.confirmDialog) {
       return this.confirmDialog.show({
@@ -129,6 +130,7 @@ export class NotificationService {
     }
 
     // Fallback to browser's confirm dialog
+    console.warn('Custom confirm dialog not found, falling back to browser confirm');
     return confirm(`${title}\n\n${message}`);
   }
 }

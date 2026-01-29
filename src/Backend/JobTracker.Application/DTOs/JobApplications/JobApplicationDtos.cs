@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
+using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.Application.DTOs.JobApplications;
 
@@ -89,6 +90,11 @@ public class JobApplicationDto
     /// Offered or expected salary (nullable)
     /// </summary>
     public decimal? SalaryOffer { get; set; }
+
+    /// <summary>
+    /// The primary contact person for this specific job application
+    /// </summary>
+    public CompanyContactDto? PrimaryContact { get; set; }
 }
 
 /// <summary>
@@ -126,6 +132,11 @@ public class CreateJobApplicationDto
     /// Reference to the CV/Resume to use for this application
     /// </summary>
     public Guid? DocumentId { get; set; }
+
+    /// <summary>
+    /// The ID of the primary contact for this application
+    /// </summary>
+    public int? PrimaryContactId { get; set; }
 }
 
 /// <summary>
@@ -165,4 +176,9 @@ public class UpdateJobApplicationDto
     public int? MatchScore { get; set; }
 
     public decimal? SalaryOffer { get; set; }
+
+    /// <summary>
+    /// The ID of the primary contact for this application
+    /// </summary>
+    public int? PrimaryContactId { get; set; }
 }

@@ -9,6 +9,7 @@ export interface Company {
   industry?: string;
   techStack?: string[];
   totalApplications: number;
+  priority: string;
   // For rich display in list view
   recentApplications?: ApplicationPreview[];
 }
@@ -28,6 +29,8 @@ export interface CreateCompany {
   hrContactLinkedIn?: string;
   industry?: string;
   techStack?: string[];
+  priority?: string;
+  notes?: string;
 }
 
 export interface UpdateCompany {
@@ -39,6 +42,9 @@ export interface UpdateCompany {
   hrContactLinkedIn?: string;
   industry?: string;
   techStack?: string[];
+  priority?: string;
+  notes?: string;
+  contacts?: CompanyContact[];
 }
 
 export interface CompanyDetail {
@@ -52,6 +58,7 @@ export interface CompanyDetail {
   industry?: string;
   techStack?: string[];
   totalApplications: number;
+  priority: string;
   applicationHistory: JobApplicationHistory[];
   // Intelligence fields (mock data for now)
   contacts?: CompanyContact[];
@@ -59,7 +66,7 @@ export interface CompanyDetail {
 }
 
 export interface CompanyContact {
-  id: string;
+  id: number;
   name: string;
   role: string;
   email?: string;

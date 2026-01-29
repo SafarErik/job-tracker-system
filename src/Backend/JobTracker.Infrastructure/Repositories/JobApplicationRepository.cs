@@ -28,6 +28,7 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
+            .Include(j => j.PrimaryContact)
             .ToListAsync();
     }
 
@@ -42,6 +43,7 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
+            .Include(j => j.PrimaryContact)
             .OrderByDescending(j => j.AppliedAt)
             .ToListAsync();
     }
@@ -52,6 +54,7 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
+            .Include(j => j.PrimaryContact)
             .FirstOrDefaultAsync(j => j.Id == id);
     }
 

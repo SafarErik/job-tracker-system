@@ -105,6 +105,20 @@ public class JobApplication
     public Company? Company { get; set; }
 
     // ============================================
+    // CONTACT RELATIONSHIP
+    // ============================================
+
+    /// <summary>
+    /// The primary contact person for this specific job application
+    /// </summary>
+    public int? PrimaryContactId { get; set; }
+
+    /// <summary>
+    /// Navigation property to the primary contact
+    /// </summary>
+    public CompanyContact? PrimaryContact { get; set; }
+
+    // ============================================
     // DOCUMENT RELATIONSHIP
     // ============================================
 

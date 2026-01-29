@@ -21,44 +21,50 @@ import { authGuard, guestGuard } from './core/auth';
 
 export const routes: Routes = [
   // ============================================
-  // PUBLIC ROUTES (Guest only - redirect if logged in)
+  // PROTECTED ROOT (Dashboard)
   // ============================================
-  {
-    path: 'login',
-    loadComponent: () =>
-      import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
-    canActivate: [guestGuard],
-    title: 'Login - JobTracker',
-  },
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./features/auth/components/register/register.component').then(
-        (m) => m.RegisterComponent,
-      ),
-    canActivate: [guestGuard],
-    title: 'Register - JobTracker',
-  },
-  {
-    path: 'auth/callback',
-    loadComponent: () =>
-      import('./features/auth/components/auth-callback/auth-callback.component').then(
-        (m) => m.AuthCallbackComponent,
-      ),
-    title: 'Signing In... - JobTracker',
-  },
-
-  // ============================================
-  // PROTECTED ROUTES (Requires authentication)
-  // ============================================
-
-  // Job Applications (Dashboard/Home)
   {
     path: '',
     loadComponent: () =>
       import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
     canActivate: [authGuard],
+    pathMatch: 'full',
     title: 'Applications - JobTracker',
+  },
+
+  // ============================================
+  // GUEST ROUTES (Login, Register, etc.)
+  // ============================================
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/auth/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
+        title: 'Login - JobTracker',
+      },
+      {
+        path: 'register',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/auth/components/register/register.component').then(
+            (m) => m.RegisterComponent,
+          ),
+        title: 'Register - JobTracker',
+      },
+      {
+        path: 'auth/callback',
+        loadComponent: () =>
+          import('./features/auth/components/auth-callback/auth-callback.component').then(
+            (m) => m.AuthCallbackComponent,
+          ),
+        title: 'Signing In... - JobTracker',
+      },
+    ],
   },
   {
     path: 'new',

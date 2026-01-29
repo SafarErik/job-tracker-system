@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
@@ -41,6 +41,10 @@ export class DocumentsListComponent implements OnInit {
   searchTerm = signal('');
   uploadProgress = signal<number | null>(null);
   isDragging = signal(false);
+  isSearchFocused = signal(false);
+  activeTypeFilter = signal<string | null>(null);
+
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   // Storage logic
   totalStorage = 10 * 1024 * 1024; // 10MB
@@ -49,6 +53,44 @@ export class DocumentsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDocuments();
+  }
+
+  // ============================================
+  // Keyboard Shortcuts
+  // ============================================
+
+  /**
+   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
+   */
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      this.focusSearch();
+    }
+  }
+
+  /**
+   * Focus the search input field
+   */
+  focusSearch(): void {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
+  }
+
+  setSearchFocus(focused: boolean): void {
+    // Delay hiding chips slightly so they remain clickable
+    if (!focused) {
+      setTimeout(() => this.isSearchFocused.set(false), 200);
+    } else {
+      this.isSearchFocused.set(true);
+    }
+  }
+
+  filterByType(type: string | null): void {
+    this.activeTypeFilter.set(type);
+    this.onSearch();
   }
 
   loadDocuments(): void {
@@ -71,14 +113,25 @@ export class DocumentsListComponent implements OnInit {
 
   onSearch(): void {
     const term = this.searchTerm().toLowerCase();
-    if (!term) {
-      this.filteredDocuments.set(this.documents());
-      return;
+    const type = this.activeTypeFilter();
+
+    let filtered = this.documents();
+
+    if (term) {
+      filtered = filtered.filter((doc) =>
+        doc.originalFileName.toLowerCase().includes(term),
+      );
     }
 
-    const filtered = this.documents().filter((doc) =>
-      doc.originalFileName.toLowerCase().includes(term),
-    );
+    if (type) {
+      if (type === 'MASTER') {
+        filtered = filtered.filter((doc) => doc.isMaster);
+      } else {
+        // e.g. 'PDF'
+        filtered = filtered.filter((doc) => doc.originalFileName.toUpperCase().endsWith(`.${type}`));
+      }
+    }
+
     this.filteredDocuments.set(filtered);
   }
 

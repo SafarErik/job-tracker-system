@@ -42,14 +42,71 @@
   <!-- Actions Bar -->
   <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
 
-    <!-- Search -->
-    <div class="relative w-full max-w-md">
-      <ng-icon name="lucideLibrary"
-        class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"></ng-icon>
-      <input hlmInput type="text"
-        class="pl-10 w-full bg-card shadow-sm rounded-xl border-border/60 focus:border-primary/50"
-        placeholder="Search documents by filename..." [ngModel]="searchTerm()"
-        (ngModelChange)="searchTerm.set($event); onSearch()" />
+    <!-- Search Hub - The "Command Center" -->
+    <div class="mb-10">
+      <div class="group relative w-full max-w-2xl transition-all duration-300">
+        <!-- Unified Container -->
+        <div
+          class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-white dark:bg-zinc-900/50 shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
+
+          <!-- Search Input Wrapper -->
+          <div class="relative flex-1 flex items-center">
+            <!-- SEARCH ICON -->
+            <div
+              class="absolute left-4 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
+              <ng-icon name="lucideLibrary" class="h-5 w-5 stroke-[1.5]"></ng-icon>
+            </div>
+
+            <!-- THE ACTUAL INPUT -->
+            <input #searchInput type="text" [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event); onSearch()" (focus)="setSearchFocus(true)"
+              (blur)="setSearchFocus(false)" placeholder="Search documents by filename..."
+              class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
+              id="document-search">
+
+            <!-- KEYBOARD SHORTCUT HINT -->
+            <div class="absolute right-4 hidden items-center gap-1 sm:flex">
+              <kbd
+                class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 transition-opacity">
+                <span class="text-xs">⌘</span>K
+              </kbd>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Type Chips (Shown on focus or when filter is active) -->
+        <div *ngIf="isSearchFocused() || activeTypeFilter()"
+          class="absolute top-full left-6 mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <button (click)="filterByType(null)"
+            [class]="!activeTypeFilter() ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            All
+          </button>
+          <button (click)="filterByType('PDF')"
+            [class]="activeTypeFilter() === 'PDF' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            PDF
+          </button>
+          <button (click)="filterByType('DOCX')"
+            [class]="activeTypeFilter() === 'DOCX' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            DOCX
+          </button>
+          <button (click)="filterByType('MASTER')"
+            [class]="activeTypeFilter() === 'MASTER' ? 'bg-amber-500 text-white border-amber-500' : 'bg-card text-muted-foreground border-border hover:border-amber-500/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            Master
+          </button>
+        </div>
+
+        <!-- Quick Tips / Search Stats -->
+        <div *ngIf="searchTerm() || activeTypeFilter()"
+          class="mt-12 px-6 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
+          <span>Found {{ filteredDocuments().length }} assets</span>
+          <button (click)="searchTerm.set(''); activeTypeFilter.set(null); onSearch()"
+            class="hover:text-primary transition-colors">Clear Results</button>
+        </div>
+      </div>
     </div>
 
     <!-- Upload Button -->

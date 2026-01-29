@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
@@ -46,11 +46,37 @@ export class CompanyListComponent implements OnInit {
   // Track failed logo loads
   logoFailedIds = signal<Set<number>>(new Set());
 
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
   constructor(
     private readonly companyService: CompanyService,
     private readonly router: Router,
     private readonly notificationService: NotificationService,
   ) { }
+
+  // ============================================
+  // Keyboard Shortcuts
+  // ============================================
+
+  /**
+   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
+   */
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      this.focusSearch();
+    }
+  }
+
+  /**
+   * Focus the search input field
+   */
+  focusSearch(): void {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
+  }
 
   ngOnInit(): void {
     this.loadCompanies();

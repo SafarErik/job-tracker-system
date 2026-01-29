@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 
@@ -24,7 +24,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBriefcase, lucidePlus, lucideDatabaseZap } from '@ng-icons/lucide';
+import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSlidersHorizontal, lucideLayoutGrid, lucideLayoutList, lucideCalendar } from '@ng-icons/lucide';
 
 /**
  * View Mode Enum
@@ -64,13 +64,15 @@ export enum ViewMode {
     ...HlmButtonImports,
     NgIcon,
   ],
-  providers: [provideIcons({ lucideBriefcase, lucidePlus, lucideDatabaseZap })],
+  providers: [provideIcons({ lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSlidersHorizontal, lucideLayoutGrid, lucideLayoutList, lucideCalendar })],
   templateUrl: './job-list.html',
 })
 export class JobList implements OnInit {
   // ============================================
   // Component State (Data that changes over time)
   // ============================================
+
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   /**
    * Array to hold all job applications from the backend
@@ -163,6 +165,49 @@ export class JobList implements OnInit {
    */
   ngOnInit(): void {
     this.loadApplications();
+  }
+
+  // ============================================
+  // Keyboard Shortcuts
+  // ============================================
+
+  /**
+   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
+   */
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault(); // Prevent browser search or other defaults
+      this.focusSearch();
+    }
+  }
+
+  /**
+   * Close dropdowns when clicking outside
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    // Check if click is inside any specific container if needed, 
+    // but for now we rely on stopPropagation in the toggle methods
+    // If the click reached here (document), it means it wasn't caught by the button or dropdown
+    if (this.isStatusFilterOpen || this.isCompanyFilterOpen) {
+      // We can check if the click target is NOT a filter trigger
+      // But standard pattern is: click on trigger -> stopProp -> toggle
+      // click outside -> prop to doc -> close all
+      this.isStatusFilterOpen = false;
+      this.isCompanyFilterOpen = false;
+    }
+  }
+
+  /**
+   * Focus the search input field
+   */
+  focusSearch(): void {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
   }
 
   get visibleApplications(): JobApplication[] {
@@ -275,38 +320,28 @@ export class JobList implements OnInit {
     this.selectedCompanyFilter = 'all';
   }
 
-  openStatusFilter(): void {
-    this.isStatusFilterOpen = true;
+  toggleStatusFilter(event: Event): void {
+    event.stopPropagation();
+    this.isStatusFilterOpen = !this.isStatusFilterOpen;
+    if (this.isStatusFilterOpen) this.isCompanyFilterOpen = false;
   }
 
-  closeStatusFilter(): void {
-    setTimeout(() => {
-      this.isStatusFilterOpen = false;
-    }, 150);
-  }
-
-  selectStatusFilter(value: JobApplicationStatus | 'all'): void {
+  selectStatusFilter(value: JobApplicationStatus | 'all', event?: Event): void {
+    event?.stopPropagation(); // Prevent bubbling to document which would double-close (harmless but checking)
     this.selectedStatusFilter = value;
-    this.isStatusFilterOpen = false;
+    this.isStatusFilterOpen = false; // "Pro" feel: close immediately
   }
 
-  openCompanyFilter(): void {
-    this.isCompanyFilterOpen = true;
-  }
-
-  toggleCompanyFilter(): void {
+  toggleCompanyFilter(event: Event): void {
+    event.stopPropagation();
     this.isCompanyFilterOpen = !this.isCompanyFilterOpen;
+    if (this.isCompanyFilterOpen) this.isStatusFilterOpen = false;
   }
 
-  closeCompanyFilter(): void {
-    setTimeout(() => {
-      this.isCompanyFilterOpen = false;
-    }, 150);
-  }
-
-  selectCompanyFilter(value: number | 'all'): void {
+  selectCompanyFilter(value: number | 'all', event?: Event): void {
+    event?.stopPropagation();
     this.selectedCompanyFilter = value === 'all' ? 'all' : Number(value);
-    this.isCompanyFilterOpen = false;
+    this.isCompanyFilterOpen = false; // "Pro" feel: close immediately
   }
 
   /**

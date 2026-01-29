@@ -123,7 +123,49 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Base Utility Resets */
 body {
-  @apply bg-background text-foreground antialiased font-sans custom-scrollbar;
+  @apply bg-background text-foreground antialiased font-sans custom-scrollbar transition-colors duration-300;
+}
+
+/* Optimized Theme Transition */
+/* Optimized Theme Transition */
+/* Only animate the background and color of the body to set the stage */
+body {
+  transition-property: background-color, color;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 
+  Specific interactive elements we want to animate.
+  Avoid global selectors like 'div', 'span', 'p' which cause layout thrashing.
+*/
+button,
+a,
+input,
+textarea,
+select,
+.bg-card,
+.bg-popover,
+.bg-muted,
+.bg-accent,
+.border-border,
+.border-input {
+  transition-property: background-color, border-color, color, opacity, transform;
+  transition-duration: 200ms;
+  /* Slightly faster for interactions */
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Exclude time-sensitive or heavy paint elements */
+.animate-spin,
+.animate-pulse,
+.animate-bounce,
+.no-transition {
+  transition: none !important;
+}
+
+kbd {
+  @apply pointer-events-none select-none px-1.5 py-0.5 rounded border border-border bg-muted/50 font-mono text-[10px] font-bold text-muted-foreground shadow-sm transition-opacity duration-300;
 }
 
 /* Custom Animations */

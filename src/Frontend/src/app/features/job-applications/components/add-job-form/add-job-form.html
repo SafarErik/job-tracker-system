@@ -1,275 +1,313 @@
-<div class="p-6 max-w-xl mx-auto space-y-8">
-    <!-- Header with Back & Paste Action -->
-    <div class="flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <a routerLink="/"
-                class="group flex items-center justify-center w-8 h-8 rounded-full hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground">
-                <ng-icon name="lucideArrowLeft"
-                    class="text-lg transition-transform group-hover:-translate-x-0.5"></ng-icon>
-            </a>
-            <div>
-                <h2 class="text-xl font-bold tracking-tight">Add Application</h2>
-                <p class="text-muted-foreground text-sm">Quickly track a new position</p>
+<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-10">
+
+        <!-- Header: Identity & Actions -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4 animate-fade-in-up">
+            <div class="space-y-6">
+                <!-- Back Button -->
+                <a routerLink="/"
+                    class="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors group">
+                    <ng-icon name="lucideArrowLeft" class="group-hover:-translate-x-1 transition-transform"></ng-icon>
+                    Return
+                </a>
+
+                <div class="space-y-2">
+                    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-none">
+                        Add Application
+                    </h1>
+                    <p class="text-muted-foreground text-sm font-medium">Quickly track a new position in your pipeline
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button hlmBtn variant="outline" (click)="onPasteUrl()"
+                    class="h-12 px-6 gap-2 text-xs font-black uppercase tracking-widest rounded-2xl border-border/40 bg-card/60 backdrop-blur-xl hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
+                    type="button">
+                    <ng-icon name="lucideClipboard" class="text-base"></ng-icon>
+                    Paste URL
+                </button>
             </div>
         </div>
 
-        <button hlmBtn variant="outline" (click)="onPasteUrl()"
-            class="h-9 gap-2 text-xs font-medium rounded-lg border border-transparent hover:border-primary/30 hover:bg-primary/5 hover:text-primary hover:shadow-md hover:shadow-primary/30 transition-all active:scale-95"
-            type="button">
-            <ng-icon name="lucideClipboard" class="text-sm"></ng-icon>
-            Paste URL
-        </button>
-    </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="animate-fade-in-up delay-1">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-
-        <!-- Company Input (Combobox) -->
-        <div class="space-y-2">
-            <label hlmLabel
-                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Company</label>
-            <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
-                <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
-                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
-                    [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
-
-                <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
-                    <hlm-combobox-empty>No companies found.</hlm-combobox-empty>
-                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto">
-                        @for(company of companies(); track company.id) {
-                        <hlm-combobox-item [value]="company">
-                            {{ company.name }}
-                        </hlm-combobox-item>
-                        }
-                        @if(form.get('companyName')?.value && companies().length === 0) {
-                        <hlm-combobox-item [value]="form.get('companyName')?.value">
-                            <span class="text-primary italic">+ Create "{{ form.get('companyName')?.value }}"</span>
-                        </hlm-combobox-item>
-                        }
-                    </div>
-                </div>
-            </hlm-combobox>
-            @if (form.get('companyName')?.invalid && form.get('companyName')?.touched) {
-            <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Company name is
-                required</p>
-            }
-        </div>
-
-        <!-- Position Input (Combobox) -->
-        <div class="space-y-2">
-            <label hlmLabel
-                class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1 block">Position</label>
-            <hlm-combobox (valueChange)="onPositionSelected($event)">
-                <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend Engineer"
-                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50"
-                    [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
-
-                <div *brnPopoverContent hlmComboboxContent class="w-[var(--brn-popover-anchor-width)]">
-                    <hlm-combobox-empty>No recent positions found.</hlm-combobox-empty>
-                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto">
-                        @if (recentPositions().length > 0) {
-                        <div
-                            class="px-2 py-1.5 text-[10px] uppercase tracking-widest text-muted-foreground font-semibold bg-muted/10 my-1 rounded-sm">
-                            Recent Positions</div>
-                        @for(pos of recentPositions(); track pos) {
-                        <hlm-combobox-item [value]="pos">
-                            {{ pos }}
-                        </hlm-combobox-item>
-                        }
-                        }
-                    </div>
-                </div>
-            </hlm-combobox>
-            @if (form.get('position')?.invalid && form.get('position')?.touched) {
-            <p class="text-[10px] text-destructive mt-1 ml-1 animate-in fade-in slide-in-from-top-1">Position is
-                required</p>
-            }
-        </div>
-
-        <!-- Job URL -->
-        <div class="space-y-2">
-            <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Job Link
-                <span class="normal-case opacity-50">(Optional)</span></label>
-            <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
-                class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50" />
-        </div>
-
-        <!-- Resume Upload Zone -->
-        <div class="space-y-2">
-            <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Resume / CV
-                <span class="normal-case opacity-50">(Recommended)</span></label>
-
-            <div (click)="fileInput.click()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
-                (drop)="onFileDropped($event)" [class.border-primary]="isDragging()" [class.bg-primary/5]="isDragging()"
-                [class.border-muted-foreground/20]="!isDragging()"
-                class="relative h-32 w-full rounded-xl border-2 border-dashed transition-all cursor-pointer hover:border-primary/50 hover:bg-muted/30 flex flex-col items-center justify-center gap-2 group">
-                <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)"
-                    accept=".pdf,.doc,.docx" />
-
-                @if (selectedFile()) {
+                <!-- 1. Role Core Card (Span 8) -->
                 <div
-                    class="flex items-center gap-3 bg-card p-3 rounded-lg shadow-sm border border-border animate-in fade-in zoom-in duration-200">
-                    <ng-icon name="lucideFileText" class="text-primary text-xl"></ng-icon>
-                    <div class="flex flex-col min-w-0">
-                        <span class="text-sm font-medium truncate max-w-[200px]">{{ selectedFile()?.name }}</span>
-                        <span class="text-[10px] text-muted-foreground">{{ (selectedFile()?.size || 0) / 1024 |
-                            number:'1.0-1' }} KB</span>
+                    class="lg:col-span-8 flex flex-col gap-6 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 p-8 opacity-[0.03] text-foreground pointer-events-none select-none">
+                        <ng-icon name="lucideBuilding2" size="120"></ng-icon>
                     </div>
-                    <button (click)="removeFile($event)" class="ml-2 p-1 hover:bg-muted rounded-full transition-colors">
-                        <ng-icon name="lucideX" class="text-muted-foreground"></ng-icon>
+
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Role Definition
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Company Input -->
+                        <div class="space-y-2">
+                            <label hlmLabel
+                                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Company</label>
+                            <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
+                                <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
+                                    class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5"
+                                    [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
+
+                                <div *brnPopoverContent hlmComboboxContent
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl">
+                                    <hlm-combobox-empty>No companies found.</hlm-combobox-empty>
+                                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                        @for(company of companies(); track company.id) {
+                                        <hlm-combobox-item [value]="company" class="rounded-xl">
+                                            {{ company.name }}
+                                        </hlm-combobox-item>
+                                        }
+                                        @if(form.get('companyName')?.value && companies().length === 0) {
+                                        <hlm-combobox-item [value]="form.get('companyName')?.value"
+                                            class="rounded-xl text-primary italic">
+                                            + Create "{{ form.get('companyName')?.value }}"
+                                        </hlm-combobox-item>
+                                        }
+                                    </div>
+                                </div>
+                            </hlm-combobox>
+                        </div>
+
+                        <!-- Position Input -->
+                        <div class="space-y-2">
+                            <label hlmLabel
+                                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Position</label>
+                            <hlm-combobox (valueChange)="onPositionSelected($event)">
+                                <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend"
+                                    class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5"
+                                    [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
+
+                                <div *brnPopoverContent hlmComboboxContent
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl">
+                                    <hlm-combobox-empty>No recent positions found.</hlm-combobox-empty>
+                                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                        @if (recentPositions().length > 0) {
+                                        <div
+                                            class="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
+                                            Recent History</div>
+                                        @for(pos of recentPositions(); track pos) {
+                                        <hlm-combobox-item [value]="pos" class="rounded-xl">
+                                            {{ pos }}
+                                        </hlm-combobox-item>
+                                        }
+                                        }
+                                    </div>
+                                </div>
+                            </hlm-combobox>
+                        </div>
+                    </div>
+
+                    <!-- Job URL -->
+                    <div class="space-y-2">
+                        <label hlmLabel
+                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Archive
+                            Link</label>
+                        <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
+                            class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5" />
+                    </div>
+                </div>
+
+                <!-- 2. Logistics Panel (Span 4) -->
+                <div
+                    class="lg:col-span-4 flex flex-col gap-6 p-8 bg-muted/30 rounded-[2.5rem] border border-border/40 h-full relative group/logistics">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params
+                        </h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Status Selection -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Current
+                                Status</label>
+                            <div class="relative">
+                                <button type="button" (click)="isStatusDropdownOpen.set(!isStatusDropdownOpen())"
+                                    class="w-full h-12 flex items-center justify-between px-4 rounded-xl bg-card border border-border/40 text-sm font-bold transition-all hover:border-primary/40 group">
+                                    {{ selectedStatusLabel }}
+                                    <ng-icon name="lucideChevronDown"
+                                        class="opacity-40 group-hover:opacity-100 transition-opacity"></ng-icon>
+                                </button>
+                                @if (isStatusDropdownOpen()) {
+                                <div
+                                    class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
+                                    @for (opt of statusOptions; track opt.value) {
+                                    <button type="button" (click)="selectStatus(opt.value)"
+                                        class="w-full text-left px-3 py-2 text-xs font-bold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors">
+                                        {{ opt.label }}
+                                    </button>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Priority Selection -->
+                        <div class="space-y-2">
+                            <label
+                                class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Strategic
+                                Priority</label>
+                            <div class="relative">
+                                <button type="button" (click)="isPriorityDropdownOpen.set(!isPriorityDropdownOpen())"
+                                    class="w-full h-12 flex items-center justify-between px-4 rounded-xl bg-card border border-border/40 text-sm font-bold transition-all hover:border-primary/40 group">
+                                    {{ selectedPriorityLabel }}
+                                    <ng-icon name="lucideChevronDown"
+                                        class="opacity-40 group-hover:opacity-100 transition-opacity"></ng-icon>
+                                </button>
+                                @if (isPriorityDropdownOpen()) {
+                                <div
+                                    class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
+                                    @for (opt of priorityOptions; track opt.value) {
+                                    <button type="button" (click)="selectPriority(opt.value)"
+                                        class="w-full text-left px-3 py-2 text-xs font-bold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors">
+                                        {{ opt.label }}
+                                    </button>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Type & Workplace (Row) -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Type</label>
+                                <button type="button" (click)="isJobTypeDropdownOpen.set(!isJobTypeDropdownOpen())"
+                                    class="w-full h-11 flex items-center justify-between px-3 rounded-xl bg-card border border-border/40 text-[11px] font-bold">
+                                    {{ selectedJobTypeLabel }}
+                                </button>
+                                @if (isJobTypeDropdownOpen()) {
+                                <div
+                                    class="absolute z-50 mt-1 w-32 rounded-xl border border-border bg-popover shadow-2xl p-1">
+                                    @for (opt of jobTypeOptions; track opt.value) {
+                                    <button type="button" (click)="selectJobType(opt.value)"
+                                        class="w-full text-left px-3 py-2 text-[10px] font-bold rounded-lg hover:bg-muted">
+                                        {{ opt.label }}
+                                    </button>
+                                    }
+                                </div>
+                                }
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Locale</label>
+                                <button type="button"
+                                    (click)="isWorkplaceTypeDropdownOpen.set(!isWorkplaceTypeDropdownOpen())"
+                                    class="w-full h-11 flex items-center justify-between px-3 rounded-xl bg-card border border-border/40 text-[11px] font-bold">
+                                    {{ selectedWorkplaceTypeLabel }}
+                                </button>
+                                @if (isWorkplaceTypeDropdownOpen()) {
+                                <div
+                                    class="absolute z-50 mt-1 w-32 right-0 rounded-xl border border-border bg-popover shadow-2xl p-1">
+                                    @for (opt of workplaceTypeOptions; track opt.value) {
+                                    <button type="button" (click)="selectWorkplaceType(opt.value)"
+                                        class="w-full text-left px-3 py-2 text-[10px] font-bold rounded-lg hover:bg-muted">
+                                        {{ opt.label }}
+                                    </button>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Asset Upload (Span 7) -->
+                <div
+                    class="lg:col-span-7 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden group/assets">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Assets
+                        </h3>
+                    </div>
+
+                    <div (click)="fileInput.click()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
+                        (drop)="onFileDropped($event)" [class.border-primary]="isDragging()"
+                        [class.bg-primary/5]="isDragging()"
+                        class="relative h-44 w-full rounded-[1.5rem] border-2 border-dashed border-border/40 transition-all cursor-pointer hover:border-primary/40 hover:bg-muted/30 flex flex-col items-center justify-center gap-2">
+                        <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)"
+                            accept=".pdf,.doc,.docx" />
+
+                        @if (selectedFile()) {
+                        <div
+                            class="flex items-center gap-4 bg-muted/50 p-4 rounded-2xl shadow-sm border border-border/20 animate-in fade-in zoom-in-95">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                <ng-icon name="lucideFileText" size="24"></ng-icon>
+                            </div>
+                            <div class="flex flex-col min-w-0 pr-4">
+                                <span class="text-sm font-black tracking-tight truncate max-w-[200px]">{{
+                                    selectedFile()?.name }}</span>
+                                <span class="text-[10px] font-bold text-muted-foreground uppercase">{{
+                                    (selectedFile()?.size || 0) / 1024 | number:'1.0-1' }} KB</span>
+                            </div>
+                            <button (click)="removeFile($event)"
+                                class="h-8 w-8 flex items-center justify-center hover:bg-rose-500/10 hover:text-rose-500 rounded-full transition-colors shrink-0">
+                                <ng-icon name="lucideX" size="18"></ng-icon>
+                            </button>
+                        </div>
+                        } @else {
+                        <div
+                            class="flex flex-col items-center gap-1.5 text-muted-foreground group-hover/assets:text-primary transition-colors">
+                            <ng-icon name="lucideUploadCloud" size="40"
+                                class="mb-1 opacity-40 group-hover/assets:opacity-100"></ng-icon>
+                            <span class="text-xs font-black uppercase tracking-widest">Deploy Resume</span>
+                            <span class="text-[10px] font-medium opacity-60">PDF / Word (Max 5MB)</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- 4. AI Insight (Span 5) -->
+                <div
+                    class="lg:col-span-5 p-8 bg-card rounded-[2.5rem] border border-border/40 shadow-sm flex flex-col justify-between animate-fade-in-up">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-1.5 h-1.5 rounded-full bg-violet-500"></div>
+                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Self-Assessment
+                        </h3>
+                    </div>
+
+                    <div class="flex-1 flex flex-col items-center justify-center gap-4 py-4 px-2 text-center">
+                        <div class="relative group/score">
+                            <input hlmInput formControlName="matchScore" type="number"
+                                class="w-40 h-28 text-7xl font-black tracking-tighter text-center bg-transparent border-none focus:ring-0 p-0 selection:bg-primary/20" />
+                            <div
+                                class="absolute -right-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/30 group-hover/score:text-primary transition-colors">
+                                %</div>
+                        </div>
+                        <p class="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">Estimated
+                            Match Probability</p>
+                    </div>
+
+                    <div class="w-full h-1 bg-muted rounded-full overflow-hidden">
+                        <div class="h-full bg-primary transition-all duration-700"
+                            [style.width.%]="form.get('matchScore')?.value || 0"></div>
+                    </div>
+                </div>
+
+                <!-- Submission Action (Full Width below grid) -->
+                <div class="lg:col-span-12 pt-6">
+                    <button hlmBtn type="submit" [disabled]="form.invalid || isSubmitting()"
+                        class="w-full h-16 rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] bg-primary text-primary-foreground hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-primary/20 disabled:opacity-50 disabled:scale-100">
+                        @if (isSubmitting()) {
+                        <span class="animate-pulse">Synchronizing Data...</span>
+                        } @else {
+                        Commit Application
+                        }
                     </button>
                 </div>
-                } @else {
-                <div
-                    class="flex flex-col items-center gap-1 text-muted-foreground group-hover:text-primary transition-colors">
-                    <ng-icon name="lucideUploadCloud" class="text-3xl mb-1"></ng-icon>
-                    <span class="text-sm font-medium">Drop your resume here</span>
-                    <span class="text-xs opacity-60">or click to browse PDF, Word</span>
-                </div>
-                }
             </div>
-            <!-- Metadata Grid: Status, Type, Workplace, Priority -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Status Dropdown -->
-                <div class="space-y-2">
-                    <label hlmLabel
-                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Status</label>
-                    <div class="relative">
-                        <button type="button" hlmBtn variant="outline"
-                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
-                            (click)="isStatusDropdownOpen.set(!isStatusDropdownOpen())">
-                            <span class="text-sm font-medium">{{ selectedStatusLabel }}</span>
-                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        @if (isStatusDropdownOpen()) {
-                        <div
-                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div class="p-1">
-                                @for (opt of statusOptions; track opt.value) {
-                                <button type="button" (click)="selectStatus(opt.value)"
-                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
-                                    {{ opt.label }}
-                                </button>
-                                }
-                            </div>
-                        </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Job Type Dropdown -->
-                <div class="space-y-2">
-                    <label hlmLabel
-                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Type</label>
-                    <div class="relative">
-                        <button type="button" hlmBtn variant="outline"
-                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
-                            (click)="isJobTypeDropdownOpen.set(!isJobTypeDropdownOpen())">
-                            <span class="text-sm font-medium">{{ selectedJobTypeLabel }}</span>
-                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        @if (isJobTypeDropdownOpen()) {
-                        <div
-                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div class="p-1">
-                                @for (opt of jobTypeOptions; track opt.value) {
-                                <button type="button" (click)="selectJobType(opt.value)"
-                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
-                                    {{ opt.label }}
-                                </button>
-                                }
-                            </div>
-                        </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Workplace Dropdown -->
-                <div class="space-y-2">
-                    <label hlmLabel
-                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Workplace</label>
-                    <div class="relative">
-                        <button type="button" hlmBtn variant="outline"
-                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
-                            (click)="isWorkplaceTypeDropdownOpen.set(!isWorkplaceTypeDropdownOpen())">
-                            <span class="text-sm font-medium">{{ selectedWorkplaceTypeLabel }}</span>
-                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        @if (isWorkplaceTypeDropdownOpen()) {
-                        <div
-                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div class="p-1">
-                                @for (opt of workplaceTypeOptions; track opt.value) {
-                                <button type="button" (click)="selectWorkplaceType(opt.value)"
-                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
-                                    {{ opt.label }}
-                                </button>
-                                }
-                            </div>
-                        </div>
-                        }
-                    </div>
-                </div>
-
-                <!-- Priority Dropdown -->
-                <div class="space-y-2">
-                    <label hlmLabel
-                        class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Priority</label>
-                    <div class="relative">
-                        <button type="button" hlmBtn variant="outline"
-                            class="w-full justify-between h-11 bg-muted/50 border-transparent rounded-xl"
-                            (click)="isPriorityDropdownOpen.set(!isPriorityDropdownOpen())">
-                            <span class="text-sm font-medium">{{ selectedPriorityLabel }}</span>
-                            <svg class="h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        @if (isPriorityDropdownOpen()) {
-                        <div
-                            class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div class="p-1">
-                                @for (opt of priorityOptions; track opt.value) {
-                                <button type="button" (click)="selectPriority(opt.value)"
-                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors">
-                                    {{ opt.label }}
-                                </button>
-                                }
-                            </div>
-                        </div>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <!-- Match Score -->
-            <div class="space-y-2">
-                <label hlmLabel class="text-xs font-medium uppercase tracking-wide text-muted-foreground ml-1">Match
-                    Score (%)</label>
-                <input hlmInput formControlName="matchScore" type="number" placeholder="0-100"
-                    class="h-12 w-full rounded-xl bg-muted/50 border-transparent focus:border-input focus:ring-1 focus:ring-primary transition-all text-base px-4 placeholder:text-muted-foreground/50" />
-            </div>
-        </div>
-
-        <!-- Save Button - Primary Action -->
-        <div class="pt-2">
-            <button hlmBtn type="submit" [disabled]="form.invalid || isSubmitting()"
-                class="w-full h-12 rounded-xl text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:shadow-none">
-                @if (isSubmitting()) {
-                <span class="animate-pulse">Saving...</span>
-                } @else {
-                Save Application
-                }
-            </button>
-        </div>
-
-    </form>
+        </form>
+    </div>
 </div>

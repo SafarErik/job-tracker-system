@@ -61,6 +61,7 @@
 /* DARK MODE OVERRIDES */
 /* This selector applies when 'dark' class is on HTML or BODY */
 :root.dark {
+  color-scheme: dark;
   --background: #0F111A;
   /* Deep Blue-Black */
   --foreground: #E5E7EB;
@@ -111,6 +112,13 @@
   &::-webkit-scrollbar-thumb:hover {
     @apply bg-zinc-400/80 dark:bg-zinc-500/80;
   }
+}
+
+/* Fix for number input spinners in dark mode */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  filter: invert(1) brightness(2);
+  opacity: 0.6;
 }
 
 /* Base Utility Resets */

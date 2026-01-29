@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20">
+<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
   <!-- Loading State -->
   @if (isLoading()) {
   <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
@@ -26,7 +26,7 @@
 
   <!-- Main Content -->
   @if (application() && !isLoading()) {
-  <div class="max-w-[1400px] mx-auto px-6 lg:px-8 pt-8 space-y-8">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-8">
 
     <!-- 1. Breadcrumbs -->
     <nav hlmBreadcrumb class="text-sm">
@@ -53,7 +53,7 @@
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
       <div class="space-y-4">
         <div class="flex flex-col gap-1">
-          <h1 class="text-5xl font-black tracking-tight text-foreground leading-tight">
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight">
             {{ application()?.position }}
           </h1>
           <div class="flex items-center gap-2 text-2xl">
@@ -114,7 +114,7 @@
               Accuracy</span>
             <ng-icon name="lucideZap" size="16" class="text-emerald-500 animate-pulse"></ng-icon>
           </div>
-          <div class="text-7xl font-black text-emerald-500 tabular-nums tracking-tighter drop-shadow-sm">
+          <div class="text-5xl md:text-7xl font-black text-emerald-500 tabular-nums tracking-tighter drop-shadow-sm">
             {{ application()?.matchScore }}%
           </div>
         </div>
@@ -183,9 +183,9 @@
     </ng-template>
 
     <!-- 3. Navigation Tabs (The Dock) -->
-    <div class="flex justify-center lg:justify-start">
+    <div class="flex justify-start lg:justify-center overflow-x-auto pb-2 custom-scrollbar">
       <div
-        class="inline-flex items-center p-1.5 bg-card/60 backdrop-blur-xl rounded-[2rem] border border-border/40 shadow-xl overflow-x-auto custom-scrollbar max-w-full">
+        class="inline-flex items-center p-1.5 bg-card/60 backdrop-blur-xl rounded-[2rem] border border-border/40 shadow-xl min-w-max">
         @for (tab of tabs; track tab.id) {
         <button (click)="setActiveTab(tab.id)"
           class="group relative flex items-center gap-2.5 px-6 py-3 rounded-[1.5rem] text-sm font-bold transition-all duration-500 whitespace-nowrap"
@@ -286,7 +286,7 @@
         }
         } @else {
         <!-- Full Analysis Content -->
-        <div class="bg-card rounded-[2.5rem] border border-border/40 p-10 shadow-sm animate-fade-in-up">
+        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 shadow-sm animate-fade-in-up">
           <div class="prose dark:prose-invert max-w-none">
             <h3 class="text-2xl font-black mb-6">Strategic Position Analysis</h3>
             <p class="text-lg text-muted-foreground">This is a hyper-personalized breakdown of your fit for the role at
@@ -362,7 +362,7 @@
       <!-- OVERVIEW TAB -->
       @if (activeTab() === 'overview') {
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up">
-        <div class="lg:col-span-1 bg-card rounded-3xl border border-border/40 p-8 shadow-sm">
+        <div class="lg:col-span-1 bg-card rounded-3xl border border-border/40 p-6 md:p-8 shadow-sm">
           <h3 class="text-lg font-bold mb-8 flex items-center gap-2">
             <ng-icon name="lucideActivity" class="text-primary"></ng-icon> Timeline
           </h3>
@@ -403,7 +403,7 @@
             </div>
           </div>
 
-          <div class="bg-card rounded-3xl border border-border/40 p-8 h-full relative overflow-hidden group">
+          <div class="bg-card rounded-3xl border border-border/40 p-6 md:p-8 h-full relative overflow-hidden group">
             <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
               <ng-icon name="lucideSparkles" size="120" class="text-primary"></ng-icon>
             </div>
@@ -633,7 +633,7 @@
       <!-- DOCUMENTS TAB -->
       @if (activeTab() === 'documents') {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in-up">
-        <div class="lg:col-span-4 bg-card rounded-[2rem] border border-border/40 p-8 flex flex-col h-full group">
+        <div class="lg:col-span-4 bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 flex flex-col h-full group">
           <h3 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-8">Primary Asset</h3>
           <div class="flex-1 flex flex-col items-center justify-center space-y-4">
             <div
@@ -648,7 +648,7 @@
         </div>
 
         <div class="lg:col-span-8 bg-card rounded-[2rem] border border-border/40 shadow-sm flex flex-col">
-          <div class="p-8 border-b border-border/40 flex items-center justify-between bg-muted/20">
+          <div class="p-6 md:p-8 border-b border-border/40 flex items-center justify-between bg-muted/20">
             <div>
               <h3 class="text-xl font-black tracking-tight">Cover Letter Studio</h3>
             </div>
@@ -658,7 +658,7 @@
               <ng-icon name="lucideSparkles" class="mr-2"></ng-icon> Generate }
             </button>
           </div>
-          <div class="p-8 flex-1">
+          <div class="p-6 md:p-8 flex-1">
             <textarea [ngModel]="coverLetter().content" (ngModelChange)="updateCoverLetterContent($event)"
               placeholder="Generate a cover letter to see it here..."
               class="w-full h-[350px] bg-background border border-border/40 rounded-2xl p-6 text-sm leading-relaxed outline-none resize-none custom-scrollbar"></textarea>

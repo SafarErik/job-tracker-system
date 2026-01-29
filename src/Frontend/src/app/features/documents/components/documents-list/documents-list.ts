@@ -2,7 +2,7 @@ import { Component, OnInit, signal, inject, computed, ViewChild, ElementRef, Hos
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
-import { Document } from '../../models/document.model';
+import { Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 import { DocumentCardComponent } from '../document-card/document-card.component';
@@ -17,6 +17,7 @@ import { lucideFileUp, lucideFileWarning, lucideLibrary } from '@ng-icons/lucide
 
 @Component({
   selector: 'app-documents-list',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -80,12 +81,7 @@ export class DocumentsListComponent implements OnInit {
   }
 
   setSearchFocus(focused: boolean): void {
-    // Delay hiding chips slightly so they remain clickable
-    if (!focused) {
-      setTimeout(() => this.isSearchFocused.set(false), 200);
-    } else {
-      this.isSearchFocused.set(true);
-    }
+    this.isSearchFocused.set(focused);
   }
 
   filterByType(type: string | null): void {

@@ -360,6 +360,8 @@ export class CompanyDetailsComponent implements OnInit {
     }).format(salary);
   }
 
+  private notesSaveTimer?: any;
+
   /**
    * Update notes (for scratchpad)
    */
@@ -368,9 +370,16 @@ export class CompanyDetailsComponent implements OnInit {
     if (!details) return;
 
     this.companyNotes.set(value);
-    this.companyService.updateCompany(details.id, { notes: value }).subscribe({
-      error: () => this.notificationService.error('Failed to save notes', 'Error')
-    });
+
+    if (this.notesSaveTimer) {
+      clearTimeout(this.notesSaveTimer);
+    }
+
+    this.notesSaveTimer = setTimeout(() => {
+      this.companyService.updateCompany(details.id, { notes: value }).subscribe({
+        error: () => this.notificationService.error('Failed to save notes', 'Error')
+      });
+    }, 1000);
   }
 
   updatePriority(priority: string): void {
@@ -379,7 +388,7 @@ export class CompanyDetailsComponent implements OnInit {
 
     this.companyService.updateCompany(details.id, { priority }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, priority });
+        this.companyDetails.update(prev => prev ? { ...prev, priority } : null);
         this.notificationService.success(`Priority updated to ${this.getPriorityLabel(priority)}`, 'Updated');
       },
       error: () => this.notificationService.error('Failed to update priority', 'Error')
@@ -392,7 +401,7 @@ export class CompanyDetailsComponent implements OnInit {
 
     this.companyService.updateCompany(details.id, { industry }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, industry });
+        this.companyDetails.update(prev => prev ? { ...prev, industry } : null);
         this.notificationService.success('Industry updated', 'Updated');
       },
       error: () => this.notificationService.error('Failed to update industry', 'Error')
@@ -414,7 +423,7 @@ export class CompanyDetailsComponent implements OnInit {
 
     this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, techStack: newStack });
+        this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
         this.notificationService.success('Tech stack updated', 'Updated');
       },
       error: () => this.notificationService.error('Failed to update tech stack', 'Error')

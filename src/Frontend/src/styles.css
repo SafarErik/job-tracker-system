@@ -81,8 +81,8 @@
   --ring: #7C7CFF;
   --success: #34D399;
   --warning: #FBBF24;
-  --destructive: 343 100% 60%;
-  --destructive-foreground: 343 100% 98%;
+  --destructive: hsl(343 100% 60%);
+  --destructive-foreground: hsl(343 100% 98%);
 }
 
 /* 4. Global Utilities */

@@ -103,6 +103,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(u => u.Documents)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Cascade); // Delete documents when user is deleted
+
+            // Unique index: only one master per user/type
+            entity.HasIndex(d => new { d.UserId, d.Type })
+                .HasFilter("\"IsMaster\" = TRUE")
+                .IsUnique();
         });
 
         // ============================================

@@ -226,15 +226,26 @@ public class CompaniesController : ControllerBase
             existingCompany.Name = updateDto.Name;
         }
         
-        existingCompany.Website = updateDto.Website;
-        existingCompany.Address = updateDto.Address;
+        if (updateDto.Website != null)
+        {
+            existingCompany.Website = updateDto.Website;
+        }
+
+        if (updateDto.Address != null)
+        {
+            existingCompany.Address = updateDto.Address;
+        }
         
         if (!string.IsNullOrEmpty(updateDto.Priority))
         {
             existingCompany.Priority = updateDto.Priority;
         }
 
-        existingCompany.Industry = updateDto.Industry;
+        if (updateDto.Industry != null)
+        {
+            existingCompany.Industry = updateDto.Industry;
+        }
+
         if (updateDto.TechStack != null)
         {
             existingCompany.TechStack = string.Join(';', updateDto.TechStack);

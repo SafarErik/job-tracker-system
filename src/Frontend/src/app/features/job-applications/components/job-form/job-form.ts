@@ -16,7 +16,7 @@ import { DocumentService } from '../../../documents/services/document.service';
 // Models
 import { Company } from '../../../companies/models/company.model';
 import { Skill } from '../../../skills/models/skill.model';
-import { Document } from '../../../documents/models/document.model';
+import { Document } from '../../../../core/models/document.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';

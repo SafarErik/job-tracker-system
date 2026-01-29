@@ -28,7 +28,7 @@ import {
     ResumeEnhancement,
     CoverLetterDraft,
 } from '../../models/ai-analysis.model';
-import { Document } from '../../../documents/models/document.model';
+import { Document } from '../../../../core/models/document.model';
 import { CompanyContact } from '../../../../core/models/company-contact.model';
 
 // Spartan UI

@@ -244,16 +244,24 @@ public class DocumentsController : ControllerBase
         if (document == null) return NotFound();
         if (document.UserId != userId) return Forbid();
 
+        // Idempotent: if already master, just return
+        if (document.IsMaster)
+        {
+            return Ok(MapToDto(document));
+        }
+
+        // Unset current master of same type if it exists
         var documents = await _documentRepository.GetAllByUserIdAsync(userId);
         var currentMaster = documents.FirstOrDefault(d => d.Type == document.Type && d.IsMaster);
         
-        if (currentMaster != null && currentMaster.Id != document.Id)
+        if (currentMaster != null)
         {
             currentMaster.IsMaster = false;
             await _documentRepository.UpdateAsync(currentMaster);
         }
 
-        document.IsMaster = !document.IsMaster; // Toggle
+        // Set as master
+        document.IsMaster = true;
         await _documentRepository.UpdateAsync(document);
 
         return Ok(MapToDto(document));

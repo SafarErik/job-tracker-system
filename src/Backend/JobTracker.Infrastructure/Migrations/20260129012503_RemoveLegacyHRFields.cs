@@ -20,7 +20,15 @@ namespace JobTracker.Infrastructure.Migrations
                       ""HRContactLinkedIn""
                   FROM ""Companies""
                   WHERE (""HRContactEmail"" IS NOT NULL OR ""HRContactName"" IS NOT NULL OR ""ContactPerson"" IS NOT NULL OR ""HRContactLinkedIn"" IS NOT NULL)
-                  AND NOT EXISTS (SELECT 1 FROM ""CompanyContacts"" WHERE ""CompanyContacts"".""CompanyId"" = ""Companies"".""Id"");");
+                  AND NOT EXISTS (
+                      SELECT 1 FROM ""CompanyContacts"" 
+                      WHERE ""CompanyContacts"".""CompanyId"" = ""Companies"".""Id""
+                      AND (
+                          (""Companies"".""HRContactEmail"" IS NOT NULL AND ""CompanyContacts"".""Email"" = ""Companies"".""HRContactEmail"")
+                          OR 
+                          (""Companies"".""HRContactLinkedIn"" IS NOT NULL AND ""CompanyContacts"".""LinkedIn"" = ""Companies"".""HRContactLinkedIn"")
+                      )
+                  );");
 
             migrationBuilder.DropColumn(
                 name: "ContactPerson",

@@ -23,11 +23,10 @@ import { BrnPopoverContent } from '@spartan-ng/brain/popover';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lucideX } from '@ng-icons/lucide';
+import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lucideX, lucideChevronDown, lucideBuilding2 } from '@ng-icons/lucide';
 
 @Component({
     selector: 'app-add-job-form',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -40,7 +39,7 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
         BrnPopoverContent,
     ],
     providers: [
-        provideIcons({ lucideArrowLeft, lucideClipboard, lucideUploadCloud })
+        provideIcons({ lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lucideX, lucideChevronDown, lucideBuilding2 })
     ],
     templateUrl: './add-job-form.html',
     changeDetection: ChangeDetectionStrategy.OnPush,

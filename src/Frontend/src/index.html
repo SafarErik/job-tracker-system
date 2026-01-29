@@ -1,41 +1,46 @@
 <!doctype html>
 <html lang="en" class="light">
-  <head>
-    <meta charset="utf-8" />
-    <title>JobTrackerClient</title>
-    <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <script src="env.js"></script>
-    <style>
-      /* Prevent white flash on load */
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
+
+<head>
+  <meta charset="utf-8" />
+  <title>JobTrackerClient</title>
+  <base href="/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script src="env.js"></script>
+  <style>
+    /* Prevent white flash on load */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+  </style>
+  <script>
+    // 1. The "No-Flash" Foundation
+    // Blocking script to prevent white flash on load
+    (function () {
+      var theme = localStorage.getItem('theme');
+      var isDark = false;
+
+      if (theme) {
+        isDark = theme === 'dark';
+      } else {
+        isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       }
-    </style>
-    <script>
-      // Synchronously apply theme before first paint to prevent flash
-      // Must match the key used by ThemeService: 'job-tracker-theme'
-      (function () {
-        var stored = null;
-        try {
-          stored = localStorage.getItem('job-tracker-theme');
-        } catch (error) {
-          stored = null;
-        }
-        var theme = stored;
-        if (!theme || (theme !== 'light' && theme !== 'dark')) {
-          // Fallback to system preference
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        document.documentElement.className = theme;
-      })();
-    </script>
-  </head>
-  <body>
-    <app-root></app-root>
-  </body>
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <app-root></app-root>
+</body>
+
 </html>

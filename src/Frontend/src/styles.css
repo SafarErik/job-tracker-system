@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
-/* 1. Tell Tailwind to use the .dark class for 'dark:' variants */
+/* 1. Variants */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 2. Theme Mapping (The Project DNA) */
 @theme {
-  /* 2. Map Tailwind Colors to our CSS Variables */
   --radius-xl: 0.875rem;
+  /* 14px */
   --radius-2xl: 1.125rem;
+  /* 18px - Signature Card */
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -28,72 +30,66 @@
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
 }
 
-/* 3. Define the Color Palettes */
+/* 3. Color Tokens */
 :root {
-  /* LIGHT MODE (Default) */
-  --background: #F9FAFB;
-  --foreground: #111827;
-
+  color-scheme: light;
+  --background: #FBFBFD;
+  --foreground: #22223B;
   --card: #FFFFFF;
   --card-foreground: #111827;
-
   --popover: #FFFFFF;
   --popover-foreground: #111827;
-
   --primary: #7C7CFF;
   --primary-foreground: #FFFFFF;
-
   --accent: #FFB703;
   --accent-foreground: #111827;
-
   --muted: #F3F4F6;
   --muted-foreground: #6B7280;
-
   --border: #E5E7EB;
   --input: #E5E7EB;
   --ring: #7C7CFF;
-
-  --radius: 0.875rem;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --destructive: #FF3366;
+  --destructive-foreground: #FFFFFF;
 }
 
-/* DARK MODE OVERRIDES */
-/* This selector applies when 'dark' class is on HTML or BODY */
 :root.dark {
+  color-scheme: dark;
   --background: #0F111A;
-  /* Deep Blue-Black */
-  --foreground: #E5E7EB;
-
+  --foreground: #E0E0FF;
   --card: #181B27;
-  /* Signature Dark Card */
   --card-foreground: #E5E7EB;
-
   --popover: #181B27;
   --popover-foreground: #E5E7EB;
-
   --primary: #7C7CFF;
-  /* Indigo stays consistent */
   --primary-foreground: #FFFFFF;
-
   --accent: #FFB703;
-  /* Gold stays consistent */
   --accent-foreground: #0F111A;
-
   --muted: #1F2333;
-  /* Dark grey for secondary items */
   --muted-foreground: #9CA3AF;
-
   --border: #2E3346;
-  /* Subtle dark border */
   --input: #2E3346;
   --ring: #7C7CFF;
+  --success: #34D399;
+  --warning: #FBBF24;
+  --destructive: hsl(343 100% 60%);
+  --destructive-foreground: hsl(343 100% 98%);
 }
 
+/* 4. Global Utilities */
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -101,15 +97,133 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/40;
+    @apply bg-zinc-300/50 dark:bg-zinc-600/50 rounded-full transition-colors;
   }
 }
 
-/* Base Utility Resets */
+/* 5. Performance Optimized Transitions */
+
+/* 5. Simplified Transitions (No VTA) */
+
+/* Basic, fast transition for background colors only */
 body {
   @apply bg-background text-foreground antialiased font-sans custom-scrollbar;
+  /* Keep font smoothing for stability */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Fast standard transition to avoid harsh cut */
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+/* 
+   Component-level transitions:
+   Hover effects only.
+*/
+
+/* 
+   Component-level transitions:
+   ONLY apply these to properties that change on HOVER.
+   Do NOT transition 'color' or 'background-color' globally here.
+*/
+[hlmBtn],
+.bg-card,
+a,
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* 6. Fixes & Tweaks */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* 7. Premium Slider (Violet Track, Gold Thumb) */
+.premium-slider {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+/* Track */
+.premium-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(139, 92, 246, 0.2);
+  /* Soft violet */
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.premium-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(139, 92, 246, 0.2);
+  border-radius: 100px;
+}
+
+/* Thumb */
+.premium-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #f59e0b;
+  /* Gold (Amber-500) */
+  margin-top: -9px;
+  /* Centering on 8px track: (24-8)/2 = 8, plus border... approx -8 or -9 */
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+  border: 2px solid #ffffff;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+}
+
+.premium-slider:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+}
+
+.premium-slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #f59e0b;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+
+kbd {
+  @apply pointer-events-none select-none px-1.5 py-0.5 rounded border border-border bg-muted/50 font-mono text-[10px] font-bold text-muted-foreground shadow-sm;
+}
+
+/* 7. Animations */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Exclude animations from being snapshotted strangely */
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  view-transition-name: none !important;
 }

@@ -134,70 +134,136 @@ public static class DataSeeder
                 UserId = userId,
                 Name = "Google Hungary",
                 Website = "https://careers.google.com",
-                HRContactName = "Peter Nagy"
+                Industry = "AI / ML",
+                TechStack = string.Join(";", new[] { "Python", "Go", "TensorFlow", "Kubernetes", "C++" }),
+                Priority = "Tier1",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Peter Nagy", Role = "Senior Tech Recruiter", Email = "pnagy@google.com", LinkedIn = "https://linkedin.com/in/peternagy" },
+                    new CompanyContact { Name = "Steve Johnson", Role = "Engineering Director", Email = "sjohnson@google.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "Microsoft Hungary",
                 Website = "https://careers.microsoft.com",
-                HRContactName = "Anna Kovacs"
+                Industry = "Cloud Infrastructure",
+                TechStack = string.Join(";", new[] { ".NET Core", "Azure", "React", "C#", "CosmosDB" }),
+                Priority = "Tier1",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Anna Kovacs", Role = "Talent Acquisition Lead", Email = "akovacs@microsoft.com", LinkedIn = "https://linkedin.com/in/annakovacs" },
+                    new CompanyContact { Name = "David Smith", Role = "Principal Dev Manager", Email = "dsmith@microsoft.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "EPAM Systems",
                 Website = "https://www.epam.com/careers",
-                HRContactName = "Gabor Szabo"
+                Industry = "SaaS",
+                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Angular", "AWS" }),
+                Priority = "Tier2",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Gabor Szabo", Role = "Recruitment Specialist", Email = "g_szabo@epam.com" },
+                    new CompanyContact { Name = "Maria Kiss", Role = "Delivery Manager", Email = "m_kiss@epam.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "Morgan Stanley Budapest",
                 Website = "https://www.morganstanley.com/careers",
-                HRContactName = "Eva Toth"
+                Industry = "Fintech",
+                TechStack = string.Join(";", new[] { "Java", "Scala", "C++", "Angular" }),
+                Priority = "Tier1",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Eva Toth", Role = "HR Business Partner", Email = "eva.toth@morganstanley.com" },
+                    new CompanyContact { Name = "Robert Black", Role = "VP of Engineering", Email = "r.black@morganstanley.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "Ericsson Hungary",
                 Website = "https://www.ericsson.com/careers",
-                HRContactName = "Janos Kiss"
+                Industry = "Telecommunications",
+                TechStack = string.Join(";", new[] { "C++", "Erlang", "Python", "Cloud Native" }),
+                Priority = "Tier2",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Janos Kiss", Role = "Talent Scout", Email = "janos.kiss@ericsson.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "Prezi",
                 Website = "https://prezi.com/jobs",
-                HRContactName = "Zsofia Horvath"
+                Industry = "SaaS",
+                TechStack = string.Join(";", new[] { "JavaScript", "Scala", "Haskell", "React" }),
+                Priority = "Tier2",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Zsofia Horvath", Role = "People Ops Lead", Email = "zsofi@prezi.com" },
+                    new CompanyContact { Name = "Adam Wei", Role = "Frontend Lead", Email = "adam@prezi.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "LogMeIn (GoTo)",
                 Website = "https://www.goto.com/company/careers",
-                HRContactName = "Balazs Molnar"
+                Industry = "SaaS",
+                TechStack = string.Join(";", new[] { "Java", "Docker", "React", "AWS" }),
+                Priority = "Tier3",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Balazs Molnar", Role = "Senior Recruiter", Email = "bmolnar@goto.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
-                Name = "NNG (Sygic)",
-                Website = "https://www.nng.com/careers",
-                HRContactName = "Katalin Varga"
+                Name = "Wise",
+                Website = "https://wise.com/careers",
+                Industry = "Fintech",
+                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Kafka", "React" }),
+                Priority = "Tier1",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Sarah Connor", Role = "Lead Recruiter", Email = "sarah.connor@wise.com", LinkedIn = "https://linkedin.com/in/sarahconnor" },
+                    new CompanyContact { Name = "John Doe", Role = "Engineering Lead", Email = "john.doe@wise.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
                 Name = "SAP Hungary",
                 Website = "https://jobs.sap.com",
-                HRContactName = "Laszlo Nemeth"
+                Industry = "SaaS",
+                TechStack = string.Join(";", new[] { "Java", "Kubernetes", "Angular" }),
+                Priority = "Tier2",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Laszlo Nemeth", Role = "HR Manager", Email = "l.nemeth@sap.com" }
+                }
             },
             new Company
             {
                 UserId = userId,
-                Name = "Bitrise",
-                Website = "https://www.bitrise.io/careers",
-                HRContactName = "Dora Farkas"
+                Name = "Emarsys",
+                Website = "https://emarsys.com/careers",
+                Industry = "AdTech",
+                TechStack = string.Join(";", new[] { "PHP", "Go", "React", "GCP" }),
+                Priority = "Tier3",
+                Contacts = new List<CompanyContact>
+                {
+                    new CompanyContact { Name = "Dora Farkas", Role = "Talent Acquisition", Email = "dora.farkas@emarsys.com" }
+                }
             }
         };
     }

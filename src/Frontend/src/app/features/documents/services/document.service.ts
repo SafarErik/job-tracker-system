@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Document } from '../models/document.model';
+import { Document } from '../../../core/models/document.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -73,6 +73,10 @@ export class DocumentService {
   // Delete document
   deleteDocument(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  setMasterDocument(id: string): Observable<Document> {
+    return this.http.post<Document>(`${this.apiUrl}/${id}/master`, {});
   }
 
   // Format file size for display

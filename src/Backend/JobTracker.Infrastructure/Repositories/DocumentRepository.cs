@@ -67,4 +67,10 @@ public class DocumentRepository : IDocumentRepository
     {
         return await _context.Documents.AnyAsync(d => d.Id == id);
     }
+
+    public async Task UpdateAsync(Document document)
+    {
+        _context.Documents.Update(document);
+        await _context.SaveChangesAsync();
+    }
 }

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.DTOs.JobApplications;
+using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.API.Controllers;
 
@@ -64,7 +65,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = app.WorkplaceType,
             Priority = app.Priority,
             MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer
+            SalaryOffer = app.SalaryOffer,
+            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = app.PrimaryContact.Id,
+                Name = app.PrimaryContact.Name,
+                Email = app.PrimaryContact.Email,
+                LinkedIn = app.PrimaryContact.LinkedIn,
+                Role = app.PrimaryContact.Role
+            } : null
         });
 
         return Ok(dtos);
@@ -111,7 +120,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = app.WorkplaceType,
             Priority = app.Priority,
             MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer
+            SalaryOffer = app.SalaryOffer,
+            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = app.PrimaryContact.Id,
+                Name = app.PrimaryContact.Name,
+                Email = app.PrimaryContact.Email,
+                LinkedIn = app.PrimaryContact.LinkedIn,
+                Role = app.PrimaryContact.Role
+            } : null
         };
 
         return Ok(dto);
@@ -143,14 +160,28 @@ public class JobApplicationsController : ControllerBase
             MatchScore = createDto.MatchScore,
             SalaryOffer = createDto.SalaryOffer,
             DocumentId = createDto.DocumentId,
+            PrimaryContactId = createDto.PrimaryContactId,
             AppliedAt = DateTime.UtcNow
         };
 
+        // Create the application
         await _repository.AddAsync(application);
 
-        // Populate DocumentName if a document was associated
-        string? documentName = null;
-        if (application.DocumentId.HasValue)
+        // Reload the application to get populated navigation properties (like PrimaryContact and Document)
+        // AddAsync doesn't automatically populate navigation properties from IDs
+        var createdApp = await _repository.GetByIdAsync(application.Id);
+
+        if (createdApp == null) 
+        {
+             // Should not happen if add succeeded
+             return StatusCode(500, "Failed to retrieve created application");
+        }
+
+        application = createdApp;
+
+        // Populate DocumentName if a document was associated (if not already loaded by GetByIdAsync)
+        string? documentName = application.Document?.OriginalFileName;
+        if (string.IsNullOrEmpty(documentName) && application.DocumentId.HasValue)
         {
             var document = await _documentRepository.GetByIdAsync(application.DocumentId.Value);
             documentName = document?.OriginalFileName;
@@ -173,7 +204,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = application.WorkplaceType,
             Priority = application.Priority,
             MatchScore = application.MatchScore,
-            SalaryOffer = application.SalaryOffer
+            SalaryOffer = application.SalaryOffer,
+            PrimaryContact = application.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = application.PrimaryContact.Id,
+                Name = application.PrimaryContact.Name,
+                Email = application.PrimaryContact.Email,
+                LinkedIn = application.PrimaryContact.LinkedIn,
+                Role = application.PrimaryContact.Role
+            } : null
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -237,6 +276,9 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;
+
+        if (updateDto.PrimaryContactId.HasValue)
+            existingApp.PrimaryContactId = updateDto.PrimaryContactId;
 
         await _repository.UpdateAsync(existingApp);
 

@@ -4,4 +4,4 @@
  * ============================================================================
  */
 
-export * from './document.model';
+export * from '../../../core/models/document.model';

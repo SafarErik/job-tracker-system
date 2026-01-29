@@ -24,9 +24,11 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmCardImports } from '@spartan-ng/helm/card';
+import { LogoComponent } from '../../../../shared/components/logo/logo';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     CommonModule,
     RouterLink,
@@ -35,9 +37,9 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
     ...HlmInputImports,
     ...HlmLabelImports,
     ...HlmCardImports,
+    LogoComponent,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   // Reactive form for login

@@ -36,10 +36,21 @@ public class CompaniesController : ControllerBase
             Name = c.Name,
             Website = c.Website,
             Address = c.Address,
-            HRContactName = c.HRContactName,
-            HRContactEmail = c.HRContactEmail,
-            HRContactLinkedIn = c.HRContactLinkedIn,
-            TotalApplications = c.JobApplications?.Count ?? 0
+            Industry = c.Industry,
+            TechStack = c.TechStack?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
+            TotalApplications = c.JobApplications?.Count ?? 0,
+            Priority = c.Priority,
+            RecentApplications = c.JobApplications?
+                .OrderByDescending(ja => ja.AppliedAt)
+                .Take(5)
+                .Select(ja => new JobApplicationHistoryDto
+                {
+                    Id = ja.Id,
+                    Position = ja.Position,
+                    AppliedAt = ja.AppliedAt,
+                    Status = ja.Status.ToString(),
+                    SalaryOffer = ja.SalaryOffer
+                }).ToList() ?? new List<JobApplicationHistoryDto>()
         });
 
         return Ok(dtos);
@@ -72,10 +83,19 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
-            TotalApplications = company.JobApplications?.Count ?? 0
+            TotalApplications = company.JobApplications?.Count ?? 0,
+            Priority = company.Priority,
+            RecentApplications = company.JobApplications?
+                .OrderByDescending(ja => ja.AppliedAt)
+                .Take(5)
+                .Select(ja => new JobApplicationHistoryDto
+                {
+                    Id = ja.Id,
+                    Position = ja.Position,
+                    AppliedAt = ja.AppliedAt,
+                    Status = ja.Status.ToString(),
+                    SalaryOffer = ja.SalaryOffer
+                }).ToList() ?? new List<JobApplicationHistoryDto>()
         };
 
         return Ok(dto);
@@ -113,10 +133,8 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
             TotalApplications = company.JobApplications?.Count ?? 0,
+            Priority = company.Priority,
             ApplicationHistory = company.JobApplications?
                 .OrderByDescending(ja => ja.AppliedAt)
                 .Select(ja => new JobApplicationHistoryDto
@@ -127,7 +145,15 @@ public class CompaniesController : ControllerBase
                     Status = ja.Status.ToString(),
                     SalaryOffer = ja.SalaryOffer
                 })
-                .ToList() ?? new List<JobApplicationHistoryDto>()
+                .ToList() ?? new List<JobApplicationHistoryDto>(),
+            Contacts = company.Contacts?.Select(c => new CompanyContactDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Email = c.Email,
+                LinkedIn = c.LinkedIn,
+                Role = c.Role
+            }).ToList() ?? new List<CompanyContactDto>()
         };
 
         return Ok(detailDto);
@@ -147,9 +173,16 @@ public class CompaniesController : ControllerBase
             Name = createDto.Name,
             Website = createDto.Website,
             Address = createDto.Address,
-            HRContactName = createDto.HRContactName,
-            HRContactEmail = createDto.HRContactEmail,
-            HRContactLinkedIn = createDto.HRContactLinkedIn
+            Industry = createDto.Industry,
+            TechStack = createDto.TechStack != null ? string.Join(';', createDto.TechStack) : null,
+            Priority = createDto.Priority ?? "Tier3",
+            Contacts = createDto.Contacts?.Select(c => new CompanyContact
+            {
+                Name = c.Name,
+                Email = c.Email,
+                LinkedIn = c.LinkedIn,
+                Role = c.Role
+            }).ToList() ?? new List<CompanyContact>()
         };
 
         var id = await _repository.AddAsync(company);
@@ -160,17 +193,15 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
-            TotalApplications = 0
+            TotalApplications = 0,
+            Priority = company.Priority
         };
     
         return CreatedAtAction(nameof(Get), new { id }, dto);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CreateCompanyDto updateDto)
+    public async Task<IActionResult> Update(int id, UpdateCompanyDto updateDto)
     {
         var existingCompany = await _repository.GetByIdAsync(id);
 
@@ -190,12 +221,78 @@ public class CompaniesController : ControllerBase
         }
 
         // Mapping: update existing entity with new values  
-        existingCompany.Name = updateDto.Name;
-        existingCompany.Website = updateDto.Website;
-        existingCompany.Address = updateDto.Address;
-        existingCompany.HRContactName = updateDto.HRContactName;
-        existingCompany.HRContactEmail = updateDto.HRContactEmail;
-        existingCompany.HRContactLinkedIn = updateDto.HRContactLinkedIn;
+        if (!string.IsNullOrEmpty(updateDto.Name))
+        {
+            existingCompany.Name = updateDto.Name;
+        }
+        
+        if (updateDto.Website != null)
+        {
+            existingCompany.Website = updateDto.Website;
+        }
+
+        if (updateDto.Address != null)
+        {
+            existingCompany.Address = updateDto.Address;
+        }
+        
+        if (!string.IsNullOrEmpty(updateDto.Priority))
+        {
+            existingCompany.Priority = updateDto.Priority;
+        }
+
+        if (updateDto.Industry != null)
+        {
+            existingCompany.Industry = updateDto.Industry;
+        }
+
+        if (updateDto.TechStack != null)
+        {
+            existingCompany.TechStack = string.Join(';', updateDto.TechStack);
+        }
+
+        // Update Contacts
+        if (updateDto.Contacts != null)
+        {
+            // Simple reconciliation: Remove items not in updateDto, Update existing, Add new
+            var existingContacts = existingCompany.Contacts.ToList();
+            
+            // Remove
+            foreach (var existing in existingContacts)
+            {
+                if (!updateDto.Contacts.Any(c => c.Id == existing.Id))
+                {
+                    existingCompany.Contacts.Remove(existing);
+                }
+            }
+
+            // Add or Update
+            foreach (var contactDto in updateDto.Contacts)
+            {
+                if (contactDto.Id == 0)
+                {
+                    existingCompany.Contacts.Add(new CompanyContact
+                    {
+                        Name = contactDto.Name,
+                        Email = contactDto.Email,
+                        LinkedIn = contactDto.LinkedIn,
+                        Role = contactDto.Role,
+                        CompanyId = existingCompany.Id
+                    });
+                }
+                else
+                {
+                    var contact = existingCompany.Contacts.FirstOrDefault(c => c.Id == contactDto.Id);
+                    if (contact != null)
+                    {
+                        contact.Name = contactDto.Name;
+                        contact.Email = contactDto.Email;
+                        contact.LinkedIn = contactDto.LinkedIn;
+                        contact.Role = contactDto.Role;
+                    }
+                }
+            }
+        }
 
         await _repository.UpdateAsync(existingCompany);
 

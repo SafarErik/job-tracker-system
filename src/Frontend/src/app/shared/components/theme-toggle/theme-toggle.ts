@@ -1,46 +1,46 @@
-import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, computed } from '@angular/core';
 import { ThemeService } from '../../../core/services/theme.service';
-
-// Spartan UI
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideSun, lucideMoon } from '@ng-icons/lucide';
 
-/**
- * Theme Toggle Component
- *
- * A modern, accessible toggle button for switching between light and dark themes.
- *
- * Features:
- * - Smooth animations and transitions
- * - Visual feedback for current theme mode
- * - Accessible keyboard navigation
- * - Modern icon design
- *
- * Usage:
- * <app-theme-toggle />
- */
 @Component({
   selector: 'app-theme-toggle',
-  imports: [CommonModule, ...HlmButtonImports],
-  templateUrl: './theme-toggle.html',
   standalone: true,
+  imports: [HlmButtonImports, NgIconComponent],
+  providers: [provideIcons({ lucideSun, lucideMoon })],
+  template: `
+    <button hlmBtn variant="ghost" size="icon" (click)="themeService.toggle()"
+      class="relative h-9 w-9 rounded-full transition-colors hover:bg-muted/60"
+      [attr.aria-label]="label()">
+      
+      <!-- Sun Icon (Light Mode) -->
+      <ng-icon name="lucideSun" 
+        class="h-5 w-5 transition-all duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        [class.rotate-0]="!isDark()"
+        [class.scale-100]="!isDark()"
+        [class.rotate-90]="isDark()"
+        [class.scale-0]="isDark()">
+      </ng-icon>
+
+      <!-- Moon Icon (Dark Mode) -->
+      <ng-icon name="lucideMoon" 
+        class="h-5 w-5 text-primary transition-all duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        [class.rotate-90]="!isDark()"
+        [class.scale-0]="!isDark()"
+        [class.rotate-0]="isDark()"
+        [class.scale-100]="isDark()">
+      </ng-icon>
+      
+      <span class="sr-only">{{ label() }}</span>
+    </button>
+  `
 })
 export class ThemeToggleComponent {
-  // Inject theme service using Angular's inject() function
-  private readonly themeService = inject(ThemeService);
+  themeService = inject(ThemeService);
+  isDark = this.themeService.darkMode;
 
-  // Current theme mode from the theme service
-  protected readonly isDark = this.themeService.darkMode;
-
-  // Computed label for accessibility and display
-  protected readonly themeLabel = computed(() => {
-    return this.isDark() ? 'Dark Mode' : 'Light Mode';
-  });
-
-  /**
-   * Toggle between light and dark modes when button is clicked
-   */
-  protected onToggleTheme(): void {
-    this.themeService.toggle();
-  }
+  label = computed(() =>
+    this.isDark() ? 'Switch to light mode' : 'Switch to dark mode'
+  );
 }

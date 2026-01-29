@@ -1,18 +1,34 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
-import { Document } from '../../models/document.model';
+import { Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+import { DocumentCardComponent } from '../document-card/document-card.component';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import { lucideFileUp, lucideFileWarning, lucideLibrary } from '@ng-icons/lucide';
+
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmButtonImports,
+    NgIcon,
+    ErrorStateComponent,
+    DocumentCardComponent
+  ],
+  providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary })],
   templateUrl: './documents-list.html',
 })
 export class DocumentsListComponent implements OnInit {
@@ -26,9 +42,51 @@ export class DocumentsListComponent implements OnInit {
   searchTerm = signal('');
   uploadProgress = signal<number | null>(null);
   isDragging = signal(false);
+  isSearchFocused = signal(false);
+  activeTypeFilter = signal<string | null>(null);
+
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
+  // Storage logic
+  totalStorage = 10 * 1024 * 1024; // 10MB
+  usedStorage = computed(() => this.documents().reduce((acc, doc) => acc + doc.fileSize, 0));
+  storagePercentage = computed(() => (this.usedStorage() / this.totalStorage) * 100);
 
   ngOnInit(): void {
     this.loadDocuments();
+  }
+
+  // ============================================
+  // Keyboard Shortcuts
+  // ============================================
+
+  /**
+   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
+   */
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+      event.preventDefault();
+      this.focusSearch();
+    }
+  }
+
+  /**
+   * Focus the search input field
+   */
+  focusSearch(): void {
+    if (this.searchInput) {
+      this.searchInput.nativeElement.focus();
+    }
+  }
+
+  setSearchFocus(focused: boolean): void {
+    this.isSearchFocused.set(focused);
+  }
+
+  filterByType(type: string | null): void {
+    this.activeTypeFilter.set(type);
+    this.onSearch();
   }
 
   loadDocuments(): void {
@@ -51,14 +109,25 @@ export class DocumentsListComponent implements OnInit {
 
   onSearch(): void {
     const term = this.searchTerm().toLowerCase();
-    if (!term) {
-      this.filteredDocuments.set(this.documents());
-      return;
+    const type = this.activeTypeFilter();
+
+    let filtered = this.documents();
+
+    if (term) {
+      filtered = filtered.filter((doc) =>
+        doc.originalFileName.toLowerCase().includes(term),
+      );
     }
 
-    const filtered = this.documents().filter((doc) =>
-      doc.originalFileName.toLowerCase().includes(term),
-    );
+    if (type) {
+      if (type === 'MASTER') {
+        filtered = filtered.filter((doc) => doc.isMaster);
+      } else {
+        // e.g. 'PDF'
+        filtered = filtered.filter((doc) => doc.originalFileName.toUpperCase().endsWith(`.${type}`));
+      }
+    }
+
     this.filteredDocuments.set(filtered);
   }
 
@@ -191,6 +260,33 @@ export class DocumentsListComponent implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  setMasterDocument(doc: Document): void {
+    if (doc.isMaster) return;
+
+    this.documentService.setMasterDocument(doc.id).subscribe({
+      next: () => {
+        this.loadDocuments();
+        this.notificationService.success(
+          `${doc.originalFileName} is now your Master Resume.`,
+          'Strategic Update',
+        );
+      },
+      error: (err) => {
+        this.notificationService.error(
+          'Failed to set master document.',
+          'Update Failed'
+        );
+        console.error(err);
+      }
+    });
+  }
+
+  previewDocument(doc: Document): void {
+    // For now just download/open in new tab since we don't have a dedicated previewer yet
+    // Or we can implement a modal later.
+    this.documentService.downloadDocument(doc.id, doc.originalFileName);
   }
 
   formatFileSize(bytes: number): string {

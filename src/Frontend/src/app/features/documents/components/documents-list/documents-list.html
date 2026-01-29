@@ -1,235 +1,204 @@
-<div
-  class="container mx-auto px-4 py-8 min-h-screen relative"
-  (dragover)="onDragOver($event)"
-  (dragleave)="onDragLeave($event)"
-  (drop)="onDrop($event)"
->
+<div class="container mx-auto px-4 py-8 min-h-screen relative" (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
   <!-- Drag & Drop Overlay -->
   @if (isDragging()) {
-    <div class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div class="flex flex-col items-center gap-4 text-primary">
-        <svg class="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
-        </svg>
-        <p class="text-xl font-medium">Drop your PDF here to upload</p>
-      </div>
+  <div class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
+    <div class="flex flex-col items-center gap-4 text-primary animate-in fade-in zoom-in duration-300">
+      <ng-icon name="lucideFileUp" class="h-16 w-16 stroke-[1.5]"></ng-icon>
+      <p class="text-xl font-medium">Drop your PDF here to upload</p>
     </div>
+  </div>
   }
 
-  <!-- Header with Upload Button -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+  <!-- Header: Strategic Asset Management -->
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
     <div class="flex items-start gap-4">
-      <svg
-        class="h-8 w-8 text-primary flex-shrink-0 mt-1"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
+      <div class="p-3 bg-primary/10 text-primary rounded-xl">
+        <ng-icon name="lucideLibrary" class="h-8 w-8 stroke-[1.5]"></ng-icon>
+      </div>
       <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">CV / Resume Documents</h1>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground">Document Vault</h1>
         <p class="text-muted-foreground mt-1">
-          Upload and manage your resumes for job applications
+          Manage your strategic career assets and master CVs.
         </p>
       </div>
     </div>
 
+    <!-- Storage Tracker -->
+    <div class="flex flex-col items-end gap-2 min-w-[200px]">
+      <div class="flex items-center justify-between w-full text-xs font-medium text-muted-foreground">
+        <span>Storage Used</span>
+        <span>{{ formatFileSize(usedStorage()) }} / 10 MB</span>
+      </div>
+      <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
+        <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="storagePercentage()"
+          [class.bg-primary]="storagePercentage() < 80"
+          [class.bg-amber-500]="storagePercentage() >= 80 && storagePercentage() < 95"
+          [class.bg-destructive]="storagePercentage() >= 95"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions Bar -->
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+
+    <!-- Search Hub - The "Command Center" -->
+    <div class="mb-10" (focusin)="setSearchFocus(true)" (focusout)="setSearchFocus(false)">
+      <div class="group relative w-full max-w-2xl transition-all duration-300">
+        <!-- Unified Container -->
+        <div
+          class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-white dark:bg-zinc-900/50 shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
+
+          <!-- Search Input Wrapper -->
+          <div class="relative flex-1 flex items-center">
+            <!-- SEARCH ICON -->
+            <div
+              class="absolute left-4 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
+              <ng-icon name="lucideLibrary" class="h-5 w-5 stroke-[1.5]"></ng-icon>
+            </div>
+
+            <!-- THE ACTUAL INPUT -->
+            <input #searchInput type="text" [ngModel]="searchTerm()"
+              (ngModelChange)="searchTerm.set($event); onSearch()" placeholder="Search documents by filename..."
+              class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
+              id="document-search">
+
+            <!-- KEYBOARD SHORTCUT HINT -->
+            <div class="absolute right-4 hidden items-center gap-1 sm:flex">
+              <kbd
+                class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 transition-opacity">
+                <span class="text-xs">⌘</span>K
+              </kbd>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Type Chips (Shown on focus or when filter is active) -->
+        <div *ngIf="isSearchFocused() || activeTypeFilter()"
+          class="absolute top-full left-6 mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <button (click)="filterByType(null)"
+            [class]="!activeTypeFilter() ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            All
+          </button>
+          <button (click)="filterByType('PDF')"
+            [class]="activeTypeFilter() === 'PDF' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            PDF
+          </button>
+          <button (click)="filterByType('DOCX')"
+            [class]="activeTypeFilter() === 'DOCX' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            DOCX
+          </button>
+          <button (click)="filterByType('MASTER')"
+            [class]="activeTypeFilter() === 'MASTER' ? 'bg-amber-500 text-white border-amber-500' : 'bg-card text-muted-foreground border-border hover:border-amber-500/40'"
+            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
+            Master
+          </button>
+        </div>
+
+        <!-- Quick Tips / Search Stats -->
+        <div *ngIf="searchTerm() || activeTypeFilter()"
+          class="mt-12 px-6 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
+          <span>Found {{ filteredDocuments().length }} assets</span>
+          <button (click)="searchTerm.set(''); activeTypeFilter.set(null); onSearch()"
+            class="hover:text-primary transition-colors">Clear Results</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Button -->
     <div>
-      <input
-        type="file"
-        #fileInput
-        (change)="onFileSelected($event)"
-        accept=".pdf"
-        style="display: none"
-      />
-      <button hlmBtn (click)="fileInput.click()" class="gap-2">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-        Upload New CV
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
+      <button hlmBtn (click)="fileInput.click()"
+        class="gap-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+        <ng-icon name="lucideFileUp" class="h-4 w-4"></ng-icon>
+        Upload New Asset
       </button>
     </div>
   </div>
 
   <!-- Upload Progress -->
   @if (uploadProgress() !== null) {
-    <div class="mb-6 space-y-2">
-      <div class="h-2 bg-muted rounded-full overflow-hidden">
-        <div
-          class="h-full bg-primary transition-all duration-300"
-          [style.width.%]="uploadProgress()"
-        ></div>
-      </div>
-      <span class="text-sm text-muted-foreground">Uploading... {{ uploadProgress() }}%</span>
+  <div class="mb-8 p-4 bg-muted/30 rounded-xl border border-border/50">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-sm font-medium">Uploading Document...</span>
+      <span class="text-sm text-muted-foreground">{{ uploadProgress() }}%</span>
     </div>
-  }
-
-  <!-- Search Bar -->
-  <div class="relative max-w-md mb-8">
-    <svg
-      class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
-    <label hlmLabel for="documents-search" class="sr-only">Search documents by filename</label>
-    <input
-      hlmInput
-      id="documents-search"
-      type="text"
-      class="pl-10 w-full"
-      placeholder="Search documents by filename..."
-      [ngModel]="searchTerm()"
-      (ngModelChange)="searchTerm.set($event); onSearch()"
-    />
+    <div class="h-2 bg-muted rounded-full overflow-hidden">
+      <div class="h-full bg-primary transition-all duration-300" [style.width.%]="uploadProgress()"></div>
+    </div>
   </div>
+  }
 
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
-      <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-          fill="none"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
-      <p>Loading documents...</p>
-    </div>
+  <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
+    <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
+    <p>Retrieving assets from vault...</p>
+  </div>
   }
 
   <!-- Error State -->
   @if (error()) {
-    <div class="flex flex-col items-center justify-center py-16 gap-4">
-      <span class="text-4xl">⚠️</span>
-      <p class="text-destructive">{{ error() }}</p>
-      <button hlmBtn variant="outline" (click)="loadDocuments()">Try Again</button>
-    </div>
+  <div class="mb-8">
+    <app-error-state title="Vault Inaccessible" [message]="error()!" icon="lucideFileWarning" (retry)="loadDocuments()">
+    </app-error-state>
+  </div>
   }
 
   <!-- Documents Grid -->
   @if (!isLoading() && !error()) {
-    @if (filteredDocuments().length === 0) {
-      <!-- Empty State: Dashed Border Upload Area -->
-      <div class="flex items-center justify-center min-h-[400px]">
-        <div class="text-center p-12 border-dashed border-2 border-border rounded-xl bg-muted/30">
-          <div class="text-5xl mb-4">📄</div>
-          <h3 class="text-xl font-semibold text-foreground mb-2">
-            @if (searchTerm()) {
-              No documents found
-            } @else {
-              No documents yet
-            }
-          </h3>
-          <p class="text-muted-foreground mb-6">
-            @if (searchTerm()) {
-              No documents found matching "{{ searchTerm() }}"
-            } @else {
-              Upload your first PDF to get started
-            }
-          </p>
-          @if (!searchTerm()) {
-            <button hlmBtn (click)="fileInput.click()" class="gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-              Upload PDF
-            </button>
-          }
-        </div>
-      </div>
-    } @else {
-      <!-- Grid of Document Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @for (doc of filteredDocuments(); track doc.id) {
-          <div
-            class="group bg-card border border-border rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer"
-          >
-            <!-- Document Visual (3:4 aspect ratio) -->
-            <div class="aspect-[3/4] flex items-center justify-center bg-muted relative">
-              <!-- PDF Icon -->
-              <svg
-                class="w-24 h-24 text-primary/30"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+  @if (filteredDocuments().length === 0) {
+  <!-- Empty State: Neo-Professional Dropzone -->
+  <div class="flex items-center justify-center min-h-[400px]">
+    <div
+      class="group relative flex flex-col items-center justify-center p-12 rounded-[2rem] border-2 border-dashed border-border/60 bg-muted/5 hover:border-primary/40 hover:bg-primary/[0.02] transition-all duration-500 cursor-pointer"
+      (click)="fileInput.click()">
 
-            <!-- Card Footer -->
-            <div class="p-3 space-y-2">
-              <h3
-                class="text-sm font-medium text-foreground truncate"
-                [title]="doc.originalFileName"
-              >
-                {{ doc.originalFileName }}
-              </h3>
-              <div class="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{{ formatFileSize(doc.fileSize) }}</span>
-                <button
-                  class="p-1.5 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
-                  (click)="deleteDocument(doc); $event.stopPropagation()"
-                  title="Delete"
-                  aria-label="Delete {{ doc.originalFileName }}"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        }
+      <!-- ICON -->
+      <div
+        class="mb-6 p-4 rounded-xl bg-muted/50 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all duration-500">
+        <ng-icon name="lucideFileUp" class="text-4xl stroke-[1.5]"></ng-icon>
       </div>
+
+      <div class="text-center space-y-1 mb-8">
+        <h3 class="text-lg font-bold text-foreground">
+          @if (searchTerm()) {
+          No documents found
+          } @else {
+          Ready Your Arsenal
+          }
+        </h3>
+        <p class="text-sm text-muted-foreground max-w-[240px]">
+          @if (searchTerm()) {
+          No documents found matching "{{ searchTerm() }}"
+          } @else {
+          Upload your Resumes and Cover Letters to unlock AI tailoring.
+          }
+        </p>
+      </div>
+
+      <button hlmBtn variant="secondary"
+        class="rounded-xl px-6 h-10 border border-border/40 shadow-sm pointer-events-none">
+        Select PDF File
+      </button>
+
+      <!-- Hint -->
+      <span class="mt-4 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50">Max size 10MB</span>
+    </div>
+  </div>
+  } @else {
+  <!-- Grid of Dossier Cards -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    @for (doc of filteredDocuments(); track doc.id) {
+    <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
+      (setMaster)="setMasterDocument($event)" (delete)="deleteDocument($event)" class="h-full">
+    </app-document-card>
     }
+  </div>
+  }
   }
 </div>

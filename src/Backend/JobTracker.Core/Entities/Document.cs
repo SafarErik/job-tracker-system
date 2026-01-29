@@ -58,6 +58,12 @@ public class Document
     /// </summary>
     public DocumentType Type { get; set; } = DocumentType.Resume;
 
+    /// <summary>
+    /// Indicates if this is the user's "Master" credential (e.g. main CV).
+    /// Only one document of a type should be master per user.
+    /// </summary>
+    public bool IsMaster { get; set; }
+
     // ============================================
     // NAVIGATION PROPERTIES
     // ============================================

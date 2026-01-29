@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import {
   HlmCard,
   HlmCardHeader,
@@ -6,23 +6,28 @@ import {
   HlmCardContent,
   HlmCardFooter,
 } from '@spartan-ng/helm/card';
-import { HlmButton } from '@spartan-ng/helm/button';
+import { HlmBadge } from '@spartan-ng/helm/badge';
 import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-company-card',
   imports: [
     CommonModule,
+    NgIcon,
     HlmCard,
     HlmCardHeader,
     HlmCardTitle,
     HlmCardContent,
     HlmCardFooter,
-    HlmButton,
+    HlmBadge,
   ],
+  providers: [provideIcons({ lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle })],
   templateUrl: './company-card.html',
   styleUrl: './company-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyCardComponent {
   company = input.required<Company>();
@@ -109,6 +114,47 @@ export class CompanyCardComponent {
    */
   hasApplications(): boolean {
     return this.company().totalApplications > 0;
+  }
+
+  /**
+   * Get pipeline progress (1-4 segments)
+   * Based on the furthest application status
+   */
+  getPipelineProgress(): number {
+    const anyCompany = this.company() as any;
+    const apps = anyCompany.recentApplications || anyCompany.RecentApplications;
+
+    if (!apps || apps.length === 0) return 0;
+
+    // Weight map for pipeline stages
+    const statusWeights: Record<string, number> = {
+      'Applied': 1,
+      'Phone Screen': 2,
+      'PhoneScreen': 2,
+      'Technical Task': 2,
+      'TechnicalTask': 2,
+      'Interviewing': 3,
+      'Interview': 3,
+      'In Review': 3,
+      'Offer': 4,
+      'Accepted': 4,
+    };
+
+    let maxWeight = 0;
+    console.log(`[Pipeline] Company: ${anyCompany.name}, Apps:`, apps);
+
+    for (const app of apps) {
+      const status = app.status?.trim() || '';
+      console.log(`[Pipeline] App status: "${status}"`);
+      const weight = statusWeights[status] || 1;
+
+      // If rejected/ghosted, it doesn't count towards positive progress in the pipeline
+      if (status === 'Rejected' || status === 'Ghosted') continue;
+
+      if (weight > maxWeight) maxWeight = weight;
+    }
+
+    return maxWeight;
   }
 
   /**

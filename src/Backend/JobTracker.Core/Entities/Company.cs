@@ -22,23 +22,21 @@ public class Company
     // Company's physical address
     public string? Address {get; set;}
 
-    // HR Contact Information
-    // Full name of the HR contact person
-    public string? HRContactName {get; set;}
-    
-    // Email address of the HR contact person
-    public string? HRContactEmail {get; set;}
-    
-    // LinkedIn profile URL of the HR contact person
-    public string? HRContactLinkedIn {get; set;}
 
-    // Legacy field - kept for backward compatibility
-    // Consider using HRContactName instead
-    [Obsolete("Use HRContactName instead")]
-    public string? ContactPerson {get; set;}
+    // Company Domain
+    public string? Industry { get; set; }
+    
+    // Tech Stack (semicolon separated)
+    public string? TechStack { get; set; }
+
+    // Company Priority
+    public string Priority { get; set; } = "Tier3";
+
 
     // Navigation property
     // Defines a one-to-many relationship: one company can have multiple job applications
     public ICollection<JobApplication> JobApplications {get; set;} = new List<JobApplication> ();
 
+    // Companies can have multiple contacts
+    public ICollection<CompanyContact> Contacts { get; set; } = new List<CompanyContact>();
 }

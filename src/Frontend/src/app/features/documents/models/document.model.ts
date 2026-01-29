@@ -4,4 +4,5 @@ export interface Document {
   fileSize: number;
   contentType: string;
   uploadedAt: string;
+  isMaster?: boolean;
 }

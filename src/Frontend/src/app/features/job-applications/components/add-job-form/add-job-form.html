@@ -5,9 +5,10 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4 animate-fade-in-up">
             <div class="space-y-6">
                 <!-- Back Button -->
-                <a routerLink="/"
-                    class="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors group">
-                    <ng-icon name="lucideArrowLeft" class="group-hover:-translate-x-1 transition-transform"></ng-icon>
+                <a routerLink="/" hlmBtn variant="ghost" size="sm"
+                    class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-all group px-0">
+                    <ng-icon name="lucideArrowLeft"
+                        class="text-sm group-hover:-translate-x-1 transition-transform"></ng-icon>
                     Return
                 </a>
 
@@ -42,7 +43,7 @@
                     </div>
 
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Role Definition
                         </h3>
                     </div>
@@ -54,7 +55,7 @@
                                 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Company</label>
                             <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
                                 <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
-                                    class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5"
+                                    class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
                                     [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
 
                                 <div *brnPopoverContent hlmComboboxContent
@@ -83,7 +84,7 @@
                                 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Position</label>
                             <hlm-combobox (valueChange)="onPositionSelected($event)">
                                 <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend"
-                                    class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5"
+                                    class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
                                     [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
 
                                 <div *brnPopoverContent hlmComboboxContent
@@ -112,7 +113,7 @@
                             class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Archive
                             Link</label>
                         <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
-                            class="h-14 w-full rounded-2xl bg-background/50 border-border/40 focus:ring-2 focus:ring-primary/20 transition-all px-5" />
+                            class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40" />
                     </div>
                 </div>
 
@@ -271,28 +272,32 @@
 
                 <!-- 4. AI Insight (Span 5) -->
                 <div
-                    class="lg:col-span-5 p-8 bg-card rounded-[2.5rem] border border-border/40 shadow-sm flex flex-col justify-between animate-fade-in-up">
+                    class="lg:col-span-5 p-8 bg-card rounded-[2.5rem] border border-border/40 shadow-sm flex flex-col justify-between group/assessment">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-1.5 h-1.5 rounded-full bg-violet-500"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Self-Assessment
                         </h3>
                     </div>
 
-                    <div class="flex-1 flex flex-col items-center justify-center gap-4 py-4 px-2 text-center">
-                        <div class="relative group/score">
-                            <input hlmInput formControlName="matchScore" type="number"
-                                class="w-40 h-28 text-7xl font-black tracking-tighter text-center bg-transparent border-none focus:ring-0 p-0 selection:bg-primary/20" />
-                            <div
-                                class="absolute -right-6 top-1/2 -translate-y-1/2 text-3xl font-black text-muted-foreground/30 group-hover/score:text-primary transition-colors">
-                                %</div>
+                    <div class="flex-1 flex flex-col items-center justify-center gap-4 py-6 text-center">
+                        <div class="relative flex items-center justify-center">
+                            <input hlmInput formControlName="matchScore" type="number" min="0" max="100"
+                                class="w-48 h-32 text-8xl font-black tracking-tighter text-center bg-transparent border-none focus:ring-0 p-0 selection:bg-primary/20 text-foreground" />
+                            <span
+                                class="absolute -right-8 top-1/2 -translate-y-1/2 text-4xl font-black text-muted-foreground/30 group-hover/assessment:text-primary transition-colors duration-500">
+                                %
+                            </span>
                         </div>
-                        <p class="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">Estimated
-                            Match Probability</p>
+                        <p class="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.3em] mt-2">
+                            Estimated Match Probability
+                        </p>
                     </div>
 
-                    <div class="w-full h-1 bg-muted rounded-full overflow-hidden">
-                        <div class="h-full bg-primary transition-all duration-700"
-                            [style.width.%]="form.get('matchScore')?.value || 0"></div>
+                    <div class="w-full space-y-2">
+                        <div class="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/10">
+                            <div class="h-full bg-gradient-to-r from-violet-600 to-primary transition-all duration-1000 ease-out"
+                                [style.width.%]="form.get('matchScore')?.value || 0"></div>
+                        </div>
                     </div>
                 </div>
 

@@ -175,7 +175,14 @@ public class CompaniesController : ControllerBase
             Address = createDto.Address,
             Industry = createDto.Industry,
             TechStack = createDto.TechStack != null ? string.Join(';', createDto.TechStack) : null,
-            Priority = createDto.Priority ?? "Tier3"
+            Priority = createDto.Priority ?? "Tier3",
+            Contacts = createDto.Contacts?.Select(c => new CompanyContact
+            {
+                Name = c.Name,
+                Email = c.Email,
+                LinkedIn = c.LinkedIn,
+                Role = c.Role
+            }).ToList() ?? new List<CompanyContact>()
         };
 
         var id = await _repository.AddAsync(company);

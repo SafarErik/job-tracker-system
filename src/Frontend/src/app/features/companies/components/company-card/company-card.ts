@@ -14,7 +14,6 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
 
 @Component({
   selector: 'app-company-card',
-  standalone: true,
   imports: [
     CommonModule,
     NgIcon,

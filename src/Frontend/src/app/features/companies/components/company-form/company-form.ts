@@ -15,7 +15,6 @@ import { lucideArrowLeft, lucideGlobe, lucideMapPin, lucideBuilding2, lucideLaye
 
 @Component({
   selector: 'app-company-form',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -45,7 +45,7 @@
               </svg>
               <input hlmInput id="position" type="text" formControlName="position"
                 placeholder="e.g. Senior Backend Developer" class="w-full pl-10"
-                (input)="onPositionSearchChange($event.target.value)" (focus)="openPositionDropdown()"
+                (input)="onPositionSearchChange($any($event.target).value)" (focus)="openPositionDropdown()"
                 (blur)="closePositionDropdown()" />
             </div>
             <div *ngIf="isPositionDropdownOpen && filteredPositions.length > 0"
@@ -73,7 +73,7 @@
               </svg>
               <input hlmInput id="company" type="text" formControlName="companySearch"
                 placeholder="Start typing a company..." class="w-full pl-10"
-                (input)="onCompanySearchChange($event.target.value)" (focus)="openCompanyDropdown()"
+                (input)="onCompanySearchChange($any($event.target).value)" (focus)="openCompanyDropdown()"
                 (blur)="closeCompanyDropdown()" />
             </div>
             <div *ngIf="isCompanyDropdownOpen && (filteredCompanies.length > 0 || canCreateCompany)"

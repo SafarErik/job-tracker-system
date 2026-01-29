@@ -1,14 +1,14 @@
 <section hlmCard
   class="group relative flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] card-hover-effect"
   [class.shadow-[0_0_30px_rgba(245,158,11,0.15)]]="company().priority === 'Tier1'"
-  [class.border-amber-500/20]="company().priority === 'Tier1'" (click)="onViewDossier()">
+  [class]="{ 'border-amber-500/20': company().priority === 'Tier1' }" (click)="onViewDossier()">
 
   <!-- Decorative Accent Line -->
   <div class="absolute top-0 left-0 w-full h-1 transition-transform origin-left"
     [class.bg-gradient-to-r]="company().priority === 'Tier1'" [class.from-amber-400]="company().priority === 'Tier1'"
     [class.via-amber-100]="company().priority === 'Tier1'" [class.to-amber-400]="company().priority === 'Tier1'"
-    [class.bg-gradient-to-r]="company().priority !== 'Tier1'" [class.from-primary/0]="company().priority !== 'Tier1'"
-    [class.via-primary/40]="company().priority !== 'Tier1'" [class.to-primary/0]="company().priority !== 'Tier1'"
+    [class.bg-gradient-to-r]="company().priority !== 'Tier1'"
+    [class]="{ 'from-primary/0': company().priority !== 'Tier1', 'via-primary/40': company().priority !== 'Tier1', 'to-primary/0': company().priority !== 'Tier1' }"
     [class.scale-x-0]="company().priority !== 'Tier1'" [class.group-hover:scale-x-100]="company().priority !== 'Tier1'">
   </div>
 

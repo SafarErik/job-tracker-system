@@ -17,7 +17,6 @@ import {
 
 @Component({
   selector: 'app-confirm-dialog',
-  standalone: true,
   imports: [
     CommonModule,
     BrnAlertDialogImports,

@@ -27,7 +27,6 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
 
 @Component({
     selector: 'app-add-job-form',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,

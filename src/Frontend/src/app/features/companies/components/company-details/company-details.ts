@@ -40,7 +40,6 @@ import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'app-company-details',
-  standalone: true,
   imports: [
     CommonModule,
     NgIcon,

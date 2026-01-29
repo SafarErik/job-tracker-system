@@ -11,8 +11,7 @@
         <!-- Iconic Header with Pulse -->
         <div
           class="h-20 w-20 rounded-[1.75rem] flex items-center justify-center transition-all duration-700 shadow-sm relative group"
-          [class.bg-rose-50]="isDestructive" [class.dark:bg-rose-500/10]="isDestructive"
-          [class.bg-indigo-50]="!isDestructive" [class.dark:bg-indigo-500/10]="!isDestructive">
+          [class]="{ 'bg-rose-50': isDestructive, 'dark:bg-rose-500/10': isDestructive, 'bg-indigo-50': !isDestructive, 'dark:bg-indigo-500/10': !isDestructive }">
 
           <!-- Subtle Glow -->
           <div class="absolute inset-0 rounded-[1.75rem] blur-xl opacity-20 group-hover:opacity-40 transition-opacity"

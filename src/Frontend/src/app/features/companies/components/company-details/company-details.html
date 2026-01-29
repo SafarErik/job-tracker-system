@@ -67,7 +67,7 @@
                   @if (details.priority === opt.value) {
                   <button [hlmDropdownMenuTrigger]="priorityMenu" hlmBtn variant="ghost" size="sm"
                     class="rounded-full px-4 py-1.5 h-auto text-[10px] font-black uppercase tracking-wider transition-all duration-300 group/priority border ring-1 ring-border/50 hover:ring-border/80"
-                    [ngClass]="opt.bg + ' ' + opt.color + ' ' + opt.border">
+                    [class]="opt.bg + ' ' + opt.color + ' ' + opt.border">
                     <ng-icon [name]="opt.icon" class="mr-1.5" size="14"></ng-icon>
                     {{ opt.label }}
                     <ng-icon name="lucideChevronDown"
@@ -90,7 +90,7 @@
                         class="rounded-xl px-3 py-2.5 mb-1 text-xs font-bold flex items-center justify-between group transition-all">
                         <div class="flex items-center gap-3">
                           <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-                            [ngClass]="details.priority === opt.value ? (opt.bg + ' ' + opt.color) : 'bg-muted text-muted-foreground group-hover:bg-muted/80'">
+                            [class]="details.priority === opt.value ? (opt.bg + ' ' + opt.color) : 'bg-muted text-muted-foreground group-hover:bg-muted/80'">
                             <ng-icon [name]="opt.icon" size="14"></ng-icon>
                           </div>
                           <span [class.text-foreground]="details.priority !== opt.value"
@@ -137,7 +137,7 @@
                       </div>
                       @for (ind of industryOptions; track ind) {
                       <button hlmDropdownMenuItem (click)="updateIndustry(ind)"
-                        [class.bg-primary/10]="details.industry === ind"
+                        [class]="{ 'bg-primary/10': details.industry === ind }"
                         class="rounded-lg text-xs font-bold w-full justify-between">
                         {{ ind }}
                         @if (details.industry === ind) {

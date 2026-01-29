@@ -21,7 +21,7 @@ namespace JobTracker.Infrastructure.Migrations
                 table: "Companies",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: "Tier3");
 
             migrationBuilder.AddColumn<string>(
                 name: "TechStack",

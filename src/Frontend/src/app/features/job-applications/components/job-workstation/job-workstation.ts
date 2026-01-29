@@ -29,6 +29,7 @@ import {
     CoverLetterDraft,
 } from '../../models/ai-analysis.model';
 import { Document } from '../../../documents/models/document.model';
+import { CompanyContact } from '../../../../core/models/company-contact.model';
 
 // Spartan UI
 import { HlmLabelImports } from '@spartan-ng/helm/label';
@@ -139,7 +140,7 @@ export class JobWorkstationComponent implements OnInit {
 
     // Core state
     application = signal<JobApplication | null>(null);
-    companyContacts = signal<any[]>([]);
+    companyContacts = signal<CompanyContact[]>([]);
     isLoading = signal(true);
     error = signal<string | null>(null);
 

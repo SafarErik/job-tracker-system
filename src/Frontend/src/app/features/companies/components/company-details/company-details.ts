@@ -458,7 +458,7 @@ export class CompanyDetailsComponent implements OnInit {
 
   startEditContact(contact: CompanyContact): void {
     this.editContactForm.name.set(contact.name);
-    this.editContactForm.role.set(contact.role);
+    this.editContactForm.role.set(contact.role || '');
     this.editContactForm.email.set(contact.email || '');
     this.editContactForm.linkedIn.set(contact.linkedIn || '');
     this.editingContactId.set(contact.id);

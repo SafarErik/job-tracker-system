@@ -164,11 +164,24 @@ public class JobApplicationsController : ControllerBase
             AppliedAt = DateTime.UtcNow
         };
 
+        // Create the application
         await _repository.AddAsync(application);
 
-        // Populate DocumentName if a document was associated
-        string? documentName = null;
-        if (application.DocumentId.HasValue)
+        // Reload the application to get populated navigation properties (like PrimaryContact and Document)
+        // AddAsync doesn't automatically populate navigation properties from IDs
+        var createdApp = await _repository.GetByIdAsync(application.Id);
+
+        if (createdApp == null) 
+        {
+             // Should not happen if add succeeded
+             return StatusCode(500, "Failed to retrieve created application");
+        }
+
+        application = createdApp;
+
+        // Populate DocumentName if a document was associated (if not already loaded by GetByIdAsync)
+        string? documentName = application.Document?.OriginalFileName;
+        if (string.IsNullOrEmpty(documentName) && application.DocumentId.HasValue)
         {
             var document = await _documentRepository.GetByIdAsync(application.DocumentId.Value);
             documentName = document?.OriginalFileName;

@@ -2,10 +2,10 @@ import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-logo',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-logo',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="flex items-center gap-2.5 select-none" [class.flex-col]="vertical()">
       
       <!-- ICON CONTAINER -->
@@ -49,8 +49,7 @@ import { CommonModule } from '@angular/common';
                 [class]="textSizeClasses()">
             JobTracker
             <!-- The Dot matches handle or foreground -->
-            <span [class.text-[#FFE66D]]="!mono()" 
-                  [class.text-foreground]="mono()">.</span>
+            <span [ngClass]="{'text-[#FFE66D]': !mono(), 'text-foreground': mono()}">.</span>
           </span>
           @if (showSlogan() && !mono()) {
             <span class="text-[0.65rem] font-bold tracking-[0.2em] text-muted-foreground uppercase mt-1.5 opacity-80">
@@ -63,34 +62,34 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class LogoComponent {
-    size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
-    iconOnly = input<boolean>(false);
-    vertical = input<boolean>(false);
-    withGlow = input<boolean>(false);
-    showSlogan = input<boolean>(false);
-    mono = input<boolean>(false);
+  size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
+  iconOnly = input<boolean>(false);
+  vertical = input<boolean>(false);
+  withGlow = input<boolean>(false);
+  showSlogan = input<boolean>(false);
+  mono = input<boolean>(false);
 
-    // Generate a unique ID for the gradient to prevent collisions when multiple logos are on page
-    private readonly instanceId = Math.random().toString(36).substring(2, 7);
-    readonly gradientId = `pinGradient-${this.instanceId}`;
+  // Generate a unique ID for the gradient to prevent collisions when multiple logos are on page
+  private readonly instanceId = Math.random().toString(36).substring(2, 7);
+  readonly gradientId = `pinGradient-${this.instanceId}`;
 
-    sizeClasses = computed(() => {
-        switch (this.size()) {
-            case 'sm': return 'h-8 w-8';
-            case 'md': return 'h-10 w-10';
-            case 'lg': return 'h-16 w-16';
-            case 'xl': return 'h-24 w-24';
-            default: return 'h-10 w-10';
-        }
-    });
+  sizeClasses = computed(() => {
+    switch (this.size()) {
+      case 'sm': return 'h-8 w-8';
+      case 'md': return 'h-10 w-10';
+      case 'lg': return 'h-16 w-16';
+      case 'xl': return 'h-24 w-24';
+      default: return 'h-10 w-10';
+    }
+  });
 
-    textSizeClasses = computed(() => {
-        switch (this.size()) {
-            case 'sm': return 'text-xl';
-            case 'md': return 'text-2xl';
-            case 'lg': return 'text-4xl';
-            case 'xl': return 'text-5xl';
-            default: return 'text-2xl';
-        }
-    });
+  textSizeClasses = computed(() => {
+    switch (this.size()) {
+      case 'sm': return 'text-xl';
+      case 'md': return 'text-2xl';
+      case 'lg': return 'text-4xl';
+      case 'xl': return 'text-5xl';
+      default: return 'text-2xl';
+    }
+  });
 }

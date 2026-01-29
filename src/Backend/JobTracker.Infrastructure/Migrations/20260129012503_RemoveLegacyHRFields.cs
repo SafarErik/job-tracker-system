@@ -10,6 +10,18 @@ namespace JobTracker.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Backfill legacy data to CompanyContacts
+            migrationBuilder.Sql(
+                @"INSERT INTO ""CompanyContacts"" (""CompanyId"", ""Name"", ""Email"", ""LinkedIn"")
+                  SELECT 
+                      ""Id"", 
+                      COALESCE(""HRContactName"", ""ContactPerson"", ""HRContactEmail"", 'Unknown Contact'), 
+                      ""HRContactEmail"", 
+                      ""HRContactLinkedIn""
+                  FROM ""Companies""
+                  WHERE (""HRContactEmail"" IS NOT NULL OR ""HRContactName"" IS NOT NULL OR ""ContactPerson"" IS NOT NULL OR ""HRContactLinkedIn"" IS NOT NULL)
+                  AND NOT EXISTS (SELECT 1 FROM ""CompanyContacts"" WHERE ""CompanyContacts"".""CompanyId"" = ""Companies"".""Id"");");
+
             migrationBuilder.DropColumn(
                 name: "ContactPerson",
                 table: "Companies");

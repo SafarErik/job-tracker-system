@@ -65,13 +65,8 @@ export interface CompanyDetail {
   notes?: string;
 }
 
-export interface CompanyContact {
-  id: number;
-  name: string;
-  role: string;
-  email?: string;
-  linkedIn?: string;
-}
+import type { CompanyContact } from '../../../core/models/company-contact.model';
+export type { CompanyContact };
 
 export interface JobApplicationHistory {
   id: number;

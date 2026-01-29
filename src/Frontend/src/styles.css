@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
-/* 1. Tell Tailwind to use the .dark class for 'dark:' variants */
+/* 1. Variants */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* 2. Theme Mapping (The Project DNA) */
 @theme {
-  /* 2. Map Tailwind Colors to our CSS Variables */
   --radius-xl: 0.875rem;
+  /* 14px */
   --radius-2xl: 1.125rem;
+  /* 18px - Signature Card */
 
   --color-border: var(--border);
   --color-input: var(--input);
@@ -28,73 +30,62 @@
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
 }
 
-/* 3. Define the Color Palettes */
+/* 3. Color Tokens */
 :root {
-  /* LIGHT MODE (Default) */
-  --background: #F9FAFB;
-  --foreground: #111827;
-
+  color-scheme: light;
+  --background: #FBFBFD;
+  --foreground: #22223B;
   --card: #FFFFFF;
   --card-foreground: #111827;
-
   --popover: #FFFFFF;
   --popover-foreground: #111827;
-
   --primary: #7C7CFF;
   --primary-foreground: #FFFFFF;
-
   --accent: #FFB703;
   --accent-foreground: #111827;
-
   --muted: #F3F4F6;
   --muted-foreground: #6B7280;
-
   --border: #E5E7EB;
   --input: #E5E7EB;
   --ring: #7C7CFF;
-
-  --radius: 0.875rem;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --destructive: #FF3366;
+  --destructive-foreground: #FFFFFF;
 }
 
-/* DARK MODE OVERRIDES */
-/* This selector applies when 'dark' class is on HTML or BODY */
 :root.dark {
   color-scheme: dark;
   --background: #0F111A;
-  /* Deep Blue-Black */
-  --foreground: #E5E7EB;
-
+  --foreground: #E0E0FF;
   --card: #181B27;
-  /* Signature Dark Card */
   --card-foreground: #E5E7EB;
-
   --popover: #181B27;
   --popover-foreground: #E5E7EB;
-
   --primary: #7C7CFF;
-  /* Indigo stays consistent */
   --primary-foreground: #FFFFFF;
-
   --accent: #FFB703;
-  /* Gold stays consistent */
   --accent-foreground: #0F111A;
-
   --muted: #1F2333;
-  /* Dark grey for secondary items */
   --muted-foreground: #9CA3AF;
-
   --border: #2E3346;
-  /* Subtle dark border */
   --input: #2E3346;
   --ring: #7C7CFF;
-
+  --success: #34D399;
+  --warning: #FBBF24;
   --destructive: 343 100% 60%;
-  /* #FF3366 - Soft Rose Red */
   --destructive-foreground: 343 100% 98%;
 }
 
+/* 4. Global Utilities */
 @utility custom-scrollbar {
   &::-webkit-scrollbar {
     width: 6px;
@@ -106,69 +97,54 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    @apply bg-zinc-300/50 dark:bg-zinc-600/50 rounded-full transition-colors cursor-pointer;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-400/80 dark:bg-zinc-500/80;
+    @apply bg-zinc-300/50 dark:bg-zinc-600/50 rounded-full transition-colors;
   }
 }
 
-/* Fix for number input spinners in dark mode */
+/* 5. Performance Optimized Transitions */
+
+/* 5. Simplified Transitions (No VTA) */
+
+/* Basic, fast transition for background colors only */
+body {
+  @apply bg-background text-foreground antialiased font-sans custom-scrollbar;
+  /* Keep font smoothing for stability */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Fast standard transition to avoid harsh cut */
+  transition: background-color 150ms ease-out, color 150ms ease-out;
+}
+
+/* 
+   Component-level transitions:
+   Hover effects only.
+*/
+
+/* 
+   Component-level transitions:
+   ONLY apply these to properties that change on HOVER.
+   Do NOT transition 'color' or 'background-color' globally here.
+*/
+[hlmBtn],
+.bg-card,
+a,
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* 6. Fixes & Tweaks */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   filter: invert(1) brightness(2);
   opacity: 0.6;
 }
 
-/* Base Utility Resets */
-body {
-  @apply bg-background text-foreground antialiased font-sans custom-scrollbar transition-colors duration-300;
-}
-
-/* Optimized Theme Transition */
-/* Optimized Theme Transition */
-/* Only animate the background and color of the body to set the stage */
-body {
-  transition-property: background-color, color;
-  transition-duration: 300ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 
-  Specific interactive elements we want to animate.
-  Avoid global selectors like 'div', 'span', 'p' which cause layout thrashing.
-*/
-button,
-a,
-input,
-textarea,
-select,
-.bg-card,
-.bg-popover,
-.bg-muted,
-.bg-accent,
-.border-border,
-.border-input {
-  transition-property: background-color, border-color, color, opacity, transform;
-  transition-duration: 200ms;
-  /* Slightly faster for interactions */
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Exclude time-sensitive or heavy paint elements */
-.animate-spin,
-.animate-pulse,
-.animate-bounce,
-.no-transition {
-  transition: none !important;
-}
-
 kbd {
-  @apply pointer-events-none select-none px-1.5 py-0.5 rounded border border-border bg-muted/50 font-mono text-[10px] font-bold text-muted-foreground shadow-sm transition-opacity duration-300;
+  @apply pointer-events-none select-none px-1.5 py-0.5 rounded border border-border bg-muted/50 font-mono text-[10px] font-bold text-muted-foreground shadow-sm;
 }
 
-/* Custom Animations */
+/* 7. Animations */
 @keyframes float {
 
   0%,
@@ -183,4 +159,11 @@ kbd {
 
 .animate-float {
   animation: float 4s ease-in-out infinite;
+}
+
+/* Exclude animations from being snapshotted strangely */
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  view-transition-name: none !important;
 }

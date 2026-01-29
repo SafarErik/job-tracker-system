@@ -132,7 +132,7 @@
           @for (option of statusOptions; track option.value) {
           <button hlmDropdownMenuItem [class.bg-primary/10]="application()?.status === option.value"
             [class.text-primary]="application()?.status === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all"
+            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectStatus(option.value)">
             {{ option.label }}
             @if (application()?.status === option.value) {
@@ -154,7 +154,7 @@
           @for (option of priorityOptions; track option.value) {
           <button hlmDropdownMenuItem [class.bg-primary/10]="application()?.priority === option.value"
             [class.text-primary]="application()?.priority === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all"
+            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectPriority(option.value)">
             {{ option.label }}
           </button>
@@ -173,7 +173,7 @@
           @for (option of workplaceOptions; track option.value) {
           <button hlmDropdownMenuItem [class.bg-primary/10]="application()?.workplaceType === option.value"
             [class.text-primary]="application()?.workplaceType === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold transition-all"
+            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectWorkplace(option.value)">
             {{ option.label }}
           </button>

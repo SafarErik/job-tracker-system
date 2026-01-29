@@ -9,7 +9,7 @@
 
   <!-- Error State -->
   @if (error()) {
-  <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center animate-fade-in-up">
+  <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
     <div class="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center">
       <ng-icon name="lucideBuilding2" class="text-4xl text-rose-500"></ng-icon>
     </div>
@@ -29,7 +29,7 @@
   <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-10">
 
     <!-- Header Block: Identity & Controls -->
-    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4 animate-fade-in-up">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
       <div class="space-y-6">
         <!-- Back Button -->
         <button (click)="goBack()"
@@ -171,7 +171,7 @@
       <div class="lg:col-span-3 space-y-6">
         <!-- Stats Card 1: Engagement -->
         <div
-          class="bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 shadow-sm flex flex-col justify-between h-48 animate-fade-in-up delay-1">
+          class="bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 shadow-sm flex flex-col justify-between h-48">
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">Total Engagement
           </p>
           <div class="flex items-end justify-between">
@@ -184,7 +184,7 @@
 
         <!-- Stats Card 2: Success Rate -->
         <div
-          class="bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 shadow-sm flex flex-col justify-between h-48 animate-fade-in-up delay-2">
+          class="bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 shadow-sm flex flex-col justify-between h-48">
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">Success Rate</p>
           <div class="flex items-end justify-between">
             <h3 class="text-5xl md:text-6xl font-black tracking-tighter"
@@ -199,8 +199,7 @@
         </div>
 
         <!-- Tech Stack Block -->
-        <div
-          class="bg-muted/30 rounded-[2rem] border border-border/40 p-6 md:p-8 animate-fade-in-up delay-3 relative group/stack">
+        <div class="bg-muted/30 rounded-[2rem] border border-border/40 p-6 md:p-8 relative group/stack">
           <div class="flex items-center justify-between mb-6">
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Environment Stack
             </h4>
@@ -244,7 +243,7 @@
       <div class="lg:col-span-6 space-y-6">
         <!-- Strategy Notes (The Scratchpad) -->
         <div
-          class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 shadow-lg relative min-h-[400px] flex flex-col animate-fade-in-up delay-1">
+          class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 shadow-lg relative min-h-[400px] flex flex-col">
           <div class="confidential-stamp">CONFIDENTIAL</div>
 
           <div class="flex items-center gap-3 mb-8">
@@ -267,7 +266,7 @@
         </div>
 
         <!-- People Block -->
-        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 animate-fade-in-up delay-4">
+        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10">
           <div class="flex items-center justify-between mb-8">
             <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
             <button hlmBtn variant="ghost" size="icon-xs" class="h-8 w-8 rounded-full border border-border/40"
@@ -279,7 +278,7 @@
           <div class="space-y-4">
             <!-- Contact List -->
             @for (contact of details.contacts; track contact.id) {
-            <div class="bg-muted/30 border border-border/20 rounded-[1.5rem] overflow-hidden transition-all"
+            <div class="bg-muted/30 border border-border/20 rounded-[1.5rem] overflow-hidden"
               [class.bg-card]="editingContactId() === contact.id"
               [class.border-primary/30]="editingContactId() === contact.id">
 
@@ -324,7 +323,7 @@
               </div>
               } @else {
               <!-- Inline Edit Form -->
-              <div class="p-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div class="p-6 space-y-4 duration-300">
                 <div class="grid grid-cols-2 gap-3">
                   <div class="space-y-1.5">
                     <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Member
@@ -419,7 +418,7 @@
       <!-- Column 3: News & Timeline (Span 3) -->
       <div class="lg:col-span-3 space-y-6">
         <!-- Recent News List -->
-        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-8 h-full animate-fade-in-up delay-2">
+        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-8 h-full">
           <div class="flex items-center justify-between mb-8">
             <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Market Signal</h3>
             @if (newsLoading()) {

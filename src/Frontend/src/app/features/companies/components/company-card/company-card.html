@@ -1,10 +1,10 @@
 <section hlmCard
-  class="group relative flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] card-hover-effect"
+  class="group relative flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] card-hover-effect"
   [class.shadow-[0_0_30px_rgba(245,158,11,0.15)]]="company().priority === 'Tier1'"
   [class.border-amber-500/20]="company().priority === 'Tier1'" (click)="onViewDossier()">
 
   <!-- Decorative Accent Line -->
-  <div class="absolute top-0 left-0 w-full h-1 transition-transform duration-500 origin-left"
+  <div class="absolute top-0 left-0 w-full h-1 transition-transform origin-left"
     [class.bg-gradient-to-r]="company().priority === 'Tier1'" [class.from-amber-400]="company().priority === 'Tier1'"
     [class.via-amber-100]="company().priority === 'Tier1'" [class.to-amber-400]="company().priority === 'Tier1'"
     [class.bg-gradient-to-r]="company().priority !== 'Tier1'" [class.from-primary/0]="company().priority !== 'Tier1'"
@@ -16,18 +16,18 @@
   <div class="absolute top-4 right-4 z-10">
     @if (company().priority === 'Tier1') {
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse-soft border border-amber-500/20 group-hover:scale-110 transition-transform">
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse-soft border border-amber-500/20 group-hover:scale-110">
       <ng-icon name="lucideCrown" class="text-amber-500 text-lg"></ng-icon>
     </div>
     } @else if (company().priority === 'Tier2') {
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(99,102,241,0.1)]">
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-110 shadow-[0_0_10px_rgba(99,102,241,0.1)]">
       <ng-icon name="lucideCircle" class="text-indigo-500 text-[8px]"></ng-icon>
     </div>
     } @else {
     <!-- Tier 3 Indicator (Subtle for "clean" look but visible in corner) -->
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-muted/20 border border-border/40 opacity-40 group-hover:opacity-100 transition-all group-hover:scale-110">
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-muted/20 border border-border/40 opacity-40 group-hover:opacity-100 group-hover:scale-110">
       <span class="text-[8px] font-black text-muted-foreground uppercase">T3</span>
     </div>
     }
@@ -37,7 +37,7 @@
   <div hlmCardHeader class="flex-row items-start justify-between space-y-0 pb-4 pr-12">
     <!-- Icon Container -->
     <div
-      class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary transition-transform group-hover:scale-110 duration-500 shadow-sm"
+      class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 shadow-sm"
       [class.bg-amber-500/10]="company().priority === 'Tier1'" [class.text-amber-500]="company().priority === 'Tier1'"
       [class.shadow-amber-500/20]="company().priority === 'Tier1'">
       <ng-icon name="lucideBuilding2" class="text-2xl"></ng-icon>
@@ -55,8 +55,7 @@
   <!-- Content: Company Details & Skill Cloud -->
   <div hlmCardContent class="pt-2 flex-1 space-y-6">
     <div>
-      <h3 hlmCardTitle
-        class="text-xl font-black tracking-tighter mb-1 transition-colors group-hover:text-primary leading-none"
+      <h3 hlmCardTitle class="text-xl font-black tracking-tighter mb-1 group-hover:text-primary leading-none"
         [class.text-amber-600]="company().priority === 'Tier1'"
         [class.dark:text-amber-500]="company().priority === 'Tier1'">
         {{ company().name }}

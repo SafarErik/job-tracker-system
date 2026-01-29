@@ -165,13 +165,13 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
                 </button>
 
                 <ng-template #userMenu>
-                  <div hlmDropdownMenu class="w-56 mt-2 p-1 rounded-2xl border-border/40 shadow-2xl backdrop-blur-xl">
+                  <div hlmDropdownMenu class="w-56 mt-2 p-1 rounded-2xl border-border/40 shadow-2xl backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2">
                     <div hlmDropdownMenuLabel class="px-3 py-2">
                       <span class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{{ currentUser()?.email }}</span>
                     </div>
                     <div hlmDropdownMenuSeparator></div>
                     <div hlmDropdownMenuGroup>
-                      <a routerLink="/profile" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl">
+                      <a routerLink="/profile" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1">
                         <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
@@ -179,7 +179,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
                       </a>
                     </div>
                     <div hlmDropdownMenuSeparator></div>
-                    <button (click)="logout()" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive transition-colors">
+                    <button (click)="logout()" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive transition-all duration-200 focus:bg-destructive/5 focus:text-destructive data-[highlighted]:bg-destructive/5 data-[highlighted]:text-destructive data-[highlighted]:translate-x-1">
                       <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>

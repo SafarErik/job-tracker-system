@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, DestroyRef } from '@angular/core';
+import { Component, OnInit, signal, inject, DestroyRef, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -13,14 +13,19 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { UserProfile, ProfileStats, UserSkill } from '../../models/profile.model';
 import { Skill } from '../../../skills/models/skill.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { trigger, transition, style, animate, state } from '@angular/animations';
 
-// Spartan UI
+// Spartan UI Imports
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
+import { HlmComboboxImports } from '@spartan-ng/helm/combobox';
+import { HlmCommandImports } from '@spartan-ng/helm/command';
+import { BrnCommandImports } from '@spartan-ng/brain/command';
 
+// Icons
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import {
   lucideUserX,
@@ -30,10 +35,20 @@ import {
   lucideTrash2,
   lucidePlus,
   lucideSearch,
-  lucideX
+  lucideX,
+  lucideUserPen,
+  lucideGraduationCap,
+  lucideTarget,
+  lucideSparkles,
+  lucideCheck,
+  lucideChevronDown,
+  lucideMail,
+  lucideBriefcase,
+  lucideMapPin
 } from '@ng-icons/lucide';
-import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
+// Shared
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -44,6 +59,9 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
     ...HlmLabelImports,
     ...HlmCardImports,
     ...HlmBadgeImports,
+    ...HlmComboboxImports,
+    ...HlmCommandImports,
+    ...BrnCommandImports,
     NgIcon,
     ErrorStateComponent
   ],
@@ -56,10 +74,36 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
       lucideTrash2,
       lucidePlus,
       lucideSearch,
-      lucideX
+      lucideX,
+      lucideUserPen,
+      lucideGraduationCap,
+      lucideTarget,
+      lucideSparkles,
+      lucideCheck,
+      lucideChevronDown,
+      lucideMail,
+      lucideBriefcase,
+      lucideMapPin
     })
   ],
   templateUrl: './profile.html',
+  animations: [
+    trigger('fadeScale', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.8)' }),
+        animate('0.2s ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('0.2s ease-in', style({ opacity: 0, transform: 'scale(0.8)' }))
+      ])
+    ]),
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('0.3s ease-out', style({ opacity: 1 }))
+      ])
+    ])
+  ]
 })
 export class ProfileComponent implements OnInit {
   private profileService = inject(ProfileService);
@@ -75,15 +119,46 @@ export class ProfileComponent implements OnInit {
   availableSkills = signal<Skill[]>([]);
   isLoading = signal(true);
   error = signal<string | null>(null);
-  isEditMode = signal(false);
+
+  // Inline Editing State
+  editingField = signal<string | null>(null);
   isUploadingPicture = signal(false);
   isAddingSkill = signal(false);
   skillSearchTerm = signal('');
+  lastSavedField = signal<string | null>(null);
+
+  // Top suggested skills not yet added
+  topSkills = computed(() => {
+    // Just take the first 5 unassigned skills for now as "Suggestions"
+    return this.unassignedSkills.slice(0, 5);
+  });
 
   // Form
   profileForm: FormGroup;
   skillSearchControl = new FormControl('');
   skillCategoryControl = new FormControl('');
+
+  // Computed State for Profile Completeness
+  completenessPercentage = computed(() => {
+    const p = this.profile();
+    if (!p) return 0;
+
+    let score = 0;
+    let total = 6; // First, Last, Title, Bio, Exp, Picture, Skills (we'll count skills separately or weighted)
+
+    if (p.firstName) score++;
+    if (p.lastName) score++;
+    if (p.currentJobTitle) score++;
+    if (p.bio) score++;
+    if (p.yearsOfExperience != null) score++;
+    if (p.profilePictureUrl) score++;
+
+    // Bonus for skills
+    if (this.userSkills().length > 0) score++;
+    total++;
+
+    return Math.round((score / total) * 100);
+  });
 
   constructor() {
     this.profileForm = this.fb.group({
@@ -155,39 +230,61 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  toggleEditMode(): void {
-    this.isEditMode.update((mode) => !mode);
-    if (!this.isEditMode() && this.profile()) {
+  startEditing(field: string): void {
+    this.editingField.set(field);
+    // Focus logic could go here via a directive or ViewChild, but HTML autofocus usually works
+  }
+
+  cancelEditing(): void {
+    this.editingField.set(null);
+    if (this.profile()) {
       this.populateForm(this.profile()!);
     }
   }
 
-  saveProfile(): void {
-    if (this.profileForm.invalid) {
+  saveField(field: string): void {
+    const control = this.profileForm.get(field);
+
+    if (control?.invalid) {
       this.notificationService.error(
-        'Please fill in all required fields correctly',
+        'Please enter a valid value',
         'Validation Error',
       );
       return;
     }
 
+    const value = control?.value;
+    const currentProfile = this.profile();
+
+    // Optimistic update check - skip if no change
+    // @ts-ignore
+    if (currentProfile && currentProfile[field as keyof UserProfile] === value) {
+      this.editingField.set(null);
+      return;
+    }
+
+    // Prepare update payload
+    // We send the whole form value to ensure consistency, 
+    // or we could construct a partial object if the API supported PATCH properly
     const updateData = this.profileForm.value;
 
     this.profileService.updateProfile(updateData).subscribe({
       next: (updatedProfile) => {
         this.profile.set(updatedProfile);
-        this.isEditMode.set(false);
-        this.notificationService.success(
-          'Your profile has been updated successfully!',
-          'Profile Updated',
-        );
+        this.editingField.set(null);
+        this.lastSavedField.set(field);
+
+        // Show checkmark briefly
+        setTimeout(() => this.lastSavedField.set(null), 2000);
       },
       error: (err) => {
         this.notificationService.error(
-          'Failed to update profile. Please try again.',
+          'Failed to update profile.',
           'Update Failed',
         );
         console.error(err);
+        // Revert form
+        if (this.profile()) this.populateForm(this.profile()!);
       },
     });
   }
@@ -240,6 +337,7 @@ export class ProfileComponent implements OnInit {
     return this.availableSkills().filter((s) => !userSkillIds.includes(s.id));
   }
 
+  // Used for filtering in the combobox command
   get filteredSkills(): Skill[] {
     const term = this.skillSearchTerm().trim().toLowerCase();
     const pool = this.unassignedSkills;
@@ -264,6 +362,7 @@ export class ProfileComponent implements OnInit {
           ...skills,
           { id: skill.id, name: skill.name, category: skill.category || 'Other' },
         ]);
+        this.skillSearchControl.reset();
         this.notificationService.success(
           `${skill.name} has been added to your profile`,
           'Skill Added',
@@ -276,6 +375,7 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  // Simplified custom skill adding
   addCustomSkillFromInput(): void {
     const name = this.skillSearchTerm().trim();
     const category = this.skillCategoryControl.value?.toString().trim();

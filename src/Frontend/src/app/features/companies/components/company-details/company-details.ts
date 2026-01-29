@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
@@ -11,17 +11,55 @@ import { HlmCardImports } from '../../../../../../libs/ui/card';
 import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 
+import { provideIcons } from '@ng-icons/core';
+import {
+  lucideGlobe,
+  lucideExternalLink,
+  lucideLinkedin,
+  lucideTrendingUp,
+  lucideTrendingDown,
+  lucideArrowLeft,
+  lucideMoreHorizontal,
+  lucidePencil,
+  lucideTrash2,
+  lucideCalendar,
+  lucideMapPin,
+  lucideBuilding2,
+  lucideLoader2
+} from '@ng-icons/lucide';
+import { NgIcon } from '@ng-icons/core';
+
 @Component({
   selector: 'app-company-details',
   standalone: true,
   imports: [
     CommonModule,
+    NgIcon,
     ...HlmButtonImports,
     ...HlmCardImports,
     ...HlmBadgeImports,
     ...HlmInputImports,
   ],
+  providers: [
+    provideIcons({
+      lucideGlobe,
+      lucideExternalLink,
+      lucideLinkedin,
+      lucideTrendingUp,
+      lucideTrendingDown,
+      lucideArrowLeft,
+      lucideMoreHorizontal,
+      lucidePencil,
+      lucideTrash2,
+      lucideCalendar,
+      lucideMapPin,
+      lucideBuilding2,
+      lucideLoader2
+    }),
+  ],
   templateUrl: './company-details.html',
+  styleUrl: './company-details.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyDetailsComponent implements OnInit {
   // Core signals
@@ -176,26 +214,36 @@ export class CompanyDetailsComponent implements OnInit {
     const details = this.companyDetails();
     if (!details) return;
 
+    console.log('[CompanyDetails] Initiating delete for:', details.name);
+
     const confirmed = await this.notificationService.confirm(
       `This will permanently delete "${details.name}". This action cannot be undone.`,
       'Delete Company?',
+      {
+        confirmText: 'Delete Asset',
+        isDangerous: true,
+      },
     );
+
+    console.log('[CompanyDetails] Delete confirmed:', confirmed);
 
     if (!confirmed) return;
 
+    console.log('[CompanyDetails] Sending delete request to API...');
     this.companyService.deleteCompany(details.id).subscribe({
       next: () => {
+        console.log('[CompanyDetails] Delete successful');
         this.notificationService.success(
-          `${details.name} has been deleted successfully.`,
-          'Company Deleted',
+          `${details.name} has been erased from the registry.`,
+          'Asset Deleted',
         );
         this.router.navigate(['/companies']);
       },
       error: (err) => {
-        console.error('Failed to delete company:', err);
+        console.error('[CompanyDetails] Delete failed:', err);
         this.notificationService.error(
-          'Unable to delete the company. Please try again.',
-          'Delete Failed',
+          'Unable to complete the erasure. Please try again.',
+          'Operation Failed',
         );
       },
     });

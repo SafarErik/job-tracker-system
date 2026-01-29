@@ -59,6 +59,58 @@
                 class="rounded-lg px-3 py-1 text-[10px] font-black uppercase border-primary/20 bg-primary/5 text-primary">
                 {{ details.totalApplications > 0 ? 'Active Priority' : 'Target Asset' }}
               </span>
+
+              <!-- Priority Dropdown -->
+              <div class="relative">
+                <button [hlmDropdownMenuTrigger]="priorityMenu" hlmBtn variant="ghost" size="sm"
+                  class="rounded-lg px-3 py-1 h-auto text-[10px] font-black uppercase transition-all duration-300 group/priority"
+                  [class.border-amber-500/20]="details.priority === 'Tier1'"
+                  [class.bg-amber-500/10]="details.priority === 'Tier1'"
+                  [class.text-amber-500]="details.priority === 'Tier1'"
+                  [class.shadow-[0_0_10px_rgba(245,158,11,0.2)]]="details.priority === 'Tier1'"
+                  [class.border-indigo-500/20]="details.priority === 'Tier2'"
+                  [class.bg-indigo-500/10]="details.priority === 'Tier2'"
+                  [class.text-indigo-500]="details.priority === 'Tier2'"
+                  [class.border-muted-foreground/20]="details.priority === 'Tier3'"
+                  [class.bg-muted/10]="details.priority === 'Tier3'"
+                  [class.text-muted-foreground]="details.priority === 'Tier3'">
+
+                  @if (details.priority === 'Tier1') {
+                  <ng-icon name="lucideCrown" class="mr-1"></ng-icon>
+                  } @else if (details.priority === 'Tier2') {
+                  <ng-icon name="lucideCircle" class="mr-1 text-[8px]"></ng-icon>
+                  }
+                  {{ getPriorityLabel(details.priority) }}
+                  <ng-icon name="lucideChevronDown"
+                    class="ml-1 opacity-50 group-hover/priority:opacity-100 transition-opacity"></ng-icon>
+                </button>
+
+                <ng-template #priorityMenu>
+                  <div hlmDropdownMenu class="w-56">
+                    <button hlmDropdownMenuItem (click)="updatePriority('Tier1')">
+                      <ng-icon name="lucideCrown" class="mr-2 text-amber-500"></ng-icon>
+                      <span>Tier 1: Dream Target</span>
+                      @if (details.priority === 'Tier1') {
+                      <div class="ml-auto w-1.5 h-1.5 rounded-full bg-primary"></div>
+                      }
+                    </button>
+                    <button hlmDropdownMenuItem (click)="updatePriority('Tier2')">
+                      <ng-icon name="lucideCircle" class="mr-2 text-indigo-500 text-[8px]"></ng-icon>
+                      <span>Tier 2: High Interest</span>
+                      @if (details.priority === 'Tier2') {
+                      <div class="ml-auto w-1.5 h-1.5 rounded-full bg-primary"></div>
+                      }
+                    </button>
+                    <button hlmDropdownMenuItem (click)="updatePriority('Tier3')">
+                      <span class="mr-2 w-4"></span>
+                      <span>Tier 3: Opportunistic</span>
+                      @if (details.priority === 'Tier3') {
+                      <div class="ml-auto w-1.5 h-1.5 rounded-full bg-primary"></div>
+                      }
+                    </button>
+                  </div>
+                </ng-template>
+              </div>
             </div>
 
             <div class="flex flex-wrap items-center gap-4 pt-1">
@@ -69,9 +121,21 @@
                 {{ website.replace('https://', '').replace('http://', '') }}
               </a>
               }
-              @if (details.industry) {
               <div class="h-4 w-px bg-border/60"></div>
-              <span class="text-sm font-medium text-muted-foreground">{{ details.industry }}</span>
+              @if (!editingIndustry()) {
+              <span (click)="editingIndustry.set(true)"
+                class="text-sm font-medium text-muted-foreground hover:text-primary cursor-pointer transition-colors group/ind">
+                {{ details.industry || 'Specify Industry' }}
+                <ng-icon name="lucidePencil"
+                  class="ml-1 opacity-0 group-hover/ind:opacity-100 transition-opacity text-[10px]"></ng-icon>
+              </span>
+              } @else {
+              <div class="flex items-center gap-2">
+                <input hlmInput size="sm" class="h-8 py-0 px-2 text-sm max-w-[150px]" [ngModel]="details.industry"
+                  (blur)="editingIndustry.set(false)"
+                  (keydown.enter)="updateIndustry($any($event.target).value); editingIndustry.set(false)"
+                  (keydown.escape)="editingIndustry.set(false)" #indInput autofocus />
+              </div>
               }
             </div>
           </div>
@@ -128,17 +192,41 @@
         </div>
 
         <!-- Tech Stack Block -->
-        <div class="bg-muted/30 rounded-[2rem] border border-border/40 p-8 animate-fade-in-up delay-3">
-          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-6">Environment Stack
-          </h4>
+        <div
+          class="bg-muted/30 rounded-[2rem] border border-border/40 p-8 animate-fade-in-up delay-3 relative group/stack">
+          <div class="flex items-center justify-between mb-6">
+            <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Environment Stack
+            </h4>
+            <button hlmBtn variant="ghost" size="icon-xs" class="h-6 w-6 p-0 rounded-full"
+              (click)="editingTech.set(true)">
+              <ng-icon name="lucidePlus" class="text-muted-foreground hover:text-primary transition-colors"></ng-icon>
+            </button>
+          </div>
+
           <div class="flex flex-wrap gap-2">
-            @if (details.techStack?.length) {
             @for (tech of details.techStack; track tech) {
-            <span class="px-3 py-1.5 rounded-xl bg-card border border-border/40 text-[11px] font-bold">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border/40 text-[11px] font-bold group/tag">
               {{ tech }}
+              <button (click)="updateTechStack(tech)"
+                class="opacity-0 group-hover/tag:opacity-100 hover:text-rose-500 transition-all">
+                <ng-icon name="lucideX" class="text-[10px]"></ng-icon>
+              </button>
             </span>
             }
-            } @else {
+
+            @if (editingTech()) {
+            <div class="flex items-center gap-1 mt-2 w-full">
+              <input hlmInput size="sm" class="h-7 py-0 px-2 text-[11px] flex-1" [ngModel]="newTech()"
+                (ngModelChange)="newTech.set($event)" (keydown.enter)="addTechItem()"
+                (keydown.escape)="editingTech.set(false)" placeholder="Add skill..." autofocus />
+              <button hlmBtn variant="ghost" size="icon-xs" (click)="addTechItem()" class="h-7 w-7 p-0">
+                <ng-icon name="lucideCheck" class="text-emerald-500"></ng-icon>
+              </button>
+            </div>
+            }
+
+            @if (!details.techStack?.length && !editingTech()) {
             <p class="text-xs font-medium text-muted-foreground/60 italic">No stack data available</p>
             }
           </div>
@@ -171,74 +259,163 @@
 
         <!-- People Block -->
         <div class="bg-card rounded-[2.5rem] border border-border/40 p-10 animate-fade-in-up delay-4">
-          <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-8">Asset Contacts</h3>
+          <div class="flex items-center justify-between mb-8">
+            <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
+            <button hlmBtn variant="ghost" size="icon-xs" class="h-8 w-8 rounded-full border border-border/40"
+              (click)="startAddContact()" *ngIf="editingContactId() === null">
+              <ng-icon name="lucidePlus"></ng-icon>
+            </button>
+          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @if (details.hrContactName || details.hrContactEmail ||
-            details.contacts?.length) {
-
-            <!-- Primary HR Contact -->
-            @if (details.hrContactName) {
+          <div class="space-y-4">
+            <!-- Legacy HR Contact (Fallback if no structured contacts yet) -->
+            @if (!details.contacts?.length && (details.hrContactName || details.hrContactEmail)) {
             <div
-              class="bg-muted/30 border border-border/20 rounded-[1.5rem] p-5 flex items-center justify-between group hover:bg-muted/50 transition-all">
+              class="bg-amber-500/5 border border-amber-500/10 rounded-[1.5rem] p-5 flex items-center justify-between group">
               <div class="flex items-center gap-4">
                 <div
-                  class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black">
-                  {{ details.hrContactName.charAt(0) }}
+                  class="h-12 w-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 font-black shrink-0">
+                  {{ (details.hrContactName || 'A').charAt(0) }}
                 </div>
                 <div>
-                  <p class="text-sm font-black tracking-tight">{{ details.hrContactName }}</p>
-                  <p class="text-[10px] font-bold text-muted-foreground uppercase">Point of Contact</p>
+                  <p class="text-sm font-black tracking-tight">{{ details.hrContactName || 'Legacy Contact' }}</p>
+                  <p class="text-[10px] font-bold text-amber-500/60 uppercase">Legacy Entry • Needs Migration</p>
                 </div>
-              </div>
-
-              <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                @if (details.hrContactLinkedIn) {
-                <a [href]="details.hrContactLinkedIn" target="_blank"
-                  class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
-                  <ng-icon name="lucideLinkedin"></ng-icon>
-                </a>
-                }
-                @if (details.hrContactEmail) {
-                <a [href]="'mailto:' + details.hrContactEmail"
-                  class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
-                  <ng-icon name="lucideExternalLink" size="16"></ng-icon>
-                </a>
-                }
               </div>
             </div>
             }
 
-            <!-- Additional Contacts (if any) -->
-            @for (contact of details.contacts || []; track contact.id) {
-            <div
-              class="bg-muted/30 border border-border/20 rounded-[1.5rem] p-5 flex items-center justify-between group hover:bg-muted/50 transition-all">
-              <div class="flex items-center gap-4">
-                <div
-                  class="h-12 w-12 rounded-2xl bg-muted border border-border/40 flex items-center justify-center text-muted-foreground font-black">
-                  {{ contact.name.charAt(0) }}
+            <!-- Contact List -->
+            @for (contact of details.contacts; track contact.id) {
+            <div class="bg-muted/30 border border-border/20 rounded-[1.5rem] overflow-hidden transition-all"
+              [class.bg-card]="editingContactId() === contact.id"
+              [class.border-primary/30]="editingContactId() === contact.id">
+
+              @if (editingContactId() !== contact.id) {
+              <div class="p-5 flex items-center justify-between group hover:bg-muted/50 transition-all">
+                <div class="flex items-center gap-4 w-full">
+                  <div
+                    class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black shrink-0">
+                    {{ contact.name.charAt(0) }}
+                  </div>
+
+                  <div class="flex-1">
+                    <p class="text-sm font-black tracking-tight">{{ contact.name }}</p>
+                    <p class="text-[10px] font-bold text-muted-foreground uppercase">{{ contact.role }}</p>
+                  </div>
                 </div>
-                <div>
-                  <p class="text-sm font-black tracking-tight">{{ contact.name }}</p>
-                  <p class="text-[10px] font-bold text-muted-foreground uppercase">{{ contact.role }}</p>
+
+                <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  @if (contact.linkedIn) {
+                  <a [href]="contact.linkedIn" target="_blank"
+                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
+                    <ng-icon name="lucideLinkedin"></ng-icon>
+                  </a>
+                  }
+                  @if (contact.email) {
+                  <a [href]="'mailto:' + contact.email"
+                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
+                    <ng-icon name="lucideExternalLink" size="16"></ng-icon>
+                  </a>
+                  }
+                  <button (click)="startEditContact(contact)"
+                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
+                    <ng-icon name="lucidePencil" size="16"></ng-icon>
+                  </button>
+                  <button (click)="deleteContact(contact.id)"
+                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-rose-500 transition-all">
+                    <ng-icon name="lucideTrash2" size="16"></ng-icon>
+                  </button>
                 </div>
               </div>
+              } @else {
+              <!-- Inline Edit Form -->
+              <div class="p-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Member
+                      Name</label>
+                    <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.name()"
+                      (ngModelChange)="editContactForm.name.set($event)" placeholder="e.g. Sarah Connor" autofocus />
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
+                      Role</label>
+                    <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.role()"
+                      (ngModelChange)="editContactForm.role.set($event)" placeholder="e.g. Lead Technical Recruiter" />
+                  </div>
+                </div>
 
-              <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                @if (contact.linkedIn) {
-                <a [href]="contact.linkedIn" target="_blank"
-                  class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-primary transition-all">
-                  <ng-icon name="lucideLinkedin"></ng-icon>
-                </a>
-                }
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
+                      (LinkedIn)</label>
+                    <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.linkedIn()"
+                      (ngModelChange)="editContactForm.linkedIn.set($event)" placeholder="LinkedIn URL" />
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
+                      (Email)</label>
+                    <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.email()"
+                      (ngModelChange)="editContactForm.email.set($event)" placeholder="Email Address" />
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2">
+                  <button hlmBtn variant="ghost" size="sm" class="rounded-xl text-xs font-bold"
+                    (click)="cancelContactEdit()">
+                    Abort
+                  </button>
+                  <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6"
+                    (click)="saveContact()">
+                    Secure Entry
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            }
+
+            <!-- Add New Contact Form -->
+            @if (editingContactId() === 0) {
+            <div
+              class="bg-card border-2 border-dashed border-primary/30 rounded-[1.5rem] p-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
+              <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1.5">
+                  <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Member
+                    Name</label>
+                  <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.name()"
+                    (ngModelChange)="editContactForm.name.set($event)" placeholder="Name" autofocus />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
+                    Role</label>
+                  <input hlmInput size="sm" class="h-9 w-full rounded-xl" [ngModel]="editContactForm.role()"
+                    (ngModelChange)="editContactForm.role.set($event)" placeholder="Role" />
+                </div>
+              </div>
+              <div class="flex items-center justify-end gap-2 pt-2">
+                <button hlmBtn variant="ghost" size="sm" class="rounded-xl text-xs font-bold font-sans"
+                  (click)="cancelContactEdit()">
+                  Abort
+                </button>
+                <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6 bg-primary"
+                  (click)="saveContact()">
+                  Enlist Personnel
+                </button>
               </div>
             </div>
             }
-            } @else {
-            <div class="col-span-2 py-12 text-center border-2 border-dashed border-border/20 rounded-[2rem]">
+
+            @if (!details.contacts?.length && !editingContactId() && !details.hrContactName) {
+            <div class="py-12 text-center border-2 border-dashed border-border/20 rounded-[2rem] bg-muted/5">
               <ng-icon name="lucideBuilding2" class="text-muted-foreground/20 text-4xl mb-3"></ng-icon>
-              <p class="text-xs font-bold text-muted-foreground/40 uppercase tracking-widest">No Intelligence Contacts
-                Identified</p>
+              <p class="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">No Intelligence
+                Contacts Identified</p>
+              <button hlmBtn variant="link" size="sm" class="mt-2 text-primary hover:text-primary/80 font-bold"
+                (click)="startAddContact()">
+                Identify New Contact
+              </button>
             </div>
             }
           </div>

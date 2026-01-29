@@ -530,21 +530,83 @@
               <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Interviewer Intelligence
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 rounded-2xl bg-background border border-border/40 flex items-center justify-between">
+              @if (application()?.primaryContact; as contact) {
+              <div
+                class="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-between group">
                 <div class="flex items-center gap-3">
                   <div
-                    class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black">
-                    JD</div>
-                  <div class="text-sm font-bold">Jane Doe <p class="text-[10px] text-muted-foreground font-normal">EM
-                    </p>
+                    class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black">
+                    {{ contact.name.charAt(0) }}
+                  </div>
+                  <div class="text-sm font-bold">
+                    {{ contact.name }}
+                    <p class="text-[10px] text-muted-foreground font-normal">{{ contact.role }}</p>
                   </div>
                 </div>
-                <ng-icon name="lucideLinkedin" class="text-muted-foreground"></ng-icon>
+                <div class="flex items-center gap-2">
+                  @if (contact.linkedIn) {
+                  <a [href]="contact.linkedIn" target="_blank"
+                    class="text-muted-foreground hover:text-primary transition-colors">
+                    <ng-icon name="lucideLinkedin" size="16"></ng-icon>
+                  </a>
+                  }
+                  <button [hlmDropdownMenuTrigger]="contactMenu"
+                    class="text-muted-foreground hover:text-primary transition-colors">
+                    <ng-icon name="lucideChevronDown" size="16"></ng-icon>
+                  </button>
+                </div>
               </div>
-              <button
-                class="p-4 rounded-2xl border-2 border-dashed border-border/40 hover:bg-primary/5 transition-all text-xs font-bold text-muted-foreground md:col-span-2">+
-                Add Interviewer</button>
+
+              <!-- Display role context if available -->
+              <div class="p-4 rounded-2xl bg-muted/20 border border-border/20 flex flex-col justify-center">
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Assigned
+                  Liaison</p>
+                <p class="text-xs font-medium italic">"Primary contact for negotiation and tactical feedback."</p>
+              </div>
+              } @else {
+              <div
+                class="md:col-span-2 py-8 text-center border-2 border-dashed border-border/20 rounded-2xl bg-muted/5">
+                <p class="text-xs font-bold text-muted-foreground/40 uppercase tracking-widest mb-4">No Liaison Assigned
+                </p>
+                <button hlmBtn variant="outline" size="sm" class="rounded-xl font-black text-[10px] uppercase"
+                  [hlmDropdownMenuTrigger]="contactMenu">
+                  Assign from Hierarchy
+                </button>
+              </div>
+              }
             </div>
+
+            <ng-template #contactMenu>
+              <hlm-dropdown-menu class="w-64 p-2 rounded-2xl backdrop-blur-xl bg-popover/95 border-border shadow-2xl">
+                <hlm-dropdown-menu-label
+                  class="px-3 py-2 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Company
+                  Personnel</hlm-dropdown-menu-label>
+                <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
+                <hlm-dropdown-menu-group>
+                  @for (contact of companyContacts(); track contact.id) {
+                  <button hlmDropdownMenuItem
+                    class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all"
+                    (click)="selectPrimaryContact(contact.id)">
+                    <div class="flex flex-col">
+                      <span>{{ contact.name }}</span>
+                      <span class="text-[9px] text-muted-foreground font-normal">{{ contact.role }}</span>
+                    </div>
+                    @if (application()?.primaryContactId === contact.id) {
+                    <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
+                    }
+                  </button>
+                  }
+                  @if (companyContacts().length === 0) {
+                  <div class="px-3 py-4 text-center">
+                    <p class="text-[10px] text-muted-foreground font-bold uppercase italic">No contacts found in dossier
+                    </p>
+                    <a [routerLink]="['/companies', application()?.companyId]"
+                      class="text-[10px] text-primary hover:underline mt-2 inline-block">Update Company Dossier</a>
+                  </div>
+                  }
+                </hlm-dropdown-menu-group>
+              </hlm-dropdown-menu>
+            </ng-template>
           </div>
 
           <!-- Scratchpad -->

@@ -1,0 +1,42 @@
+/* Minimalistic modern animations for Company Card */
+
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Pipeline Segment Hover Effect */
+.pipeline-segment {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-effect {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.skill-tag {
+    transition: all 0.2s ease-in-out;
+}
+
+.skill-tag:hover {
+    transform: translateY(-1px);
+}
+
+/* Glassmorphism subtle effect for light mode */
+:host-context(.light) .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+}

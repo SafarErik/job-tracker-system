@@ -32,6 +32,15 @@ public class Company
     // LinkedIn profile URL of the HR contact person
     public string? HRContactLinkedIn {get; set;}
 
+    // Company Domain
+    public string? Industry { get; set; }
+    
+    // Tech Stack (semicolon separated)
+    public string? TechStack { get; set; }
+
+    // Company Priority
+    public string Priority { get; set; } = "Tier3";
+
     // Legacy field - kept for backward compatibility
     // Consider using HRContactName instead
     [Obsolete("Use HRContactName instead")]
@@ -41,4 +50,6 @@ public class Company
     // Defines a one-to-many relationship: one company can have multiple job applications
     public ICollection<JobApplication> JobApplications {get; set;} = new List<JobApplication> ();
 
+    // Companies can have multiple contacts
+    public ICollection<CompanyContact> Contacts { get; set; } = new List<CompanyContact>();
 }

@@ -4,6 +4,7 @@ using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.DTOs.JobApplications;
+using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.API.Controllers;
 
@@ -64,7 +65,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = app.WorkplaceType,
             Priority = app.Priority,
             MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer
+            SalaryOffer = app.SalaryOffer,
+            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = app.PrimaryContact.Id,
+                Name = app.PrimaryContact.Name,
+                Email = app.PrimaryContact.Email,
+                LinkedIn = app.PrimaryContact.LinkedIn,
+                Role = app.PrimaryContact.Role
+            } : null
         });
 
         return Ok(dtos);
@@ -111,7 +120,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = app.WorkplaceType,
             Priority = app.Priority,
             MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer
+            SalaryOffer = app.SalaryOffer,
+            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = app.PrimaryContact.Id,
+                Name = app.PrimaryContact.Name,
+                Email = app.PrimaryContact.Email,
+                LinkedIn = app.PrimaryContact.LinkedIn,
+                Role = app.PrimaryContact.Role
+            } : null
         };
 
         return Ok(dto);
@@ -143,6 +160,7 @@ public class JobApplicationsController : ControllerBase
             MatchScore = createDto.MatchScore,
             SalaryOffer = createDto.SalaryOffer,
             DocumentId = createDto.DocumentId,
+            PrimaryContactId = createDto.PrimaryContactId,
             AppliedAt = DateTime.UtcNow
         };
 
@@ -173,7 +191,15 @@ public class JobApplicationsController : ControllerBase
             WorkplaceType = application.WorkplaceType,
             Priority = application.Priority,
             MatchScore = application.MatchScore,
-            SalaryOffer = application.SalaryOffer
+            SalaryOffer = application.SalaryOffer,
+            PrimaryContact = application.PrimaryContact != null ? new CompanyContactDto
+            {
+                Id = application.PrimaryContact.Id,
+                Name = application.PrimaryContact.Name,
+                Email = application.PrimaryContact.Email,
+                LinkedIn = application.PrimaryContact.LinkedIn,
+                Role = application.PrimaryContact.Role
+            } : null
         };
 
         return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
@@ -237,6 +263,9 @@ public class JobApplicationsController : ControllerBase
         
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;
+
+        if (updateDto.PrimaryContactId.HasValue)
+            existingApp.PrimaryContactId = updateDto.PrimaryContactId;
 
         await _repository.UpdateAsync(existingApp);
 

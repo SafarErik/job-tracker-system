@@ -2,6 +2,7 @@ import { JobApplicationStatus } from './application-status.enum';
 import { JobType } from './job-type.enum';
 import { WorkplaceType } from './workplace-type.enum';
 import { JobPriority } from './job-priority.enum';
+import { CompanyContact } from '../../companies/models/company.model';
 
 export interface JobApplication {
   id: number;
@@ -21,6 +22,8 @@ export interface JobApplication {
   priority: JobPriority;
   matchScore: number;
   salaryOffer?: number;
+  primaryContactId?: number;
+  primaryContact?: CompanyContact;
 }
 
 export interface CreateJobApplication {
@@ -35,5 +38,6 @@ export interface CreateJobApplication {
   workplaceType?: WorkplaceType;
   priority?: JobPriority;
   matchScore?: number;
+  primaryContactId?: number;
 }
 

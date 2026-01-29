@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { CompanyDetail, CompanyNews } from '../../models/company.model';
+import { CompanyDetail, CompanyNews, CompanyContact } from '../../models/company.model';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmCardImports } from '../../../../../../libs/ui/card';
 import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
+import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { FormsModule } from '@angular/forms';
 
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -25,7 +27,14 @@ import {
   lucideCalendar,
   lucideMapPin,
   lucideBuilding2,
-  lucideLoader2
+  lucideLoader2,
+  lucideCrown,
+  lucideStar,
+  lucideCircle,
+  lucideChevronDown,
+  lucideCheck,
+  lucidePlus,
+  lucideX
 } from '@ng-icons/lucide';
 import { NgIcon } from '@ng-icons/core';
 
@@ -35,10 +44,12 @@ import { NgIcon } from '@ng-icons/core';
   imports: [
     CommonModule,
     NgIcon,
+    FormsModule,
     ...HlmButtonImports,
     ...HlmCardImports,
     ...HlmBadgeImports,
     ...HlmInputImports,
+    ...HlmDropdownMenuImports,
   ],
   providers: [
     provideIcons({
@@ -54,7 +65,14 @@ import { NgIcon } from '@ng-icons/core';
       lucideCalendar,
       lucideMapPin,
       lucideBuilding2,
-      lucideLoader2
+      lucideLoader2,
+      lucideCrown,
+      lucideStar,
+      lucideCircle,
+      lucideChevronDown,
+      lucideCheck,
+      lucidePlus,
+      lucideX
     }),
   ],
   templateUrl: './company-details.html',
@@ -72,6 +90,19 @@ export class CompanyDetailsComponent implements OnInit {
   newsLoading = signal(false);
   companyNotes = signal('');
   logoFailed = signal(false);
+
+  editingIndustry = signal(false);
+  editingTech = signal(false);
+  editingContactId = signal<number | null>(null); // null: not editing, 0: new, >0: existing
+  newTech = signal('');
+
+  // Contact editing state
+  editContactForm = {
+    name: signal(''),
+    role: signal(''),
+    email: signal(''),
+    linkedIn: signal('')
+  };
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -320,7 +351,188 @@ export class CompanyDetailsComponent implements OnInit {
    * Update notes (for scratchpad)
    */
   updateNotes(value: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
     this.companyNotes.set(value);
-    // In production, would save to backend
+    this.companyService.updateCompany(details.id, { notes: value }).subscribe({
+      error: () => this.notificationService.error('Failed to save notes', 'Error')
+    });
+  }
+
+  updatePriority(priority: string): void {
+    const details = this.companyDetails();
+    if (!details || details.priority === priority) return;
+
+    this.companyService.updateCompany(details.id, { priority }).subscribe({
+      next: () => {
+        this.companyDetails.set({ ...details, priority });
+        this.notificationService.success(`Priority updated to ${this.getPriorityLabel(priority)}`, 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to update priority', 'Error')
+    });
+  }
+
+  updateIndustry(industry: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    this.companyService.updateCompany(details.id, { industry }).subscribe({
+      next: () => {
+        this.companyDetails.set({ ...details, industry });
+        this.notificationService.success('Industry updated', 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to update industry', 'Error')
+    });
+  }
+
+  updateTechStack(tech: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const currentStack = details.techStack || [];
+    let newStack: string[];
+
+    if (currentStack.includes(tech)) {
+      newStack = currentStack.filter(t => t !== tech);
+    } else {
+      newStack = [...currentStack, tech];
+    }
+
+    this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
+      next: () => {
+        this.companyDetails.set({ ...details, techStack: newStack });
+        this.notificationService.success('Tech stack updated', 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to update tech stack', 'Error')
+    });
+  }
+
+  addTechItem(): void {
+    const tech = this.newTech().trim();
+    if (!tech) return;
+
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const currentStack = details.techStack || [];
+    if (currentStack.includes(tech)) {
+      this.notificationService.info(`${tech} is already in the stack`, 'Note');
+      this.newTech.set('');
+      return;
+    }
+
+    const newStack = [...currentStack, tech];
+    this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
+      next: () => {
+        this.companyDetails.set({ ...details, techStack: newStack });
+        this.newTech.set('');
+        this.editingTech.set(false);
+        this.notificationService.success('Skill added to stack', 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to add skill', 'Error')
+    });
+  }
+
+  startAddContact(): void {
+    this.editContactForm.name.set('');
+    this.editContactForm.role.set('');
+    this.editContactForm.email.set('');
+    this.editContactForm.linkedIn.set('');
+    this.editingContactId.set(0);
+  }
+
+  startEditContact(contact: CompanyContact): void {
+    this.editContactForm.name.set(contact.name);
+    this.editContactForm.role.set(contact.role);
+    this.editContactForm.email.set(contact.email || '');
+    this.editContactForm.linkedIn.set(contact.linkedIn || '');
+    this.editingContactId.set(contact.id);
+  }
+
+  cancelContactEdit(): void {
+    this.editingContactId.set(null);
+  }
+
+  saveContact(): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const name = this.editContactForm.name().trim();
+    const role = this.editContactForm.role().trim();
+    if (!name || !role) {
+      this.notificationService.info('Name and Role are required', 'Validation');
+      return;
+    }
+
+    const currentContacts = details.contacts || [];
+    let updatedContacts: CompanyContact[];
+    const editId = this.editingContactId();
+
+    if (editId === 0) {
+      // Add new
+      updatedContacts = [...currentContacts, {
+        id: 0, // Backend will assign ID
+        name,
+        role,
+        email: this.editContactForm.email().trim() || undefined,
+        linkedIn: this.editContactForm.linkedIn().trim() || undefined
+      } as CompanyContact];
+    } else {
+      // Update existing
+      updatedContacts = currentContacts.map(c =>
+        c.id === editId ? {
+          ...c,
+          name,
+          role,
+          email: this.editContactForm.email().trim() || undefined,
+          linkedIn: this.editContactForm.linkedIn().trim() || undefined
+        } : c
+      );
+    }
+
+    this.companyService.updateCompany(details.id, { contacts: updatedContacts }).subscribe({
+      next: () => {
+        // Reload details to get the proper IDs for new contacts
+        this.loadCompanyDetails(details.id);
+        this.editingContactId.set(null);
+        this.notificationService.success(editId === 0 ? 'Member added' : 'Member updated', 'Tactical Success');
+      },
+      error: () => this.notificationService.error('Failed to sync contact registry', 'Error')
+    });
+  }
+
+  async deleteContact(contactId: number): Promise<void> {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const contact = details.contacts?.find(c => c.id === contactId);
+    if (!contact) return;
+
+    const confirmed = await this.notificationService.confirm(
+      `Are you sure you want to remove ${contact.name} from the asset's hierarchy?`,
+      'Remove Personnel?',
+      { confirmText: 'Confirm Removal', isDangerous: true }
+    );
+
+    if (!confirmed) return;
+
+    const updatedContacts = (details.contacts || []).filter(c => c.id !== contactId);
+    this.companyService.updateCompany(details.id, { contacts: updatedContacts }).subscribe({
+      next: () => {
+        this.companyDetails.set({ ...details, contacts: updatedContacts });
+        this.notificationService.success(`${contact.name} removed`, 'Registry Updated');
+      },
+      error: () => this.notificationService.error('Failed to update hierarchy', 'Error')
+    });
+  }
+
+  getPriorityLabel(priority: string): string {
+    switch (priority) {
+      case 'Tier1': return 'Tier 1: Dream Target';
+      case 'Tier2': return 'Tier 2: High Interest';
+      case 'Tier3': return 'Tier 3: Opportunistic';
+      default: return priority;
+    }
   }
 }

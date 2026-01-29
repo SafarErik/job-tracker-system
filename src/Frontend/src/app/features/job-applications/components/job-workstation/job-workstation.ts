@@ -15,6 +15,7 @@ import { ApplicationService } from '../../services/application.service';
 import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
+import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
@@ -134,9 +135,11 @@ export class JobWorkstationComponent implements OnInit {
     private readonly documentService = inject(DocumentService);
     private readonly notificationService = inject(NotificationService);
     private readonly breadcrumbService = inject(BreadcrumbService);
+    private readonly companyService = inject(CompanyService);
 
     // Core state
     application = signal<JobApplication | null>(null);
+    companyContacts = signal<any[]>([]);
     isLoading = signal(true);
     error = signal<string | null>(null);
 
@@ -300,6 +303,10 @@ export class JobWorkstationComponent implements OnInit {
                 this.application.set(app);
                 this.jobDescriptionInput.set(app.jobDescription || '');
                 this.generateMockTimeline(app);
+
+                // Load company hierarchy for contact selection
+                this.loadCompanyContacts(app.companyId);
+
                 this.isLoading.set(false);
             },
             error: (err) => {
@@ -314,6 +321,15 @@ export class JobWorkstationComponent implements OnInit {
         this.documentService.getAllDocuments().subscribe({
             next: (docs: Document[]) => this.documents.set(docs),
             error: (err: unknown) => console.error('Error loading documents:', err),
+        });
+    }
+
+    private loadCompanyContacts(companyId: number): void {
+        this.companyService.getCompanyDetails(companyId).subscribe({
+            next: (details) => {
+                this.companyContacts.set(details.contacts || []);
+            },
+            error: (err: unknown) => console.error('Error loading company contacts:', err)
         });
     }
 
@@ -402,6 +418,20 @@ export class JobWorkstationComponent implements OnInit {
                 this.notificationService.success('Workplace updated', 'Success');
             },
             error: () => this.notificationService.error('Failed to update workplace', 'Error'),
+        });
+    }
+
+    selectPrimaryContact(contactId: number): void {
+        const app = this.application();
+        if (!app) return;
+
+        this.applicationService.updateApplication(app.id, { ...app, primaryContactId: contactId }).subscribe({
+            next: () => {
+                const contact = this.companyContacts().find(c => c.id === contactId);
+                this.application.set({ ...app, primaryContactId: contactId, primaryContact: contact });
+                this.notificationService.success('Primary contact assigned', 'Registry Updated');
+            },
+            error: () => this.notificationService.error('Failed to assign contact', 'Error')
         });
     }
 

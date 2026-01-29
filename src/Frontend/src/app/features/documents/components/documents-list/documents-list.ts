@@ -10,9 +10,13 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import { lucideFileUp } from '@ng-icons/lucide';
+
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports],
+  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports, NgIcon],
+  providers: [provideIcons({ lucideFileUp })],
   templateUrl: './documents-list.html',
 })
 export class DocumentsListComponent implements OnInit {

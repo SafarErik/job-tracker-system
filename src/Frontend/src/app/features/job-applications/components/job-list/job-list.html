@@ -179,19 +179,48 @@
   <!-- Empty State -->
   <!-- Shown when: not loading, no error, and applications array is empty -->
   <div *ngIf="!isLoading && !errorMessage && applications.length === 0"
-    class="bg-card rounded-lg shadow-lg p-12 text-center">
-    <div class="text-6xl mb-4">📝</div>
-    <h2 class="text-2xl font-bold text-foreground mb-2">No Applications Yet</h2>
-    <p class="text-gray-600 mb-6">
-      Start tracking your job search journey by adding your first application.
-    </p>
-    <a routerLink="/new"
-      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 transition">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-      Add Your First Application
-    </a>
+    class="flex flex-col items-center justify-center min-h-[400px] w-full rounded-[2rem] border border-border/40 bg-card/50 backdrop-blur-sm p-12 text-center relative overflow-hidden">
+
+    <!-- Subtle Background Glow -->
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-[80px]">
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+      <!-- ICON: Layered & Floating -->
+      <div class="relative group">
+        <div
+          class="absolute inset-0 bg-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500">
+        </div>
+        <div
+          class="relative h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center text-primary shadow-inner animate-float">
+          <ng-icon name="lucideBriefcase" class="text-4xl"></ng-icon>
+        </div>
+      </div>
+
+      <!-- TEXT: Confident & Clear -->
+      <div class="space-y-2 max-w-sm">
+        <h2 class="text-2xl font-bold tracking-tight text-foreground">Your Career Journey Starts Here</h2>
+        <p class="text-muted-foreground leading-relaxed">Stop using spreadsheets. Start tracking your path to your dream
+          job with precision.</p>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex flex-col sm:flex-row items-center gap-3 mt-2">
+        <a routerLink="/new" hlmBtn
+          class="h-12 px-8 rounded-xl bg-primary text-white shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all gap-2 flex items-center">
+          <ng-icon name="lucidePlus" size="16"></ng-icon>
+          Add Your First Application
+        </a>
+
+        <!-- Secondary Action for better UX -->
+        <button hlmBtn variant="ghost"
+          class="h-12 px-6 rounded-xl text-muted-foreground hover:text-foreground transition-colors">
+          Try with Demo Data
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Empty Search Results -->

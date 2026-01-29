@@ -22,6 +22,9 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import { lucideBriefcase, lucidePlus } from '@ng-icons/lucide';
+
 /**
  * View Mode Enum
  * Defines the available view modes for displaying job applications
@@ -57,7 +60,9 @@ export enum ViewMode {
     ...HlmInputImports,
     ...HlmLabelImports,
     ...HlmButtonImports,
+    NgIcon,
   ],
+  providers: [provideIcons({ lucideBriefcase, lucidePlus })],
   templateUrl: './job-list.html',
 })
 export class JobList implements OnInit {

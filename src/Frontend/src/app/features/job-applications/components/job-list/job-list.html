@@ -15,7 +15,7 @@
       <!-- Left: Title & Subtitle -->
       <div>
         <h1 class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          My Applications<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 mb-1 ml-0.5"></span>
+          My Applications<span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 ml-0.5"></span>
         </h1>
         <p class="text-muted-foreground mt-1">{{ getWelcomeSubtitle() }}</p>
       </div>
@@ -23,41 +23,45 @@
       <!-- Right: View Switcher + Add New -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <!-- View Switcher -->
-        <div class="inline-flex rounded-lg border border-border bg-card p-1">
+        <div class="flex w-full sm:w-auto sm:inline-flex rounded-lg border border-border bg-card p-1">
           <!-- Grid View Button -->
           <button hlmBtn [variant]="isViewActive(ViewMode.Grid) ? 'default' : 'outline'" size="sm"
-            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button" class="gap-2 border-0">
+            (click)="switchView(ViewMode.Grid)" title="Grid View" type="button"
+            class="gap-2 border-0 flex-1 sm:flex-none justify-center">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
-            Grid
+            <span class="hidden xs:inline">Grid</span>
           </button>
 
           <!-- Kanban View Button -->
           <button hlmBtn [variant]="isViewActive(ViewMode.Kanban) ? 'default' : 'outline'" size="sm"
-            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button" class="gap-2 border-0">
+            (click)="switchView(ViewMode.Kanban)" title="Kanban Board View" type="button"
+            class="gap-2 border-0 flex-1 sm:flex-none justify-center">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
             </svg>
-            Kanban
+            <span class="hidden xs:inline">Kanban</span>
           </button>
 
           <!-- Calendar View Button -->
           <button hlmBtn [variant]="isViewActive(ViewMode.Calendar) ? 'default' : 'outline'" size="sm"
-            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button" class="gap-2 border-0">
+            (click)="switchView(ViewMode.Calendar)" title="Calendar View" type="button"
+            class="gap-2 border-0 flex-1 sm:flex-none justify-center">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            Calendar
+            <span class="hidden xs:inline">Calendar</span>
           </button>
         </div>
 
         <!-- Iconic Add New Button -->
-        <a routerLink="/new" hlmBtn size="lg" variant="default" class="gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a routerLink="/new" hlmBtn size="lg" variant="default"
+          class="gap-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all w-full sm:w-auto justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Add New

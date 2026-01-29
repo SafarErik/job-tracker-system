@@ -185,7 +185,7 @@
     <!-- 3. Navigation Tabs (The Dock) -->
     <div class="flex justify-center lg:justify-start">
       <div
-        class="inline-flex items-center p-1.5 bg-card/60 backdrop-blur-xl rounded-[2rem] border border-border/40 shadow-xl overflow-x-auto no-scrollbar max-w-full">
+        class="inline-flex items-center p-1.5 bg-card/60 backdrop-blur-xl rounded-[2rem] border border-border/40 shadow-xl overflow-x-auto custom-scrollbar max-w-full">
         @for (tab of tabs; track tab.id) {
         <button (click)="setActiveTab(tab.id)"
           class="group relative flex items-center gap-2.5 px-6 py-3 rounded-[1.5rem] text-sm font-bold transition-all duration-500 whitespace-nowrap"
@@ -618,7 +618,7 @@
             </div>
             <textarea [ngModel]="strategyNotes()" (ngModelChange)="updateStrategyNotes($event)"
               placeholder="Draft your negotiation notes here..."
-              class="w-full h-48 bg-transparent text-foreground font-mono text-sm leading-loose outline-none no-scrollbar"></textarea>
+              class="w-full h-48 bg-transparent text-foreground font-mono text-sm leading-loose outline-none custom-scrollbar"></textarea>
             <div class="mt-4 pt-4 border-t border-border/40 flex items-center justify-between">
               <p class="text-[10px] text-muted-foreground uppercase tracking-widest">Encrypted Local State</p>
               <button
@@ -661,7 +661,7 @@
           <div class="p-8 flex-1">
             <textarea [ngModel]="coverLetter().content" (ngModelChange)="updateCoverLetterContent($event)"
               placeholder="Generate a cover letter to see it here..."
-              class="w-full h-[350px] bg-background border border-border/40 rounded-2xl p-6 text-sm leading-relaxed outline-none resize-none no-scrollbar"></textarea>
+              class="w-full h-[350px] bg-background border border-border/40 rounded-2xl p-6 text-sm leading-relaxed outline-none resize-none custom-scrollbar"></textarea>
           </div>
         </div>
       </div>

@@ -25,7 +25,7 @@ export interface DashboardMetric {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Horizontal Scroll Container for Responsive Layout -->
-    <div class="w-full overflow-x-auto pb-2 -mx-1 px-1">
+    <div class="w-full overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar">
       <div class="flex gap-4 min-w-max">
         @for (metric of metrics(); track metric.label) {
           @if (metric.label === 'Active') {

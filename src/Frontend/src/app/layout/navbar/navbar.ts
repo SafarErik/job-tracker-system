@@ -9,7 +9,7 @@
  * - User avatar and notification actions
  */
 
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs/operators';
@@ -43,17 +43,38 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
       >
         <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
           
-          <!-- LEFT: Logo -->
-          <div class="w-[120px]">
-            <a
-              routerLink="/"
-              class="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          <!-- LEFT: Logo and Mobile Menu Toggle -->
+          <div class="flex items-center gap-4">
+            <!-- Mobile Menu Button -->
+            <button 
+              (click)="toggleMobileMenu()"
+              class="md:hidden flex items-center justify-center p-2 -ml-2 rounded-xl text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+              aria-label="Open main menu"
             >
-              <app-logo size="md"></app-logo>
-            </a>
+              @if (isMobileMenuOpen()) {
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              } @else {
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              }
+            </button>
+
+            <!-- Logo -->
+            <div class="w-[120px]">
+              <a
+                routerLink="/"
+                (click)="closeMobileMenu()"
+                class="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              >
+                <app-logo size="md"></app-logo>
+              </a>
+            </div>
           </div>
 
-          <!-- CENTER: Navigation Links (Authenticated Only) -->
+          <!-- CENTER: Navigation Links (Authenticated Only) - Desktop -->
           @if (isAuthenticated()) {
             <div class="hidden items-center gap-1 md:flex">
               <a
@@ -113,61 +134,64 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
               }
             </button>
 
-            <div class="h-4 w-px bg-border/60"></div>
+            <!-- Separator (Desktop Only) -->
+            <div class="hidden md:block h-4 w-px bg-border/60"></div>
 
             @if (isAuthenticated()) {
-              <!-- User Menu -->
-              <button
-                hlmBtn
-                variant="ghost"
-                size="sm"
-                class="gap-2 px-2 hover:bg-muted/50 rounded-xl transition-all duration-200"
-                [hlmDropdownMenuTrigger]="userMenu"
-              >
-                @if (currentUser()?.profilePictureUrl) {
-                  <img
-                    [src]="currentUser()?.profilePictureUrl"
-                    [alt]="userFullName()"
-                    class="h-7 w-7 rounded-full object-cover ring-2 ring-primary/10"
-                  />
-                } @else {
-                  <div class="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary uppercase">
-                    {{ userInitials() }}
-                  </div>
-                }
-                <span class="hidden text-sm font-semibold md:inline">{{ userFullName() }}</span>
-                <svg class="h-3.5 w-3.5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+              <!-- User Menu (Desktop Only) -->
+              <div class="hidden md:block">
+                <button
+                  hlmBtn
+                  variant="ghost"
+                  size="sm"
+                  class="gap-2 px-2 hover:bg-muted/50 rounded-xl transition-all duration-200"
+                  [hlmDropdownMenuTrigger]="userMenu"
+                >
+                  @if (currentUser()?.profilePictureUrl) {
+                    <img
+                      [src]="currentUser()?.profilePictureUrl"
+                      [alt]="userFullName()"
+                      class="h-7 w-7 rounded-full object-cover ring-2 ring-primary/10"
+                    />
+                  } @else {
+                    <div class="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary uppercase">
+                      {{ userInitials() }}
+                    </div>
+                  }
+                  <span class="hidden text-sm font-semibold lg:inline">{{ userFullName() }}</span>
+                  <svg class="h-3.5 w-3.5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
 
-              <ng-template #userMenu>
-                <div hlmDropdownMenu class="w-56 mt-2 p-1 rounded-2xl border-border/40 shadow-2xl backdrop-blur-xl">
-                  <div hlmDropdownMenuLabel class="px-3 py-2">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{{ currentUser()?.email }}</span>
-                  </div>
-                  <div hlmDropdownMenuSeparator></div>
-                  <div hlmDropdownMenuGroup>
-                    <a routerLink="/profile" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl">
-                      <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <ng-template #userMenu>
+                  <div hlmDropdownMenu class="w-56 mt-2 p-1 rounded-2xl border-border/40 shadow-2xl backdrop-blur-xl">
+                    <div hlmDropdownMenuLabel class="px-3 py-2">
+                      <span class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{{ currentUser()?.email }}</span>
+                    </div>
+                    <div hlmDropdownMenuSeparator></div>
+                    <div hlmDropdownMenuGroup>
+                      <a routerLink="/profile" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl">
+                        <svg class="h-4 w-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        My Profile
+                      </a>
+                    </div>
+                    <div hlmDropdownMenuSeparator></div>
+                    <button (click)="logout()" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive transition-colors">
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>
-                      My Profile
-                    </a>
+                      Sign Out
+                    </button>
                   </div>
-                  <div hlmDropdownMenuSeparator></div>
-                  <button (click)="logout()" hlmDropdownMenuItem class="flex w-full items-center gap-3 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/5 hover:text-destructive transition-colors">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    Sign Out
-                  </button>
-                </div>
-              </ng-template>
+                </ng-template>
+              </div>
             } @else {
               <a
                 routerLink="/login"
-                class="group flex items-center gap-2 text-sm font-semibold text-foreground hover:text-primary transition-all duration-200"
+                class="hidden md:flex group items-center gap-2 text-sm font-semibold text-foreground hover:text-primary transition-all duration-200"
               >
                 <span>Sign In</span>
                 <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,6 +201,86 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
             }
           </div>
         </div>
+
+        <!-- Mobile Menu (Dropdown/Drawer style) -->
+        @if (isMobileMenuOpen()) {
+          <div class="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-5 fade-in-20">
+            <div class="space-y-1 px-4 py-6 pb-20"> <!-- Added padding bottom for safe area -->
+              
+              @if (isAuthenticated()) {
+                <div class="mb-6 flex items-center gap-3 px-2">
+                  @if (currentUser()?.profilePictureUrl) {
+                    <img [src]="currentUser()?.profilePictureUrl" class="h-10 w-10 rounded-full object-cover ring-2 ring-primary/10" alt="Avatar">
+                  } @else {
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary uppercase">
+                      {{ userInitials() }}
+                    </div>
+                  }
+                  <div class="flex flex-col">
+                    <span class="text-sm font-bold text-foreground">{{ userFullName() }}</span>
+                    <span class="text-xs text-muted-foreground">{{ currentUser()?.email }}</span>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <a
+                    routerLink="/"
+                    (click)="closeMobileMenu()"
+                    routerLinkActive="bg-primary/10 text-primary"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="block rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-muted/50"
+                  >
+                    Applications
+                  </a>
+                  <a
+                    routerLink="/companies"
+                    (click)="closeMobileMenu()"
+                    routerLinkActive="bg-primary/10 text-primary"
+                    class="block rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-muted/50"
+                  >
+                    Companies
+                  </a>
+                  <a
+                    routerLink="/documents"
+                    (click)="closeMobileMenu()"
+                    routerLinkActive="bg-primary/10 text-primary"
+                    class="block rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-muted/50"
+                  >
+                    Documents
+                  </a>
+                  <a
+                    routerLink="/profile"
+                    (click)="closeMobileMenu()"
+                    routerLinkActive="bg-primary/10 text-primary"
+                    class="block rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-muted/50"
+                  >
+                   My Profile
+                  </a>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-border/40">
+                  <button 
+                    (click)="logout()"
+                    class="flex w-full items-center gap-2 rounded-lg px-3 py-3 text-base font-medium text-destructive hover:bg-destructive/10"
+                  >
+                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                    Sign out
+                  </button>
+                </div>
+              } @else {
+                 <a
+                    routerLink="/login"
+                    (click)="closeMobileMenu()"
+                    class="block rounded-lg px-3 py-2.5 text-base font-semibold text-foreground hover:bg-muted/50"
+                  >
+                    Sign In
+                  </a>
+              }
+            </div>
+          </div>
+        }
       </header>
     }
   `,
@@ -205,10 +309,28 @@ export class NavbarComponent {
     { initialValue: false }
   );
 
+  // Mobile menu state
+  readonly isMobileMenuOpen = signal(false);
+
+  /**
+   * Toggle mobile menu state
+   */
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update((v) => !v);
+  }
+
+  /**
+   * Close mobile menu
+   */
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
+  }
+
   /**
    * Logout the current user
    */
   logout(): void {
     this.authService.logout();
+    this.closeMobileMenu();
   }
 }

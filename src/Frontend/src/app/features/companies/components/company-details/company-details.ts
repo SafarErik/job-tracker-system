@@ -104,6 +104,20 @@ export class CompanyDetailsComponent implements OnInit {
     linkedIn: signal('')
   };
 
+  // Priority Options Configuration
+  priorityOptions = [
+    { value: 'Tier1', label: 'Dream Target', icon: 'lucideCrown', color: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+    { value: 'Tier2', label: 'High Interest', icon: 'lucideCircle', color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
+    { value: 'Tier3', label: 'Opportunistic', icon: 'lucideCircle', color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border/20' }
+  ];
+
+  // Industry Options
+  industryOptions = [
+    'SaaS', 'Fintech', 'HealthTech', 'AdTech', 'EdTech',
+    'E-commerce', 'Cybersecurity', 'Gaming', 'Cloud Infrastructure',
+    'AI / ML', 'Blockchain', 'Big Data', 'IoT', 'Robotics'
+  ];
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,

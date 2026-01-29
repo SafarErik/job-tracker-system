@@ -17,21 +17,6 @@ public class CompanyDto
     public string? Address { get; set; }
     
     /// <summary>
-    /// HR contact person's name
-    /// </summary>
-    public string? HRContactName { get; set; }
-    
-    /// <summary>
-    /// HR contact email for communication
-    /// </summary>
-    public string? HRContactEmail { get; set; }
-    
-    /// <summary>
-    /// HR contact's LinkedIn profile URL
-    /// </summary>
-    public string? HRContactLinkedIn { get; set; }
-    
-    /// <summary>
     /// Total number of applications submitted to this company
     /// </summary>
     public int TotalApplications { get; set; }
@@ -65,11 +50,6 @@ public class CompanyDetailDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
-    
-    public string? HRContactEmail { get; set; }
-    
-    public string? HRContactLinkedIn { get; set; }
     
     /// <summary>
     /// Total number of applications to this company
@@ -129,13 +109,6 @@ public class CreateCompanyDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
-    
-    [EmailAddress(ErrorMessage = "Invalid email format")]
-    public string? HRContactEmail { get; set; }
-    
-    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
-    public string? HRContactLinkedIn { get; set; }
 
     public string? Industry { get; set; }
 
@@ -163,13 +136,6 @@ public class UpdateCompanyDto
     
     public string? Address { get; set; }
     
-    public string? HRContactName { get; set; }
-    
-    [EmailAddress(ErrorMessage = "Invalid email format")]
-    public string? HRContactEmail { get; set; }
-    
-    [Url(ErrorMessage = "Invalid LinkedIn URL format")]
-    public string? HRContactLinkedIn { get; set; }
 
     public string? Industry { get; set; }
 

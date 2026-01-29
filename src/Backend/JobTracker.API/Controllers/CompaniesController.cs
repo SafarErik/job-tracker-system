@@ -36,9 +36,6 @@ public class CompaniesController : ControllerBase
             Name = c.Name,
             Website = c.Website,
             Address = c.Address,
-            HRContactName = c.HRContactName,
-            HRContactEmail = c.HRContactEmail,
-            HRContactLinkedIn = c.HRContactLinkedIn,
             Industry = c.Industry,
             TechStack = c.TechStack?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
             TotalApplications = c.JobApplications?.Count ?? 0,
@@ -86,9 +83,6 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
             TotalApplications = company.JobApplications?.Count ?? 0,
             Priority = company.Priority,
             RecentApplications = company.JobApplications?
@@ -139,9 +133,6 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
             TotalApplications = company.JobApplications?.Count ?? 0,
             Priority = company.Priority,
             ApplicationHistory = company.JobApplications?
@@ -182,9 +173,6 @@ public class CompaniesController : ControllerBase
             Name = createDto.Name,
             Website = createDto.Website,
             Address = createDto.Address,
-            HRContactName = createDto.HRContactName,
-            HRContactEmail = createDto.HRContactEmail,
-            HRContactLinkedIn = createDto.HRContactLinkedIn,
             Industry = createDto.Industry,
             TechStack = createDto.TechStack != null ? string.Join(';', createDto.TechStack) : null,
             Priority = createDto.Priority ?? "Tier3"
@@ -198,9 +186,6 @@ public class CompaniesController : ControllerBase
             Name = company.Name,
             Website = company.Website,
             Address = company.Address,
-            HRContactName = company.HRContactName,
-            HRContactEmail = company.HRContactEmail,
-            HRContactLinkedIn = company.HRContactLinkedIn,
             TotalApplications = 0,
             Priority = company.Priority
         };
@@ -236,9 +221,6 @@ public class CompaniesController : ControllerBase
         
         existingCompany.Website = updateDto.Website;
         existingCompany.Address = updateDto.Address;
-        existingCompany.HRContactName = updateDto.HRContactName;
-        existingCompany.HRContactEmail = updateDto.HRContactEmail;
-        existingCompany.HRContactLinkedIn = updateDto.HRContactLinkedIn;
         
         if (!string.IsNullOrEmpty(updateDto.Priority))
         {

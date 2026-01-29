@@ -8,15 +8,25 @@ import { CompanyCardComponent } from '../company-card/company-card';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmLabelImports } from '../../../../../../libs/ui/label';
+import { LucideAngularModule } from 'lucide-angular';
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle } from '@ng-icons/lucide';
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
 @Component({
   selector: 'app-company-list',
+  standalone: true,
   imports: [
     CommonModule,
-    CompanyCardComponent,
+    ...HlmButtonImports,
     ...HlmInputImports,
     ...HlmLabelImports,
-    ...HlmButtonImports
+    CompanyCardComponent,
+    NgIcon,
+    ErrorStateComponent
+  ],
+  providers: [
+    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle })
   ],
   templateUrl: './company-list.html',
 })

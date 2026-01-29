@@ -2,163 +2,159 @@
   (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
   <!-- Drag & Drop Overlay -->
   @if (isDragging()) {
-  <div class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center">
-    <div class="flex flex-col items-center gap-4 text-primary">
-      <svg class="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-      </svg>
-      <p class="text-xl font-medium">Drop your PDF here to upload</p>
-    </div>
-  </div>
-  }
+  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+  </svg>
+  <p class="text-xl font-medium">Drop your PDF here to upload</p>
+</div>
+</div>
+}
 
-  <!-- Header with Upload Button -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-    <div class="flex items-start gap-4">
-      <svg class="h-8 w-8 text-primary flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">CV / Resume Documents</h1>
-        <p class="text-muted-foreground mt-1">
-          Upload and manage your resumes for job applications
-        </p>
-      </div>
-    </div>
-
-    <div>
-      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
-      <button hlmBtn (click)="fileInput.click()" class="gap-2">
-        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Upload New CV
-      </button>
-    </div>
-  </div>
-
-  <!-- Upload Progress -->
-  @if (uploadProgress() !== null) {
-  <div class="mb-6 space-y-2">
-    <div class="h-2 bg-muted rounded-full overflow-hidden">
-      <div class="h-full bg-primary transition-all duration-300" [style.width.%]="uploadProgress()"></div>
-    </div>
-    <span class="text-sm text-muted-foreground">Uploading... {{ uploadProgress() }}%</span>
-  </div>
-  }
-
-  <!-- Search Bar -->
-  <div class="relative max-w-md mb-8">
-    <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none"
-      stroke="currentColor" viewBox="0 0 24 24">
+<!-- Header with Upload Button -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+  <div class="flex items-start gap-4">
+    <svg class="h-8 w-8 text-primary flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
-    <label hlmLabel for="documents-search" class="sr-only">Search documents by filename</label>
-    <input hlmInput id="documents-search" type="text" class="pl-10 w-full" placeholder="Search documents by filename..."
-      [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event); onSearch()" />
-  </div>
-
-  <!-- Loading State -->
-  @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
-    <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-      <path class="opacity-75" fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-      </path>
-    </svg>
-    <p>Loading documents...</p>
-  </div>
-  }
-
-  <!-- Error State -->
-  @if (error()) {
-  <div class="mb-8">
-    <app-error-state title="Documents Unavailable" [message]="error()!" icon="lucideFileWarning"
-      (retry)="loadDocuments()">
-    </app-error-state>
-  </div>
-  }
-
-  <!-- Documents Grid -->
-  @if (!isLoading() && !error()) {
-  @if (filteredDocuments().length === 0) {
-  <!-- Empty State: Neo-Professional Dropzone -->
-  <div class="flex items-center justify-center min-h-[400px]">
-    <div
-      class="group relative flex flex-col items-center justify-center p-12 rounded-[2rem] border-2 border-dashed border-border/60 bg-muted/5 hover:border-primary/40 hover:bg-primary/[0.02] transition-all duration-500 cursor-pointer"
-      (click)="fileInput.click()">
-
-      <!-- ICON -->
-      <div
-        class="mb-6 p-4 rounded-xl bg-muted/50 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all duration-500">
-        <ng-icon name="lucideFileUp" class="text-4xl stroke-[1.5]"></ng-icon>
-      </div>
-
-      <div class="text-center space-y-1 mb-8">
-        <h3 class="text-lg font-bold text-foreground">
-          @if (searchTerm()) {
-          No documents found
-          } @else {
-          Ready Your Arsenal
-          }
-        </h3>
-        <p class="text-sm text-muted-foreground max-w-[240px]">
-          @if (searchTerm()) {
-          No documents found matching "{{ searchTerm() }}"
-          } @else {
-          Upload your Resumes and Cover Letters to unlock AI tailoring.
-          }
-        </p>
-      </div>
-
-      <button hlmBtn variant="secondary"
-        class="rounded-xl px-6 h-10 border border-border/40 shadow-sm pointer-events-none">
-        Select PDF File
-      </button>
-
-      <!-- Hint -->
-      <span class="mt-4 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50">Max size 10MB</span>
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight text-foreground">CV / Resume Documents</h1>
+      <p class="text-muted-foreground mt-1">
+        Upload and manage your resumes for job applications
+      </p>
     </div>
   </div>
-  } @else {
-  <!-- Grid of Document Cards -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-    @for (doc of filteredDocuments(); track doc.id) {
-    <div
-      class="group bg-card border border-border rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer">
-      <!-- Document Visual (3:4 aspect ratio) -->
-      <div class="aspect-[3/4] flex items-center justify-center bg-muted relative">
-        <!-- PDF Icon -->
-        <svg class="w-24 h-24 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      </div>
 
-      <!-- Card Footer -->
-      <div class="p-3 space-y-2">
-        <h3 class="text-sm font-medium text-foreground truncate" [title]="doc.originalFileName">
-          {{ doc.originalFileName }}
-        </h3>
-        <div class="flex items-center justify-between text-xs text-muted-foreground">
-          <span>{{ formatFileSize(doc.fileSize) }}</span>
-          <button class="p-1.5 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
-            (click)="deleteDocument(doc); $event.stopPropagation()" title="Delete"
-            aria-label="Delete {{ doc.originalFileName }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
-        </div>
+  <div>
+    <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
+    <button hlmBtn (click)="fileInput.click()" class="gap-2">
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Upload New CV
+    </button>
+  </div>
+</div>
+
+<!-- Upload Progress -->
+@if (uploadProgress() !== null) {
+<div class="mb-6 space-y-2">
+  <div class="h-2 bg-muted rounded-full overflow-hidden">
+    <div class="h-full bg-primary transition-all duration-300" [style.width.%]="uploadProgress()"></div>
+  </div>
+  <span class="text-sm text-muted-foreground">Uploading... {{ uploadProgress() }}%</span>
+</div>
+}
+
+<!-- Search Bar -->
+<div class="relative max-w-md mb-8">
+  <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor"
+    viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+  <label hlmLabel for="documents-search" class="sr-only">Search documents by filename</label>
+  <input hlmInput id="documents-search" type="text" class="pl-10 w-full" placeholder="Search documents by filename..."
+    [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event); onSearch()" />
+</div>
+
+<!-- Loading State -->
+@if (isLoading()) {
+<div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
+  <svg class="h-8 w-8 animate-spin text-primary mb-4" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+    <path class="opacity-75" fill="currentColor"
+      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+    </path>
+  </svg>
+  <p>Loading documents...</p>
+</div>
+}
+
+<!-- Error State -->
+@if (error()) {
+<div class="mb-8">
+  <app-error-state title="Documents Unavailable" [message]="error()!" icon="lucideFileWarning"
+    (retry)="loadDocuments()">
+  </app-error-state>
+</div>
+}
+
+<!-- Documents Grid -->
+@if (!isLoading() && !error()) {
+@if (filteredDocuments().length === 0) {
+<!-- Empty State: Neo-Professional Dropzone -->
+<div class="flex items-center justify-center min-h-[400px]">
+  <div
+    class="group relative flex flex-col items-center justify-center p-12 rounded-[2rem] border-2 border-dashed border-border/60 bg-muted/5 hover:border-primary/40 hover:bg-primary/[0.02] transition-all duration-500 cursor-pointer"
+    (click)="fileInput.click()">
+
+    <!-- ICON -->
+    <div
+      class="mb-6 p-4 rounded-xl bg-muted/50 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all duration-500">
+      <ng-icon name="lucideFileUp" class="text-4xl stroke-[1.5]"></ng-icon>
+    </div>
+
+    <div class="text-center space-y-1 mb-8">
+      <h3 class="text-lg font-bold text-foreground">
+        @if (searchTerm()) {
+        No documents found
+        } @else {
+        Ready Your Arsenal
+        }
+      </h3>
+      <p class="text-sm text-muted-foreground max-w-[240px]">
+        @if (searchTerm()) {
+        No documents found matching "{{ searchTerm() }}"
+        } @else {
+        Upload your Resumes and Cover Letters to unlock AI tailoring.
+        }
+      </p>
+    </div>
+
+    <button hlmBtn variant="secondary"
+      class="rounded-xl px-6 h-10 border border-border/40 shadow-sm pointer-events-none">
+      Select PDF File
+    </button>
+
+    <!-- Hint -->
+    <span class="mt-4 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50">Max size 10MB</span>
+  </div>
+</div>
+} @else {
+<!-- Grid of Document Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+  @for (doc of filteredDocuments(); track doc.id) {
+  <div
+    class="group bg-card border border-border rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all cursor-pointer">
+    <!-- Document Visual (3:4 aspect ratio) -->
+    <div class="aspect-[3/4] flex items-center justify-center bg-muted relative">
+      <!-- PDF Icon -->
+      <svg class="w-24 h-24 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+      </svg>
+    </div>
+
+    <!-- Card Footer -->
+    <div class="p-3 space-y-2">
+      <h3 class="text-sm font-medium text-foreground truncate" [title]="doc.originalFileName">
+        {{ doc.originalFileName }}
+      </h3>
+      <div class="flex items-center justify-between text-xs text-muted-foreground">
+        <span>{{ formatFileSize(doc.fileSize) }}</span>
+        <button class="p-1.5 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
+          (click)="deleteDocument(doc); $event.stopPropagation()" title="Delete"
+          aria-label="Delete {{ doc.originalFileName }}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
       </div>
     </div>
-    }
   </div>
   }
-  }
+</div>
+}
+}
 </div>

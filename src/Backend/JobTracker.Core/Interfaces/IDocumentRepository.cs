@@ -38,4 +38,9 @@ public interface IDocumentRepository
     /// Checks if a document exists
     /// </summary>
     Task<bool> ExistsAsync(Guid id);
+
+    /// <summary>
+    /// Updates an existing document
+    /// </summary>
+    Task UpdateAsync(Document document);
 }

@@ -1,10 +1,11 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../services/document.service';
 import { Document } from '../../models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+import { DocumentCardComponent } from '../document-card/document-card.component';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -12,12 +13,21 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideFileUp, lucideFileWarning } from '@ng-icons/lucide';
+import { lucideFileUp, lucideFileWarning, lucideLibrary } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, FormsModule, ...HlmInputImports, ...HlmLabelImports, ...HlmButtonImports, NgIcon, ErrorStateComponent],
-  providers: [provideIcons({ lucideFileUp, lucideFileWarning })],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmButtonImports,
+    NgIcon,
+    ErrorStateComponent,
+    DocumentCardComponent
+  ],
+  providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary })],
   templateUrl: './documents-list.html',
 })
 export class DocumentsListComponent implements OnInit {
@@ -31,6 +41,11 @@ export class DocumentsListComponent implements OnInit {
   searchTerm = signal('');
   uploadProgress = signal<number | null>(null);
   isDragging = signal(false);
+
+  // Storage logic
+  totalStorage = 10 * 1024 * 1024; // 10MB
+  usedStorage = computed(() => this.documents().reduce((acc, doc) => acc + doc.fileSize, 0));
+  storagePercentage = computed(() => (this.usedStorage() / this.totalStorage) * 100);
 
   ngOnInit(): void {
     this.loadDocuments();
@@ -196,6 +211,33 @@ export class DocumentsListComponent implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  setMasterDocument(doc: Document): void {
+    if (doc.isMaster) return;
+
+    this.documentService.setMasterDocument(doc.id).subscribe({
+      next: () => {
+        this.loadDocuments();
+        this.notificationService.success(
+          `${doc.originalFileName} is now your Master Resume.`,
+          'Strategic Update',
+        );
+      },
+      error: (err) => {
+        this.notificationService.error(
+          'Failed to set master document.',
+          'Update Failed'
+        );
+        console.error(err);
+      }
+    });
+  }
+
+  previewDocument(doc: Document): void {
+    // For now just download/open in new tab since we don't have a dedicated previewer yet
+    // Or we can implement a modal later.
+    this.documentService.downloadDocument(doc.id, doc.originalFileName);
   }
 
   formatFileSize(bytes: number): string {

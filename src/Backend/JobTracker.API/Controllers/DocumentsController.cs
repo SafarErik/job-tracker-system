@@ -52,14 +52,7 @@ public class DocumentsController : ControllerBase
         // Only get documents belonging to the current user
         var documents = await _documentRepository.GetAllByUserIdAsync(userId);
         
-        var documentDtos = documents.Select(d => new DocumentDto
-        {
-            Id = d.Id,
-            OriginalFileName = d.OriginalFileName,
-            FileSize = d.FileSize,
-            ContentType = d.ContentType,
-            UploadedAt = d.UploadedAt
-        });
+        var documentDtos = documents.Select(MapToDto);
 
         return Ok(documentDtos);
     }
@@ -88,14 +81,7 @@ public class DocumentsController : ControllerBase
             return Forbid();
         }
 
-        var documentDto = new DocumentDto
-        {
-            Id = document.Id,
-            OriginalFileName = document.OriginalFileName,
-            FileSize = document.FileSize,
-            ContentType = document.ContentType,
-            UploadedAt = document.UploadedAt
-        };
+        var documentDto = MapToDto(document);
 
         return Ok(documentDto);
     }
@@ -236,14 +222,7 @@ public class DocumentsController : ControllerBase
             _logger.LogInformation("Document uploaded successfully: {DocumentId} by user {UserId}", 
                 document.Id, userId);
 
-            var documentDto = new DocumentDto
-            {
-                Id = document.Id,
-                OriginalFileName = document.OriginalFileName,
-                FileSize = document.FileSize,
-                ContentType = document.ContentType,
-                UploadedAt = document.UploadedAt
-            };
+            var documentDto = MapToDto(document);
 
             return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, documentDto);
         }
@@ -255,6 +234,31 @@ public class DocumentsController : ControllerBase
     }
 
     // DELETE: api/Documents/{id}
+    [HttpPost("{id}/master")]
+    public async Task<ActionResult<DocumentDto>> SetMasterDocument(Guid id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var document = await _documentRepository.GetByIdAsync(id);
+        if (document == null) return NotFound();
+        if (document.UserId != userId) return Forbid();
+
+        var documents = await _documentRepository.GetAllByUserIdAsync(userId);
+        var currentMaster = documents.FirstOrDefault(d => d.Type == document.Type && d.IsMaster);
+        
+        if (currentMaster != null && currentMaster.Id != document.Id)
+        {
+            currentMaster.IsMaster = false;
+            await _documentRepository.UpdateAsync(currentMaster);
+        }
+
+        document.IsMaster = !document.IsMaster; // Toggle
+        await _documentRepository.UpdateAsync(document);
+
+        return Ok(MapToDto(document));
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDocument(Guid id)
     {
@@ -300,5 +304,19 @@ public class DocumentsController : ControllerBase
             _logger.LogError(ex, "Error deleting document {DocumentId}", id);
             return StatusCode(500, "An error occurred while deleting the document");
         }
+    }
+
+    private static DocumentDto MapToDto(Document document)
+    {
+        return new DocumentDto
+        {
+            Id = document.Id,
+            OriginalFileName = document.OriginalFileName,
+            FileSize = document.FileSize,
+            ContentType = document.ContentType,
+            UploadedAt = document.UploadedAt,
+            Type = document.Type,
+            IsMaster = document.IsMaster
+        };
     }
 }

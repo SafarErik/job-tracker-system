@@ -75,6 +75,10 @@ export class DocumentService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
+  setMasterDocument(id: string): Observable<Document> {
+    return this.http.post<Document>(`${this.apiUrl}/${id}/master`, {});
+  }
+
   // Format file size for display
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';

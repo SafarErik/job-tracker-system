@@ -40,6 +40,11 @@ public class DocumentDto
     /// Number of job applications using this document
     /// </summary>
     public int ApplicationCount { get; set; }
+
+    /// <summary>
+    /// Indicates if this is the Master document
+    /// </summary>
+    public bool IsMaster { get; set; }
 }
 
 /// <summary>

@@ -21,6 +21,19 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 
+import { provideIcons, NgIcon } from '@ng-icons/core';
+import {
+  lucideUserX,
+  lucideLoader2,
+  lucidePencil,
+  lucideSave,
+  lucideTrash2,
+  lucidePlus,
+  lucideSearch,
+  lucideX
+} from '@ng-icons/lucide';
+import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+
 @Component({
   selector: 'app-profile',
   imports: [
@@ -31,6 +44,20 @@ import { HlmBadgeImports } from '@spartan-ng/helm/badge';
     ...HlmLabelImports,
     ...HlmCardImports,
     ...HlmBadgeImports,
+    NgIcon,
+    ErrorStateComponent
+  ],
+  providers: [
+    provideIcons({
+      lucideUserX,
+      lucideLoader2,
+      lucidePencil,
+      lucideSave,
+      lucideTrash2,
+      lucidePlus,
+      lucideSearch,
+      lucideX
+    })
   ],
   templateUrl: './profile.html',
 })

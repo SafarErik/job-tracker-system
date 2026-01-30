@@ -60,8 +60,8 @@
   --ring: 240 100% 74%;
   --success: 161 64% 39%;
   --warning: 38 92% 50%;
-  --destructive: 345 100% 60%;
-  --destructive-foreground: 0 0% 100%;
+  --destructive: hsl(345 100% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
 }
 
 .dark {
@@ -87,8 +87,8 @@
   --ring: 240 100% 74%;
   --success: 161 64% 52%;
   --warning: 38 92% 56%;
-  --destructive: 345 100% 60%;
-  --destructive-foreground: 0 0% 100%;
+  --destructive: hsl(345 100% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
 }
 
 /* 
@@ -103,4 +103,10 @@ body {
 /* Spartan UI components often need these defined */
 * {
   @apply border-border outline-ring/50;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
 }

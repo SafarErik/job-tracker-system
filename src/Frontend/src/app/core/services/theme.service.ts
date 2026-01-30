@@ -69,6 +69,19 @@ export class ThemeService {
     localStorage.setItem('theme', theme);
   }
 
+  toggle() {
+    // Check if the browser supports View Transitions
+    if (!(this._document as any).startViewTransition) {
+      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+      return;
+    }
+
+    // Cinematic fade transition
+    (this._document as any).startViewTransition(() => {
+      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+    });
+  }
+
   setTheme(theme: Theme) {
     this.themeSetting.set(theme);
   }

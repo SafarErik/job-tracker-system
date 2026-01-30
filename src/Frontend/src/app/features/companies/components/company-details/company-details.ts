@@ -447,7 +447,7 @@ export class CompanyDetailsComponent implements OnInit {
     const newStack = [...currentStack, tech];
     this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, techStack: newStack });
+        this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
         this.newTech.set('');
         this.editingTech.set(false);
         this.notificationService.success('Skill added to stack', 'Updated');
@@ -542,7 +542,7 @@ export class CompanyDetailsComponent implements OnInit {
     const updatedContacts = (details.contacts || []).filter(c => c.id !== contactId);
     this.companyService.updateCompany(details.id, { contacts: updatedContacts }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, contacts: updatedContacts });
+        this.companyDetails.update(prev => prev ? { ...prev, contacts: updatedContacts } : null);
         this.notificationService.success(`${contact.name} removed`, 'Registry Updated');
       },
       error: () => this.notificationService.error('Failed to update hierarchy', 'Error')

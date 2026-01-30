@@ -101,10 +101,6 @@
   }
 }
 
-/* 5. Performance Optimized Transitions */
-
-/* 5. Simplified Transitions (No VTA) */
-
 /* Basic, fast transition for background colors only */
 body {
   @apply bg-background text-foreground antialiased font-sans custom-scrollbar;

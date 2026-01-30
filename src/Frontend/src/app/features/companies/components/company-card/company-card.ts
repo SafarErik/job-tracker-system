@@ -121,8 +121,8 @@ export class CompanyCardComponent {
    * Based on the furthest application status
    */
   getPipelineProgress(): number {
-    const anyCompany = this.company() as any;
-    const apps = anyCompany.recentApplications || anyCompany.RecentApplications;
+    const company = this.company();
+    const apps = company.recentApplications;
 
     if (!apps || apps.length === 0) return 0;
 
@@ -141,11 +141,9 @@ export class CompanyCardComponent {
     };
 
     let maxWeight = 0;
-    console.log(`[Pipeline] Company: ${anyCompany.name}, Apps:`, apps);
 
     for (const app of apps) {
       const status = app.status?.trim() || '';
-      console.log(`[Pipeline] App status: "${status}"`);
       const weight = statusWeights[status] || 1;
 
       // If rejected/ghosted, it doesn't count towards positive progress in the pipeline

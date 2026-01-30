@@ -10,8 +10,8 @@
   <!-- Error State -->
   @if (error()) {
   <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
-    <div class="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center">
-      <ng-icon name="lucideActivity" class="text-4xl text-rose-500"></ng-icon>
+    <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
+      <ng-icon name="lucideActivity" class="text-4xl text-destructive"></ng-icon>
     </div>
     <div class="space-y-2">
       <h2 class="text-2xl font-black tracking-tight">System Error</h2>
@@ -112,9 +112,9 @@
           <div class="flex items-center gap-2 mb-2">
             <span class="text-[0.7rem] uppercase tracking-[0.3em] font-black text-muted-foreground/60">Match
               Accuracy</span>
-            <ng-icon name="lucideZap" size="16" class="text-emerald-500 animate-pulse"></ng-icon>
+            <ng-icon name="lucideZap" size="16" class="text-success animate-pulse"></ng-icon>
           </div>
-          <div class="text-5xl md:text-7xl font-black text-emerald-500 tabular-nums tracking-tighter drop-shadow-sm">
+          <div class="text-5xl md:text-7xl font-black text-success tabular-nums tracking-tighter drop-shadow-sm">
             {{ application()?.matchScore }}%
           </div>
         </div>
@@ -249,17 +249,17 @@
           <div
             class="bg-card rounded-3xl border border-border/40 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             <!-- Reasoning -->
-            <div class="bg-indigo-500/5 border-b border-indigo-500/10 p-4 flex items-center gap-3">
-              <ng-icon name="lucideLightbulb" class="text-indigo-500" size="18"></ng-icon>
-              <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+            <div class="bg-info/5 border-b border-info/10 p-4 flex items-center gap-3">
+              <ng-icon name="lucideLightbulb" class="text-info" size="18"></ng-icon>
+              <span class="text-sm font-medium text-info/80">
                 <strong>AI Insight:</strong> {{ enhancement.reasoning }}
               </span>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2">
               <!-- Original -->
-              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-rose-500/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-rose-600 mb-4 block">Original
+              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-destructive/5">
+                <span class="text-[10px] font-black uppercase tracking-widest text-destructive mb-4 block">Original
                   Asset</span>
                 <p
                   class="text-muted-foreground line-through decoration-rose-500/50 decoration-2 font-mono text-sm leading-relaxed">
@@ -268,14 +268,13 @@
               </div>
 
               <!-- Rebranded -->
-              <div class="p-8 bg-emerald-500/5 relative group">
+              <div class="p-8 bg-success/5 relative group">
                 <div class="flex items-center justify-between mb-4">
-                  <span
-                    class="text-[10px] font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-success flex items-center gap-2">
                     <ng-icon name="lucideSparkles" size="14"></ng-icon> Optimized Version
                   </span>
                   <button (click)="copyToClipboard(enhancement.rebrandedBullet)"
-                    class="text-xs font-bold text-emerald-600 hover:underline">Copy</button>
+                    class="text-xs font-bold text-success hover:underline">Copy</button>
                 </div>
                 <p class="text-foreground font-medium text-lg leading-relaxed">{{ enhancement.rebrandedBullet }}</p>
               </div>
@@ -298,8 +297,8 @@
                 <p>Your previous experience with Angular Signals aligns perfectly with their requirement for 'Reactive
                   State Management'.</p>
               </div>
-              <div class="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10">
-                <h4 class="font-bold text-amber-600 mb-2 uppercase tracking-widest text-xs">Primary Risk</h4>
+              <div class="p-6 rounded-3xl bg-warning/5 border border-warning/10">
+                <h4 class="font-bold text-warning mb-2 uppercase tracking-widest text-xs">Primary Risk</h4>
                 <p>The job description mentions 'Legacy Migration'. Be prepared to discuss refactoring and modernizing
                   legacy codebases.</p>
               </div>
@@ -428,10 +427,10 @@
                     application()!.matchScore }}% compatibility</strong> with this position's requirements.</p>
                 <div class="flex flex-wrap gap-2 pt-2">
                   <div
-                    class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase text-emerald-600">
+                    class="px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-[10px] font-black uppercase text-success">
                     Resume Optimized</div>
                   <div
-                    class="px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black uppercase text-indigo-600">
+                    class="px-3 py-1.5 rounded-full bg-info/10 border border-info/20 text-[10px] font-black uppercase text-info">
                     Company Researched</div>
                 </div>
               </div>
@@ -496,7 +495,7 @@
           <div class="lg:col-span-4 bg-card rounded-3xl border border-border/40 p-6 flex flex-col justify-between">
             <h3
               class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> The Package
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span> The Package
             </h3>
             <div class="space-y-4">
               <div class="space-y-1.5">
@@ -530,7 +529,7 @@
           <div class="lg:col-span-8 bg-card rounded-3xl border border-border/40 p-6">
             <h3
               class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Interviewer Intelligence
+              <span class="w-1.5 h-1.5 rounded-full bg-info"></span> Interviewer Intelligence
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               @if (application()?.primaryContact; as contact) {
@@ -613,9 +612,9 @@
           </div>
 
           <!-- Scratchpad -->
-          <div class="lg:col-span-12 bg-muted/30 dark:bg-zinc-950 rounded-3xl border border-border/40 p-8 relative">
+          <div class="lg:col-span-12 bg-muted/30 rounded-3xl border border-border/40 p-8 relative">
             <div class="absolute top-4 right-8 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              <span class="w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
               <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Tactical
                 Scratchpad</span>
             </div>

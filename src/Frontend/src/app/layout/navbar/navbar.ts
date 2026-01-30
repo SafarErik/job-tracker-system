@@ -122,7 +122,7 @@ import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
               class="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
               aria-label="Toggle theme"
             >
-              @if (themeService.isdark()) {
+              @if (themeService.isDark()) {
                 <svg class="h-5 w-5 text-amber-400 fill-amber-400/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="5" />
                   <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />

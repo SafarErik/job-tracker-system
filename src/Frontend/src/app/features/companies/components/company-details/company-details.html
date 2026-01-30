@@ -10,8 +10,8 @@
   <!-- Error State -->
   @if (error()) {
   <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
-    <div class="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center">
-      <ng-icon name="lucideBuilding2" class="text-4xl text-rose-500"></ng-icon>
+    <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
+      <ng-icon name="lucideBuilding2" class="text-4xl text-destructive"></ng-icon>
     </div>
     <div class="space-y-2">
       <h2 class="text-2xl font-black tracking-tight">Access Denied</h2>
@@ -157,7 +157,7 @@
       <!-- Actions -->
       <div class="flex items-center justify-end gap-3">
         <button hlmBtn
-          class="rounded-2xl h-12 w-12 p-0 bg-rose-600 text-white shadow-lg shadow-rose-500/30 hover:bg-rose-700 hover:scale-110 active:scale-95 transition-all flex items-center justify-center border-none"
+          class="rounded-2xl h-12 w-12 p-0 bg-destructive text-destructive-foreground shadow-lg shadow-destructive/30 hover:bg-destructive/90 hover:scale-110 active:scale-95 transition-all flex items-center justify-center border-none"
           (click)="deleteCompany()">
           <ng-icon name="lucideTrash2" size="20"></ng-icon>
         </button>
@@ -247,7 +247,7 @@
           <div class="confidential-stamp">CONFIDENTIAL</div>
 
           <div class="flex items-center gap-3 mb-8">
-            <div class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse"></div>
             <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Scratchpad</h3>
           </div>
 

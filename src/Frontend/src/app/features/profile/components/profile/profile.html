@@ -165,8 +165,8 @@
     </div>
 
     <!-- Standard Metrics -->
-    <div hlmCard class="p-5 flex flex-col justify-between hover:border-primary/30 transition-colors">
-      <div class="p-2 mb-2 w-fit rounded-lg bg-blue-500/10 text-blue-500"><ng-icon name="lucideBriefcase"
+    <div hlmCard class="p-5 flex flex-col justify-between hover:border-info/30 transition-colors">
+      <div class="p-2 mb-2 w-fit rounded-lg bg-info/10 text-info"><ng-icon name="lucideBriefcase"
           class="h-5 w-5"></ng-icon></div>
       <div>
         <div class="text-2xl font-bold">{{ stats()?.totalApplications || 0 }}</div>
@@ -174,8 +174,8 @@
       </div>
     </div>
 
-    <div hlmCard class="p-5 flex flex-col justify-between hover:border-emerald-500/30 transition-colors">
-      <div class="p-2 mb-2 w-fit rounded-lg bg-emerald-500/10 text-emerald-500"><ng-icon name="lucideCheck"
+    <div hlmCard class="p-5 flex flex-col justify-between hover:border-success/30 transition-colors">
+      <div class="p-2 mb-2 w-fit rounded-lg bg-success/10 text-success"><ng-icon name="lucideCheck"
           class="h-5 w-5"></ng-icon></div>
       <div>
         <div class="text-2xl font-bold">{{ stats()?.interviewsScheduled || 0 }}</div>
@@ -183,8 +183,8 @@
       </div>
     </div>
 
-    <div hlmCard class="p-5 flex flex-col justify-between hover:border-amber-500/30 transition-colors">
-      <div class="p-2 mb-2 w-fit rounded-lg bg-amber-500/10 text-amber-500"><ng-icon name="lucideSparkles"
+    <div hlmCard class="p-5 flex flex-col justify-between hover:border-warning/30 transition-colors">
+      <div class="p-2 mb-2 w-fit rounded-lg bg-warning/10 text-warning"><ng-icon name="lucideSparkles"
           class="h-5 w-5"></ng-icon></div>
       <div>
         <div class="text-2xl font-bold">{{ stats()?.offersReceived || 0 }}</div>
@@ -192,8 +192,8 @@
       </div>
     </div>
 
-    <div hlmCard class="p-5 flex flex-col justify-between hover:border-violet-500/30 transition-colors">
-      <div class="p-2 mb-2 w-fit rounded-lg bg-violet-500/10 text-violet-500"><ng-icon name="lucideGraduationCap"
+    <div hlmCard class="p-5 flex flex-col justify-between hover:border-primary/30 transition-colors">
+      <div class="p-2 mb-2 w-fit rounded-lg bg-primary/10 text-primary"><ng-icon name="lucideGraduationCap"
           class="h-5 w-5"></ng-icon></div>
       <div>
         <div class="text-2xl font-bold">{{ userSkills().length }}</div>
@@ -247,29 +247,29 @@
         </div>
       </div>
 
-      <!-- Career Insights (New Block) -->
-      <div class="rounded-2xl bg-slate-950 border border-slate-800 p-6 relative overflow-hidden">
+      <!-- Career Insights -->
+      <div class="rounded-2xl bg-muted/30 border border-border p-6 relative overflow-hidden">
         <div class="absolute top-0 right-0 p-32 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10">
-          <div class="flex items-center gap-2 mb-3 text-slate-100">
+          <div class="flex items-center gap-2 mb-3 text-foreground">
             <ng-icon name="lucideSparkles" class="h-4 w-4 text-primary"></ng-icon>
             <h3 class="text-sm font-semibold uppercase tracking-wider">AI Career Insights</h3>
           </div>
 
-          <p class="text-slate-400 text-sm mb-4 leading-relaxed">
+          <p class="text-muted-foreground text-sm mb-4 leading-relaxed">
             Based on your skill profile ({{ userSkills().length }} skills), you are a strong match for <span
-              class="text-slate-100 font-medium">Senior Engineering</span> roles.
+              class="text-foreground font-medium">Senior Engineering</span> roles.
             Adding <span class="text-primary font-medium">Cloud Architecture</span> skills could increase your match
             potential to the 90th percentile.
           </p>
 
           <div class="flex gap-2">
             <span
-              class="px-2 py-1 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">BACKEND
+              class="px-2 py-1 rounded text-[10px] font-bold bg-muted/50 text-muted-foreground border border-border/60">BACKEND
               HEAVY</span>
             <span
-              class="px-2 py-1 rounded text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">MID-SENIOR
+              class="px-2 py-1 rounded text-[10px] font-bold bg-muted/50 text-muted-foreground border border-border/60">MID-SENIOR
               LEVEL</span>
           </div>
         </div>

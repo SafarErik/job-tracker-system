@@ -105,8 +105,8 @@ export class CompanyDetailsComponent implements OnInit {
 
   // Priority Options Configuration
   priorityOptions = [
-    { value: 'Tier1', label: 'Dream Target', icon: 'lucideCrown', color: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-    { value: 'Tier2', label: 'High Interest', icon: 'lucideCircle', color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
+    { value: 'Tier1', label: 'Dream Target', icon: 'lucideCrown', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
+    { value: 'Tier2', label: 'High Interest', icon: 'lucideCircle', color: 'text-info', bg: 'bg-info/10', border: 'border-info/20' },
     { value: 'Tier3', label: 'Opportunistic', icon: 'lucideCircle', color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border/20' }
   ];
 
@@ -313,15 +313,15 @@ export class CompanyDetailsComponent implements OnInit {
    */
   getStatusDotClass(status: string): string {
     const s = status.toLowerCase();
-    if (s.includes('applied')) return 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.3)]';
-    if (s.includes('phone')) return 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.3)]';
-    if (s.includes('technical')) return 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.3)]';
-    if (s.includes('interview')) return 'bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.3)]';
-    if (s.includes('offer')) return 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]';
-    if (s.includes('accepted')) return 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.3)]';
-    if (s.includes('rejected')) return 'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.3)]';
-    if (s.includes('ghosted')) return 'bg-slate-400 shadow-[0_0_8px_rgba(148,163,184,0.3)]';
-    return 'bg-zinc-400';
+    if (s.includes('applied')) return 'bg-info shadow-[0_0_8px_rgba(var(--info),0.3)]';
+    if (s.includes('phone')) return 'bg-info shadow-[0_0_8px_rgba(var(--info),0.3)]';
+    if (s.includes('technical')) return 'bg-warning shadow-[0_0_8px_rgba(var(--warning),0.3)]';
+    if (s.includes('interview')) return 'bg-primary shadow-[0_0_8px_rgba(var(--primary),0.3)]';
+    if (s.includes('offer')) return 'bg-warning shadow-[0_0_8px_rgba(var(--warning),0.3)]';
+    if (s.includes('accepted')) return 'bg-success shadow-[0_0_8px_rgba(var(--success),0.3)]';
+    if (s.includes('rejected')) return 'bg-destructive shadow-[0_0_8px_rgba(var(--destructive),0.3)]';
+    if (s.includes('ghosted')) return 'bg-muted shadow-[0_0_8px_rgba(var(--muted),0.3)]';
+    return 'bg-secondary';
   }
 
   /**
@@ -331,16 +331,16 @@ export class CompanyDetailsComponent implements OnInit {
     const base = 'px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent transition-all';
     const s = status.toLowerCase();
 
-    if (s.includes('applied')) return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
-    if (s.includes('phone')) return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
-    if (s.includes('technical')) return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
-    if (s.includes('interview')) return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
-    if (s.includes('offer')) return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
-    if (s.includes('accepted')) return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
-    if (s.includes('rejected')) return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
-    if (s.includes('ghosted')) return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+    if (s.includes('applied')) return `${base} bg-info/10 text-info border-info/20`;
+    if (s.includes('phone')) return `${base} bg-info/15 text-info border-info/30`;
+    if (s.includes('technical')) return `${base} bg-warning/10 text-warning border-warning/20`;
+    if (s.includes('interview')) return `${base} bg-primary/10 text-primary border-primary/20`;
+    if (s.includes('offer')) return `${base} bg-warning/15 text-warning border-warning/30`;
+    if (s.includes('accepted')) return `${base} bg-success/10 text-success border-success/20`;
+    if (s.includes('rejected')) return `${base} bg-destructive/10 text-destructive border-destructive/20`;
+    if (s.includes('ghosted')) return `${base} bg-muted text-muted-foreground border-border`;
 
-    return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400`;
+    return `${base} bg-secondary text-secondary-foreground border-border`;
   }
 
   formatDate(date: string | Date): string {

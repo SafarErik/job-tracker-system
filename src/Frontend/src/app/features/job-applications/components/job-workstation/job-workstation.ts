@@ -244,16 +244,16 @@ export class JobWorkstationComponent implements OnInit {
     // Computed values
     matchScoreColor = computed(() => {
         const score = this.application()?.matchScore ?? 0;
-        if (score >= 80) return 'text-emerald-500';
-        if (score >= 50) return 'text-amber-500';
-        return 'text-rose-500';
+        if (score >= 80) return 'text-success';
+        if (score >= 50) return 'text-warning';
+        return 'text-destructive';
     });
 
     matchScoreBg = computed(() => {
         const score = this.application()?.matchScore ?? 0;
-        if (score >= 80) return 'bg-green-500/20';
-        if (score >= 50) return 'bg-yellow-500/20';
-        return 'bg-slate-500/20';
+        if (score >= 80) return 'bg-success/20';
+        if (score >= 50) return 'bg-warning/20';
+        return 'bg-muted/30';
     });
 
     // Helper computed for active tab display (no arrow functions in templates)
@@ -447,23 +447,23 @@ export class JobWorkstationComponent implements OnInit {
 
         switch (status as JobApplicationStatus) {
             case JobApplicationStatus.Applied:
-                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+                return `${base} bg-info/10 text-info border-info/20`;
             case JobApplicationStatus.PhoneScreen:
-                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20`;
+                return `${base} bg-info/15 text-info border-info/30`;
             case JobApplicationStatus.TechnicalTask:
-                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20`;
+                return `${base} bg-warning/10 text-warning border-warning/20`;
             case JobApplicationStatus.Interviewing:
-                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20`;
+                return `${base} bg-primary/10 text-primary border-primary/20`;
             case JobApplicationStatus.Offer:
-                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30`;
+                return `${base} bg-success/15 text-success border-success/30`;
             case JobApplicationStatus.Accepted:
-                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`;
+                return `${base} bg-success/10 text-success border-success/20`;
             case JobApplicationStatus.Rejected:
-                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
             case JobApplicationStatus.Ghosted:
-                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
+                return `${base} bg-muted text-muted-foreground border-border`;
             default:
-                return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700`;
+                return `${base} bg-secondary text-secondary-foreground border-border`;
         }
     }
 
@@ -505,13 +505,13 @@ export class JobWorkstationComponent implements OnInit {
 
         switch (priority as JobPriority) {
             case JobPriority.High:
-                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
             case JobPriority.Medium:
-                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+                return `${base} bg-warning/10 text-warning border-warning/20`;
             case JobPriority.Low:
-                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+                return `${base} bg-info/10 text-info border-info/20`;
             default:
-                return `${base} bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700`;
+                return `${base} bg-secondary text-secondary-foreground border-border`;
         }
     }
 

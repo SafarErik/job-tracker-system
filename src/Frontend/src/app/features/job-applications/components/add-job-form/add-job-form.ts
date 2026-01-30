@@ -66,6 +66,8 @@ export class AddJobFormComponent {
     isJobTypeDropdownOpen = signal(false);
     isWorkplaceTypeDropdownOpen = signal(false);
 
+    isPriorityDropdownOpen = signal(false);
+
     // Options
     statusOptions = [
         { value: JobApplicationStatus.Applied, label: 'Applied' },
@@ -98,8 +100,6 @@ export class AddJobFormComponent {
         { value: JobPriority.High, label: 'High' },
     ];
 
-    isPriorityDropdownOpen = signal(false);
-
     constructor(
         private fb: FormBuilder,
         private applicationService: ApplicationService,
@@ -118,7 +118,6 @@ export class AddJobFormComponent {
             priority: [JobPriority.Medium, [Validators.required]],
             matchScore: [0, [Validators.min(0), Validators.max(100)]],
             location: ['', []],
-            // Removed salaryMin/Max as requested
         });
 
         this.loadAutocompleteData();

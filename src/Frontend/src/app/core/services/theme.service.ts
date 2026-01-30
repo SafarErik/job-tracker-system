@@ -1,69 +1,75 @@
-import { Injectable, signal, inject, PLATFORM_ID, RendererFactory2, effect } from '@angular/core';
-import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { Injectable, inject, signal, effect, PLATFORM_ID, computed } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'system';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private platformId = inject(PLATFORM_ID);
-  private document = inject(DOCUMENT);
-  private renderer = inject(RendererFactory2).createRenderer(null, null);
+  private readonly _document = inject(DOCUMENT);
+  private readonly _platformId = inject(PLATFORM_ID);
 
-  // The single source of truth for the theme
-  readonly theme = signal<Theme>('light');
-  // Computed helper for existing consumers (optional, but good for backward compat if needed)
-  readonly darkMode = signal<boolean>(false);
+  // The raw setting stored (light, dark, or system)
+  readonly themeSetting = signal<Theme>(this.getInitialTheme());
+
+  // A helper signal to know if we are effectively "dark" right now
+  readonly isDark = computed(() => {
+    const setting = this.themeSetting();
+    if (setting === 'system') {
+      return isPlatformBrowser(this._platformId)
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+        : false;
+    }
+    return setting === 'dark';
+  });
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.initializeTheme();
+    // Whenever the setting changes, update the DOM and LocalStorage
+    effect(() => {
+      this.syncTheme(this.themeSetting());
+    });
 
-      // Sync the boolean helper whenever theme changes
-      effect(() => {
-        this.darkMode.set(this.theme() === 'dark');
-      }, { allowSignalWrites: true });
+    // Listen for OS-level changes if set to 'system'
+    if (isPlatformBrowser(this._platformId)) {
+      window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', () => {
+          if (this.themeSetting() === 'system') {
+            this.syncTheme('system');
+          }
+        });
     }
   }
 
-  private initializeTheme() {
-    // 1. Check local storage
-    const stored = localStorage.getItem('theme') as Theme;
-    // 2. Check system preference
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    // Determine initial theme
-    const initialTheme = stored || (systemDark ? 'dark' : 'light');
-
-    // Set signal
-    this.theme.set(initialTheme);
-
-    // Ensure DOM is synced (though index.html script should have handled this)
-    this.applyThemeToDom(initialTheme);
+  private getInitialTheme(): Theme {
+    if (isPlatformBrowser(this._platformId)) {
+      return (localStorage.getItem('theme') as Theme) ?? 'system';
+    }
+    return 'system';
   }
 
-  toggle() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.updateThemeState();
-  }
+  /**
+   * The "Sync" core logic. 
+   * Updates the HTML class and the color-scheme meta tag.
+   */
+  private syncTheme(theme: Theme) {
+    if (!isPlatformBrowser(this._platformId)) return;
 
-  private updateThemeState() {
-    this.theme.update(current => {
-      const newTheme = current === 'light' ? 'dark' : 'light';
-      this.applyThemeToDom(newTheme);
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
-    });
-  }
+    const html = this._document.documentElement;
+    const effectiveIsDark =
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  // You can keep this for the initial load in constructor
-  private applyThemeToDom(theme: Theme) {
-    const html = this.document.documentElement;
-    if (theme === 'dark') {
+    if (effectiveIsDark) {
       html.classList.add('dark');
+      html.style.colorScheme = 'dark';
     } else {
       html.classList.remove('dark');
+      html.style.colorScheme = 'light';
     }
+
+    localStorage.setItem('theme', theme);
+  }
+
+  setTheme(theme: Theme) {
+    this.themeSetting.set(theme);
   }
 }

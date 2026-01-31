@@ -218,7 +218,7 @@
         <div class="bg-muted/30 rounded-[2rem] border border-border/40 p-6 md:p-8 relative group/stack">
           <app-skill-selector title="Environment Stack" placeholder="Add technology..."
             [selectedSkills]="details.techStack || []" (skillAdded)="addTechItem($event)"
-            (skillRemoved)="updateTechStack($event)">
+            (skillRemoved)="removeTechItem($event)">
           </app-skill-selector>
         </div>
       </div>

@@ -440,6 +440,24 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
+  removeTechItem(skill: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const currentStack = details.techStack || [];
+    const newStack = currentStack.filter(t => t !== skill);
+
+    if (newStack.length === currentStack.length) return; // Nothing removed
+
+    this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
+      next: () => {
+        this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
+        this.notificationService.success('Skill removed from stack', 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to remove skill', 'Error')
+    });
+  }
+
   addTechItem(skill: string): void {
     const details = this.companyDetails();
     if (!details) return;

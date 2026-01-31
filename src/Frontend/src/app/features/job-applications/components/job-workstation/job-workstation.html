@@ -106,7 +106,7 @@
       <!-- Hero Metric (Match Score) -->
       <div class="relative group">
         <div
-          class="absolute -inset-4 bg-emerald-500/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          class="absolute -inset-4 bg-success/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         </div>
         <div class="relative flex flex-col items-end">
           <div class="flex items-center gap-2 mb-2">
@@ -262,7 +262,7 @@
                 <span class="text-[10px] font-black uppercase tracking-widest text-destructive mb-4 block">Original
                   Asset</span>
                 <p
-                  class="text-muted-foreground line-through decoration-rose-500/50 decoration-2 font-mono text-sm leading-relaxed">
+                  class="text-muted-foreground line-through decoration-destructive/50 decoration-2 font-mono text-sm leading-relaxed">
                   "{{ enhancement.originalBullet }}"
                 </p>
               </div>
@@ -333,7 +333,7 @@
           <div class="p-8">
             <div class="relative group">
               <div
-                class="absolute -inset-1 bg-gradient-to-r from-primary/10 to-indigo-500/10 rounded-[2rem] blur opacity-25 group-hover:opacity-100 transition duration-1000">
+                class="absolute -inset-1 bg-gradient-to-r from-primary/10 to-info/10 rounded-[2rem] blur opacity-25 group-hover:opacity-100 transition duration-1000">
               </div>
               <textarea [ngModel]="jobDescriptionInput()" (ngModelChange)="jobDescriptionInput.set($event)"
                 placeholder="Paste Job Description Here..."
@@ -384,8 +384,8 @@
         <div class="lg:col-span-2 space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-blue-500/10 text-blue-500"><ng-icon name="lucideCalendar"
-                  size="24"></ng-icon></div>
+              <div class="p-4 rounded-2xl bg-info/10 text-info"><ng-icon name="lucideCalendar" size="24"></ng-icon>
+              </div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Applied Date
                 </p>
@@ -393,7 +393,7 @@
               </div>
             </div>
             <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-indigo-500/10 text-indigo-500"><ng-icon name="lucideClipboardList"
+              <div class="p-4 rounded-2xl bg-primary/10 text-primary"><ng-icon name="lucideClipboardList"
                   size="24"></ng-icon></div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Job Type</p>
@@ -413,7 +413,7 @@
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
                     class="text-muted/20" />
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
-                    stroke-linecap="round" class="text-emerald-500" [attr.stroke-dasharray]="465"
+                    stroke-linecap="round" class="text-success" [attr.stroke-dasharray]="465"
                     [attr.stroke-dashoffset]="465 * (1 - (application()?.matchScore ?? 0) / 100)" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">

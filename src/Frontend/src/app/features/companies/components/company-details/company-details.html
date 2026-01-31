@@ -100,7 +100,7 @@
                         </div>
 
                         @if (details.priority === opt.value) {
-                        <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)]">
+                        <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]">
                         </div>
                         }
                       </button>
@@ -187,13 +187,12 @@
           class="bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 shadow-sm flex flex-col justify-between h-48">
           <p class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">Success Rate</p>
           <div class="flex items-end justify-between">
-            <h3 class="text-5xl md:text-6xl font-black tracking-tighter"
-              [class.text-emerald-500]="getSuccessRate() > 0">
+            <h3 class="text-5xl md:text-6xl font-black tracking-tighter" [class.text-success]="getSuccessRate() > 0">
               {{ getSuccessRate() }}%
             </h3>
             <div class="flex flex-col items-end pb-2">
               <ng-icon [name]="getSuccessRate() > 0 ? 'lucideTrendingUp' : 'lucideTrendingDown'"
-                [class]="getSuccessRate() > 0 ? 'text-emerald-500' : 'text-muted-foreground/30'" size="24"></ng-icon>
+                [class]="getSuccessRate() > 0 ? 'text-success' : 'text-muted-foreground/30'" size="24"></ng-icon>
             </div>
           </div>
         </div>
@@ -215,7 +214,7 @@
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border/40 text-[11px] font-bold group/tag">
               {{ tech }}
               <button (click)="updateTechStack(tech)"
-                class="opacity-0 group-hover/tag:opacity-100 hover:text-rose-500 transition-all">
+                class="opacity-0 group-hover/tag:opacity-100 hover:text-destructive transition-all">
                 <ng-icon name="lucideX" class="text-[10px]"></ng-icon>
               </button>
             </span>
@@ -227,7 +226,7 @@
                 (ngModelChange)="newTech.set($event)" (keydown.enter)="addTechItem()"
                 (keydown.escape)="editingTech.set(false)" placeholder="Add skill..." autofocus />
               <button hlmBtn variant="ghost" size="icon-xs" (click)="addTechItem()" class="h-7 w-7 p-0">
-                <ng-icon name="lucideCheck" class="text-emerald-500"></ng-icon>
+                <ng-icon name="lucideCheck" class="text-success"></ng-icon>
               </button>
             </div>
             }
@@ -253,7 +252,7 @@
 
           <textarea hlmInput [value]="companyNotes()" (input)="updateNotes($any($event.target).value)"
             placeholder="Operational notes, internal intel, and strategic positioning..."
-            class="flex-1 w-full bg-transparent border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
+            class="flex-1 w-full !bg-transparent border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
           </textarea>
 
           <div class="mt-8 pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -316,7 +315,7 @@
                     <ng-icon name="lucidePencil" size="16"></ng-icon>
                   </button>
                   <button (click)="deleteContact(contact.id)"
-                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-rose-500 transition-all">
+                    class="h-10 w-10 rounded-xl bg-card border border-border/40 flex items-center justify-center text-muted-foreground hover:text-destructive transition-all">
                     <ng-icon name="lucideTrash2" size="16"></ng-icon>
                   </button>
                 </div>

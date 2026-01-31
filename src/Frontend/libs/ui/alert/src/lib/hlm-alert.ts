@@ -10,9 +10,9 @@ const alertVariants = cva(
 				default: 'bg-card text-card-foreground',
 				destructive:
 					'text-destructive border-destructive/50 dark:border-destructive [&>[hlmAlertIcon]]:text-destructive',
-				success: 'text-green-600 border-green-500/50 dark:border-green-500 [&>[hlmAlertIcon]]:text-green-600',
-				warning: 'text-yellow-600 border-yellow-500/50 dark:border-yellow-500 [&>[hlmAlertIcon]]:text-yellow-600',
-				info: 'text-blue-600 border-blue-500/50 dark:border-blue-500 [&>[hlmAlertIcon]]:text-blue-600',
+				success: 'text-success border-success/50 dark:border-success [&>[hlmAlertIcon]]:text-success',
+				warning: 'text-warning border-warning/50 dark:border-warning [&>[hlmAlertIcon]]:text-warning',
+				info: 'text-info border-info/50 dark:border-info [&>[hlmAlertIcon]]:text-info',
 			},
 		},
 		defaultVariants: {

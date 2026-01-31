@@ -76,60 +76,60 @@ export class KanbanBoardComponent {
    */
   columns: StatusColumn[] = [
     {
-      id: 'applied',
+      id: 'Applied',
       title: 'Applied',
       status: JobApplicationStatus.Applied,
-      color: 'border-blue-500/20 bg-blue-500/5',
       applications: [],
+      color: 'border-info/20 bg-info/5',
     },
     {
-      id: 'phone-screen',
+      id: 'PhoneScreen',
       title: 'Phone Screen',
       status: JobApplicationStatus.PhoneScreen,
-      color: 'border-indigo-500/20 bg-indigo-500/5',
       applications: [],
+      color: 'border-info/20 bg-info/5',
     },
     {
-      id: 'technical-task',
-      title: 'Technical Task',
+      id: 'TechnicalTask',
+      title: 'Tech Task',
       status: JobApplicationStatus.TechnicalTask,
-      color: 'border-orange-500/20 bg-orange-500/5',
       applications: [],
+      color: 'border-warning/20 bg-warning/5',
     },
     {
-      id: 'interviewing',
+      id: 'Interviewing',
       title: 'Interviewing',
       status: JobApplicationStatus.Interviewing,
-      color: 'border-violet-500/20 bg-violet-500/5',
       applications: [],
+      color: 'border-primary/20 bg-primary/5',
     },
     {
-      id: 'offer',
+      id: 'Offer',
       title: 'Offer',
       status: JobApplicationStatus.Offer,
-      color: 'border-amber-500/30 bg-amber-500/5',
       applications: [],
+      color: 'border-success/30 bg-success/5',
     },
     {
-      id: 'accepted',
+      id: 'Accepted',
       title: 'Accepted',
       status: JobApplicationStatus.Accepted,
-      color: 'border-emerald-500/20 bg-emerald-500/5',
       applications: [],
+      color: 'border-success/20 bg-success/5',
     },
     {
-      id: 'rejected',
+      id: 'Rejected',
       title: 'Rejected',
       status: JobApplicationStatus.Rejected,
-      color: 'border-rose-500/20 bg-rose-500/5',
       applications: [],
+      color: 'border-destructive/20 bg-destructive/5',
     },
     {
-      id: 'ghosted',
+      id: 'Ghosted',
       title: 'Ghosted',
       status: JobApplicationStatus.Ghosted,
-      color: 'border-slate-500/20 bg-slate-500/5',
       applications: [],
+      color: 'border-muted-foreground/20 bg-muted-foreground/5',
     },
   ];
 
@@ -304,15 +304,15 @@ export class KanbanBoardComponent {
    */
   getColumnColorClass(status: JobApplicationStatus): string {
     switch (status) {
-      case JobApplicationStatus.Applied: return 'text-blue-600 dark:text-blue-400';
-      case JobApplicationStatus.PhoneScreen: return 'text-indigo-600 dark:text-indigo-400';
-      case JobApplicationStatus.TechnicalTask: return 'text-orange-600 dark:text-orange-400';
-      case JobApplicationStatus.Interviewing: return 'text-violet-600 dark:text-violet-400';
-      case JobApplicationStatus.Offer: return 'text-amber-600 dark:text-amber-400';
-      case JobApplicationStatus.Accepted: return 'text-emerald-600 dark:text-emerald-400';
-      case JobApplicationStatus.Rejected: return 'text-rose-600 dark:text-rose-400';
-      case JobApplicationStatus.Ghosted: return 'text-slate-600 dark:text-slate-400';
-      default: return 'text-foreground';
+      case JobApplicationStatus.Applied: return 'text-info';
+      case JobApplicationStatus.PhoneScreen: return 'text-info/80';
+      case JobApplicationStatus.TechnicalTask: return 'text-warning/80';
+      case JobApplicationStatus.Interviewing: return 'text-primary';
+      case JobApplicationStatus.Offer: return 'text-success';
+      case JobApplicationStatus.Accepted: return 'text-success/80';
+      case JobApplicationStatus.Rejected: return 'text-destructive';
+      case JobApplicationStatus.Ghosted: return 'text-muted-foreground';
+      default: return 'text-muted-foreground';
     }
   }
 

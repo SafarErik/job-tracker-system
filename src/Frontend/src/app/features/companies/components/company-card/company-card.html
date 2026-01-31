@@ -1,12 +1,12 @@
 <section hlmCard
   class="group relative flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] card-hover-effect"
-  [class.shadow-[0_0_30px_rgba(245,158,11,0.15)]]="company().priority === 'Tier1'"
-  [class]="{ 'border-amber-500/20': company().priority === 'Tier1' }" (click)="onViewDossier()">
+  [class.shadow-[0_0_30px_hsl(var(--warning)/0.15)]]="company().priority === 'Tier1'"
+  [class]="{ 'border-warning/20': company().priority === 'Tier1' }" (click)="onViewDossier()">
 
   <!-- Decorative Accent Line -->
   <div class="absolute top-0 left-0 w-full h-1 transition-transform origin-left" [class.bg-gradient-to-r]="true"
     [class]="{
-      'from-amber-400 via-amber-100 to-amber-400': company().priority === 'Tier1',
+      'from-warning via-warning/30 to-warning': company().priority === 'Tier1',
       'from-primary/0 via-primary/40 to-primary/0 scale-x-0 group-hover:scale-x-100': company().priority !== 'Tier1'
     }">
   </div>
@@ -15,13 +15,13 @@
   <div class="absolute top-4 right-4 z-10">
     @if (company().priority === 'Tier1') {
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse-soft border border-amber-500/20 group-hover:scale-110">
-      <ng-icon name="lucideCrown" class="text-amber-500 text-lg"></ng-icon>
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-warning/10 shadow-[0_0_15px_hsl(var(--warning)/0.3)] animate-pulse-soft border border-warning/20 group-hover:scale-110">
+      <ng-icon name="lucideCrown" class="text-warning text-lg"></ng-icon>
     </div>
     } @else if (company().priority === 'Tier2') {
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 group-hover:scale-110 shadow-[0_0_10px_rgba(99,102,241,0.1)]">
-      <ng-icon name="lucideCircle" class="text-indigo-500 text-[8px]"></ng-icon>
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 border border-primary/20 group-hover:scale-110 shadow-[0_0_10px_hsl(var(--primary)/0.1)]">
+      <ng-icon name="lucideCircle" class="text-primary text-[8px]"></ng-icon>
     </div>
     } @else {
     <!-- Tier 3 Indicator (Subtle for "clean" look but visible in corner) -->
@@ -37,8 +37,8 @@
     <!-- Icon Container -->
     <div
       class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 shadow-sm"
-      [class.bg-amber-500/10]="company().priority === 'Tier1'" [class.text-amber-500]="company().priority === 'Tier1'"
-      [class.shadow-amber-500/20]="company().priority === 'Tier1'">
+      [class.bg-warning/10]="company().priority === 'Tier1'" [class.text-warning]="company().priority === 'Tier1'"
+      [class.shadow-warning/20]="company().priority === 'Tier1'">
       <ng-icon name="lucideBuilding2" class="text-2xl"></ng-icon>
     </div>
 
@@ -55,8 +55,7 @@
   <div hlmCardContent class="pt-2 flex-1 space-y-6">
     <div>
       <h3 hlmCardTitle class="text-xl font-black tracking-tighter mb-1 group-hover:text-primary leading-none"
-        [class.text-amber-600]="company().priority === 'Tier1'"
-        [class.dark:text-amber-500]="company().priority === 'Tier1'">
+        [class.text-warning]="company().priority === 'Tier1'">
         {{ company().name }}
       </h3>
 
@@ -95,10 +94,10 @@
         <div class="flex items-center gap-2">
           @if (hasApplications()) {
           <div class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
           </div>
-          <span class="text-[10px] font-black uppercase tracking-[0.15em] text-emerald-600 dark:text-emerald-400">
+          <span class="text-[10px] font-black uppercase tracking-[0.15em] text-success">
             {{ company().totalApplications }} Active Leads
           </span>
           } @else {
@@ -121,8 +120,8 @@
       <!-- 4-Segment Modern Pipeline Bar -->
       <div class="grid grid-cols-4 gap-1.5 h-1.5">
         @for (seg of [1,2,3,4]; track seg) {
-        <div class="pipeline-segment rounded-full" [class.bg-emerald-500]="getPipelineProgress() >= seg"
-          [class.shadow-[0_0_8px_rgba(16,185,129,0.4)]]="getPipelineProgress() >= seg"
+        <div class="pipeline-segment rounded-full" [class.bg-success]="getPipelineProgress() >= seg"
+          [class.shadow-[0_0_8px_rgba(var(--success),0.4)]]="getPipelineProgress() >= seg"
           [class.bg-muted/40]="getPipelineProgress() < seg" [class.animate-pulse-soft]="getPipelineProgress() === seg">
         </div>
         }

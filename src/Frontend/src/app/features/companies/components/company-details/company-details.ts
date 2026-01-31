@@ -313,14 +313,14 @@ export class CompanyDetailsComponent implements OnInit {
    */
   getStatusDotClass(status: string): string {
     const s = status.toLowerCase();
-    if (s.includes('applied')) return 'bg-info shadow-[0_0_8px_rgba(var(--info),0.3)]';
-    if (s.includes('phone')) return 'bg-info shadow-[0_0_8px_rgba(var(--info),0.3)]';
-    if (s.includes('technical')) return 'bg-warning shadow-[0_0_8px_rgba(var(--warning),0.3)]';
-    if (s.includes('interview')) return 'bg-primary shadow-[0_0_8px_rgba(var(--primary),0.3)]';
-    if (s.includes('offer')) return 'bg-warning shadow-[0_0_8px_rgba(var(--warning),0.3)]';
-    if (s.includes('accepted')) return 'bg-success shadow-[0_0_8px_rgba(var(--success),0.3)]';
-    if (s.includes('rejected')) return 'bg-destructive shadow-[0_0_8px_rgba(var(--destructive),0.3)]';
-    if (s.includes('ghosted')) return 'bg-muted shadow-[0_0_8px_rgba(var(--muted),0.3)]';
+    if (s.includes('applied')) return 'bg-info shadow-[0_0_8px_hsl(var(--info)/0.3)]';
+    if (s.includes('phone')) return 'bg-info shadow-[0_0_8px_hsl(var(--info)/0.3)]';
+    if (s.includes('technical')) return 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.3)]';
+    if (s.includes('interview')) return 'bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]';
+    if (s.includes('offer')) return 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.3)]';
+    if (s.includes('accepted')) return 'bg-success shadow-[0_0_8px_hsl(var(--success)/0.3)]';
+    if (s.includes('rejected')) return 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.3)]';
+    if (s.includes('ghosted')) return 'bg-muted shadow-[0_0_8px_hsl(var(--muted)/0.3)]';
     return 'bg-secondary';
   }
 

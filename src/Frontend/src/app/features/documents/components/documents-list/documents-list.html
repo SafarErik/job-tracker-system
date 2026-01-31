@@ -33,7 +33,7 @@
       <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
         <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="storagePercentage()"
           [class.bg-primary]="storagePercentage() < 80"
-          [class.bg-amber-500]="storagePercentage() >= 80 && storagePercentage() < 95"
+          [class.bg-warning]="storagePercentage() >= 80 && storagePercentage() < 95"
           [class.bg-destructive]="storagePercentage() >= 95"></div>
       </div>
     </div>
@@ -47,7 +47,7 @@
       <div class="group relative w-full max-w-2xl transition-all duration-300">
         <!-- Unified Container -->
         <div
-          class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-white dark:bg-zinc-900/50 shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
+          class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
 
           <!-- Search Input Wrapper -->
           <div class="relative flex-1 flex items-center">
@@ -92,7 +92,7 @@
             DOCX
           </button>
           <button (click)="filterByType('MASTER')"
-            [class]="activeTypeFilter() === 'MASTER' ? 'bg-amber-500 text-white border-amber-500' : 'bg-card text-muted-foreground border-border hover:border-amber-500/40'"
+            [class]="activeTypeFilter() === 'MASTER' ? 'bg-warning text-white border-warning' : 'bg-card text-muted-foreground border-border hover:border-warning/40'"
             class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
             Master
           </button>

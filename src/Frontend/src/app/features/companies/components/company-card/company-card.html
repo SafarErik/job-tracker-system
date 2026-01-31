@@ -39,7 +39,12 @@
       class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 shadow-sm"
       [class.bg-warning/10]="company().priority === 'Tier1'" [class.text-warning]="company().priority === 'Tier1'"
       [class.shadow-warning/20]="company().priority === 'Tier1'">
+      <!-- Logo logic: If not failed and url exists, show image. Else show icon -->
+      @if (!logoFailed && logoUrl()) {
+      <img [src]="logoUrl()" [alt]="company().name" (error)="onLogoError()" class="h-8 w-8 object-contain">
+      } @else {
       <ng-icon name="lucideBuilding2" class="text-2xl"></ng-icon>
+      }
     </div>
 
     <!-- Industry Badge -->
@@ -70,16 +75,16 @@
 
     <!-- Skill Cloud: Tech Stack -->
     <div class="flex flex-wrap gap-2">
-      @for (tech of getVisibleTechStack(); track tech) {
+      @for (tech of visibleTechStack(); track tech) {
       <span
         class="skill-tag inline-flex items-center justify-center rounded-xl bg-muted/40 px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border border-transparent hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all cursor-default">
         {{ tech }}
       </span>
       }
-      @if (getRemainingTechCount() > 0) {
+      @if (remainingTechCount() > 0) {
       <span
         class="inline-flex items-center justify-center rounded-xl bg-muted/20 px-3 py-1.5 text-[10px] font-bold text-muted-foreground/60 border border-dashed border-border/60">
-        +{{ getRemainingTechCount() }}
+        +{{ remainingTechCount() }}
       </span>
       }
     </div>
@@ -120,9 +125,9 @@
       <!-- 4-Segment Modern Pipeline Bar -->
       <div class="grid grid-cols-4 gap-1.5 h-1.5">
         @for (seg of [1,2,3,4]; track seg) {
-        <div class="pipeline-segment rounded-full" [class.bg-success]="getPipelineProgress() >= seg"
-          [class.shadow-[0_0_8px_rgba(var(--success),0.4)]]="getPipelineProgress() >= seg"
-          [class.bg-muted/40]="getPipelineProgress() < seg" [class.animate-pulse-soft]="getPipelineProgress() === seg">
+        <div class="pipeline-segment rounded-full" [class.bg-success]="pipelineProgress() >= seg"
+          [class.shadow-[0_0_8px_rgba(var(--success),0.4)]]="pipelineProgress() >= seg"
+          [class.bg-muted/40]="pipelineProgress() < seg" [class.animate-pulse-soft]="pipelineProgress() === seg">
         </div>
         }
       </div>

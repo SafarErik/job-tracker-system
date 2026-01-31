@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed } from '@angular/core';
 import {
   HlmCard,
   HlmCardHeader,
@@ -14,6 +14,7 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
 
 @Component({
   selector: 'app-company-card',
+  standalone: true,
   imports: [
     CommonModule,
     NgIcon,
@@ -47,7 +48,7 @@ export class CompanyCardComponent {
   /**
    * Get website domain from company website or name
    */
-  getWebsiteDomain(): string {
+  readonly websiteDomain = computed(() => {
     const website = this.company().website;
     if (website) {
       try {
@@ -64,63 +65,61 @@ export class CompanyCardComponent {
       .name.toLowerCase()
       .replace(/[^a-z0-9]/g, '');
     return name ? `${name}.com` : '';
-  }
+  });
 
   /**
    * Get Clearbit logo URL using website domain
    */
-  getLogoUrl(): string | null {
-    if (this.logoFailed) return null;
-    const domain = this.getWebsiteDomain();
+  readonly logoUrl = computed(() => {
+    // Note: logoFailed is non-signal mutable state, so we can't make this fully pure if we depend on it 
+    // strictly inside computed without it being a signal.
+    // However, if we just return the URL, the template can handle the error event and set a flag to hide it.
+    // For now, let's keep getLogoUrl() method or make logoFailed a signal.
+    // But since logoFailed is updated by an event, let's leave it as a method or simple getter in template.
+    // Actually, simpler: return the URL, and if it fails, the img tag `(error)` handler handles UI.
+    const domain = this.websiteDomain();
     return domain ? `https://logo.clearbit.com/${domain}` : null;
-  }
-
-  /**
-   * Handle logo load error - fallback to building icon
-   */
-  onLogoError(): void {
-    this.logoFailed = true;
-  }
+  });
 
   /**
    * Get tech stack - use actual data or mock for demo
    */
-  getTechStack(): string[] {
+  readonly techStack = computed(() => {
     const actual = this.company().techStack;
     if (actual && actual.length > 0) return actual;
 
     // Mock data for demo - deterministic based on company ID
     const index = this.company().id % this.mockTechStacks.length;
     return this.mockTechStacks[index];
-  }
+  });
 
   /**
    * Get limited tech stack (max 3 items)
    */
-  getVisibleTechStack(): string[] {
-    return this.getTechStack().slice(0, 3);
-  }
+  readonly visibleTechStack = computed(() => {
+    return this.techStack().slice(0, 3);
+  });
 
   /**
    * Count of remaining tech items
    */
-  getRemainingTechCount(): number {
-    const total = this.getTechStack().length;
+  readonly remainingTechCount = computed(() => {
+    const total = this.techStack().length;
     return Math.max(0, total - 3);
-  }
+  });
 
   /**
    * Check if company has active applications
    */
-  hasApplications(): boolean {
+  readonly hasApplications = computed(() => {
     return this.company().totalApplications > 0;
-  }
+  });
 
   /**
    * Get pipeline progress (1-4 segments)
    * Based on the furthest application status
    */
-  getPipelineProgress(): number {
+  readonly pipelineProgress = computed(() => {
     const company = this.company();
     const apps = company.recentApplications;
 
@@ -153,6 +152,13 @@ export class CompanyCardComponent {
     }
 
     return maxWeight;
+  });
+
+  /**
+   * Handle logo load error - fallback to building icon
+   */
+  onLogoError(): void {
+    this.logoFailed = true;
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, HostListener, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
@@ -31,28 +31,39 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
   templateUrl: './company-list.html',
 })
 export class CompanyListComponent implements OnInit {
-  // Signal for companies list
-  companies = signal<Company[]>([]);
+  private readonly companyService = inject(CompanyService);
+  private readonly router = inject(Router);
+  private readonly notificationService = inject(NotificationService);
 
-  // Signal for loading state
-  isLoading = signal(true);
+  // Read signals from service
+  // No need for local 'companies' signal, we use the service's one
+  isLoading = this.companyService.isLoading;
+  error = this.companyService.error;
+  companies = this.companyService.companies;
 
-  // Signal for error state
-  error = signal<string | null>(null);
-
-  // Signal for search filter
+  // Local state
   searchTerm = signal('');
-
-  // Track failed logo loads
   logoFailedIds = signal<Set<number>>(new Set());
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  constructor(
-    private readonly companyService: CompanyService,
-    private readonly router: Router,
-    private readonly notificationService: NotificationService,
-  ) { }
+  // Computed: Filtered companies
+  filteredCompanies = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const allCompanies = this.companyService.companies();
+
+    if (!term) return allCompanies;
+
+    return allCompanies.filter(
+      (company) =>
+        company.name.toLowerCase().includes(term) ||
+        company.website?.toLowerCase().includes(term) ||
+        company.address?.toLowerCase().includes(term) ||
+        company.industry?.toLowerCase().includes(term),
+    );
+  });
+
+  constructor() { }
 
   // ============================================
   // Keyboard Shortcuts
@@ -79,27 +90,8 @@ export class CompanyListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCompanies();
-  }
-
-  /**
-   * Load all companies from the API
-   */
-  private loadCompanies(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.companyService.getCompanies().subscribe({
-      next: (companies) => {
-        this.companies.set(companies);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading companies:', err);
-        this.error.set('Failed to load companies. Please try again.');
-        this.isLoading.set(false);
-      },
-    });
+    // Initial load
+    this.companyService.loadCompanies();
   }
 
   /**
@@ -107,22 +99,6 @@ export class CompanyListComponent implements OnInit {
    */
   viewCompanyDetails(companyId: number): void {
     this.router.navigate(['/companies', companyId]);
-  }
-
-  /**
-   * Filter companies based on search term
-   */
-  get filteredCompanies(): Company[] {
-    const term = this.searchTerm().toLowerCase();
-    if (!term) return this.companies();
-
-    return this.companies().filter(
-      (company) =>
-        company.name.toLowerCase().includes(term) ||
-        company.website?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term) ||
-        company.industry?.toLowerCase().includes(term),
-    );
   }
 
   /**
@@ -137,7 +113,7 @@ export class CompanyListComponent implements OnInit {
    * Retry loading companies
    */
   retry(): void {
-    this.loadCompanies();
+    this.companyService.loadCompanies();
   }
 
   /**
@@ -176,7 +152,7 @@ export class CompanyListComponent implements OnInit {
           `${company.name} has been deleted successfully.`,
           'Company Deleted',
         );
-        this.loadCompanies();
+        // No need to manually reload, the service updates the signal
       },
       error: (err) => {
         this.notificationService.error(

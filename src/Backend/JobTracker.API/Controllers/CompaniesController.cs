@@ -135,6 +135,7 @@ public class CompaniesController : ControllerBase
             Address = company.Address,
             TotalApplications = company.JobApplications?.Count ?? 0,
             Priority = company.Priority,
+            TechStack = company.TechStack?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
             ApplicationHistory = company.JobApplications?
                 .OrderByDescending(ja => ja.AppliedAt)
                 .Select(ja => new JobApplicationHistoryDto

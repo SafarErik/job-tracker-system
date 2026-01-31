@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
   <!-- Loading State -->
-  @if (isLoading()) {
+  @if (store.isLoading()) {
   <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
     <ng-icon name="lucideLoader2" class="text-4xl animate-spin text-primary"></ng-icon>
     <p class="text-sm font-medium">Initializing Mission Control...</p>
@@ -8,14 +8,14 @@
   }
 
   <!-- Error State -->
-  @if (error()) {
+  @if (store.error()) {
   <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
     <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
       <ng-icon name="lucideActivity" class="text-4xl text-destructive"></ng-icon>
     </div>
     <div class="space-y-2">
       <h2 class="text-2xl font-black tracking-tight">System Error</h2>
-      <p class="text-muted-foreground max-w-sm mx-auto">{{ error() }}</p>
+      <p class="text-muted-foreground max-w-sm mx-auto">{{ store.error() }}</p>
     </div>
     <button hlmBtn variant="outline" (click)="goBack()" class="rounded-2xl">
       <ng-icon name="lucideChevronLeft" class="mr-2"></ng-icon>
@@ -25,7 +25,7 @@
   }
 
   <!-- Main Content -->
-  @if (application() && !isLoading()) {
+  @if (store.selectedApplication() && !store.isLoading()) {
   <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-8">
 
     <!-- 1. Breadcrumbs -->
@@ -44,7 +44,8 @@
           <ng-icon name="lucideChevronRight" />
         </li>
         <li hlmBreadcrumbItem>
-          <span hlmBreadcrumbPage class="font-medium text-foreground">{{ application()?.companyName }}</span>
+          <span hlmBreadcrumbPage class="font-medium text-foreground">{{ store.selectedApplication()?.companyName
+            }}</span>
         </li>
       </ol>
     </nav>
@@ -57,7 +58,7 @@
             @if (editingField() !== 'position') {
             <h1 (click)="startEditing('position')"
               class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight hover:bg-muted/50 -ml-2 px-2 rounded-lg cursor-pointer transition-colors group relative flex items-center gap-3">
-              {{ application()?.position }}
+              {{ store.selectedApplication()?.position }}
               <ng-icon name="lucidePencil"
                 class="opacity-0 group-hover:opacity-100 h-6 w-6 text-muted-foreground/50"></ng-icon>
               @if (lastSavedField() === 'position') {
@@ -75,9 +76,10 @@
           </div>
           <div class="flex items-center gap-2 text-2xl">
             <span class="text-muted-foreground font-medium">at</span>
-            <a [routerLink]="['/companies', application()?.companyId]" [queryParams]="{from: 'application'}"
+            <a [routerLink]="['/companies', store.selectedApplication()?.companyId]"
+              [queryParams]="{from: 'application'}"
               class="font-bold text-primary hover:text-primary/80 transition-all hover:underline decoration-4 underline-offset-8">
-              {{ application()?.companyName }}
+              {{ store.selectedApplication()?.companyName }}
             </a>
           </div>
         </div>
@@ -88,16 +90,16 @@
           <!-- Status -->
           <button [hlmDropdownMenuTrigger]="statusMenu"
             class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border-none ring-1 ring-border/40"
-            [ngClass]="getStatusClass(application()?.status)">
-            <span class="font-bold tracking-wide">{{ getStatusLabel(application()?.status) }}</span>
+            [ngClass]="getStatusClass(store.selectedApplication()?.status)">
+            <span class="font-bold tracking-wide">{{ getStatusLabel(store.selectedApplication()?.status) }}</span>
             <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
           </button>
 
           <!-- Priority -->
           <button [hlmDropdownMenuTrigger]="priorityMenu"
             class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border-none ring-1 ring-border/40"
-            [ngClass]="getPriorityClass(application()?.priority)">
-            <span class="font-bold tracking-wide">{{ getPriorityLabel(application()?.priority) }}</span>
+            [ngClass]="getPriorityClass(store.selectedApplication()?.priority)">
+            <span class="font-bold tracking-wide">{{ getPriorityLabel(store.selectedApplication()?.priority) }}</span>
             <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
           </button>
 
@@ -106,13 +108,13 @@
             class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-card text-foreground text-sm font-bold border-none ring-1 ring-border/40 hover:bg-muted transition-all shadow-sm cursor-pointer"
             [hlmDropdownMenuTrigger]="workplaceMenu">
             <ng-icon name="lucideMapPin" size="14" class="text-muted-foreground"></ng-icon>
-            <span class="tracking-wide">{{ getWorkplaceLabel(application()?.workplaceType) }}</span>
+            <span class="tracking-wide">{{ getWorkplaceLabel(store.selectedApplication()?.workplaceType) }}</span>
             <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
           </button>
 
-          @if (application()?.jobUrl) {
+          @if (store.selectedApplication()?.jobUrl) {
           <div class="h-6 w-px bg-border/60 mx-1"></div>
-          <a [href]="application()?.jobUrl" target="_blank"
+          <a [href]="store.selectedApplication()?.jobUrl" target="_blank"
             class="text-sm font-bold text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
             Job Posting <ng-icon name="lucideExternalLink" size="14"></ng-icon>
           </a>
@@ -138,7 +140,7 @@
             <ng-icon name="lucideZap" size="16" class="text-success animate-pulse"></ng-icon>
           </div>
           <div class="text-5xl md:text-7xl font-black text-success tabular-nums tracking-tighter drop-shadow-sm">
-            {{ application()?.matchScore }}%
+            {{ store.selectedApplication()?.matchScore }}%
           </div>
         </div>
       </div>
@@ -153,12 +155,13 @@
         <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
         <hlm-dropdown-menu-group>
           @for (option of statusOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.status === option.value }"
-            [class.text-primary]="application()?.status === option.value"
+          <button hlmDropdownMenuItem
+            [class]="{ 'bg-primary/10': store.selectedApplication()?.status === option.value }"
+            [class.text-primary]="store.selectedApplication()?.status === option.value"
             class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectStatus(option.value)">
             {{ option.label }}
-            @if (application()?.status === option.value) {
+            @if (store.selectedApplication()?.status === option.value) {
             <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
             }
           </button>
@@ -175,8 +178,9 @@
         <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
         <hlm-dropdown-menu-group>
           @for (option of priorityOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.priority === option.value }"
-            [class.text-primary]="application()?.priority === option.value"
+          <button hlmDropdownMenuItem
+            [class]="{ 'bg-primary/10': store.selectedApplication()?.priority === option.value }"
+            [class.text-primary]="store.selectedApplication()?.priority === option.value"
             class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectPriority(option.value)">
             {{ option.label }}
@@ -194,8 +198,9 @@
         <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
         <hlm-dropdown-menu-group>
           @for (option of workplaceOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.workplaceType === option.value }"
-            [class.text-primary]="application()?.workplaceType === option.value"
+          <button hlmDropdownMenuItem
+            [class]="{ 'bg-primary/10': store.selectedApplication()?.workplaceType === option.value }"
+            [class.text-primary]="store.selectedApplication()?.workplaceType === option.value"
             class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
             (click)="selectWorkplace(option.value)">
             {{ option.label }}
@@ -312,7 +317,7 @@
           <div class="prose dark:prose-invert max-w-none">
             <h3 class="text-2xl font-black mb-6">Strategic Position Analysis</h3>
             <p class="text-lg text-muted-foreground">This is a hyper-personalized breakdown of your fit for the role at
-              {{ application()?.companyName }}.</p>
+              {{ store.selectedApplication()?.companyName }}.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
               <div class="p-6 rounded-3xl bg-primary/5 border border-primary/10">
@@ -412,7 +417,7 @@
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Applied Date
                 </p>
-                <p class="text-xl font-bold">{{ formatDate(application()!.appliedAt) }}</p>
+                <p class="text-xl font-bold">{{ formatDate(store.selectedApplication()!.appliedAt) }}</p>
               </div>
             </div>
             <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
@@ -420,7 +425,7 @@
                   size="24"></ng-icon></div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Job Type</p>
-                <p class="text-xl font-bold">{{ getJobTypeLabel(application()!.jobType) }}</p>
+                <p class="text-xl font-bold">{{ getJobTypeLabel(store.selectedApplication()!.jobType) }}</p>
               </div>
             </div>
           </div>
@@ -432,22 +437,23 @@
             <div class="flex flex-col md:flex-row items-center gap-10">
               <div class="relative w-40 h-40 shrink-0">
                 <svg class="w-full h-full transform -rotate-90" role="img"
-                  [attr.aria-label]="'Match score: ' + (application()?.matchScore ?? 0) + ' percent'">
+                  [attr.aria-label]="'Match score: ' + (store.selectedApplication()?.matchScore ?? 0) + ' percent'">
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
                     class="text-muted/20" />
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
                     stroke-linecap="round" class="text-success" [attr.stroke-dasharray]="465"
-                    [attr.stroke-dashoffset]="465 * (1 - (application()?.matchScore ?? 0) / 100)" />
+                    [attr.stroke-dashoffset]="465 * (1 - (store.selectedApplication()?.matchScore ?? 0) / 100)" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-3xl font-black">{{ application()?.matchScore }}%</span>
+                  <span class="text-3xl font-black">{{ store.selectedApplication()?.matchScore }}%</span>
                   <span class="text-[0.6rem] font-black uppercase text-muted-foreground">AI Score</span>
                 </div>
               </div>
               <div class="flex-1 space-y-4">
                 <h4 class="text-2xl font-black leading-tight">AI Readiness Report</h4>
                 <p class="text-muted-foreground text-sm leading-relaxed">Your profile has a <strong>{{
-                    application()!.matchScore }}% compatibility</strong> with this position's requirements.</p>
+                    store.selectedApplication()!.matchScore }}% compatibility</strong> with this position's
+                  requirements.</p>
                 <div class="flex flex-wrap gap-2 pt-2">
                   <div
                     class="px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-[10px] font-black uppercase text-success">
@@ -555,7 +561,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-info"></span> Interviewer Intelligence
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              @if (application()?.primaryContact; as contact) {
+              @if (store.selectedApplication()?.primaryContact; as contact) {
               <div
                 class="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-between group">
                 <div class="flex items-center gap-3">
@@ -616,7 +622,7 @@
                       <span>{{ contact.name }}</span>
                       <span class="text-[9px] text-muted-foreground font-normal">{{ contact.role }}</span>
                     </div>
-                    @if (application()?.primaryContactId === contact.id) {
+                    @if (store.selectedApplication()?.primaryContactId === contact.id) {
                     <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
                     }
                   </button>
@@ -625,7 +631,7 @@
                   <div class="px-3 py-4 text-center">
                     <p class="text-[10px] text-muted-foreground font-bold uppercase italic">No contacts found in dossier
                     </p>
-                    <a [routerLink]="['/companies', application()?.companyId]"
+                    <a [routerLink]="['/companies', store.selectedApplication()?.companyId]"
                       class="text-[10px] text-primary hover:underline mt-2 inline-block">Update Company Dossier</a>
                   </div>
                   }
@@ -702,5 +708,5 @@
       }
     </div> <!-- End Bento Grid -->
   </div> <!-- End Max-width Container -->
-  } <!-- End application() if -->
+  } <!-- End store.selectedApplication() if -->
 </div> <!-- End Outer Div -->

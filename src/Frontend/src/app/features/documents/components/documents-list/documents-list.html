@@ -28,13 +28,13 @@
     <div class="flex flex-col items-end gap-2 min-w-[200px]">
       <div class="flex items-center justify-between w-full text-xs font-medium text-muted-foreground">
         <span>Storage Used</span>
-        <span>{{ formatFileSize(usedStorage()) }} / 10 MB</span>
+        <span>{{ formatFileSize(store.usedStorage()) }} / 10 MB</span>
       </div>
       <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="storagePercentage()"
-          [class.bg-primary]="storagePercentage() < 80"
-          [class.bg-warning]="storagePercentage() >= 80 && storagePercentage() < 95"
-          [class.bg-destructive]="storagePercentage() >= 95"></div>
+        <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="store.storagePercentage()"
+          [class.bg-primary]="store.storagePercentage() < 80"
+          [class.bg-warning]="store.storagePercentage() >= 80 && store.storagePercentage() < 95"
+          [class.bg-destructive]="store.storagePercentage() >= 95"></div>
       </div>
     </div>
   </div>
@@ -58,8 +58,8 @@
             </div>
 
             <!-- THE ACTUAL INPUT -->
-            <input #searchInput type="text" [ngModel]="searchTerm()"
-              (ngModelChange)="searchTerm.set($event); onSearch()" placeholder="Search documents by filename..."
+            <input #searchInput type="text" [value]="store.searchTerm()" (input)="onSearchChange(searchInput.value)"
+              placeholder="Search documents by filename..."
               class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
               id="document-search">
 
@@ -74,36 +74,35 @@
         </div>
 
         <!-- File Type Chips (Shown on focus or when filter is active) -->
-        <div *ngIf="isSearchFocused() || activeTypeFilter()"
+        <div *ngIf="isSearchFocused() || store.typeFilter()"
           class="absolute top-full left-6 mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
           <button (click)="filterByType(null)"
-            [class]="!activeTypeFilter() ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            [class]="!store.typeFilter() ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
             class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
             All
           </button>
           <button (click)="filterByType('PDF')"
-            [class]="activeTypeFilter() === 'PDF' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            [class]="store.typeFilter() === 'PDF' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
             class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
             PDF
           </button>
           <button (click)="filterByType('DOCX')"
-            [class]="activeTypeFilter() === 'DOCX' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
+            [class]="store.typeFilter() === 'DOCX' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
             class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
             DOCX
           </button>
           <button (click)="filterByType('MASTER')"
-            [class]="activeTypeFilter() === 'MASTER' ? 'bg-warning text-white border-warning' : 'bg-card text-muted-foreground border-border hover:border-warning/40'"
+            [class]="store.typeFilter() === 'MASTER' ? 'bg-warning text-white border-warning' : 'bg-card text-muted-foreground border-border hover:border-warning/40'"
             class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
             Master
           </button>
         </div>
 
         <!-- Quick Tips / Search Stats -->
-        <div *ngIf="searchTerm() || activeTypeFilter()"
+        <div *ngIf="store.searchTerm() || store.typeFilter()"
           class="mt-12 px-6 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
-          <span>Found {{ filteredDocuments().length }} assets</span>
-          <button (click)="searchTerm.set(''); activeTypeFilter.set(null); onSearch()"
-            class="hover:text-primary transition-colors">Clear Results</button>
+          <span>Found {{ store.filteredDocuments().length }} assets</span>
+          <button (click)="store.resetFilters()" class="hover:text-primary transition-colors">Clear Results</button>
         </div>
       </div>
     </div>
@@ -133,7 +132,7 @@
   }
 
   <!-- Loading State -->
-  @if (isLoading()) {
+  @if (store.isLoading()) {
   <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
     <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
     <p>Retrieving assets from vault...</p>
@@ -141,16 +140,17 @@
   }
 
   <!-- Error State -->
-  @if (error()) {
+  @if (store.error()) {
   <div class="mb-8">
-    <app-error-state title="Vault Inaccessible" [message]="error()!" icon="lucideFileWarning" (retry)="loadDocuments()">
+    <app-error-state title="Vault Inaccessible" [message]="store.error()!" icon="lucideFileWarning"
+      (retry)="store.loadAll()">
     </app-error-state>
   </div>
   }
 
   <!-- Documents Grid -->
-  @if (!isLoading() && !error()) {
-  @if (filteredDocuments().length === 0) {
+  @if (!store.isLoading() && !store.error()) {
+  @if (store.filteredDocuments().length === 0) {
   <!-- Empty State: Neo-Professional Dropzone -->
   <div class="flex items-center justify-center min-h-[400px]">
     <div
@@ -165,15 +165,15 @@
 
       <div class="text-center space-y-1 mb-8">
         <h3 class="text-lg font-bold text-foreground">
-          @if (searchTerm()) {
+          @if (store.searchTerm()) {
           No documents found
           } @else {
           Ready Your Arsenal
           }
         </h3>
         <p class="text-sm text-muted-foreground max-w-[240px]">
-          @if (searchTerm()) {
-          No documents found matching "{{ searchTerm() }}"
+          @if (store.searchTerm()) {
+          No documents found matching "{{ store.searchTerm() }}"
           } @else {
           Upload your Resumes and Cover Letters to unlock AI tailoring.
           }
@@ -193,7 +193,7 @@
   <!-- Grid of Dossier Cards -->
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-    @for (doc of filteredDocuments(); track doc.id) {
+    @for (doc of store.filteredDocuments(); track doc.id) {
     <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
       (setMaster)="setMasterDocument($event)" (delete)="deleteDocument($event)" class="h-full">
     </app-document-card>

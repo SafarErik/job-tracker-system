@@ -1,11 +1,12 @@
-import { Component, OnInit, signal, inject, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentService } from '../../services/document.service';
+import { DocumentStore } from '../../services/document.store';
 import { Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 import { DocumentCardComponent } from '../document-card/document-card.component';
+import { DocumentService } from '../../services/document.service';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';
@@ -13,7 +14,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideFileUp, lucideFileWarning, lucideLibrary } from '@ng-icons/lucide';
+import { lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-documents-list',
@@ -28,41 +29,30 @@ import { lucideFileUp, lucideFileWarning, lucideLibrary } from '@ng-icons/lucide
     ErrorStateComponent,
     DocumentCardComponent
   ],
-  providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary })],
+  providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 })],
   templateUrl: './documents-list.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentsListComponent implements OnInit {
-  private documentService = inject(DocumentService);
-  private notificationService = inject(NotificationService);
+  public readonly store = inject(DocumentStore);
+  private readonly notificationService = inject(NotificationService);
+  private readonly documentService = inject(DocumentService);
 
-  documents = signal<Document[]>([]);
-  filteredDocuments = signal<Document[]>([]);
-  isLoading = signal(false);
-  error = signal<string | null>(null);
-  searchTerm = signal('');
+  // Local-only UI State
   uploadProgress = signal<number | null>(null);
   isDragging = signal(false);
   isSearchFocused = signal(false);
-  activeTypeFilter = signal<string | null>(null);
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  // Storage logic
-  totalStorage = 10 * 1024 * 1024; // 10MB
-  usedStorage = computed(() => this.documents().reduce((acc, doc) => acc + doc.fileSize, 0));
-  storagePercentage = computed(() => (this.usedStorage() / this.totalStorage) * 100);
-
   ngOnInit(): void {
-    this.loadDocuments();
+    this.store.loadAll();
   }
 
   // ============================================
   // Keyboard Shortcuts
   // ============================================
 
-  /**
-   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
-   */
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
@@ -71,9 +61,6 @@ export class DocumentsListComponent implements OnInit {
     }
   }
 
-  /**
-   * Focus the search input field
-   */
   focusSearch(): void {
     if (this.searchInput) {
       this.searchInput.nativeElement.focus();
@@ -85,50 +72,11 @@ export class DocumentsListComponent implements OnInit {
   }
 
   filterByType(type: string | null): void {
-    this.activeTypeFilter.set(type);
-    this.onSearch();
+    this.store.setTypeFilter(type);
   }
 
-  loadDocuments(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.documentService.getAllDocuments().subscribe({
-      next: (docs) => {
-        this.documents.set(docs);
-        this.filteredDocuments.set(docs);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load documents');
-        this.isLoading.set(false);
-        console.error(err);
-      },
-    });
-  }
-
-  onSearch(): void {
-    const term = this.searchTerm().toLowerCase();
-    const type = this.activeTypeFilter();
-
-    let filtered = this.documents();
-
-    if (term) {
-      filtered = filtered.filter((doc) =>
-        doc.originalFileName.toLowerCase().includes(term),
-      );
-    }
-
-    if (type) {
-      if (type === 'MASTER') {
-        filtered = filtered.filter((doc) => doc.isMaster);
-      } else {
-        // e.g. 'PDF'
-        filtered = filtered.filter((doc) => doc.originalFileName.toUpperCase().endsWith(`.${type}`));
-      }
-    }
-
-    this.filteredDocuments.set(filtered);
+  onSearchChange(value: string): void {
+    this.store.setSearchTerm(value);
   }
 
   onFileSelected(event: Event): void {
@@ -164,15 +112,14 @@ export class DocumentsListComponent implements OnInit {
 
     this.uploadProgress.set(0);
 
+    // Using service directly for progress (not typically in store for transient per-file progress)
     this.documentService.uploadDocumentWithProgress(file).subscribe({
       next: (result) => {
         if (typeof result === 'number') {
-          // Progress update
           this.uploadProgress.set(result);
         } else {
-          // Upload complete, result is Document
           this.uploadProgress.set(null);
-          this.loadDocuments(); // Reload list
+          this.store.loadAll(); // Sync store
           callback?.();
           this.notificationService.success(
             `${file.name} has been uploaded successfully!`,
@@ -183,7 +130,7 @@ export class DocumentsListComponent implements OnInit {
       error: (err) => {
         this.uploadProgress.set(null);
         this.notificationService.error(
-          'An error occurred while uploading the document. Please try again.',
+          'An error occurred while uploading. Please try again.',
           'Upload Failed',
         );
         console.error(err);
@@ -202,20 +149,9 @@ export class DocumentsListComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
-    // Only set isDragging to false if the drag actually left the component root.
-    // This prevents flicker when the pointer moves over child elements.
-    const target = event.relatedTarget as Element | null;
-
-    // Check if the new target is outside this component's root element
-    if (!target || !this.getComponentRoot()?.contains(target)) {
-      this.isDragging.set(false);
-    }
-  }
-
-  private getComponentRoot(): Element | null {
-    // Return the component's root element (the host element)
-    // You may need to inject ElementRef if this approach doesn't work
-    return document.activeElement?.closest('.drop-zone') || null;
+    // We can't easily check .drop-zone here since we use HostListener-like pattern on div.
+    // However, the previous logic was fine if we just target the container.
+    this.isDragging.set(false);
   }
 
   onDrop(event: DragEvent): void {
@@ -226,8 +162,7 @@ export class DocumentsListComponent implements OnInit {
     const files = event.dataTransfer?.files;
     if (!files || files.length === 0) return;
 
-    const file = files[0];
-    this.processFile(file);
+    this.processFile(files[0]);
   }
 
   downloadDocument(doc: Document): void {
@@ -236,56 +171,20 @@ export class DocumentsListComponent implements OnInit {
 
   async deleteDocument(doc: Document): Promise<void> {
     const confirmed = await this.notificationService.confirm(
-      `Are you sure you want to delete "${doc.originalFileName}"? This action cannot be undone.`,
+      `Are you sure you want to delete "${doc.originalFileName}"?`,
       'Delete Document',
     );
 
-    if (!confirmed) {
-      return;
+    if (confirmed) {
+      this.store.deleteDocument(doc);
     }
-
-    this.documentService.deleteDocument(doc.id).subscribe({
-      next: () => {
-        this.loadDocuments();
-        this.notificationService.success(
-          `${doc.originalFileName} has been deleted successfully.`,
-          'Document Deleted',
-        );
-      },
-      error: (err) => {
-        this.notificationService.error(
-          'An error occurred while deleting the document. Please try again.',
-          'Delete Failed',
-        );
-        console.error(err);
-      },
-    });
   }
 
   setMasterDocument(doc: Document): void {
-    if (doc.isMaster) return;
-
-    this.documentService.setMasterDocument(doc.id).subscribe({
-      next: () => {
-        this.loadDocuments();
-        this.notificationService.success(
-          `${doc.originalFileName} is now your Master Resume.`,
-          'Strategic Update',
-        );
-      },
-      error: (err) => {
-        this.notificationService.error(
-          'Failed to set master document.',
-          'Update Failed'
-        );
-        console.error(err);
-      }
-    });
+    this.store.setMasterDocument(doc);
   }
 
   previewDocument(doc: Document): void {
-    // For now just download/open in new tab since we don't have a dedicated previewer yet
-    // Or we can implement a modal later.
     this.documentService.downloadDocument(doc.id, doc.originalFileName);
   }
 
@@ -294,7 +193,7 @@ export class DocumentsListComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('hu-HU', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

@@ -21,6 +21,13 @@ export class DocumentService {
     return this.http.get<Document>(`${this.apiUrl}/${id}`);
   }
 
+  // Get document blob
+  getDocumentBlob(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/download`, {
+      responseType: 'blob'
+    });
+  }
+
   // Upload document
   uploadDocument(file: File): Observable<Document> {
     const formData = new FormData();

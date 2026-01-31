@@ -804,20 +804,27 @@ Best regards,
     /**
      * Download a document
      */
-    downloadDocument(document: Document): void {
-        if (!document) return;
+    downloadDocument(doc: Document): void {
+        if (!doc) return;
 
-        // Try direct URL if available
-        if (document.fileUrl) {
-            window.open(document.fileUrl, '_blank');
-            return;
-        }
+        // Use direct Blob download
+        this.notificationService.info(`Starting download: ${doc.originalFileName}`, 'Download');
 
-        // Otherwise use the document service (logic would typically go here to fetch blob)
-        this.notificationService.info(`Downloading ${document.originalFileName}...`, 'Document Fetch');
-
-        // Note: Real implementation would wait for document content and trigger download
-        // window.location.href = `/api/documents/download/${document.id}`;
+        this.documentService.getDocumentBlob(doc.id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = window.document.createElement('a');
+                link.href = url;
+                link.download = doc.originalFileName;
+                link.click();
+                window.URL.revokeObjectURL(url);
+                this.notificationService.success('Download complete', 'Success');
+            },
+            error: (err) => {
+                console.error('Download failed:', err);
+                this.notificationService.error('Failed to download document', 'Error');
+            }
+        });
     }
 
     // Utility

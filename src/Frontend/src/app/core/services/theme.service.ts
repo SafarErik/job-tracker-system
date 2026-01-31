@@ -11,32 +11,37 @@ export class ThemeService {
   // The raw setting stored (light, dark, or system)
   readonly themeSetting = signal<Theme>(this.getInitialTheme());
 
+  // Signal for OS preference
+  readonly systemPrefersDark = signal<boolean>(false);
+
   // A helper signal to know if we are effectively "dark" right now
   readonly isDark = computed(() => {
     const setting = this.themeSetting();
     if (setting === 'system') {
-      return isPlatformBrowser(this._platformId)
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        : false;
+      return this.systemPrefersDark();
     }
     return setting === 'dark';
   });
 
   constructor() {
-    // Whenever the setting changes, update the DOM and LocalStorage
+    // Initialize system preference
+    if (isPlatformBrowser(this._platformId)) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      this.systemPrefersDark.set(mediaQuery.matches);
+
+      // Listen for OS-level changes
+      mediaQuery.addEventListener('change', (e) => {
+        this.systemPrefersDark.set(e.matches);
+        if (this.themeSetting() === 'system') {
+          this.syncTheme('system');
+        }
+      });
+    }
+
+    // Whenever the setting or system preference changes, update the DOM (effect checks dependencies)
     effect(() => {
       this.syncTheme(this.themeSetting());
     });
-
-    // Listen for OS-level changes if set to 'system'
-    if (isPlatformBrowser(this._platformId)) {
-      window.matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', () => {
-          if (this.themeSetting() === 'system') {
-            this.syncTheme('system');
-          }
-        });
-    }
   }
 
   private getInitialTheme(): Theme {

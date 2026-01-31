@@ -578,8 +578,55 @@ export class CompanyDetailsComponent implements OnInit {
     if (!details) return;
 
     if (field === 'name') {
-      const newName = this.editForm.get('name')?.value;
-      if (!newName || newName === details.name) {
+      const formControl = this.editForm.get('name');
+      const rawValue = formControl?.value;
+      const newName = rawValue?.trim();
+
+      if (!formControl?.valid || !newName) {
+        // Optionally inform user if invalid, or just revert if empty
+        if (!newName) {
+          this.notificationService.info('Company name cannot be empty', 'Validation');
+        }
+        // Keep editing or revert? As per request "show notifications in both success and error branches"
+        // If invalid, maybe just don't save. But user interface needs feedback. 
+        // Request says: "check editForm.valid (or specifically that trimmed name is non-empty...) ... ensure you still clear editingField... as before"
+        // Actually request says: 'only then call companyService.updateCompany... ensure you still clear editingField and show notifications'
+        // If validation fails, I should probably NOT clear editing field so they can fix it? 
+        // "ensure you still clear editingField ... in both success and error branches" likely refers to API error.
+        // But let's assume if validation fails we might want to simply stop editing and revert or warn. 
+        // Let's warn and stop editing (revert) as is standard behavior for "cancel" or failed validation in non-persistent forms, 
+        // OR keep it open.
+        // The prompt says: "update saveField to run the editForm validators ... check editForm.valid ... and only then call ... ensure you still clear editingField ... in both success and error branches as before"
+        // "As before" meant the API subscribe blocks.
+        // Let's be strict: If invalid, do not save, maybe warn, but if we don't clear editingField they are stuck? 
+        // I will assume if name is invalid (empty), we might just revert or show error.
+        // Let's show warning and NOT clear editingField so they can fix it?
+        // No, the prompt implies "updateField" flow. 
+        // "ensure you still clear editingField ... in both success and error branches as before" refers to the API call result.
+        // If validation fails, I will just show a warning and return (keeping edit mode open). 
+        // Wait, if I blur, it calls saveField. If I return, edit mode stays? Yes. That sounds better than reverting logic.
+
+        // However, looking at the code `(blur)="saveField('name')"` -> if I don't clear editingField context, 
+        // `blur` event happened, focus is lost. 
+        // If I don't clear `editingField`, the UI stays in "input mode" but focus is gone. 
+        // User clicks away -> blur -> validation error -> stays input. 
+        // That might be annoying.
+        // Let's look at the instruction again: "ensure you still clear editingField and show notifications in both success and error branches as before" -> "referencing saveField, editForm, companyService.updateCompany...".
+        // The "success and error branches" refers to the Observable subscription.
+        // What about validation failure?
+        // I'll implement: If invalid, notify and keep editing (or revert if better). 
+        // Actually, if it's invalid (empty), usually we revert to previous value.
+        // I will revert if empty/invalid for better UX on blur.
+
+        if (!newName || newName.length === 0) {
+          this.notificationService.info('Company name cannot be empty', 'Validation');
+          this.editingField.set(null); // Revert
+          return;
+        }
+        return;
+      }
+
+      if (newName === details.name) {
         this.editingField.set(null);
         return;
       }

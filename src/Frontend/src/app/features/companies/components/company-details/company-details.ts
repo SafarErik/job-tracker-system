@@ -37,6 +37,7 @@ import {
   lucideX
 } from '@ng-icons/lucide';
 import { NgIcon } from '@ng-icons/core';
+import { SkillSelectorComponent } from '../../../../shared/components/skill-selector/skill-selector';
 
 @Component({
   selector: 'app-company-details',
@@ -49,6 +50,7 @@ import { NgIcon } from '@ng-icons/core';
     ...HlmBadgeImports,
     ...HlmInputImports,
     ...HlmDropdownMenuImports,
+    SkillSelectorComponent,
   ],
   providers: [
     provideIcons({
@@ -91,9 +93,7 @@ export class CompanyDetailsComponent implements OnInit {
   logoFailed = signal(false);
 
   editingIndustry = signal(false);
-  editingTech = signal(false);
   editingContactId = signal<number | null>(null); // null: not editing, 0: new, >0: existing
-  newTech = signal('');
 
   // Contact editing state
   editContactForm = {
@@ -430,26 +430,20 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
-  addTechItem(): void {
-    const tech = this.newTech().trim();
-    if (!tech) return;
-
+  addTechItem(skill: string): void {
     const details = this.companyDetails();
     if (!details) return;
 
     const currentStack = details.techStack || [];
-    if (currentStack.includes(tech)) {
-      this.notificationService.info(`${tech} is already in the stack`, 'Note');
-      this.newTech.set('');
+    if (currentStack.includes(skill)) {
+      this.notificationService.info(`${skill} is already in the stack`, 'Note');
       return;
     }
 
-    const newStack = [...currentStack, tech];
+    const newStack = [...currentStack, skill];
     this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
       next: () => {
         this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
-        this.newTech.set('');
-        this.editingTech.set(false);
         this.notificationService.success('Skill added to stack', 'Updated');
       },
       error: () => this.notificationService.error('Failed to add skill', 'Error')

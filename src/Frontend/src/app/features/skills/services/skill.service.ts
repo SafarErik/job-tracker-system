@@ -8,9 +8,13 @@ import { environment } from '../../../../environments/environment';
 export class SkillService {
   private readonly apiUrl = `${environment.apiBaseUrl}/Skills`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getSkills(): Observable<Skill[]> {
     return this.http.get<Skill[]>(this.apiUrl);
+  }
+
+  createSkill(payload: { name: string; category?: string }): Observable<Skill> {
+    return this.http.post<Skill>(this.apiUrl, payload);
   }
 }

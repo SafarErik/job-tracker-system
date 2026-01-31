@@ -199,42 +199,10 @@
 
         <!-- Tech Stack Block -->
         <div class="bg-muted/30 rounded-[2rem] border border-border/40 p-6 md:p-8 relative group/stack">
-          <div class="flex items-center justify-between mb-6">
-            <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Environment Stack
-            </h4>
-            <button hlmBtn variant="ghost" size="icon-xs" class="h-6 w-6 p-0 rounded-full"
-              (click)="editingTech.set(true)">
-              <ng-icon name="lucidePlus" class="text-muted-foreground hover:text-primary transition-colors"></ng-icon>
-            </button>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            @for (tech of details.techStack; track tech) {
-            <span
-              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border/40 text-[11px] font-bold group/tag">
-              {{ tech }}
-              <button (click)="updateTechStack(tech)"
-                class="opacity-0 group-hover/tag:opacity-100 hover:text-destructive transition-all">
-                <ng-icon name="lucideX" class="text-[10px]"></ng-icon>
-              </button>
-            </span>
-            }
-
-            @if (editingTech()) {
-            <div class="flex items-center gap-1 mt-2 w-full">
-              <input hlmInput size="sm" class="h-7 py-0 px-2 text-[11px] flex-1" [ngModel]="newTech()"
-                (ngModelChange)="newTech.set($event)" (keydown.enter)="addTechItem()"
-                (keydown.escape)="editingTech.set(false)" placeholder="Add skill..." autofocus />
-              <button hlmBtn variant="ghost" size="icon-xs" (click)="addTechItem()" class="h-7 w-7 p-0">
-                <ng-icon name="lucideCheck" class="text-success"></ng-icon>
-              </button>
-            </div>
-            }
-
-            @if (!details.techStack?.length && !editingTech()) {
-            <p class="text-xs font-medium text-muted-foreground/60 italic">No stack data available</p>
-            }
-          </div>
+          <app-skill-selector title="Environment Stack" placeholder="Add technology..."
+            [selectedSkills]="details.techStack || []" (skillAdded)="addTechItem($event)"
+            (skillRemoved)="updateTechStack($event)">
+          </app-skill-selector>
         </div>
       </div>
 

@@ -15,29 +15,29 @@
       -->
     <div
       class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/30 pb-2 border-t-4 shadow-sm transition-all duration-300"
-      [class.border-blue-500]="column.status === Status.Applied"
-      [class.border-indigo-400]="column.status === Status.PhoneScreen"
-      [class.border-orange-400]="column.status === Status.TechnicalTask"
-      [class.border-violet-500]="column.status === Status.Interviewing"
-      [class.border-amber-500]="column.status === Status.Offer"
-      [class.border-emerald-500]="column.status === Status.Accepted"
-      [class.border-rose-500]="column.status === Status.Rejected"
-      [class.border-slate-500]="column.status === Status.Ghosted">
+      [class.border-info]="column.status === Status.Applied"
+      [class.border-info/80]="column.status === Status.PhoneScreen"
+      [class.border-warning/80]="column.status === Status.TechnicalTask"
+      [class.border-primary]="column.status === Status.Interviewing"
+      [class.border-success]="column.status === Status.Offer"
+      [class.border-success/80]="column.status === Status.Accepted"
+      [class.border-destructive]="column.status === Status.Rejected"
+      [class.border-muted-foreground]="column.status === Status.Ghosted">
       <!-- Header - Colorful Titles -->
       <div class="flex items-center justify-between px-3 pt-4 pb-2">
         <h3 class="text-xs font-extrabold uppercase tracking-wider transition-colors"
-          [class.text-blue-600]="column.status === Status.Applied"
-          [class.text-indigo-600]="column.status === Status.PhoneScreen"
-          [class.text-orange-600]="column.status === Status.TechnicalTask"
-          [class.text-violet-600]="column.status === Status.Interviewing"
-          [class.text-amber-600]="column.status === Status.Offer"
-          [class.text-emerald-600]="column.status === Status.Accepted"
-          [class.text-rose-600]="column.status === Status.Rejected"
-          [class.text-slate-600]="column.status === Status.Ghosted">
+          [class.text-info]="column.status === Status.Applied"
+          [class.text-info/80]="column.status === Status.PhoneScreen"
+          [class.text-warning/80]="column.status === Status.TechnicalTask"
+          [class.text-primary]="column.status === Status.Interviewing"
+          [class.text-success]="column.status === Status.Offer"
+          [class.text-success/80]="column.status === Status.Accepted"
+          [class.text-destructive]="column.status === Status.Rejected"
+          [class.text-muted-foreground]="column.status === Status.Ghosted">
           {{ column.title }}
         </h3>
         <span
-          class="flex h-6 w-6 items-center justify-center rounded-md bg-white dark:bg-zinc-800 text-[10px] font-bold text-muted-foreground shadow-sm border border-border/50">
+          class="flex h-6 w-6 items-center justify-center rounded-md bg-card text-[10px] font-bold text-muted-foreground shadow-sm border border-border/50">
           {{ column.applications.length }}
         </span>
       </div>

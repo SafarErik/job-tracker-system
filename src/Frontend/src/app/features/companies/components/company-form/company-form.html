@@ -42,7 +42,7 @@
           </div>
 
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse"></div>
             <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Company Identity</h3>
           </div>
 
@@ -108,7 +108,7 @@
         <div
           class="lg:col-span-4 flex flex-col gap-6 p-8 bg-muted/30 rounded-[2.5rem] border border-border/40 h-full relative group/logistics">
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
             <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params</h3>
           </div>
 
@@ -162,7 +162,7 @@
               <div
                 class="bg-card/50 rounded-xl p-3 border border-border/20 flex flex-col items-center justify-center gap-1">
                 <span class="text-[10px] uppercase font-bold text-muted-foreground/50">Status</span>
-                <span class="text-xs font-black text-emerald-500">Active</span>
+                <span class="text-xs font-black text-success">Active</span>
               </div>
             </div>
           </div>
@@ -171,45 +171,9 @@
         <!-- 3. Tech Ecosystem (Span 7) -->
         <div
           class="lg:col-span-7 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden group/tech">
-          <div class="flex items-center gap-3 mb-6">
-            <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Tech Ecosystem</h3>
-          </div>
-
-          <div class="flex flex-col gap-4">
-            <!-- Input Area -->
-            <div class="relative flex items-center gap-2">
-              <input hlmInput [value]="newTech()" (input)="newTech.set($any($event.target).value)"
-                (keydown)="onTechKeydown($event)" placeholder="Add technology (e.g. React, .NET)..."
-                class="h-12 flex-1 rounded-xl bg-muted/30 border-border/40 focus:bg-card focus:border-primary/30 transition-all font-bold text-sm px-4 placeholder:text-muted-foreground/40" />
-              <button hlmBtn size="icon" (click)="addTech()" type="button"
-                class="h-12 w-12 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
-                <ng-icon name="lucidePlus"></ng-icon>
-              </button>
-            </div>
-
-            <!-- Tags Cloud -->
-            <div
-              class="min-h-[120px] p-4 rounded-2xl border-2 border-dashed border-border/30 bg-muted/10 flex flex-wrap content-start gap-2 transition-colors hover:border-primary/20">
-              @if (techStack().length === 0) {
-              <div
-                class="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 gap-2 select-none">
-                <ng-icon name="lucideLayers" size="32"></ng-icon>
-                <span class="text-[10px] font-black uppercase tracking-widest">No Tech Stack Defined</span>
-              </div>
-              }
-              @for (tech of techStack(); track tech; let i = $index) {
-              <div
-                class="animate-in fade-in zoom-in-95 group/tag inline-flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-lg bg-card border border-border/50 shadow-sm text-xs font-bold text-foreground hover:border-primary/30 transition-all cursor-default select-none">
-                {{ tech }}
-                <button type="button" (click)="removeTech(i, $event)"
-                  class="h-5 w-5 flex items-center justify-center rounded-md hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition-colors">
-                  <ng-icon name="lucideX" size="14"></ng-icon>
-                </button>
-              </div>
-              }
-            </div>
-          </div>
+          <app-skill-selector title="Tech Ecosystem" placeholder="Add technology (e.g. React, .NET)..."
+            [selectedSkills]="techStack()" (skillAdded)="onSkillAdded($event)" (skillRemoved)="onSkillRemoved($event)">
+          </app-skill-selector>
         </div>
 
         <!-- 4. Key Contact (Span 5) -->

@@ -43,7 +43,7 @@
                     </div>
 
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Role Definition
                         </h3>
                     </div>
@@ -53,57 +53,55 @@
                         <div class="space-y-2">
                             <label hlmLabel
                                 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Company</label>
-                            <hlm-combobox (valueChange)="onCompanySelected($event)" [itemToString]="companyToString">
-                                <hlm-combobox-input [formControlName]="'companyName'" placeholder="e.g. Google"
+                            <hlm-autocomplete [(search)]="companySearch">
+                                <hlm-autocomplete-input formControlName="companyName" placeholder="e.g. Google"
+                                    showClear
                                     class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
-                                    [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched"></hlm-combobox-input>
+                                    [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched" />
 
-                                <div *brnPopoverContent hlmComboboxContent
-                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl">
-                                    <hlm-combobox-empty>No companies found.</hlm-combobox-empty>
-                                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto custom-scrollbar">
-                                        @for(company of companies(); track company.id) {
-                                        <hlm-combobox-item [value]="company" class="rounded-xl">
+                                <div *brnPopoverContent hlmAutocompleteContent
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
+                                    <hlm-autocomplete-empty>No companies found.</hlm-autocomplete-empty>
+                                    <div hlmAutocompleteList class="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                        @for(company of filteredCompanies(); track company.id) {
+                                        <hlm-autocomplete-item [value]="company.name"
+                                            (click)="onCompanySelected(company)" class="rounded-xl">
                                             {{ company.name }}
-                                        </hlm-combobox-item>
-                                        }
-                                        @if(form.get('companyName')?.value && companies().length === 0) {
-                                        <hlm-combobox-item [value]="form.get('companyName')?.value"
-                                            class="rounded-xl text-primary italic">
-                                            + Create "{{ form.get('companyName')?.value }}"
-                                        </hlm-combobox-item>
+                                        </hlm-autocomplete-item>
                                         }
                                     </div>
                                 </div>
-                            </hlm-combobox>
+                            </hlm-autocomplete>
                         </div>
 
                         <!-- Position Input -->
                         <div class="space-y-2">
                             <label hlmLabel
                                 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Position</label>
-                            <hlm-combobox (valueChange)="onPositionSelected($event)">
-                                <hlm-combobox-input [formControlName]="'position'" placeholder="e.g. Senior Frontend"
+                            <hlm-autocomplete [(search)]="positionSearch">
+                                <hlm-autocomplete-input formControlName="position" placeholder="e.g. Senior Frontend"
+                                    showClear
                                     class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
-                                    [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched"></hlm-combobox-input>
+                                    [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched" />
 
-                                <div *brnPopoverContent hlmComboboxContent
-                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl">
-                                    <hlm-combobox-empty>No recent positions found.</hlm-combobox-empty>
-                                    <div hlmComboboxList class="max-h-[200px] overflow-y-auto custom-scrollbar">
+                                <div *brnPopoverContent hlmAutocompleteContent
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
+                                    <hlm-autocomplete-empty>No recent positions found.</hlm-autocomplete-empty>
+                                    <div hlmAutocompleteList class="max-h-[200px] overflow-y-auto custom-scrollbar">
                                         @if (recentPositions().length > 0) {
                                         <div
                                             class="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
                                             Recent History</div>
-                                        @for(pos of recentPositions(); track pos) {
-                                        <hlm-combobox-item [value]="pos" class="rounded-xl">
+                                        @for(pos of filteredPositions(); track pos) {
+                                        <hlm-autocomplete-item [value]="pos" (click)="onPositionSelected(pos)"
+                                            class="rounded-xl">
                                             {{ pos }}
-                                        </hlm-combobox-item>
+                                        </hlm-autocomplete-item>
                                         }
                                         }
                                     </div>
                                 </div>
-                            </hlm-combobox>
+                            </hlm-autocomplete>
                         </div>
                     </div>
 
@@ -121,7 +119,7 @@
                 <div
                     class="lg:col-span-4 flex flex-col gap-6 p-8 bg-muted/30 rounded-[2.5rem] border border-border/40 h-full relative group/logistics">
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params
                         </h3>
                     </div>
@@ -228,7 +226,7 @@
                 <div
                     class="lg:col-span-7 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden group/assets">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-success"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Assets
                         </h3>
                     </div>
@@ -254,7 +252,7 @@
                                     (selectedFile()?.size || 0) / 1024 | number:'1.0-1' }} KB</span>
                             </div>
                             <button (click)="removeFile($event)"
-                                class="h-8 w-8 flex items-center justify-center hover:bg-rose-500/10 hover:text-rose-500 rounded-full transition-colors shrink-0">
+                                class="h-8 w-8 flex items-center justify-center hover:bg-destructive/10 hover:text-destructive rounded-full transition-colors shrink-0">
                                 <ng-icon name="lucideX" size="18"></ng-icon>
                             </button>
                         </div>

@@ -80,8 +80,8 @@ export class DashboardMetricsComponent {
     {
       label: 'Total',
       value: this.total(),
-      colorClass: 'text-foreground',
-      indicatorColorClass: 'border-l-slate-400'
+      colorClass: 'text-muted-foreground',
+      indicatorColorClass: 'border-l-muted-foreground'
     },
     {
       label: 'Active',
@@ -98,26 +98,26 @@ export class DashboardMetricsComponent {
     {
       label: 'Offers',
       value: this.offers(),
-      colorClass: 'text-amber-500',
-      indicatorColorClass: 'border-l-amber-500'
+      colorClass: 'text-warning',
+      indicatorColorClass: 'border-l-warning'
     },
     {
       label: 'Rejected',
       value: this.rejected(),
-      colorClass: 'text-rose-500',
-      indicatorColorClass: 'border-l-rose-500'
+      colorClass: 'text-destructive',
+      indicatorColorClass: 'border-l-destructive'
     },
     {
       label: 'Response',
       value: `${this.responseRate()}%`,
-      colorClass: 'text-indigo-500',
-      indicatorColorClass: 'border-l-indigo-500'
+      colorClass: 'text-info',
+      indicatorColorClass: 'border-l-info'
     },
     {
       label: 'Success',
       value: `${this.successRate()}%`,
-      colorClass: 'text-emerald-500',
-      indicatorColorClass: 'border-l-emerald-500'
+      colorClass: 'text-success',
+      indicatorColorClass: 'border-l-success'
     },
   ]);
 }

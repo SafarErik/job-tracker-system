@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+    Component,
+    signal,
+    computed,
+    effect,
+    ChangeDetectionStrategy,
+    inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -18,8 +25,8 @@ import { JobPriority } from '../../models/job-priority.enum';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmComboboxImports } from '@spartan-ng/helm/combobox';
 import { BrnPopoverContent } from '@spartan-ng/brain/popover';
+import { HlmAutocompleteImports } from '@spartan-ng/helm/autocomplete';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -35,7 +42,7 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
         ...HlmInputImports,
         ...HlmLabelImports,
         ...HlmButtonImports,
-        ...HlmComboboxImports,
+        ...HlmAutocompleteImports,
         BrnPopoverContent,
     ],
     providers: [
@@ -57,14 +64,31 @@ export class AddJobFormComponent {
     companies = signal<any[]>([]);
     recentPositions = signal<string[]>([]);
 
-    // Filtered Signals for Autocomplete
-    filteredCompanies = signal<any[]>([]);
-    filteredPositions = signal<string[]>([]);
+    // Autocomplete State
+    companySearch = signal('');
+    positionSearch = signal('');
+
+    // Filtered Signals for Autocomplete (Computed)
+    filteredCompanies = computed(() => {
+        const search = this.companySearch().toLowerCase();
+        const all = this.companies();
+        if (!search) return all.slice(0, 5);
+        return all.filter(c => c.name.toLowerCase().includes(search)).slice(0, 10);
+    });
+
+    filteredPositions = computed(() => {
+        const search = this.positionSearch().toLowerCase();
+        const all = this.recentPositions();
+        if (!search) return all.slice(0, 5);
+        return all.filter(p => p.toLowerCase().includes(search)).slice(0, 10);
+    });
 
     // Dropdown Visibility
     isStatusDropdownOpen = signal(false);
     isJobTypeDropdownOpen = signal(false);
     isWorkplaceTypeDropdownOpen = signal(false);
+
+    isPriorityDropdownOpen = signal(false);
 
     // Options
     statusOptions = [
@@ -98,8 +122,6 @@ export class AddJobFormComponent {
         { value: JobPriority.High, label: 'High' },
     ];
 
-    isPriorityDropdownOpen = signal(false);
-
     constructor(
         private fb: FormBuilder,
         private applicationService: ApplicationService,
@@ -118,10 +140,24 @@ export class AddJobFormComponent {
             priority: [JobPriority.Medium, [Validators.required]],
             matchScore: [0, [Validators.min(0), Validators.max(100)]],
             location: ['', []],
-            // Removed salaryMin/Max as requested
         });
 
         this.loadAutocompleteData();
+
+        // Sync signals to form controls to ensure validity as user types
+        effect(() => {
+            const name = this.companySearch();
+            if (name !== this.form.get('companyName')?.value) {
+                this.form.get('companyName')?.setValue(name, { emitEvent: false });
+            }
+        });
+
+        effect(() => {
+            const pos = this.positionSearch();
+            if (pos !== this.form.get('position')?.value) {
+                this.form.get('position')?.setValue(pos, { emitEvent: false });
+            }
+        });
     }
 
     private loadAutocompleteData() {
@@ -130,80 +166,33 @@ export class AddJobFormComponent {
         // Load Companies
         this.companyService.getCompanies().subscribe(comps => {
             this.companies.set(comps);
-            this.filteredCompanies.set(comps.slice(0, 5));
         });
 
         // Load Applications to derive recent positions
         this.applicationService.getApplications().subscribe(apps => {
-            // Extract unique positions, effectively "recent" by default list order or we could sort by date
             const uniquePositions = [...new Set(apps.map(a => a.position))].filter(Boolean);
             this.recentPositions.set(uniquePositions);
-            this.filteredPositions.set(uniquePositions.slice(0, 5));
             this.isLoadingData.set(false);
         });
     }
 
     // --- Company Autocomplete Logic ---
 
-    // Helper for Spartan to display object as string in input
-    companyToString(company: any): string {
-        return company?.name ?? company ?? '';
-    }
-
-    onCompanyInput(event: Event) {
-        const value = (event.target as HTMLInputElement).value;
-        this.form.patchValue({ companyId: null }, { emitEvent: false }); // Reset ID on type
-        this.filterCompanies(value);
-    }
-
-    private filterCompanies(value: string) {
-        if (!value) {
-            this.filteredCompanies.set(this.companies().slice(0, 5));
-            return;
-        }
-        const lower = value.toLowerCase();
-        const matches = this.companies().filter(c => c.name.toLowerCase().includes(lower));
-        this.filteredCompanies.set(matches.slice(0, 5));
-    }
-
-    onCompanySelected(event: any) {
-        // Event is the selected value (Company Object or Check String)
-        const selected = event;
-
-        // Check if it's our special "Create" string/object or real company
-        if (selected && selected.id) {
-            this.form.patchValue({
-                companyName: selected.name,
-                companyId: selected.id
-            });
-        } else if (typeof selected === 'string') {
-            // Case where user selected the "Create X" item which we might pass as string?
-            // Or simply user typed name.
-            // If we handle "Create" item as a value, we can catch it here.
-            // We will pass the current name string as value for the Create item.
-            this.form.patchValue({ companyName: selected, companyId: null });
-        }
+    // Handled by Signals
+    onCompanySelected(company: any) {
+        this.form.patchValue({
+            companyName: company.name,
+            companyId: company.id
+        });
+        this.companySearch.set(company.name);
     }
 
     // --- Position Autocomplete Logic ---
 
-    onPositionInput(event: Event) {
-        const value = (event.target as HTMLInputElement).value;
-        this.filterPositions(value);
-    }
-
-    private filterPositions(value: string) {
-        if (!value) {
-            this.filteredPositions.set(this.recentPositions().slice(0, 5));
-            return;
-        }
-        const lower = value.toLowerCase();
-        const matches = this.recentPositions().filter(p => p.toLowerCase().includes(lower));
-        this.filteredPositions.set(matches.slice(0, 5));
-    }
-
+    // Handled by Signals
     onPositionSelected(value: string) {
         this.form.patchValue({ position: value });
+        this.positionSearch.set(value);
     }
 
     // --- Dropdown Selection Logic ---
@@ -249,14 +238,7 @@ export class AddJobFormComponent {
     }
 
     // --- Focus Handling ---
-    // Spartan handles focus/blur visibility logic internally
-    onCompanyFocus() {
-        this.filterCompanies(this.form.get('companyName')?.value || '');
-    }
-
-    onPositionFocus() {
-        this.filterPositions(this.form.get('position')?.value || '');
-    }
+    // Handled by onCompanyFocus and onPositionFocus above
 
     async onPasteUrl() {
         try {
@@ -336,11 +318,17 @@ export class AddJobFormComponent {
         this.isSubmitting.set(true);
         const formValue = this.form.value;
 
+        // Sync searches if needed
+        const companyName = this.companySearch() || formValue.companyName;
+        const position = this.positionSearch() || formValue.position;
+
+        const finalValues = { ...formValue, companyName, position };
+
         // Use selected ID or resolve by name
-        if (formValue.companyId) {
-            this.saveApplication(formValue);
+        if (finalValues.companyId) {
+            this.saveApplication(finalValues);
         } else {
-            this.resolveCompanyAndSave(formValue.companyName, formValue);
+            this.resolveCompanyAndSave(finalValues.companyName, finalValues);
         }
     }
 

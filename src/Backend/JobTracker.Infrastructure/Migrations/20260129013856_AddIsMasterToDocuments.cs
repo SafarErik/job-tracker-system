@@ -16,6 +16,13 @@ namespace JobTracker.Infrastructure.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_UserId_Type",
+                table: "Documents",
+                columns: new[] { "UserId", "Type" },
+                unique: true,
+                filter: "\"IsMaster\" = TRUE");
         }
 
         /// <inheritdoc />

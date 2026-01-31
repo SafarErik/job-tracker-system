@@ -410,21 +410,21 @@ export class JobList implements OnInit {
     const base = 'px-2 py-0.5 rounded-full text-xs font-medium border border-transparent transition-all';
     switch (status) {
       case JobApplicationStatus.Applied:
-        return `${base} bg-blue-500/10 text-blue-700 dark:text-blue-400`;
+        return `${base} bg-info/10 text-info`;
       case JobApplicationStatus.PhoneScreen:
-        return `${base} bg-indigo-500/10 text-indigo-700 dark:text-indigo-400`;
+        return `${base} bg-info/10 text-info`;
       case JobApplicationStatus.TechnicalTask:
-        return `${base} bg-orange-500/10 text-orange-700 dark:text-orange-400`;
+        return `${base} bg-warning/10 text-warning`;
       case JobApplicationStatus.Interviewing:
-        return `${base} bg-violet-500/10 text-violet-700 dark:text-violet-400`;
+        return `${base} bg-primary/10 text-primary`;
       case JobApplicationStatus.Offer:
-        return `${base} bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20`;
+        return `${base} bg-success/10 text-success border-success/20`;
       case JobApplicationStatus.Accepted:
-        return `${base} bg-emerald-500/10 text-emerald-700 dark:text-emerald-400`;
+        return `${base} bg-success/10 text-success`;
       case JobApplicationStatus.Rejected:
-        return `${base} bg-rose-500/10 text-rose-700 dark:text-rose-400`;
+        return `${base} bg-destructive/10 text-destructive`;
       case JobApplicationStatus.Ghosted:
-        return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+        return `${base} bg-muted-foreground/10 text-muted-foreground`;
       default:
         return `${base} bg-muted text-muted-foreground`;
     }

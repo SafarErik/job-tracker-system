@@ -76,15 +76,6 @@ export const routes: Routes = [
     title: 'New Application - JobTracker',
   },
   {
-    path: 'edit/:id',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-form/job-form').then(
-        (m) => m.JobFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Edit Application - JobTracker',
-  },
-  {
     // Application Workstation - full page view with tabs
     path: 'applications/:id',
     loadComponent: () =>

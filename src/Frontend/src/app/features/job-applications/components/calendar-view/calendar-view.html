@@ -9,30 +9,14 @@
 
       <!-- Navigation Buttons -->
       <div class="flex gap-1">
-        <button
-          hlmBtn
-          variant="ghost"
-          size="icon"
-          (click)="previousMonth()"
-          aria-label="Previous month"
-        >
+        <button hlmBtn variant="ghost" size="icon" (click)="previousMonth()" aria-label="Previous month">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <button hlmBtn variant="ghost" size="icon" (click)="nextMonth()" aria-label="Next month">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 5l7 7-7 7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
@@ -44,69 +28,54 @@
     <!-- Week Day Headers -->
     <div class="grid grid-cols-7 gap-px bg-border rounded-t-lg overflow-hidden">
       @for (day of weekDays; track day) {
-        <div class="bg-muted py-2 text-center">
-          <span class="text-xs font-semibold text-muted-foreground uppercase">{{ day }}</span>
-        </div>
+      <div class="bg-muted py-2 text-center">
+        <span class="text-xs font-semibold text-muted-foreground uppercase">{{ day }}</span>
+      </div>
       }
     </div>
 
     <!-- Calendar Days -->
     <div class="grid grid-cols-7 gap-px bg-border rounded-b-lg overflow-hidden">
       @for (day of calendarDays; track day.date.getTime()) {
-        <div
-          (click)="onDayClick(day)"
-          (keydown.enter)="onDayClick(day)"
-          (keydown.space)="onDayClick(day); $event.preventDefault()"
-          [attr.tabindex]="day.applications.length > 0 ? 0 : -1"
-          [attr.role]="day.applications.length > 0 ? 'button' : null"
-          class="bg-card min-h-[100px] p-2 relative transition-colors hover:bg-accent"
-          [class.opacity-50]="!day.isCurrentMonth"
-          [class.ring-2]="day.isToday"
-          [class.ring-primary]="day.isToday"
-          [class.cursor-pointer]="day.applications.length > 0"
-        >
-          <!-- Day Number -->
-          <div class="flex items-start justify-between mb-1">
-            <span
-              class="text-sm font-medium"
-              [ngClass]="{
+      <div (click)="onDayClick(day)" (keydown.enter)="onDayClick(day)"
+        (keydown.space)="onDayClick(day); $event.preventDefault()"
+        [attr.tabindex]="day.applications.length > 0 ? 0 : -1"
+        [attr.role]="day.applications.length > 0 ? 'button' : null"
+        class="bg-card min-h-[100px] p-2 relative transition-colors hover:bg-accent"
+        [class.opacity-50]="!day.isCurrentMonth" [class.ring-2]="day.isToday" [class.ring-primary]="day.isToday"
+        [class.cursor-pointer]="day.applications.length > 0">
+        <!-- Day Number -->
+        <div class="flex items-start justify-between mb-1">
+          <span class="text-sm font-medium" [ngClass]="{
                 'text-foreground': day.isCurrentMonth && !day.isToday,
                 'text-muted-foreground': !day.isCurrentMonth,
                 'text-primary font-bold': day.isToday,
-              }"
-            >
-              {{ day.date.getDate() }}
-            </span>
+              }">
+            {{ day.date.getDate() }}
+          </span>
 
-            <!-- Application Count Badge -->
-            @if (day.applications.length > 0) {
-              <span
-                class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white rounded-full"
-                [ngClass]="getCountIndicatorColor(day.applications.length)"
-              >
-                {{ day.applications.length }}
-              </span>
-            }
-          </div>
-
-          <!-- Application Indicators (dots) -->
+          <!-- Application Count Badge -->
           @if (day.applications.length > 0) {
-            <div class="flex flex-wrap gap-1 mt-1">
-              @for (app of day.applications.slice(0, 3); track app.id) {
-                <div
-                  class="w-2 h-2 rounded-full"
-                  [ngClass]="getStatusDotColor(app.status)"
-                  [title]="app.position + ' - ' + app.companyName"
-                ></div>
-              }
-              @if (day.applications.length > 3) {
-                <span class="text-xs text-muted-foreground ml-1"
-                  >+{{ day.applications.length - 3 }}</span
-                >
-              }
-            </div>
+          <span class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white rounded-full"
+            [ngClass]="getCountIndicatorColor(day.applications.length)">
+            {{ day.applications.length }}
+          </span>
           }
         </div>
+
+        <!-- Application Indicators (dots) -->
+        @if (day.applications.length > 0) {
+        <div class="flex flex-wrap gap-1 mt-1">
+          @for (app of day.applications.slice(0, 3); track app.id) {
+          <div class="w-2 h-2 rounded-full" [ngClass]="getStatusDotColor(app.status)"
+            [title]="app.position + ' - ' + app.companyName"></div>
+          }
+          @if (day.applications.length > 3) {
+          <span class="text-xs text-muted-foreground ml-1">+{{ day.applications.length - 3 }}</span>
+          }
+        </div>
+        }
+      </div>
       }
     </div>
   </div>
@@ -116,31 +85,31 @@
     <h3 class="text-sm font-semibold text-foreground mb-2">Status Legend</h3>
     <div class="flex flex-wrap gap-3">
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-blue-400"></div>
+        <div class="w-3 h-3 rounded-full bg-info"></div>
         <span class="text-xs text-muted-foreground">Applied</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-purple-400"></div>
+        <div class="w-3 h-3 rounded-full bg-info/80"></div>
         <span class="text-xs text-muted-foreground">Phone Screen</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-indigo-400"></div>
+        <div class="w-3 h-3 rounded-full bg-warning/80"></div>
         <span class="text-xs text-muted-foreground">Technical Task</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+        <div class="w-3 h-3 rounded-full bg-primary"></div>
         <span class="text-xs text-muted-foreground">Interviewing</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+        <div class="w-3 h-3 rounded-full bg-success"></div>
         <span class="text-xs text-muted-foreground">Offer</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+        <div class="w-3 h-3 rounded-full bg-destructive"></div>
         <span class="text-xs text-muted-foreground">Rejected</span>
       </div>
       <div class="flex items-center gap-1">
-        <div class="w-3 h-3 rounded-full bg-orange-500"></div>
+        <div class="w-3 h-3 rounded-full bg-muted-foreground"></div>
         <span class="text-xs text-muted-foreground">Ghosted</span>
       </div>
     </div>
@@ -148,103 +117,73 @@
 
   <!-- Detail Modal -->
   @if (selectedDay) {
-    <div
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      (click)="closeDetail()"
-    >
-      <div
-        hlmCard
-        class="max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-        (click)="$event.stopPropagation()"
-      >
-        <!-- Modal Header -->
-        <div
-          hlmCardHeader
-          class="sticky top-0 bg-card z-10 flex flex-row items-center justify-between"
-        >
-          <h3 hlmCardTitle>
-            Applications on
-            {{
-              selectedDay.date.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })
-            }}
-          </h3>
-          <button hlmBtn variant="ghost" size="icon" (click)="closeDetail()" aria-label="Close">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" (click)="closeDetail()">
+    <div hlmCard class="max-w-2xl w-full max-h-[80vh] overflow-y-auto" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div hlmCardHeader class="sticky top-0 bg-card z-10 flex flex-row items-center justify-between">
+        <h3 hlmCardTitle>
+          Applications on
+          {{
+          selectedDay.date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          })
+          }}
+        </h3>
+        <button hlmBtn variant="ghost" size="icon" (click)="closeDetail()" aria-label="Close">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
 
-        <!-- Modal Content -->
-        <div hlmCardContent class="space-y-4">
-          @for (app of selectedDay.applications; track app.id) {
-            <div class="border border-border rounded-lg p-4 hover:shadow-md transition-shadow">
-              <!-- Card Header -->
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex-1">
-                  <h4 class="text-lg font-semibold text-foreground">{{ app.position }}</h4>
-                  <p class="text-sm text-muted-foreground mt-1">{{ app.companyName }}</p>
-                </div>
-                <span
-                  class="px-3 py-1 text-xs font-semibold rounded-full"
-                  [ngClass]="getStatusColor(app.status)"
-                >
-                  {{ getStatusLabel(app.status) }}
-                </span>
-              </div>
-
-              <!-- Card Details -->
-              <div class="space-y-2">
-                <div class="flex items-center text-sm text-muted-foreground">
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  Applied: {{ formatDate(app.appliedAt) }}
-                </div>
-
-                @if (app.jobUrl) {
-                  <a
-                    [href]="app.jobUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center text-sm text-primary hover:text-primary/80 underline"
-                  >
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                    View Job Posting
-                  </a>
-                }
-
-                @if (app.description) {
-                  <div class="mt-3 pt-3 border-t border-border">
-                    <p class="text-sm text-foreground whitespace-pre-wrap">{{ app.description }}</p>
-                  </div>
-                }
-              </div>
+      <!-- Modal Content -->
+      <div hlmCardContent class="space-y-4">
+        @for (app of selectedDay.applications; track app.id) {
+        <div class="border border-border rounded-lg p-4 hover:shadow-md transition-shadow">
+          <!-- Card Header -->
+          <div class="flex items-start justify-between mb-3">
+            <div class="flex-1">
+              <h4 class="text-lg font-semibold text-foreground">{{ app.position }}</h4>
+              <p class="text-sm text-muted-foreground mt-1">{{ app.companyName }}</p>
             </div>
-          }
+            <span class="px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="getStatusColor(app.status)">
+              {{ getStatusLabel(app.status) }}
+            </span>
+          </div>
+
+          <!-- Card Details -->
+          <div class="space-y-2">
+            <div class="flex items-center text-sm text-muted-foreground">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Applied: {{ formatDate(app.appliedAt) }}
+            </div>
+
+            @if (app.jobUrl) {
+            <a [href]="app.jobUrl" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center text-sm text-primary hover:text-primary/80 underline">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              View Job Posting
+            </a>
+            }
+
+            @if (app.description) {
+            <div class="mt-3 pt-3 border-t border-border">
+              <p class="text-sm text-foreground whitespace-pre-wrap">{{ app.description }}</p>
+            </div>
+            }
+          </div>
         </div>
+        }
       </div>
     </div>
+  </div>
   }
 </div>

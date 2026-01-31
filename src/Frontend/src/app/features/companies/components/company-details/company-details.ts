@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
@@ -11,7 +11,7 @@ import { HlmCardImports } from '../../../../../../libs/ui/card';
 import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -37,6 +37,7 @@ import {
   lucideX
 } from '@ng-icons/lucide';
 import { NgIcon } from '@ng-icons/core';
+import { SkillSelectorComponent } from '../../../../shared/components/skill-selector/skill-selector';
 
 @Component({
   selector: 'app-company-details',
@@ -49,6 +50,8 @@ import { NgIcon } from '@ng-icons/core';
     ...HlmBadgeImports,
     ...HlmInputImports,
     ...HlmDropdownMenuImports,
+    SkillSelectorComponent,
+    ReactiveFormsModule,
   ],
   providers: [
     provideIcons({
@@ -91,9 +94,16 @@ export class CompanyDetailsComponent implements OnInit {
   logoFailed = signal(false);
 
   editingIndustry = signal(false);
-  editingTech = signal(false);
   editingContactId = signal<number | null>(null); // null: not editing, 0: new, >0: existing
-  newTech = signal('');
+
+  // Inline Editing State
+  editingField = signal<string | null>(null);
+  lastSavedField = signal<string | null>(null);
+
+  // Forms
+  editForm = inject(FormBuilder).group({
+    name: ['', [Validators.required, Validators.maxLength(100)]]
+  });
 
   // Contact editing state
   editContactForm = {
@@ -105,8 +115,8 @@ export class CompanyDetailsComponent implements OnInit {
 
   // Priority Options Configuration
   priorityOptions = [
-    { value: 'Tier1', label: 'Dream Target', icon: 'lucideCrown', color: 'text-amber-500', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
-    { value: 'Tier2', label: 'High Interest', icon: 'lucideCircle', color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
+    { value: 'Tier1', label: 'Dream Target', icon: 'lucideCrown', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
+    { value: 'Tier2', label: 'High Interest', icon: 'lucideCircle', color: 'text-info', bg: 'bg-info/10', border: 'border-info/20' },
     { value: 'Tier3', label: 'Opportunistic', icon: 'lucideCircle', color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border/20' }
   ];
 
@@ -313,15 +323,15 @@ export class CompanyDetailsComponent implements OnInit {
    */
   getStatusDotClass(status: string): string {
     const s = status.toLowerCase();
-    if (s.includes('applied')) return 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.3)]';
-    if (s.includes('phone')) return 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.3)]';
-    if (s.includes('technical')) return 'bg-orange-400 shadow-[0_0_8px_rgba(251,146,60,0.3)]';
-    if (s.includes('interview')) return 'bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.3)]';
-    if (s.includes('offer')) return 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.3)]';
-    if (s.includes('accepted')) return 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.3)]';
-    if (s.includes('rejected')) return 'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.3)]';
-    if (s.includes('ghosted')) return 'bg-slate-400 shadow-[0_0_8px_rgba(148,163,184,0.3)]';
-    return 'bg-zinc-400';
+    if (s.includes('applied')) return 'bg-info shadow-[0_0_8px_hsl(var(--info)/0.3)]';
+    if (s.includes('phone')) return 'bg-info shadow-[0_0_8px_hsl(var(--info)/0.3)]';
+    if (s.includes('technical')) return 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.3)]';
+    if (s.includes('interview')) return 'bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]';
+    if (s.includes('offer')) return 'bg-warning shadow-[0_0_8px_hsl(var(--warning)/0.3)]';
+    if (s.includes('accepted')) return 'bg-success shadow-[0_0_8px_hsl(var(--success)/0.3)]';
+    if (s.includes('rejected')) return 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.3)]';
+    if (s.includes('ghosted')) return 'bg-muted shadow-[0_0_8px_hsl(var(--muted)/0.3)]';
+    return 'bg-secondary';
   }
 
   /**
@@ -331,16 +341,16 @@ export class CompanyDetailsComponent implements OnInit {
     const base = 'px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent transition-all';
     const s = status.toLowerCase();
 
-    if (s.includes('applied')) return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
-    if (s.includes('phone')) return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
-    if (s.includes('technical')) return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
-    if (s.includes('interview')) return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
-    if (s.includes('offer')) return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
-    if (s.includes('accepted')) return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
-    if (s.includes('rejected')) return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
-    if (s.includes('ghosted')) return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+    if (s.includes('applied')) return `${base} bg-info/10 text-info border-info/20`;
+    if (s.includes('phone')) return `${base} bg-info/15 text-info border-info/30`;
+    if (s.includes('technical')) return `${base} bg-warning/10 text-warning border-warning/20`;
+    if (s.includes('interview')) return `${base} bg-primary/10 text-primary border-primary/20`;
+    if (s.includes('offer')) return `${base} bg-warning/15 text-warning border-warning/30`;
+    if (s.includes('accepted')) return `${base} bg-success/10 text-success border-success/20`;
+    if (s.includes('rejected')) return `${base} bg-destructive/10 text-destructive border-destructive/20`;
+    if (s.includes('ghosted')) return `${base} bg-muted text-muted-foreground border-border`;
 
-    return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400`;
+    return `${base} bg-secondary text-secondary-foreground border-border`;
   }
 
   formatDate(date: string | Date): string {
@@ -430,26 +440,38 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
-  addTechItem(): void {
-    const tech = this.newTech().trim();
-    if (!tech) return;
-
+  removeTechItem(skill: string): void {
     const details = this.companyDetails();
     if (!details) return;
 
     const currentStack = details.techStack || [];
-    if (currentStack.includes(tech)) {
-      this.notificationService.info(`${tech} is already in the stack`, 'Note');
-      this.newTech.set('');
+    const newStack = currentStack.filter(t => t !== skill);
+
+    if (newStack.length === currentStack.length) return; // Nothing removed
+
+    this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
+      next: () => {
+        this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
+        this.notificationService.success('Skill removed from stack', 'Updated');
+      },
+      error: () => this.notificationService.error('Failed to remove skill', 'Error')
+    });
+  }
+
+  addTechItem(skill: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    const currentStack = details.techStack || [];
+    if (currentStack.includes(skill)) {
+      this.notificationService.info(`${skill} is already in the stack`, 'Note');
       return;
     }
 
-    const newStack = [...currentStack, tech];
+    const newStack = [...currentStack, skill];
     this.companyService.updateCompany(details.id, { techStack: newStack }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, techStack: newStack });
-        this.newTech.set('');
-        this.editingTech.set(false);
+        this.companyDetails.update(prev => prev ? { ...prev, techStack: newStack } : null);
         this.notificationService.success('Skill added to stack', 'Updated');
       },
       error: () => this.notificationService.error('Failed to add skill', 'Error')
@@ -542,7 +564,7 @@ export class CompanyDetailsComponent implements OnInit {
     const updatedContacts = (details.contacts || []).filter(c => c.id !== contactId);
     this.companyService.updateCompany(details.id, { contacts: updatedContacts }).subscribe({
       next: () => {
-        this.companyDetails.set({ ...details, contacts: updatedContacts });
+        this.companyDetails.update(prev => prev ? { ...prev, contacts: updatedContacts } : null);
         this.notificationService.success(`${contact.name} removed`, 'Registry Updated');
       },
       error: () => this.notificationService.error('Failed to update hierarchy', 'Error')
@@ -555,6 +577,91 @@ export class CompanyDetailsComponent implements OnInit {
       case 'Tier2': return 'Tier 2: High Interest';
       case 'Tier3': return 'Tier 3: Opportunistic';
       default: return priority;
+    }
+  }
+
+  startEditing(field: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    if (field === 'name') {
+      this.editForm.patchValue({ name: details.name });
+    }
+
+    this.editingField.set(field);
+  }
+
+  saveField(field: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    if (field === 'name') {
+      const formControl = this.editForm.get('name');
+      const rawValue = formControl?.value;
+      const newName = rawValue?.trim();
+
+      if (!formControl?.valid || !newName) {
+        // Optionally inform user if invalid, or just revert if empty
+        if (!newName) {
+          this.notificationService.info('Company name cannot be empty', 'Validation');
+        }
+        // Keep editing or revert? As per request "show notifications in both success and error branches"
+        // If invalid, maybe just don't save. But user interface needs feedback. 
+        // Request says: "check editForm.valid (or specifically that trimmed name is non-empty...) ... ensure you still clear editingField... as before"
+        // Actually request says: 'only then call companyService.updateCompany... ensure you still clear editingField and show notifications'
+        // If validation fails, I should probably NOT clear editing field so they can fix it? 
+        // "ensure you still clear editingField ... in both success and error branches" likely refers to API error.
+        // But let's assume if validation fails we might want to simply stop editing and revert or warn. 
+        // Let's warn and stop editing (revert) as is standard behavior for "cancel" or failed validation in non-persistent forms, 
+        // OR keep it open.
+        // The prompt says: "update saveField to run the editForm validators ... check editForm.valid ... and only then call ... ensure you still clear editingField ... in both success and error branches as before"
+        // "As before" meant the API subscribe blocks.
+        // Let's be strict: If invalid, do not save, maybe warn, but if we don't clear editingField they are stuck? 
+        // I will assume if name is invalid (empty), we might just revert or show error.
+        // Let's show warning and NOT clear editingField so they can fix it?
+        // No, the prompt implies "updateField" flow. 
+        // "ensure you still clear editingField ... in both success and error branches as before" refers to the API call result.
+        // If validation fails, I will just show a warning and return (keeping edit mode open). 
+        // Wait, if I blur, it calls saveField. If I return, edit mode stays? Yes. That sounds better than reverting logic.
+
+        // However, looking at the code `(blur)="saveField('name')"` -> if I don't clear editingField context, 
+        // `blur` event happened, focus is lost. 
+        // If I don't clear `editingField`, the UI stays in "input mode" but focus is gone. 
+        // User clicks away -> blur -> validation error -> stays input. 
+        // That might be annoying.
+        // Let's look at the instruction again: "ensure you still clear editingField and show notifications in both success and error branches as before" -> "referencing saveField, editForm, companyService.updateCompany...".
+        // The "success and error branches" refers to the Observable subscription.
+        // What about validation failure?
+        // I'll implement: If invalid, notify and keep editing (or revert if better). 
+        // Actually, if it's invalid (empty), usually we revert to previous value.
+        // I will revert if empty/invalid for better UX on blur.
+
+        if (!newName || newName.length === 0) {
+          this.notificationService.info('Company name cannot be empty', 'Validation');
+          this.editingField.set(null); // Revert
+          return;
+        }
+        return;
+      }
+
+      if (newName === details.name) {
+        this.editingField.set(null);
+        return;
+      }
+
+      this.companyService.updateCompany(details.id, { name: newName }).subscribe({
+        next: () => {
+          this.companyDetails.update(prev => prev ? { ...prev, name: newName } : null);
+          this.editingField.set(null);
+          this.lastSavedField.set(field);
+          this.notificationService.success('Company name updated', 'Success');
+          setTimeout(() => this.lastSavedField.set(null), 2000);
+        },
+        error: () => {
+          this.notificationService.error('Failed to update company name', 'Error');
+          this.editingField.set(null);
+        }
+      });
     }
   }
 }

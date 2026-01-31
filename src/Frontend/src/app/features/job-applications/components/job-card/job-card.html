@@ -15,7 +15,7 @@
       <!-- Company Logo with Robust Fallback -->
       <div class="flex-shrink-0">
         @if (logoUrl() && !logoFailed()) {
-        <div class="relative rounded-xl bg-white overflow-hidden border border-border/50 shadow-sm"
+        <div class="relative rounded-xl bg-background overflow-hidden border border-border/50 shadow-sm"
           [class.w-10]="compact()" [class.h-10]="compact()" [class.w-12]="!compact()" [class.h-12]="!compact()">
           <img [src]="logoUrl()" [alt]="application().companyName + ' logo'" class="h-full w-full object-contain p-1"
             (error)="onLogoError()" />
@@ -23,7 +23,7 @@
         } @else {
         <!-- Fallback Monogram -->
         <div
-          class="rounded-xl bg-muted/50 flex items-center justify-center text-muted-foreground font-bold uppercase transition-colors"
+          class="rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold uppercase transition-colors"
           [class.w-10]="compact()" [class.h-10]="compact()" [class.text-sm]="compact()" [class.w-12]="!compact()"
           [class.h-12]="!compact()" [class.text-xl]="!compact()">
           {{ (application().companyName || 'C').charAt(0) }}
@@ -103,7 +103,7 @@
       <!-- Stale Warning Badge -->
       @if (isStale()) {
       <div
-        class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-4 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-wider border border-amber-500/20 animate-pulse">
+        class="inline-flex items-center gap-1.5 px-2.5 py-1 mb-4 rounded-md bg-warning/10 text-warning text-[10px] font-bold uppercase tracking-wider border border-warning/20 animate-pulse">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

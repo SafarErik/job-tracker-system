@@ -38,7 +38,7 @@ import { lucideSun, lucideMoon } from '@ng-icons/lucide';
 })
 export class ThemeToggleComponent {
   themeService = inject(ThemeService);
-  isDark = this.themeService.darkMode;
+  isDark = this.themeService.isDark;
 
   label = computed(() =>
     this.isDark() ? 'Switch to light mode' : 'Switch to dark mode'

@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ApplicationService } from '../../services/application.service';
 import { DocumentService } from '../../../documents/services/document.service';
@@ -41,6 +41,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmInputImports } from '@spartan-ng/helm/input';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -83,6 +84,8 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
         FormsModule,
         RouterLink,
         NgIcon,
+        ReactiveFormsModule,
+        ...HlmInputImports,
         ...HlmLabelImports,
         ...HlmTabsImports,
         ...BrnTabsImports,
@@ -143,6 +146,15 @@ export class JobWorkstationComponent implements OnInit {
     companyContacts = signal<CompanyContact[]>([]);
     isLoading = signal(true);
     error = signal<string | null>(null);
+
+    // Inline Editing State
+    editingField = signal<string | null>(null);
+    lastSavedField = signal<string | null>(null);
+
+    // Forms
+    editForm = inject(FormBuilder).group({
+        position: ['', [Validators.required, Validators.maxLength(100)]]
+    });
 
     // Tab state
     activeTab = signal<WorkstationTab>('overview');
@@ -244,17 +256,88 @@ export class JobWorkstationComponent implements OnInit {
     // Computed values
     matchScoreColor = computed(() => {
         const score = this.application()?.matchScore ?? 0;
-        if (score >= 80) return 'text-emerald-500';
-        if (score >= 50) return 'text-amber-500';
-        return 'text-rose-500';
+        if (score >= 80) return 'text-success';
+        if (score >= 50) return 'text-warning';
+        return 'text-destructive';
     });
 
     matchScoreBg = computed(() => {
         const score = this.application()?.matchScore ?? 0;
-        if (score >= 80) return 'bg-green-500/20';
-        if (score >= 50) return 'bg-yellow-500/20';
-        return 'bg-slate-500/20';
+        if (score >= 80) return 'bg-success/20';
+        if (score >= 50) return 'bg-warning/20';
+        return 'bg-muted/30';
     });
+
+    startEditing(field: string): void {
+        const app = this.application();
+        if (!app) return;
+
+        if (field === 'position') {
+            this.editForm.patchValue({ position: app.position });
+        }
+
+        this.editingField.set(field);
+    }
+
+    saveField(field: string): void {
+        const app = this.application();
+        if (!app) return;
+
+        if (field === 'position') {
+            const newPosition = this.editForm.get('position')?.value;
+            if (!newPosition || newPosition === app.position) {
+                this.editingField.set(null);
+                return;
+            }
+
+            this.applicationService.updateApplication(app.id, { ...app, position: newPosition }).subscribe({
+                next: () => {
+                    this.application.update(prev => prev ? { ...prev, position: newPosition } : null);
+                    this.editingField.set(null);
+                    this.lastSavedField.set(field);
+                    this.notificationService.success('Position updated', 'Success');
+                    setTimeout(() => this.lastSavedField.set(null), 2000);
+                },
+                error: () => {
+                    this.notificationService.error('Failed to update position', 'Error');
+                    this.editingField.set(null);
+                }
+            });
+        }
+    }
+
+    async deleteApplication(): Promise<void> {
+        const app = this.application();
+        if (!app) return;
+
+        const confirmed = await this.notificationService.confirm(
+            `This will permanently delete your application for "${app.position}" at ${app.companyName}. This action cannot be undone.`,
+            'Delete Application?',
+            {
+                confirmText: 'Delete Mission',
+                isDangerous: true,
+            },
+        );
+
+        if (!confirmed) return;
+
+        this.applicationService.deleteApplication(app.id).subscribe({
+            next: () => {
+                this.notificationService.success(
+                    'Application has been purged from records.',
+                    'Mission Terminated'
+                );
+                this.router.navigate(['/applications']);
+            },
+            error: (err) => {
+                console.error('[JobWorkstation] Delete failed:', err);
+                this.notificationService.error(
+                    'Unable to complete the erasure. Please try again.',
+                    'Operation Failed'
+                );
+            },
+        });
+    }
 
     // Helper computed for active tab display (no arrow functions in templates)
     activeTabIcon = computed(() => {
@@ -447,23 +530,23 @@ export class JobWorkstationComponent implements OnInit {
 
         switch (status as JobApplicationStatus) {
             case JobApplicationStatus.Applied:
-                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+                return `${base} bg-info/10 text-info border-info/20`;
             case JobApplicationStatus.PhoneScreen:
-                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20`;
+                return `${base} bg-info/15 text-info border-info/30`;
             case JobApplicationStatus.TechnicalTask:
-                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20`;
+                return `${base} bg-warning/10 text-warning border-warning/20`;
             case JobApplicationStatus.Interviewing:
-                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20`;
+                return `${base} bg-primary/10 text-primary border-primary/20`;
             case JobApplicationStatus.Offer:
-                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30`;
+                return `${base} bg-success/15 text-success border-success/30`;
             case JobApplicationStatus.Accepted:
-                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`;
+                return `${base} bg-success/10 text-success border-success/20`;
             case JobApplicationStatus.Rejected:
-                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
             case JobApplicationStatus.Ghosted:
-                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20`;
+                return `${base} bg-muted text-muted-foreground border-border`;
             default:
-                return `${base} bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border-zinc-200 dark:border-zinc-700`;
+                return `${base} bg-secondary text-secondary-foreground border-border`;
         }
     }
 
@@ -505,13 +588,13 @@ export class JobWorkstationComponent implements OnInit {
 
         switch (priority as JobPriority) {
             case JobPriority.High:
-                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`;
+                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
             case JobPriority.Medium:
-                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+                return `${base} bg-warning/10 text-warning border-warning/20`;
             case JobPriority.Low:
-                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`;
+                return `${base} bg-info/10 text-info border-info/20`;
             default:
-                return `${base} bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700`;
+                return `${base} bg-secondary text-secondary-foreground border-border`;
         }
     }
 
@@ -717,6 +800,32 @@ Best regards,
         }
     }
 
+
+    /**
+     * Download a document
+     */
+    downloadDocument(doc: Document): void {
+        if (!doc) return;
+
+        // Use direct Blob download
+        this.notificationService.info(`Starting download: ${doc.originalFileName}`, 'Download');
+
+        this.documentService.getDocumentBlob(doc.id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const link = window.document.createElement('a');
+                link.href = url;
+                link.download = doc.originalFileName;
+                link.click();
+                window.URL.revokeObjectURL(url);
+                this.notificationService.success('Download complete', 'Success');
+            },
+            error: (err) => {
+                console.error('Download failed:', err);
+                this.notificationService.error('Failed to download document', 'Error');
+            }
+        });
+    }
 
     // Utility
     copyToClipboard(text: string): void {

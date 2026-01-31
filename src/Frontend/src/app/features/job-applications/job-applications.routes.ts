@@ -18,12 +18,6 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     title: 'Applications - JobTracker',
   },
   {
-    path: 'new',
-    loadComponent: () => import('./components/job-form/job-form').then((m) => m.JobFormComponent),
-    canActivate: [authGuard],
-    title: 'New Application - JobTracker',
-  },
-  {
     // Workstation route - full page view with tabs
     path: ':id',
     loadComponent: () =>

@@ -192,21 +192,23 @@ export class CalendarViewComponent implements OnChanges {
   getStatusColor(status: JobApplicationStatus): string {
     switch (status) {
       case JobApplicationStatus.Applied:
-        return 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300';
+        return 'bg-info/10 text-info';
       case JobApplicationStatus.PhoneScreen:
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+        return 'bg-info/10 text-info';
       case JobApplicationStatus.TechnicalTask:
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+        return 'bg-warning/10 text-warning';
       case JobApplicationStatus.Interviewing:
-        return 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300';
+        return 'bg-primary/10 text-primary';
       case JobApplicationStatus.Offer:
-        return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+        return 'bg-success/10 text-success';
+      case JobApplicationStatus.Accepted:
+        return 'bg-success/10 text-success';
       case JobApplicationStatus.Rejected:
-        return 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300';
+        return 'bg-destructive/10 text-destructive';
       case JobApplicationStatus.Ghosted:
-        return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
+        return 'bg-muted-foreground/10 text-muted-foreground';
       default:
-        return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300';
+        return 'bg-muted text-muted-foreground';
     }
   }
 
@@ -216,21 +218,23 @@ export class CalendarViewComponent implements OnChanges {
   getStatusDotColor(status: JobApplicationStatus): string {
     switch (status) {
       case JobApplicationStatus.Applied:
-        return 'bg-indigo-400';
+        return 'bg-info';
       case JobApplicationStatus.PhoneScreen:
-        return 'bg-purple-400';
+        return 'bg-info/80';
       case JobApplicationStatus.TechnicalTask:
-        return 'bg-blue-400';
+        return 'bg-warning/80';
       case JobApplicationStatus.Interviewing:
-        return 'bg-amber-400';
+        return 'bg-primary';
       case JobApplicationStatus.Offer:
-        return 'bg-green-400';
+        return 'bg-success';
+      case JobApplicationStatus.Accepted:
+        return 'bg-success';
       case JobApplicationStatus.Rejected:
-        return 'bg-red-400';
+        return 'bg-destructive';
       case JobApplicationStatus.Ghosted:
-        return 'bg-zinc-400';
+        return 'bg-muted-foreground';
       default:
-        return 'bg-gray-400';
+        return 'bg-muted';
     }
   }
 
@@ -258,8 +262,8 @@ export class CalendarViewComponent implements OnChanges {
    */
   getCountIndicatorColor(count: number): string {
     if (count === 0) return '';
-    if (count === 1) return 'bg-blue-400';
-    if (count === 2) return 'bg-yellow-400';
-    return 'bg-red-400';
+    if (count === 1) return 'bg-info';
+    if (count === 2) return 'bg-primary';
+    return 'bg-destructive';
   }
 }

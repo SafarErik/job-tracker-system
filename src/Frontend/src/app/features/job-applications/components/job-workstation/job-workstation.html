@@ -10,8 +10,8 @@
   <!-- Error State -->
   @if (error()) {
   <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
-    <div class="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center">
-      <ng-icon name="lucideActivity" class="text-4xl text-rose-500"></ng-icon>
+    <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
+      <ng-icon name="lucideActivity" class="text-4xl text-destructive"></ng-icon>
     </div>
     <div class="space-y-2">
       <h2 class="text-2xl font-black tracking-tight">System Error</h2>
@@ -53,9 +53,26 @@
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
       <div class="space-y-4">
         <div class="flex flex-col gap-1">
-          <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight">
-            {{ application()?.position }}
-          </h1>
+          <div class="flex items-center gap-3 min-h-[60px]">
+            @if (editingField() !== 'position') {
+            <h1 (click)="startEditing('position')"
+              class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight hover:bg-muted/50 -ml-2 px-2 rounded-lg cursor-pointer transition-colors group relative flex items-center gap-3">
+              {{ application()?.position }}
+              <ng-icon name="lucidePencil"
+                class="opacity-0 group-hover:opacity-100 h-6 w-6 text-muted-foreground/50"></ng-icon>
+              @if (lastSavedField() === 'position') {
+              <ng-icon name="lucideCheck" class="h-8 w-8 text-success"></ng-icon>
+              }
+            </h1>
+            } @else {
+            <div [formGroup]="editForm" class="flex gap-2 items-center w-full max-w-2xl">
+              <input hlmInput formControlName="position"
+                class="text-3xl md:text-5xl font-black h-16 w-full bg-background border-primary/50"
+                placeholder="Position title" (blur)="saveField('position')" (keydown.enter)="saveField('position')"
+                autofocus>
+            </div>
+            }
+          </div>
           <div class="flex items-center gap-2 text-2xl">
             <span class="text-muted-foreground font-medium">at</span>
             <a [routerLink]="['/companies', application()?.companyId]" [queryParams]="{from: 'application'}"
@@ -100,21 +117,27 @@
             Job Posting <ng-icon name="lucideExternalLink" size="14"></ng-icon>
           </a>
           }
+
+          <div class="h-6 w-px bg-border/60 mx-1"></div>
+          <button (click)="deleteApplication()"
+            class="text-sm font-bold text-muted-foreground hover:text-destructive flex items-center gap-2 transition-colors">
+            Purge records <ng-icon name="lucideTrash2" size="14"></ng-icon>
+          </button>
         </div>
       </div>
 
       <!-- Hero Metric (Match Score) -->
       <div class="relative group">
         <div
-          class="absolute -inset-4 bg-emerald-500/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          class="absolute -inset-4 bg-success/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
         </div>
         <div class="relative flex flex-col items-end">
           <div class="flex items-center gap-2 mb-2">
             <span class="text-[0.7rem] uppercase tracking-[0.3em] font-black text-muted-foreground/60">Match
               Accuracy</span>
-            <ng-icon name="lucideZap" size="16" class="text-emerald-500 animate-pulse"></ng-icon>
+            <ng-icon name="lucideZap" size="16" class="text-success animate-pulse"></ng-icon>
           </div>
-          <div class="text-5xl md:text-7xl font-black text-emerald-500 tabular-nums tracking-tighter drop-shadow-sm">
+          <div class="text-5xl md:text-7xl font-black text-success tabular-nums tracking-tighter drop-shadow-sm">
             {{ application()?.matchScore }}%
           </div>
         </div>
@@ -249,33 +272,32 @@
           <div
             class="bg-card rounded-3xl border border-border/40 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             <!-- Reasoning -->
-            <div class="bg-indigo-500/5 border-b border-indigo-500/10 p-4 flex items-center gap-3">
-              <ng-icon name="lucideLightbulb" class="text-indigo-500" size="18"></ng-icon>
-              <span class="text-sm font-medium text-indigo-700 dark:text-indigo-300">
+            <div class="bg-info/5 border-b border-info/10 p-4 flex items-center gap-3">
+              <ng-icon name="lucideLightbulb" class="text-info" size="18"></ng-icon>
+              <span class="text-sm font-medium text-info/80">
                 <strong>AI Insight:</strong> {{ enhancement.reasoning }}
               </span>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2">
               <!-- Original -->
-              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-rose-500/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-rose-600 mb-4 block">Original
+              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-destructive/5">
+                <span class="text-[10px] font-black uppercase tracking-widest text-destructive mb-4 block">Original
                   Asset</span>
                 <p
-                  class="text-muted-foreground line-through decoration-rose-500/50 decoration-2 font-mono text-sm leading-relaxed">
+                  class="text-muted-foreground line-through decoration-destructive/50 decoration-2 font-mono text-sm leading-relaxed">
                   "{{ enhancement.originalBullet }}"
                 </p>
               </div>
 
               <!-- Rebranded -->
-              <div class="p-8 bg-emerald-500/5 relative group">
+              <div class="p-8 bg-success/5 relative group">
                 <div class="flex items-center justify-between mb-4">
-                  <span
-                    class="text-[10px] font-black uppercase tracking-widest text-emerald-600 flex items-center gap-2">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-success flex items-center gap-2">
                     <ng-icon name="lucideSparkles" size="14"></ng-icon> Optimized Version
                   </span>
                   <button (click)="copyToClipboard(enhancement.rebrandedBullet)"
-                    class="text-xs font-bold text-emerald-600 hover:underline">Copy</button>
+                    class="text-xs font-bold text-success hover:underline">Copy</button>
                 </div>
                 <p class="text-foreground font-medium text-lg leading-relaxed">{{ enhancement.rebrandedBullet }}</p>
               </div>
@@ -298,8 +320,8 @@
                 <p>Your previous experience with Angular Signals aligns perfectly with their requirement for 'Reactive
                   State Management'.</p>
               </div>
-              <div class="p-6 rounded-3xl bg-amber-500/5 border border-amber-500/10">
-                <h4 class="font-bold text-amber-600 mb-2 uppercase tracking-widest text-xs">Primary Risk</h4>
+              <div class="p-6 rounded-3xl bg-warning/5 border border-warning/10">
+                <h4 class="font-bold text-warning mb-2 uppercase tracking-widest text-xs">Primary Risk</h4>
                 <p>The job description mentions 'Legacy Migration'. Be prepared to discuss refactoring and modernizing
                   legacy codebases.</p>
               </div>
@@ -334,7 +356,7 @@
           <div class="p-8">
             <div class="relative group">
               <div
-                class="absolute -inset-1 bg-gradient-to-r from-primary/10 to-indigo-500/10 rounded-[2rem] blur opacity-25 group-hover:opacity-100 transition duration-1000">
+                class="absolute -inset-1 bg-gradient-to-r from-primary/10 to-info/10 rounded-[2rem] blur opacity-25 group-hover:opacity-100 transition duration-1000">
               </div>
               <textarea [ngModel]="jobDescriptionInput()" (ngModelChange)="jobDescriptionInput.set($event)"
                 placeholder="Paste Job Description Here..."
@@ -347,7 +369,7 @@
                 class="h-16 px-12 rounded-full text-lg font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 group"
                 [disabled]="isAnalyzing()" (click)="analyzeJobDescription()">
                 @if (isAnalyzing()) {
-                <ng-icon name="lucideLoader2" class="mr-3 animate-spin"></ng-icon> Sythesizing Data...
+                <ng-icon name="lucideLoader2" class="mr-3 animate-spin"></ng-icon> Synthesizing Data...
                 } @else {
                 <ng-icon name="lucideSparkles" class="mr-3 group-hover:animate-pulse"></ng-icon> Analyze & Generate
                 Insights
@@ -385,8 +407,8 @@
         <div class="lg:col-span-2 space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-blue-500/10 text-blue-500"><ng-icon name="lucideCalendar"
-                  size="24"></ng-icon></div>
+              <div class="p-4 rounded-2xl bg-info/10 text-info"><ng-icon name="lucideCalendar" size="24"></ng-icon>
+              </div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Applied Date
                 </p>
@@ -394,7 +416,7 @@
               </div>
             </div>
             <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-indigo-500/10 text-indigo-500"><ng-icon name="lucideClipboardList"
+              <div class="p-4 rounded-2xl bg-primary/10 text-primary"><ng-icon name="lucideClipboardList"
                   size="24"></ng-icon></div>
               <div>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Job Type</p>
@@ -409,15 +431,16 @@
             </div>
             <div class="flex flex-col md:flex-row items-center gap-10">
               <div class="relative w-40 h-40 shrink-0">
-                <svg class="w-full h-full transform -rotate-90">
+                <svg class="w-full h-full transform -rotate-90" role="img"
+                  [attr.aria-label]="'Match score: ' + (application()?.matchScore ?? 0) + ' percent'">
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
                     class="text-muted/20" />
                   <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
-                    stroke-linecap="round" class="text-emerald-500" [attr.stroke-dasharray]="465"
-                    [attr.stroke-dashoffset]="465 * (1 - application()!.matchScore / 100)" />
+                    stroke-linecap="round" class="text-success" [attr.stroke-dasharray]="465"
+                    [attr.stroke-dashoffset]="465 * (1 - (application()?.matchScore ?? 0) / 100)" />
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-3xl font-black">{{ application()!.matchScore }}%</span>
+                  <span class="text-3xl font-black">{{ application()?.matchScore }}%</span>
                   <span class="text-[0.6rem] font-black uppercase text-muted-foreground">AI Score</span>
                 </div>
               </div>
@@ -427,10 +450,10 @@
                     application()!.matchScore }}% compatibility</strong> with this position's requirements.</p>
                 <div class="flex flex-wrap gap-2 pt-2">
                   <div
-                    class="px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black uppercase text-emerald-600">
+                    class="px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-[10px] font-black uppercase text-success">
                     Resume Optimized</div>
                   <div
-                    class="px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black uppercase text-indigo-600">
+                    class="px-3 py-1.5 rounded-full bg-info/10 border border-info/20 text-[10px] font-black uppercase text-info">
                     Company Researched</div>
                 </div>
               </div>
@@ -449,7 +472,9 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
           @for (card of interviewQuestions(); track card.id) {
-          <div class="h-[300px] perspective-1000 group cursor-pointer" (click)="flipCard(card.id)">
+          <div class="h-[300px] perspective-1000 group cursor-pointer" (click)="flipCard(card.id)" tabindex="0"
+            role="button" (keydown.enter)="flipCard(card.id)"
+            (keydown.space)="flipCard(card.id); $event.preventDefault()">
             <div class="relative w-full h-full transition-all duration-700 preserve-3d shadow-xl rounded-[2.5rem]"
               [class.rotate-y-180]="card.flipped">
               <!-- Front -->
@@ -493,7 +518,7 @@
           <div class="lg:col-span-4 bg-card rounded-3xl border border-border/40 p-6 flex flex-col justify-between">
             <h3
               class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> The Package
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span> The Package
             </h3>
             <div class="space-y-4">
               <div class="space-y-1.5">
@@ -527,7 +552,7 @@
           <div class="lg:col-span-8 bg-card rounded-3xl border border-border/40 p-6">
             <h3
               class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Interviewer Intelligence
+              <span class="w-1.5 h-1.5 rounded-full bg-info"></span> Interviewer Intelligence
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               @if (application()?.primaryContact; as contact) {
@@ -610,9 +635,9 @@
           </div>
 
           <!-- Scratchpad -->
-          <div class="lg:col-span-12 bg-muted/30 dark:bg-zinc-950 rounded-3xl border border-border/40 p-8 relative">
+          <div class="lg:col-span-12 bg-muted/30 rounded-3xl border border-border/40 p-8 relative">
             <div class="absolute top-4 right-8 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              <span class="w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
               <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Tactical
                 Scratchpad</span>
             </div>
@@ -620,10 +645,7 @@
               placeholder="Draft your negotiation notes here..."
               class="w-full h-48 bg-transparent text-foreground font-mono text-sm leading-loose outline-none custom-scrollbar"></textarea>
             <div class="mt-4 pt-4 border-t border-border/40 flex items-center justify-between">
-              <p class="text-[10px] text-muted-foreground uppercase tracking-widest">Encrypted Local State</p>
-              <button
-                class="px-6 py-2 rounded-xl bg-primary text-[10px] font-black uppercase text-white shadow-lg shadow-primary/20">Save
-                Securely</button>
+              <p class="text-[10px] text-muted-foreground uppercase tracking-widest">Local Draft</p>
             </div>
           </div>
         </div>
@@ -636,15 +658,27 @@
         <div class="lg:col-span-4 bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 flex flex-col h-full group">
           <h3 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-8">Primary Asset</h3>
           <div class="flex-1 flex flex-col items-center justify-center space-y-4">
+            @if (documents().length > 0) {
             <div
               class="w-24 h-32 bg-background border-2 border-border/40 rounded-xl flex items-center justify-center relative overflow-hidden group-hover:border-primary/40 transition-all shadow-lg">
               <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
               <ng-icon name="lucideFileText" size="32" class="text-muted-foreground/40"></ng-icon>
             </div>
-            <p class="text-sm font-bold text-foreground line-clamp-1 text-center">Standard_CV_2024.pdf</p>
+            <p class="text-sm font-bold text-foreground line-clamp-1 text-center">{{ documents()[0].originalFileName }}
+            </p>
+            <button hlmBtn variant="outline" class="w-full rounded-xl mt-8 text-xs font-bold gap-2"
+              (click)="downloadDocument(documents()[0])">
+              <ng-icon name="lucideDownload" size="14"></ng-icon> Download
+            </button>
+            } @else {
+            <div class="text-center p-4">
+              <p class="text-xs text-muted-foreground">No documents uploaded.</p>
+            </div>
+            <button hlmBtn variant="outline" class="w-full rounded-xl mt-8 text-xs font-bold gap-2" disabled>
+              <ng-icon name="lucideDownload" size="14"></ng-icon> Download
+            </button>
+            }
           </div>
-          <button hlmBtn variant="outline" class="w-full rounded-xl mt-8 text-xs font-bold gap-2"><ng-icon
-              name="lucideDownload" size="14"></ng-icon> Download</button>
         </div>
 
         <div class="lg:col-span-8 bg-card rounded-[2rem] border border-border/40 shadow-sm flex flex-col">

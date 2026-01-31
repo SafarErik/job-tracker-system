@@ -39,11 +39,11 @@ import {
       <!-- TOP: File Type & Status -->
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <div class="h-10 w-10 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center font-bold text-xs">
+          <div class="h-10 w-10 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center font-bold text-xs">
             PDF
           </div>
           @if (doc().isMaster) {
-            <span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 flex items-center gap-1">
+            <span class="px-2 py-0.5 rounded-md bg-warning/10 text-warning text-[10px] font-black uppercase tracking-widest border border-warning/20 flex items-center gap-1">
               <ng-icon name="lucideAward" size="12"></ng-icon>
               Master
             </span>

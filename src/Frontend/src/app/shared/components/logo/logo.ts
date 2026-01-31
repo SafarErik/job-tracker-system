@@ -49,7 +49,7 @@ import { CommonModule } from '@angular/common';
                 [class]="textSizeClasses()">
             JobTracker
             <!-- The Dot matches handle or foreground -->
-            <span [ngClass]="{'text-amber-500': !mono(), 'text-foreground': mono()}">.</span>
+            <span [ngClass]="{'text-warning': !mono(), 'text-foreground': mono()}">.</span>
           </span>
           @if (showSlogan() && !mono()) {
             <span class="text-[0.65rem] font-bold tracking-[0.2em] text-muted-foreground uppercase mt-1.5 opacity-80">

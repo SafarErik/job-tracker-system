@@ -117,22 +117,22 @@ export class JobCardComponent {
         }
 
         if (this.isOffer()) {
-            return `${base} border-emerald-500/30 shadow-lg shadow-emerald-500/10 hover:-translate-y-1.5 hover:shadow-2xl hover:border-emerald-500/50`;
+            return `${base} border-success/30 shadow-lg shadow-success/10 hover:-translate-y-1.5 hover:shadow-2xl hover:border-success/50`;
         }
 
         if (this.isStale()) {
-            return `${base} border-amber-500/40 hover:-translate-y-1.5 hover:shadow-2xl`;
+            return `${base} border-warning/40 hover:-translate-y-1.5 hover:shadow-2xl`;
         }
 
         // Standard Card: Premium Primary Gradient Border effect
-        return `${base} p-[1px] bg-linear-to-br from-primary/60 via-primary/40 to-primary/60 border-0 hover:from-primary hover:via-primary/80 hover:to-primary hover:-translate-y-1.5 hover:shadow-xl`;
+        return `${base} p-[1px] bg-linear-to-br from-primary/40 via-primary/20 to-primary/40 border-0 hover:from-primary hover:via-primary/80 hover:to-primary hover:-translate-y-1.5 hover:shadow-xl`;
     });
 
     // Computed: Status Strip Color (The Left Border)
     statusStripColor = computed(() => {
-        if (this.isOffer()) return 'bg-emerald-500';
-        if (this.isDead()) return 'bg-slate-500/30';
-        if (this.isStale()) return 'bg-amber-500';
+        if (this.isOffer()) return 'bg-success';
+        if (this.isDead()) return 'bg-muted-foreground/30';
+        if (this.isStale()) return 'bg-warning';
         return 'bg-primary';
     });
 
@@ -165,21 +165,21 @@ export class JobCardComponent {
         const status = this.application().status;
         switch (status) {
             case JobApplicationStatus.Applied:
-                return 'bg-blue-400';
+                return 'bg-info';
             case JobApplicationStatus.PhoneScreen:
-                return 'bg-indigo-400';
+                return 'bg-info/80';
             case JobApplicationStatus.TechnicalTask:
-                return 'bg-orange-400';
+                return 'bg-warning/80';
             case JobApplicationStatus.Interviewing:
-                return 'bg-violet-400';
+                return 'bg-primary';
             case JobApplicationStatus.Offer:
-                return 'bg-amber-400';
+                return 'bg-success';
             case JobApplicationStatus.Accepted:
-                return 'bg-emerald-400';
+                return 'bg-success';
             case JobApplicationStatus.Rejected:
-                return 'bg-rose-400';
+                return 'bg-destructive';
             case JobApplicationStatus.Ghosted:
-                return 'bg-slate-400';
+                return 'bg-muted-foreground';
             default:
                 return 'bg-muted-foreground/30';
         }
@@ -190,21 +190,21 @@ export class JobCardComponent {
         const status = this.application().status;
         switch (status) {
             case JobApplicationStatus.Applied:
-                return 'bg-blue-400';
+                return 'bg-info';
             case JobApplicationStatus.PhoneScreen:
-                return 'bg-indigo-400';
+                return 'bg-info/80';
             case JobApplicationStatus.TechnicalTask:
-                return 'bg-orange-400';
+                return 'bg-warning/80';
             case JobApplicationStatus.Interviewing:
-                return 'bg-violet-400';
+                return 'bg-primary';
             case JobApplicationStatus.Offer:
-                return 'bg-amber-400';
+                return 'bg-success';
             case JobApplicationStatus.Accepted:
-                return 'bg-emerald-400';
+                return 'bg-success';
             case JobApplicationStatus.Rejected:
-                return 'bg-rose-400';
+                return 'bg-destructive';
             case JobApplicationStatus.Ghosted:
-                return 'bg-slate-400';
+                return 'bg-muted-foreground';
             default:
                 return 'bg-muted-foreground/30';
         }
@@ -218,28 +218,28 @@ export class JobCardComponent {
 
         switch (status) {
             case JobApplicationStatus.Applied:
-                return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400`;
+                return `${base} bg-info/10 text-info`;
 
             case JobApplicationStatus.PhoneScreen:
-                return `${base} bg-indigo-500/10 text-indigo-600 dark:text-indigo-400`;
+                return `${base} bg-info/10 text-info`;
 
             case JobApplicationStatus.TechnicalTask:
-                return `${base} bg-orange-500/10 text-orange-600 dark:text-orange-400`;
+                return `${base} bg-warning/10 text-warning`;
 
             case JobApplicationStatus.Interviewing:
-                return `${base} bg-violet-500/10 text-violet-600 dark:text-violet-400`;
+                return `${base} bg-primary/10 text-primary`;
 
             case JobApplicationStatus.Offer:
-                return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`;
+                return `${base} bg-success/10 text-success border-success/20`;
 
             case JobApplicationStatus.Accepted:
-                return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`;
+                return `${base} bg-success/10 text-success`;
 
             case JobApplicationStatus.Rejected:
-                return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400`;
+                return `${base} bg-destructive/10 text-destructive`;
 
             case JobApplicationStatus.Ghosted:
-                return `${base} bg-slate-500/10 text-slate-600 dark:text-slate-400`;
+                return `${base} bg-muted-foreground/10 text-muted-foreground`;
 
             default:
                 return `${base} bg-muted text-muted-foreground`;
@@ -325,11 +325,11 @@ export class JobCardComponent {
         const priority = this.application().priority;
         switch (priority) {
             case JobPriority.High:
-                return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20';
+                return 'bg-destructive/10 text-destructive border-destructive/20';
             case JobPriority.Medium:
-                return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
+                return 'bg-warning/10 text-warning border-warning/20';
             case JobPriority.Low:
-                return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
+                return 'bg-info/10 text-info border-info/20';
             default:
                 return 'bg-muted text-muted-foreground';
         }
@@ -338,9 +338,9 @@ export class JobCardComponent {
     // Computed: Match Score Color
     matchScoreColorClasses = computed(() => {
         const score = this.application().matchScore || 0;
-        if (score >= 80) return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20';
-        if (score >= 50) return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20';
-        return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20';
+        if (score >= 80) return 'bg-success/10 text-success border-success/20';
+        if (score >= 50) return 'bg-info/10 text-info border-info/20';
+        return 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20';
     });
 
     // Format date

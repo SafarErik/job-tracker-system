@@ -12,6 +12,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArrowLeft, lucideGlobe, lucideMapPin, lucideBuilding2, lucideLayers, lucideUsers, lucideMail, lucideLinkedin, lucideCheck, lucidePlus, lucideChevronDown, lucideX } from '@ng-icons/lucide';
+import { SkillSelectorComponent } from '../../../../shared/components/skill-selector/skill-selector';
 
 @Component({
   selector: 'app-company-form',
@@ -25,6 +26,7 @@ import { lucideArrowLeft, lucideGlobe, lucideMapPin, lucideBuilding2, lucideLaye
     ...HlmLabelImports,
     ...HlmCardImports,
     ...HlmBadgeImports,
+    SkillSelectorComponent,
   ],
   providers: [
     provideIcons({
@@ -47,7 +49,6 @@ export class CompanyFormComponent implements OnInit {
   // New fields & UI State
   industryOptions: string[] = [];
   techStack = signal<string[]>([]);
-  newTech = signal('');
 
   // Dropdown states
   isPriorityDropdownOpen = signal(false);
@@ -152,24 +153,14 @@ export class CompanyFormComponent implements OnInit {
   }
 
   // --- Tech Stack Management ---
-  addTech(): void {
-    const tech = this.newTech().trim();
-    if (tech && !this.techStack().includes(tech)) {
-      this.techStack.update((stack) => [...stack, tech]);
-      this.newTech.set('');
+  onSkillAdded(skill: string): void {
+    if (!this.techStack().includes(skill)) {
+      this.techStack.update((stack) => [...stack, skill]);
     }
   }
 
-  removeTech(index: number, event?: Event): void {
-    event?.stopPropagation(); // Prevent triggering container clicks if any
-    this.techStack.update((stack) => stack.filter((_, i) => i !== index));
-  }
-
-  onTechKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.addTech();
-    }
+  onSkillRemoved(skill: string): void {
+    this.techStack.update((stack) => stack.filter((t) => t !== skill));
   }
 
   // --- Actions ---
@@ -186,18 +177,31 @@ export class CompanyFormComponent implements OnInit {
     const formValue = this.companyForm.value;
 
     // Construct Contacts Array
-    const contacts: CompanyContact[] = [];
+    let contacts: CompanyContact[] = [];
     if (formValue.hrContactName) {
-      // If editing, try to preserve the ID of the first contact
-      const contactId = this.isEditMode() && this.existingContacts.length > 0 ? this.existingContacts[0].id : 0;
+      // If editing, try to preserve the ID and role of the first contact
+      const existingPrimary = this.existingContacts[0];
+      const contactId = this.isEditMode() && existingPrimary ? existingPrimary.id : 0;
+      const contactRole = this.isEditMode() && existingPrimary ? existingPrimary.role : 'Recruiter';
 
-      contacts.push({
+      const newPrimaryContact: CompanyContact = {
         id: contactId,
         name: formValue.hrContactName,
         email: formValue.hrContactEmail,
         linkedIn: formValue.hrContactLinkedIn,
-        role: 'Recruiter', // Default role
-      });
+        role: contactRole,
+      };
+
+      if (this.isEditMode() && this.existingContacts.length > 0) {
+        // Replace existing primary and preserve others
+        contacts = [newPrimaryContact, ...this.existingContacts.slice(1)];
+      } else {
+        contacts = [newPrimaryContact];
+      }
+    } else if (this.isEditMode()) {
+      // If hrContactName is cleared in edit mode, we might want to keep other contacts?
+      // Based on the instruction, we should mostly focus on not dropping other existing contacts.
+      contacts = this.existingContacts;
     }
 
     const payload = {

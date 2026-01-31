@@ -22,7 +22,7 @@ public interface IJobApplicationRepository
     /// <summary>
     /// Gets a single job application by ID
     /// </summary>
-    Task<JobApplication?> GetByIdAsync(int id);
+    Task<JobApplication?> GetByIdAsync(Guid id);
 
     /// <summary>
     /// Adds a new job application
@@ -37,5 +37,5 @@ public interface IJobApplicationRepository
     /// <summary>
     /// Deletes a job application
     /// </summary>
-    Task DeleteAsync(int id);
+    Task DeleteAsync(Guid id);
 }

@@ -90,6 +90,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(c => c.JobApplications)
                 .HasForeignKey(j => j.PrimaryContactId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(j => j.AppliedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.Property(j => j.RowVersion)
+                  .IsRowVersion();
         });
 
         // ============================================

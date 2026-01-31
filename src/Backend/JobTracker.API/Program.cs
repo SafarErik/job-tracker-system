@@ -132,16 +132,8 @@ if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientS
             
             // Configure correlation cookie for cross-origin OAuth
             // Required when frontend and backend are on different domains
-            if (builder.Environment.IsDevelopment())
-            {
-                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            }
-            else
-            {
-                options.CorrelationCookie.SameSite = SameSiteMode.None;
-                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
-            }
+            options.CorrelationCookie.SameSite = SameSiteMode.None;
+            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
         });
     Console.WriteLine("✅ Google OAuth enabled");
 }

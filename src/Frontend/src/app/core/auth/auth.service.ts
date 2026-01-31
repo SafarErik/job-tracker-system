@@ -131,7 +131,7 @@ export class AuthService {
       isLoading: false,
       error: null,
     });
-    this._router.navigate(['/login']);
+    this._router.navigate(['/auth/login']);
   }
 
   // --- Google OAuth ---

@@ -1,5 +1,6 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-logo',
@@ -20,8 +21,8 @@ import { CommonModule } from '@angular/common';
         <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="relative z-10 w-full h-full drop-shadow-sm">
           <defs>
             <linearGradient [id]="gradientId" x1="5" y1="0" x2="35" y2="39.2" gradientUnits="userSpaceOnUse">
-              <stop [attr.stop-color]="mono() ? 'currentColor' : 'var(--primary)'" />
-              <stop offset="1" [attr.stop-color]="mono() ? 'currentColor' : 'var(--primary)'" stop-opacity="0.85" />
+              <stop [attr.stop-color]="mono() ? 'currentColor' : (isDark() ? 'white' : 'var(--primary)')" />
+              <stop offset="1" [attr.stop-color]="mono() ? 'currentColor' : (isDark() ? 'white' : 'var(--primary)')" stop-opacity="0.85" />
             </linearGradient>
           </defs>
 
@@ -68,6 +69,9 @@ export class LogoComponent {
   withGlow = input<boolean>(false);
   showSlogan = input<boolean>(false);
   mono = input<boolean>(false);
+
+  private readonly _themeService = inject(ThemeService);
+  readonly isDark = this._themeService.isDark;
 
   // Generate a unique ID for the gradient to prevent collisions when multiple logos are on page
   private readonly instanceId = Math.random().toString(36).substring(2, 7);

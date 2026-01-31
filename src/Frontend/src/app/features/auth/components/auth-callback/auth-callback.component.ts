@@ -1,127 +1,64 @@
-/**
- * ============================================================================
- * AUTH CALLBACK COMPONENT
- * ============================================================================
- *
- * Handles the callback from external OAuth providers (Google).
- * Extracts the JWT token from the URL and completes the authentication.
- *
- * Flow:
- * 1. User clicks "Login with Google"
- * 2. Backend redirects to Google
- * 3. Google redirects back to backend callback
- * 4. Backend generates JWT and redirects to frontend: /auth/callback?token=xxx
- * 5. This component extracts the token and completes login
- */
-
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth/auth.service';
-
-// Spartan UI
-import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
 
 @Component({
   selector: 'app-auth-callback',
   standalone: true,
-  imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   template: `
-    <div
-      class="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 p-4"
-    >
-      <div hlmCard class="w-full max-w-md text-center">
-        <div hlmCardContent class="p-8">
-          @if (error) {
-            <!-- Error State -->
-            <div class="flex flex-col items-center">
-              <div class="text-5xl">❌</div>
-              <h2 class="mt-6 text-xl font-semibold text-foreground">Authentication Failed</h2>
-              <p class="mt-2 text-muted-foreground">{{ error }}</p>
-              <button hlmBtn class="mt-6" (click)="goToLogin()">Back to Login</button>
-            </div>
-          } @else {
-            <!-- Loading State -->
-            <div class="flex flex-col items-center">
-              <svg
-                class="h-12 w-12 animate-spin text-primary"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              <h2 class="mt-6 text-xl font-semibold text-foreground">Completing Sign In</h2>
-              <p class="mt-2 text-muted-foreground">
-                Please wait while we verify your credentials...
-              </p>
-            </div>
-          }
+    <div class="flex flex-col items-center justify-center space-y-4 animate-in fade-in zoom-in-95 duration-700">
+      @if (error()) {
+        <div class="text-6xl mb-2">⚠️</div>
+        <h2 class="text-xl font-bold text-destructive">Authentication Failed</h2>
+        <p class="text-muted-foreground">{{ error() }}</p>
+        <button (click)="goToLogin()" class="mt-4 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+          Back to Login
+        </button>
+      } @else {
+        <!-- Cinematic Spinner -->
+        <div class="relative h-16 w-16">
+          <div class="absolute inset-0 rounded-full border-4 border-primary/20"></div>
+          <div class="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
         </div>
-      </div>
+        <h2 class="text-lg font-medium text-foreground">Verifying Credentials...</h2>
+      }
     </div>
-  `,
+  `
 })
 export class AuthCallbackComponent implements OnInit {
-  error: string | null = null;
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _router = inject(Router);
+  private readonly _auth = inject(AuthService);
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly authService: AuthService,
-  ) {}
+  readonly error = signal<string | null>(null);
 
-  ngOnInit(): void {
-    // Extract token from URL query parameters
-    const token = this.route.snapshot.queryParams['token'];
-    const errorParam = this.route.snapshot.queryParams['error'];
+  ngOnInit() {
+    const params = this._route.snapshot.queryParams;
 
-    if (errorParam) {
-      // Handle error from backend
-      this.error = this.getErrorMessage(errorParam);
+    if (params['error']) {
+      this.error.set(this._mapError(params['error']));
       return;
     }
 
+    const token = params['token'];
     if (token) {
-      // Process the token
-      this.authService.handleGoogleCallback(token);
+      this._auth.handleGoogleCallback(token);
     } else {
-      // No token provided
-      this.error = 'No authentication token received. Please try again.';
+      this.error.set("Invalid callback parameters.");
     }
   }
 
-  /**
-   * Convert error codes to user-friendly messages
-   */
-  private getErrorMessage(errorCode: string): string {
-    const errorMessages: Record<string, string> = {
-      google_auth_failed: 'Google authentication failed. Please try again.',
-      no_claims: 'Could not retrieve account information from Google.',
-      no_email: 'Your Google account does not have an email address.',
-      create_failed: 'Could not create your account. Please try again.',
+  private _mapError(code: string): string {
+    const map: Record<string, string> = {
+      'google_auth_failed': 'Google declined the login request.',
+      'no_email': 'Your Google account is missing an email address.',
+      'no_claims': 'Could not retrieve account information from Google.',
+      'create_failed': 'Could not create your account. Please try again.'
     };
-
-    return errorMessages[errorCode] || 'An unexpected error occurred. Please try again.';
+    return map[code] || 'An unknown error occurred.';
   }
 
-  /**
-   * Navigate back to login page
-   */
-  goToLogin(): void {
-    this.router.navigate(['/login']);
+  goToLogin() {
+    this._router.navigate(['/auth/login']);
   }
 }

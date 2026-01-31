@@ -31,40 +31,18 @@ export const routes: Routes = [
     pathMatch: 'full',
     title: 'Applications - JobTracker',
   },
+  {
+    path: 'dashboard',
+    redirectTo: '',
+    pathMatch: 'full',
+  },
 
   // ============================================
-  // GUEST ROUTES (Login, Register, etc.)
+  // AUTH ROUTES (Login, Register, Callback)
   // ============================================
   {
-    path: '',
-    loadComponent: () =>
-      import('./features/auth/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
-    children: [
-      {
-        path: 'login',
-        canActivate: [guestGuard],
-        loadComponent: () =>
-          import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
-        title: 'Login - JobTracker',
-      },
-      {
-        path: 'register',
-        canActivate: [guestGuard],
-        loadComponent: () =>
-          import('./features/auth/components/register/register.component').then(
-            (m) => m.RegisterComponent,
-          ),
-        title: 'Register - JobTracker',
-      },
-      {
-        path: 'auth/callback',
-        loadComponent: () =>
-          import('./features/auth/components/auth-callback/auth-callback.component').then(
-            (m) => m.AuthCallbackComponent,
-          ),
-        title: 'Signing In... - JobTracker',
-      },
-    ],
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
   {
     path: 'new',

@@ -11,26 +11,24 @@ import { lucideSun, lucideMoon } from '@ng-icons/lucide';
   providers: [provideIcons({ lucideSun, lucideMoon })],
   template: `
     <button hlmBtn variant="ghost" size="icon" (click)="themeService.toggle()"
-      class="relative h-9 w-9 rounded-full transition-colors hover:bg-muted/60"
+      class="relative flex h-9 w-9 items-center justify-center rounded-full transition-all hover:bg-muted/80 active:scale-90"
       [attr.aria-label]="label()">
       
-      <!-- Sun Icon (Light Mode) -->
-      <ng-icon name="lucideSun" 
-        class="h-5 w-5 transition-all duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        [class.rotate-0]="!isDark()"
-        [class.scale-100]="!isDark()"
-        [class.rotate-90]="isDark()"
-        [class.scale-0]="isDark()">
-      </ng-icon>
-
-      <!-- Moon Icon (Dark Mode) -->
-      <ng-icon name="lucideMoon" 
-        class="h-5 w-5 text-primary transition-all duration-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        [class.rotate-90]="!isDark()"
-        [class.scale-0]="!isDark()"
-        [class.rotate-0]="isDark()"
-        [class.scale-100]="isDark()">
-      </ng-icon>
+      <div class="relative h-5 w-5 flex items-center justify-center">
+        <!-- Sun Icon (Light Mode) -->
+        <ng-icon name="lucideSun" 
+          class="h-5 w-5 transition-all duration-500 absolute text-foreground"
+          [style.opacity]="isDark() ? '0' : '1'"
+          [style.transform]="isDark() ? 'translateY(12px) rotate(90deg)' : 'translateY(0) rotate(0)'">
+        </ng-icon>
+  
+        <!-- Moon Icon (Dark Mode) -->
+        <ng-icon name="lucideMoon" 
+          class="h-5 w-5 text-primary transition-all duration-500 absolute"
+          [style.opacity]="isDark() ? '1' : '0'"
+          [style.transform]="isDark() ? 'translateY(0) rotate(0)' : 'translateY(-12px) rotate(-90deg)'">
+        </ng-icon>
+      </div>
       
       <span class="sr-only">{{ label() }}</span>
     </button>

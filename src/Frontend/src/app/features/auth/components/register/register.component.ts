@@ -1,32 +1,10 @@
-/**
- * ============================================================================
- * REGISTER COMPONENT
- * ============================================================================
- *
- * Modern registration form with validation.
- * Matches the login component design for consistency.
- *
- * Features:
- * - Full registration form with validation
- * - Password strength requirements display
- * - Confirm password matching
- * - Google OAuth option
- * - Dark mode support
- */
-
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { LogoComponent } from '../../../../shared/components/logo/logo';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-  AbstractControl,
-  ValidationErrors,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../../../../core/auth/auth.service';
+import { LogoComponent } from '../../../../shared/components/logo/logo';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
@@ -37,67 +15,63 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ReactiveFormsModule,
+    RouterLink,
+    LogoComponent,
+    ThemeToggleComponent,
     ...HlmButtonImports,
     ...HlmInputImports,
     ...HlmLabelImports,
-    ...HlmCardImports,
-    LogoComponent,
+    ...HlmCardImports
   ],
-  templateUrl: './register.component.html',
+  templateUrl: './register.component.html'
 })
 export class RegisterComponent {
-  // Reactive form for registration
-  registerForm: FormGroup;
+  private readonly _auth = inject(AuthService);
+  private readonly _router = inject(Router);
+  private readonly _fb = inject(FormBuilder);
 
-  // Loading state for submit button
-  isLoading = signal(false);
+  // Signals
+  readonly isLoading = this._auth.isLoading;
+  readonly error = this._auth.error;
+  readonly showPassword = signal(false);
+  readonly showConfirmPassword = signal(false);
 
-  // Error message to display
-  errorMessage = signal<string | null>(null);
+  // Strictly Typed Form
+  readonly form = this._fb.nonNullable.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8), this._passwordStrengthValidator]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this._matchPasswords });
 
-  // Show/hide password toggles
-  showPassword = signal(false);
-  showConfirmPassword = signal(false);
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly authService: AuthService,
-    private readonly router: Router,
-  ) {
-    // Initialize form with validation
-    this.registerForm = this.fb.group(
-      {
-        firstName: ['', [Validators.required, Validators.minLength(2)]],
-        lastName: ['', [Validators.required, Validators.minLength(2)]],
-        email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            // Custom validator for password strength
-            this.passwordStrengthValidator,
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-      },
-      {
-        // Form-level validator for password matching
-        validators: this.passwordMatchValidator,
-      },
-    );
+    const { confirmPassword, ...registerData } = this.form.getRawValue();
 
-    // Clear any existing errors when component loads
-    this.authService.clearError();
+    this._auth.register({ ...registerData, confirmPassword }).subscribe({
+      next: () => this._router.navigate(['/dashboard'])
+    });
   }
 
-  /**
-   * Custom validator for password strength.
-   * Requires at least one uppercase, one lowercase, one digit, and one special character.
-   */
-  private passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+  googleLogin() {
+    this._auth.loginWithGoogle();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword.update(v => !v);
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword.update(v => !v);
+  }
+
+  private _passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     if (!value) return null;
 
@@ -107,126 +81,12 @@ export class RegisterComponent {
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
 
     const valid = hasUppercase && hasLowercase && hasDigit && hasSpecial;
-
-    return valid
-      ? null
-      : {
-        passwordStrength: {
-          hasUppercase,
-          hasLowercase,
-          hasDigit,
-          hasSpecial,
-        },
-      };
+    return valid ? null : { passwordStrength: true };
   }
 
-  /**
-   * Form-level validator to check if passwords match.
-   * Properly clears only passwordMismatch error when passwords match.
-   */
-  private passwordMatchValidator(form: FormGroup): ValidationErrors | null {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirmPassword');
-
-    if (!password || !confirmPassword) {
-      return null;
-    }
-
-    // Check if passwords match
-    if (password.value === confirmPassword.value) {
-      // Passwords match - clear only passwordMismatch error, preserve other errors
-      const currentErrors = confirmPassword.errors;
-      if (currentErrors) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordMismatch, ...remainingErrors } = currentErrors;
-        confirmPassword.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
-      }
-      return null;
-    }
-
-    // Passwords don't match - set error
-    confirmPassword.setErrors({ ...confirmPassword.errors, passwordMismatch: true });
-    return { passwordMismatch: true };
-  }
-
-  /**
-   * Handle form submission
-   */
-  onSubmit(): void {
-    // Mark all fields as touched to show validation errors
-    this.registerForm.markAllAsTouched();
-
-    if (this.registerForm.invalid) {
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    const formValue = this.registerForm.value;
-
-    this.authService
-      .register({
-        email: formValue.email,
-        password: formValue.password,
-        confirmPassword: formValue.confirmPassword,
-        firstName: formValue.firstName,
-        lastName: formValue.lastName,
-      })
-      .subscribe({
-        next: (response) => {
-          this.isLoading.set(false);
-          if (response.succeeded) {
-            // Registration successful - user is already logged in
-            this.router.navigate(['/']);
-          }
-        },
-        error: (error) => {
-          this.isLoading.set(false);
-          this.errorMessage.set(error.error?.message || 'Registration failed. Please try again.');
-        },
-      });
-  }
-
-  /**
-   * Initiate Google OAuth login flow
-   */
-  loginWithGoogle(): void {
-    this.authService.loginWithGoogle();
-  }
-
-  /**
-   * Toggle password visibility
-   */
-  togglePasswordVisibility(field: 'password' | 'confirm'): void {
-    if (field === 'password') {
-      this.showPassword.update((show) => !show);
-    } else {
-      this.showConfirmPassword.update((show) => !show);
-    }
-  }
-
-  /**
-   * Helper to check if a form field has errors
-   */
-  hasError(field: string, error: string): boolean {
-    const control = this.registerForm.get(field);
-    return control ? control.hasError(error) && control.touched : false;
-  }
-
-  /**
-   * Get password strength errors for display
-   */
-  getPasswordStrengthErrors(): {
-    hasUppercase: boolean;
-    hasLowercase: boolean;
-    hasDigit: boolean;
-    hasSpecial: boolean;
-  } | null {
-    const control = this.registerForm.get('password');
-    if (control?.hasError('passwordStrength')) {
-      return control.getError('passwordStrength');
-    }
-    return null;
+  private _matchPasswords(group: AbstractControl): ValidationErrors | null {
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
   }
 }

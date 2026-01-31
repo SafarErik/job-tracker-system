@@ -12,7 +12,9 @@
 
   <div class="relative z-10 flex flex-col min-h-screen">
     <!-- Glass Navigation Header -->
+    @if (!isAuthPage()) {
     <app-navbar />
+    }
 
     <!-- Main Content -->
     <main class="flex-grow mx-auto w-full max-w-7xl px-6 lg:px-8 py-8 md:py-12">
@@ -20,6 +22,7 @@
     </main>
 
     <!-- Refined Footer -->
+    @if (!isAuthPage()) {
     <footer class="mt-auto border-t border-border/40 bg-background/20 backdrop-blur-md py-10">
       <div
         class="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
@@ -36,6 +39,7 @@
         </div>
       </div>
     </footer>
+    }
   </div>
 
   <!-- Toast Notifications -->

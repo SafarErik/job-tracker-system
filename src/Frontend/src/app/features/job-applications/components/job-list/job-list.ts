@@ -580,7 +580,7 @@ export class JobList implements OnInit {
    * Get personalized welcome message based on time of day and user status
    */
   getWelcomeMessage(): string {
-    const user = this.authService.currentUser();
+    const user = this.authService.user();
     const firstName = user?.firstName || 'there';
     const hour = new Date().getHours();
     const hasApplications = this.applications.length > 0;

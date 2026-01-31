@@ -1,61 +1,29 @@
-/**
- * ============================================================================
- * AUTH GUARD
- * ============================================================================
- *
- * Route guard that protects routes requiring authentication.
- * Uses functional guard pattern (Angular 15+).
- *
- * Best practices:
- * - Use functional guards instead of class-based (simpler, tree-shakeable)
- * - Redirect to login with return URL for better UX
- * - Check token validity, not just existence
- */
-
 import { inject } from '@angular/core';
-import { Router, CanActivateFn, UrlTree } from '@angular/router';
+import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from './auth.service';
 
 /**
  * Guard that requires authentication.
  * Redirects unauthenticated users to the login page.
- *
- * Usage in routes:
- * { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] }
  */
-export const authGuard: CanActivateFn = (route, state): boolean | UrlTree => {
+export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Check if user is authenticated
-  if (authService.isAuthenticated()) {
-    return true;
-  }
-
-  // Store the attempted URL for redirecting after login
-  const returnUrl = state.url;
-
-  // Redirect to login with return URL as query parameter
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl },
-  });
+  return authService.isAuthenticated()
+    ? true
+    : router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };
 
 /**
  * Guard that prevents authenticated users from accessing certain routes.
- * Useful for login/register pages - redirect to home if already logged in.
- *
- * Usage in routes:
- * { path: 'login', component: LoginComponent, canActivate: [guestGuard] }
+ * Redirects authenticated users to the dashboard.
  */
-export const guestGuard: CanActivateFn = (): boolean | UrlTree => {
+export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // If user is authenticated, redirect to home
-  if (authService.isAuthenticated()) {
-    return router.createUrlTree(['/']);
-  }
-
-  return true;
+  return !authService.isAuthenticated()
+    ? true
+    : router.createUrlTree(['/dashboard']);
 };

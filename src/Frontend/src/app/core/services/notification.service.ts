@@ -1,45 +1,29 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 import type { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
-
-/**
- * Notification Types
- * Determines the visual style and icon of the notification
- */
-export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
 /**
  * Notification Message Interface
  */
-export interface NotificationMessage {
-  type: NotificationType;
+export interface Notification {
+  id: number;
+  type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message: string;
-  duration?: number; // milliseconds, default 4000
+  duration?: number;
 }
 
 /**
  * NotificationService
  *
  * A service for displaying toast notifications to users.
- * Provides better UX than browser's alert() and confirm() dialogs.
- *
- * Usage:
- * ```typescript
- * this.notificationService.success('Application saved successfully!');
- * this.notificationService.error('Failed to save application');
- * ```
+ * Uses a signal-based queue for reactive state.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  /**
-   * Observable stream of notifications
-   * Components can subscribe to this to display notifications
-   */
-  private readonly notificationSubject = new Subject<NotificationMessage>();
-  public notifications$ = this.notificationSubject.asObservable();
+  // A signal holding an array of active notifications
+  readonly queue = signal<Notification[]>([]);
 
   /**
    * Reference to the confirm dialog component
@@ -47,65 +31,50 @@ export class NotificationService {
    */
   confirmDialog?: ConfirmDialogComponent;
 
-  /**
-   * Show a success notification
-   */
-  success(message: string, title: string = 'Success'): void {
-    this.show({
-      type: 'success',
-      title,
+  show(
+    type: Notification['type'],
+    message: string,
+    title?: string,
+    duration = 4000,
+  ) {
+    const id = Date.now();
+    const newNotif: Notification = {
+      id,
+      type,
       message,
-    });
+      title: title ?? type.toUpperCase(),
+      duration,
+    };
+
+    this.queue.update((q) => [...q, newNotif]);
+
+    // Auto-remove after duration
+    setTimeout(() => this.remove(id), duration);
   }
 
-  /**
-   * Show an error notification
-   */
-  error(message: string, title: string = 'Error'): void {
-    this.show({
-      type: 'error',
-      title,
-      message,
-      duration: 6000, // Errors stay longer
-    });
+  remove(id: number) {
+    this.queue.update((q) => q.filter((n) => n.id !== id));
   }
 
-  /**
-   * Show a warning notification
-   */
-  warning(message: string, title: string = 'Warning'): void {
-    this.show({
-      type: 'warning',
-      title,
-      message,
-    });
+  // Helper shortcuts
+  success(message: string, title?: string) {
+    this.show('success', message, title);
   }
 
-  /**
-   * Show an info notification
-   */
-  info(message: string, title: string = 'Info'): void {
-    this.show({
-      type: 'info',
-      title,
-      message,
-    });
+  error(message: string, title?: string) {
+    this.show('error', message, title, 6000); // Errors stay longer
   }
 
-  /**
-   * Show a notification with custom settings
-   */
-  private show(notification: NotificationMessage): void {
-    this.notificationSubject.next(notification);
+  warning(message: string, title?: string) {
+    this.show('warning', message, title);
+  }
+
+  info(message: string, title?: string) {
+    this.show('info', message, title);
   }
 
   /**
    * Display a confirmation dialog
-   * Uses custom modal if available, falls back to browser confirm
-   *
-   * @param message - The confirmation message
-   * @param title - The dialog title
-   * @param config - Optional configuration
    * @returns Promise that resolves to true if confirmed, false if cancelled
    */
   async confirm(
@@ -117,8 +86,6 @@ export class NotificationService {
       isDangerous?: boolean;
     },
   ): Promise<boolean> {
-    console.log('NotificationService.confirm called. Dialog present:', !!this.confirmDialog);
-    // Use custom dialog if available
     if (this.confirmDialog) {
       return this.confirmDialog.show({
         title,

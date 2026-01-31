@@ -295,7 +295,7 @@ export class NavbarComponent {
 
   // Auth state
   readonly isAuthenticated = computed(() => this.authService.isAuthenticated());
-  readonly currentUser = computed(() => this.authService.currentUser());
+  readonly currentUser = computed(() => this.authService.user());
   readonly userFullName = computed(() => this.authService.userFullName());
   readonly userInitials = computed(() => this.authService.userInitials());
 

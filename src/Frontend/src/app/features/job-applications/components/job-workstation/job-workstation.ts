@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ApplicationService } from '../../services/application.service';
 import { DocumentService } from '../../../documents/services/document.service';
@@ -41,6 +41,7 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmInputImports } from '@spartan-ng/helm/input';
 
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -83,6 +84,8 @@ type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'intervie
         FormsModule,
         RouterLink,
         NgIcon,
+        ReactiveFormsModule,
+        ...HlmInputImports,
         ...HlmLabelImports,
         ...HlmTabsImports,
         ...BrnTabsImports,
@@ -143,6 +146,15 @@ export class JobWorkstationComponent implements OnInit {
     companyContacts = signal<CompanyContact[]>([]);
     isLoading = signal(true);
     error = signal<string | null>(null);
+
+    // Inline Editing State
+    editingField = signal<string | null>(null);
+    lastSavedField = signal<string | null>(null);
+
+    // Forms
+    editForm = inject(FormBuilder).group({
+        position: ['', [Validators.required, Validators.maxLength(100)]]
+    });
 
     // Tab state
     activeTab = signal<WorkstationTab>('overview');
@@ -255,6 +267,77 @@ export class JobWorkstationComponent implements OnInit {
         if (score >= 50) return 'bg-warning/20';
         return 'bg-muted/30';
     });
+
+    startEditing(field: string): void {
+        const app = this.application();
+        if (!app) return;
+
+        if (field === 'position') {
+            this.editForm.patchValue({ position: app.position });
+        }
+
+        this.editingField.set(field);
+    }
+
+    saveField(field: string): void {
+        const app = this.application();
+        if (!app) return;
+
+        if (field === 'position') {
+            const newPosition = this.editForm.get('position')?.value;
+            if (!newPosition || newPosition === app.position) {
+                this.editingField.set(null);
+                return;
+            }
+
+            this.applicationService.updateApplication(app.id, { ...app, position: newPosition }).subscribe({
+                next: () => {
+                    this.application.update(prev => prev ? { ...prev, position: newPosition } : null);
+                    this.editingField.set(null);
+                    this.lastSavedField.set(field);
+                    this.notificationService.success('Position updated', 'Success');
+                    setTimeout(() => this.lastSavedField.set(null), 2000);
+                },
+                error: () => {
+                    this.notificationService.error('Failed to update position', 'Error');
+                    this.editingField.set(null);
+                }
+            });
+        }
+    }
+
+    async deleteApplication(): Promise<void> {
+        const app = this.application();
+        if (!app) return;
+
+        const confirmed = await this.notificationService.confirm(
+            `This will permanently delete your application for "${app.position}" at ${app.companyName}. This action cannot be undone.`,
+            'Delete Application?',
+            {
+                confirmText: 'Delete Mission',
+                isDangerous: true,
+            },
+        );
+
+        if (!confirmed) return;
+
+        this.applicationService.deleteApplication(app.id).subscribe({
+            next: () => {
+                this.notificationService.success(
+                    'Application has been purged from records.',
+                    'Mission Terminated'
+                );
+                this.router.navigate(['/applications']);
+            },
+            error: (err) => {
+                console.error('[JobWorkstation] Delete failed:', err);
+                this.notificationService.error(
+                    'Unable to complete the erasure. Please try again.',
+                    'Operation Failed'
+                );
+            },
+        });
+    }
 
     // Helper computed for active tab display (no arrow functions in templates)
     activeTabIcon = computed(() => {

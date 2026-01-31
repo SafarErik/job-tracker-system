@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
@@ -11,7 +11,7 @@ import { HlmCardImports } from '../../../../../../libs/ui/card';
 import { HlmBadgeImports } from '../../../../../../libs/ui/badge';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { provideIcons } from '@ng-icons/core';
 import {
@@ -51,6 +51,7 @@ import { SkillSelectorComponent } from '../../../../shared/components/skill-sele
     ...HlmInputImports,
     ...HlmDropdownMenuImports,
     SkillSelectorComponent,
+    ReactiveFormsModule,
   ],
   providers: [
     provideIcons({
@@ -94,6 +95,15 @@ export class CompanyDetailsComponent implements OnInit {
 
   editingIndustry = signal(false);
   editingContactId = signal<number | null>(null); // null: not editing, 0: new, >0: existing
+
+  // Inline Editing State
+  editingField = signal<string | null>(null);
+  lastSavedField = signal<string | null>(null);
+
+  // Forms
+  editForm = inject(FormBuilder).group({
+    name: ['', [Validators.required, Validators.maxLength(100)]]
+  });
 
   // Contact editing state
   editContactForm = {
@@ -549,6 +559,44 @@ export class CompanyDetailsComponent implements OnInit {
       case 'Tier2': return 'Tier 2: High Interest';
       case 'Tier3': return 'Tier 3: Opportunistic';
       default: return priority;
+    }
+  }
+
+  startEditing(field: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    if (field === 'name') {
+      this.editForm.patchValue({ name: details.name });
+    }
+
+    this.editingField.set(field);
+  }
+
+  saveField(field: string): void {
+    const details = this.companyDetails();
+    if (!details) return;
+
+    if (field === 'name') {
+      const newName = this.editForm.get('name')?.value;
+      if (!newName || newName === details.name) {
+        this.editingField.set(null);
+        return;
+      }
+
+      this.companyService.updateCompany(details.id, { name: newName }).subscribe({
+        next: () => {
+          this.companyDetails.update(prev => prev ? { ...prev, name: newName } : null);
+          this.editingField.set(null);
+          this.lastSavedField.set(field);
+          this.notificationService.success('Company name updated', 'Success');
+          setTimeout(() => this.lastSavedField.set(null), 2000);
+        },
+        error: () => {
+          this.notificationService.error('Failed to update company name', 'Error');
+          this.editingField.set(null);
+        }
+      });
     }
   }
 }

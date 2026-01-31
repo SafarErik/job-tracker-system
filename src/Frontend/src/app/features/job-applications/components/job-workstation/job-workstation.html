@@ -53,9 +53,26 @@
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
       <div class="space-y-4">
         <div class="flex flex-col gap-1">
-          <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight">
-            {{ application()?.position }}
-          </h1>
+          <div class="flex items-center gap-3 min-h-[60px]">
+            @if (editingField() !== 'position') {
+            <h1 (click)="startEditing('position')"
+              class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight hover:bg-muted/50 -ml-2 px-2 rounded-lg cursor-pointer transition-colors group relative flex items-center gap-3">
+              {{ application()?.position }}
+              <ng-icon name="lucidePencil"
+                class="opacity-0 group-hover:opacity-100 h-6 w-6 text-muted-foreground/50"></ng-icon>
+              @if (lastSavedField() === 'position') {
+              <ng-icon name="lucideCheck" class="h-8 w-8 text-success"></ng-icon>
+              }
+            </h1>
+            } @else {
+            <div [formGroup]="editForm" class="flex gap-2 items-center w-full max-w-2xl">
+              <input hlmInput formControlName="position"
+                class="text-3xl md:text-5xl font-black h-16 w-full bg-background border-primary/50"
+                placeholder="Position title" (blur)="saveField('position')" (keydown.enter)="saveField('position')"
+                autofocus>
+            </div>
+            }
+          </div>
           <div class="flex items-center gap-2 text-2xl">
             <span class="text-muted-foreground font-medium">at</span>
             <a [routerLink]="['/companies', application()?.companyId]" [queryParams]="{from: 'application'}"
@@ -100,6 +117,12 @@
             Job Posting <ng-icon name="lucideExternalLink" size="14"></ng-icon>
           </a>
           }
+
+          <div class="h-6 w-px bg-border/60 mx-1"></div>
+          <button (click)="deleteApplication()"
+            class="text-sm font-bold text-muted-foreground hover:text-destructive flex items-center gap-2 transition-colors">
+            Purge records <ng-icon name="lucideTrash2" size="14"></ng-icon>
+          </button>
         </div>
       </div>
 

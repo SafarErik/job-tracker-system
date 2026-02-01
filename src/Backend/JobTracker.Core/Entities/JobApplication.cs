@@ -148,5 +148,5 @@ public class JobApplication
     public ICollection<Skill> Skills { get; set; } = new List<Skill>();
 
     [Timestamp]
-    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+    public uint RowVersion { get; set; }
 }

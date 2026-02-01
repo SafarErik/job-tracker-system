@@ -276,30 +276,30 @@ public static class DataSeeder
         return new List<Skill>
         {
             // Programming Languages
-            new Skill { Name = "C#", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "Python", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "JavaScript", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "TypeScript", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "Java", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "C#", NormalizedName = "C#".ToUpperInvariant(), Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Python", NormalizedName = "PYTHON", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "JavaScript", NormalizedName = "JAVASCRIPT", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "TypeScript", NormalizedName = "TYPESCRIPT", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Java", NormalizedName = "JAVA", Category = CategoryProgrammingLanguage },
 
             // Frameworks
-            new Skill { Name = ".NET Core", Category = CategoryFramework },
-            new Skill { Name = "Angular", Category = CategoryFramework },
-            new Skill { Name = "React", Category = CategoryFramework },
-            new Skill { Name = "Spring Boot", Category = CategoryFramework },
+            new Skill { Name = ".NET Core", NormalizedName = ".NET CORE", Category = CategoryFramework },
+            new Skill { Name = "Angular", NormalizedName = "ANGULAR", Category = CategoryFramework },
+            new Skill { Name = "React", NormalizedName = "REACT", Category = CategoryFramework },
+            new Skill { Name = "Spring Boot", NormalizedName = "SPRING BOOT", Category = CategoryFramework },
 
             // Databases
-            new Skill { Name = "SQL", Category = CategoryDatabase },
-            new Skill { Name = "PostgreSQL", Category = CategoryDatabase },
-            new Skill { Name = "MongoDB", Category = CategoryDatabase },
+            new Skill { Name = "SQL", NormalizedName = "SQL", Category = CategoryDatabase },
+            new Skill { Name = "PostgreSQL", NormalizedName = "POSTGRESQL", Category = CategoryDatabase },
+            new Skill { Name = "MongoDB", NormalizedName = "MONGODB", Category = CategoryDatabase },
 
             // DevOps
-            new Skill { Name = "Docker", Category = CategoryDevOps },
-            new Skill { Name = "Kubernetes", Category = CategoryDevOps },
-            new Skill { Name = "Azure", Category = CategoryCloud },
-            new Skill { Name = "AWS", Category = CategoryCloud },
-            new Skill { Name = "Git", Category = CategoryVersionControl },
-            new Skill { Name = "CI/CD", Category = CategoryDevOps }
+            new Skill { Name = "Docker", NormalizedName = "DOCKER", Category = CategoryDevOps },
+            new Skill { Name = "Kubernetes", NormalizedName = "KUBERNETES", Category = CategoryDevOps },
+            new Skill { Name = "Azure", NormalizedName = "AZURE", Category = CategoryCloud },
+            new Skill { Name = "AWS", NormalizedName = "AWS", Category = CategoryCloud },
+            new Skill { Name = "Git", NormalizedName = "GIT", Category = CategoryVersionControl },
+            new Skill { Name = "CI/CD", NormalizedName = "CI/CD", Category = CategoryDevOps }
         };
     }
 
@@ -336,7 +336,7 @@ public static class DataSeeder
             var position = positions[random.Next(positions.Length)];
             var status = statuses[random.Next(statuses.Length)];
             var daysAgo = random.Next(1, 60);
-            
+
             // Randomly select new metadata
             var jobTypes = Enum.GetValues<JobType>();
             var workplaceTypes = Enum.GetValues<WorkplaceType>();
@@ -344,6 +344,7 @@ public static class DataSeeder
 
             var application = new JobApplication
             {
+                Id = Guid.NewGuid(),
                 UserId = userId, // Link to the demo user
                 Position = position,
                 CompanyId = company.Id,
@@ -356,8 +357,8 @@ public static class DataSeeder
                 WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
                 Priority = priorities[random.Next(priorities.Length)],
                 MatchScore = random.Next(40, 95), // Random but realistic scores
-                SalaryOffer = status == JobApplicationStatus.Offer 
-                    ? random.Next(600000, 1200000) 
+                SalaryOffer = status == JobApplicationStatus.Offer
+                    ? random.Next(600000, 1200000)
                     : null
             };
 
@@ -424,7 +425,9 @@ public static class DataSeeder
                     .Where(i => !string.IsNullOrWhiteSpace(i.Name))
                     .Select(i => new Skill
                     {
+                        Id = Guid.NewGuid(),
                         Name = i.Name.Trim(),
+                        NormalizedName = i.Name.Trim().ToUpperInvariant(),
                         Category = string.IsNullOrWhiteSpace(i.Category) ? null : i.Category.Trim()
                     })
                     .ToList();

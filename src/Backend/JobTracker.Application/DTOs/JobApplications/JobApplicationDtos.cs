@@ -31,7 +31,7 @@ public class JobApplicationDto
 
     public CompanyContactDto? PrimaryContact { get; set; }
 
-    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+    public uint RowVersion { get; set; }
 }
 
 public class CreateJobApplicationDto
@@ -59,7 +59,7 @@ public class UpdateJobApplicationDto
 {
 
     [Required]
-    public byte[] RowVersion { get; set; } = null!;
+    public uint RowVersion { get; set; }
 
     public string? Position { get; set; }
     public Guid? CompanyId { get; set; }

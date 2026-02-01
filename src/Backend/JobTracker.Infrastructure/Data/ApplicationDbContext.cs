@@ -95,6 +95,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             entity.Property(j => j.RowVersion)
+                  .HasColumnName("xmin")
+                  .HasColumnType("xid")
                   .IsRowVersion();
         });
 

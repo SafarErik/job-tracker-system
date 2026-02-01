@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobTracker.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260128180506_AddJobPriorityAndMatch")]
-    partial class AddJobPriorityAndMatch
+    [Migration("20260201124824_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,8 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("ApplicationUserSkill", b =>
                 {
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("text");
@@ -42,11 +42,11 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobApplicationSkill", b =>
                 {
-                    b.Property<int>("JobApplicationsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("JobApplicationsId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("JobApplicationsId", "SkillsId");
 
@@ -151,29 +151,25 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
-                    b.Property<string>("ContactPerson")
-                        .HasColumnType("text");
-
-                    b.Property<string>("HRContactEmail")
-                        .HasColumnType("text");
-
-                    b.Property<string>("HRContactLinkedIn")
-                        .HasColumnType("text");
-
-                    b.Property<string>("HRContactName")
+                    b.Property<string>("Industry")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Priority")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TechStack")
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
@@ -188,6 +184,35 @@ namespace JobTracker.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("JobTracker.Core.Entities.CompanyContact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("CompanyContacts");
                 });
 
             modelBuilder.Entity("JobTracker.Core.Entities.Document", b =>
@@ -207,6 +232,9 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("IsMaster")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -223,32 +251,38 @@ namespace JobTracker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "Type")
+                        .IsUnique()
+                        .HasFilter("\"IsMaster\" = TRUE");
 
                     b.ToTable("Documents");
                 });
 
             modelBuilder.Entity("JobTracker.Core.Entities.JobApplication", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("AiFeedback")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AppliedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<Guid?>("DocumentId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("GeneratedCoverLetter")
+                        .HasColumnType("text");
 
                     b.Property<int>("JobType")
                         .HasColumnType("integer");
@@ -263,8 +297,17 @@ namespace JobTracker.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("PrimaryContactId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
 
                     b.Property<decimal?>("SalaryOffer")
                         .HasColumnType("numeric");
@@ -285,6 +328,8 @@ namespace JobTracker.Infrastructure.Migrations
 
                     b.HasIndex("DocumentId");
 
+                    b.HasIndex("PrimaryContactId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("JobApplications");
@@ -292,11 +337,9 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.Skill", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Category")
                         .HasColumnType("text");
@@ -490,6 +533,17 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("JobTracker.Core.Entities.CompanyContact", b =>
+                {
+                    b.HasOne("JobTracker.Core.Entities.Company", "Company")
+                        .WithMany("Contacts")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("JobTracker.Core.Entities.Document", b =>
                 {
                     b.HasOne("JobTracker.Core.Entities.ApplicationUser", "User")
@@ -514,6 +568,11 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("JobTracker.Core.Entities.CompanyContact", "PrimaryContact")
+                        .WithMany("JobApplications")
+                        .HasForeignKey("PrimaryContactId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("JobTracker.Core.Entities.ApplicationUser", "User")
                         .WithMany("JobApplications")
                         .HasForeignKey("UserId")
@@ -523,6 +582,8 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Navigation("Company");
 
                     b.Navigation("Document");
+
+                    b.Navigation("PrimaryContact");
 
                     b.Navigation("User");
                 });
@@ -586,6 +647,13 @@ namespace JobTracker.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("JobTracker.Core.Entities.Company", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("JobApplications");
+                });
+
+            modelBuilder.Entity("JobTracker.Core.Entities.CompanyContact", b =>
                 {
                     b.Navigation("JobApplications");
                 });

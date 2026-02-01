@@ -24,8 +24,8 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("ApplicationUserSkill", b =>
                 {
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("text");
@@ -39,11 +39,11 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobApplicationSkill", b =>
                 {
-                    b.Property<int>("JobApplicationsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("JobApplicationsId")
+                        .HasColumnType("uuid");
 
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("SkillsId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("JobApplicationsId", "SkillsId");
 
@@ -148,11 +148,9 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
@@ -187,14 +185,12 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.CompanyContact", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -261,25 +257,29 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.JobApplication", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("AiFeedback")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AppliedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<Guid?>("DocumentId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("GeneratedCoverLetter")
+                        .HasColumnType("text");
 
                     b.Property<int>("JobType")
                         .HasColumnType("integer");
@@ -294,11 +294,17 @@ namespace JobTracker.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PrimaryContactId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("PrimaryContactId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
 
                     b.Property<decimal?>("SalaryOffer")
                         .HasColumnType("numeric");
@@ -328,11 +334,9 @@ namespace JobTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("JobTracker.Core.Entities.Skill", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Category")
                         .HasColumnType("text");

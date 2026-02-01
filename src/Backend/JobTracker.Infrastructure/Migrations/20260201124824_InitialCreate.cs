@@ -27,30 +27,10 @@ namespace JobTracker.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Companies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Website = table.Column<string>(type: "text", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true),
-                    HRContactName = table.Column<string>(type: "text", nullable: true),
-                    HRContactEmail = table.Column<string>(type: "text", nullable: true),
-                    HRContactLinkedIn = table.Column<string>(type: "text", nullable: true),
-                    ContactPerson = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Skills",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     NormalizedName = table.Column<string>(type: "text", nullable: false),
                     Category = table.Column<string>(type: "text", nullable: true)
@@ -202,6 +182,30 @@ namespace JobTracker.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Website = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    Industry = table.Column<string>(type: "text", nullable: true),
+                    TechStack = table.Column<string>(type: "text", nullable: true),
+                    Priority = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Companies_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Documents",
                 columns: table => new
                 {
@@ -212,7 +216,8 @@ namespace JobTracker.Infrastructure.Migrations
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
                     ContentType = table.Column<string>(type: "text", nullable: false),
                     UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: false)
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    IsMaster = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -229,7 +234,7 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "UserSkills",
                 columns: table => new
                 {
-                    SkillsId = table.Column<int>(type: "integer", nullable: false),
+                    SkillsId = table.Column<Guid>(type: "uuid", nullable: false),
                     UsersId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -250,20 +255,49 @@ namespace JobTracker.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyContacts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    LinkedIn = table.Column<string>(type: "text", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyContacts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyContacts_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobApplications",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
                     Position = table.Column<string>(type: "text", nullable: false),
                     JobUrl = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
+                    GeneratedCoverLetter = table.Column<string>(type: "text", nullable: true),
+                    AiFeedback = table.Column<string>(type: "text", nullable: true),
                     AppliedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     Status = table.Column<int>(type: "integer", nullable: false),
+                    JobType = table.Column<int>(type: "integer", nullable: false),
+                    WorkplaceType = table.Column<int>(type: "integer", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    MatchScore = table.Column<int>(type: "integer", nullable: false),
                     SalaryOffer = table.Column<decimal>(type: "numeric", nullable: true),
-                    CompanyId = table.Column<int>(type: "integer", nullable: false),
-                    DocumentId = table.Column<Guid>(type: "uuid", nullable: true)
+                    CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PrimaryContactId = table.Column<Guid>(type: "uuid", nullable: true),
+                    DocumentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -272,6 +306,12 @@ namespace JobTracker.Infrastructure.Migrations
                         name: "FK_JobApplications_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_JobApplications_CompanyContacts_PrimaryContactId",
+                        column: x => x.PrimaryContactId,
+                        principalTable: "CompanyContacts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -292,8 +332,8 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "JobApplicationSkills",
                 columns: table => new
                 {
-                    JobApplicationsId = table.Column<int>(type: "integer", nullable: false),
-                    SkillsId = table.Column<int>(type: "integer", nullable: false)
+                    JobApplicationsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SkillsId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -339,9 +379,21 @@ namespace JobTracker.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Documents_UserId",
-                table: "Documents",
+                name: "IX_Companies_UserId",
+                table: "Companies",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyContacts_CompanyId",
+                table: "CompanyContacts",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_UserId_Type",
+                table: "Documents",
+                columns: new[] { "UserId", "Type" },
+                unique: true,
+                filter: "\"IsMaster\" = TRUE");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_CompanyId",
@@ -352,6 +404,11 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "IX_JobApplications_DocumentId",
                 table: "JobApplications",
                 column: "DocumentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobApplications_PrimaryContactId",
+                table: "JobApplications",
+                column: "PrimaryContactId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_UserId",
@@ -420,10 +477,13 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "Skills");
 
             migrationBuilder.DropTable(
-                name: "Companies");
+                name: "CompanyContacts");
 
             migrationBuilder.DropTable(
                 name: "Documents");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "Users");

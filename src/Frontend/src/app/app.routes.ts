@@ -34,119 +34,123 @@ export const routes: Routes = [
   },
 
   // ============================================
-  // PROTECTED DASHBOARD
-  // ============================================
-  {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
-    canActivate: [authGuard],
-    title: 'Dashboard - JobTracker',
-  },
-
-  // ============================================
   // AUTH ROUTES (Login, Register, Callback)
   // ============================================
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('./features/job-applications/components/add-job-form/add-job-form').then(
-        (m) => m.AddJobFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'New Application - JobTracker',
-  },
-  {
-    // Application Workstation - full page view with tabs
-    path: 'applications/:id',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-workstation/job-workstation').then(
-        (m) => m.JobWorkstationComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Application Workstation - JobTracker',
-  },
-  {
-    // Keep view/:id as alias for backwards compatibility
-    path: 'view/:id',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-workstation/job-workstation').then(
-        (m) => m.JobWorkstationComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'View Application - JobTracker',
-  },
 
-  // Companies
+  // ============================================
+  // PROTECTED APP SHELL
+  // ============================================
   {
-    path: 'companies',
+    path: '',
     loadComponent: () =>
-      import('./features/companies/components/company-list/company-list').then(
-        (m) => m.CompanyListComponent,
-      ),
+      import('./layout/shell/app-shell.component').then((m) => m.AppShellComponent),
     canActivate: [authGuard],
-    title: 'Companies - JobTracker',
-  },
-  {
-    path: 'companies/new',
-    loadComponent: () =>
-      import('./features/companies/components/company-form/company-form').then(
-        (m) => m.CompanyFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'New Company - JobTracker',
-  },
-  {
-    path: 'companies/edit/:id',
-    loadComponent: () =>
-      import('./features/companies/components/company-form/company-form').then(
-        (m) => m.CompanyFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Edit Company - JobTracker',
-  },
-  {
-    path: 'companies/:id',
-    loadComponent: () =>
-      import('./features/companies/components/company-details/company-details').then(
-        (m) => m.CompanyDetailsComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Company Details - JobTracker',
-  },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+        title: 'Dashboard - JobTracker',
+      },
+      {
+        path: 'applications',
+        loadComponent: () =>
+          import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
+        title: 'Applications - JobTracker',
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('./features/job-applications/components/add-job-form/add-job-form').then(
+            (m) => m.AddJobFormComponent,
+          ),
+        title: 'New Application - JobTracker',
+      },
+      {
+        // Application Workstation - full page view with tabs
+        path: 'applications/:id',
+        loadComponent: () =>
+          import('./features/job-applications/components/job-workstation/job-workstation').then(
+            (m) => m.JobWorkstationComponent,
+          ),
+        title: 'Application Workstation - JobTracker',
+      },
+      {
+        // Keep view/:id as alias for backwards compatibility
+        path: 'view/:id',
+        loadComponent: () =>
+          import('./features/job-applications/components/job-workstation/job-workstation').then(
+            (m) => m.JobWorkstationComponent,
+          ),
+        title: 'View Application - JobTracker',
+      },
 
-  // Documents
-  {
-    path: 'documents',
-    loadComponent: () =>
-      import('./features/documents/components/documents-list/documents-list').then(
-        (m) => m.DocumentsListComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Documents - JobTracker',
-  },
+      // Companies
+      {
+        path: 'companies',
+        loadComponent: () =>
+          import('./features/companies/components/company-list/company-list').then(
+            (m) => m.CompanyListComponent,
+          ),
+        title: 'Companies - JobTracker',
+      },
+      {
+        path: 'companies/new',
+        loadComponent: () =>
+          import('./features/companies/components/company-form/company-form').then(
+            (m) => m.CompanyFormComponent,
+          ),
+        title: 'New Company - JobTracker',
+      },
+      {
+        path: 'companies/edit/:id',
+        loadComponent: () =>
+          import('./features/companies/components/company-form/company-form').then(
+            (m) => m.CompanyFormComponent,
+          ),
+        title: 'Edit Company - JobTracker',
+      },
+      {
+        path: 'companies/:id',
+        loadComponent: () =>
+          import('./features/companies/components/company-details/company-details').then(
+            (m) => m.CompanyDetailsComponent,
+          ),
+        title: 'Company Details - JobTracker',
+      },
 
-  // Profile
-  {
-    path: 'profile',
-    loadComponent: () =>
-      import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-    canActivate: [authGuard],
-    title: 'Profile - JobTracker',
-  },
+      // Documents
+      {
+        path: 'documents',
+        loadComponent: () =>
+          import('./features/documents/components/documents-list/documents-list').then(
+            (m) => m.DocumentsListComponent,
+          ),
+        title: 'Documents - JobTracker',
+      },
 
-  // Compatibility Redirects
-  {
-    path: 'company/:id',
-    redirectTo: 'companies/:id',
-  },
-  {
-    path: 'companies/:id/details',
-    redirectTo: 'companies/:id',
+      // Profile
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
+        title: 'Profile - JobTracker',
+      },
+
+      // Compatibility Redirects
+      {
+        path: 'company/:id',
+        redirectTo: 'companies/:id',
+      },
+      {
+        path: 'companies/:id/details',
+        redirectTo: 'companies/:id',
+      },
+    ],
   },
 
   // ============================================

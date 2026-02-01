@@ -104,6 +104,12 @@
       ],
       "@spartan-ng/helm/breadcrumb": [
         "./libs/ui/breadcrumb/src/index.ts"
+      ],
+      "@spartan-ng/helm/sidebar": [
+        "./libs/ui/sidebar/src/index.ts"
+      ],
+      "@spartan-ng/helm/switch": [
+        "./libs/ui/switch/src/index.ts"
       ]
     }
   },

@@ -32,23 +32,19 @@
   --radius-2xl: 1.125rem;
 
   --animate-float: float 4s ease-in-out infinite;
+
+  --backdrop-blur-xs: 2px;
 }
 
-/* 
-   THEME TOKENS (Industry Standard HSL) 
-   Values are stored as: H S% L%
-*/
 :root {
   color-scheme: light;
-  --background: 240 20% 98%;
-  /* #FBFBFD */
-  --foreground: 240 26% 18%;
-  /* #22223B */
+  --background: 240 20% 99%;
+  --foreground: 240 26% 15%;
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
-  --primary: 240 100% 74%;
+  --primary: 240 80% 65%;
   /* #7C7CFF */
   --primary-foreground: 0 0% 100%;
   --accent: 42 100% 50%;
@@ -69,23 +65,19 @@
 .dark {
   color-scheme: dark;
   --background: 231 27% 8%;
-  /* #0F111A */
-  --foreground: 240 100% 94%;
-  /* #E0E0FF */
-  --card: 229 22% 12%;
-  /* #181B27 */
-  --card-foreground: 210 40% 92%;
+  --foreground: 240 100% 96%;
+  --card: 229 22% 14%;
+  --card-foreground: 210 40% 96%;
   --popover: 229 22% 12%;
   --popover-foreground: 210 40% 92%;
   --primary: 240 100% 74%;
-  --primary-foreground: 0 0% 100%;
+  --primary-foreground: 231 27% 8%;
   --accent: 42 100% 50%;
   --accent-foreground: 231 27% 8%;
   --muted: 229 24% 16%;
   --muted-foreground: 215 20% 65%;
-  --border: 228 20% 23%;
-  /* #2E3346 */
-  --input: 228 20% 23%;
+  --border: 228 20% 18%;
+  --input: 228 20% 18%;
   --ring: 240 100% 74%;
   --success: 161 64% 52%;
   --warning: 38 92% 56%;

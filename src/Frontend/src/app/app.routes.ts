@@ -21,20 +21,27 @@ import { authGuard, guestGuard } from './core/auth';
 
 export const routes: Routes = [
   // ============================================
-  // PROTECTED ROOT (Dashboard)
+  // PUBLIC ROOT (Landing Page)
   // ============================================
   {
     path: '',
     loadComponent: () =>
-      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
-    canActivate: [authGuard],
+      import('./features/landing/components/landing-page/landing-page.component').then(
+        (m) => m.LandingPageComponent,
+      ),
     pathMatch: 'full',
-    title: 'Applications - JobTracker',
+    title: 'JobTracker - Your Career, Autopilot Engaged',
   },
+
+  // ============================================
+  // PROTECTED DASHBOARD
+  // ============================================
   {
     path: 'dashboard',
-    redirectTo: '',
-    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
+    canActivate: [authGuard],
+    title: 'Dashboard - JobTracker',
   },
 
   // ============================================

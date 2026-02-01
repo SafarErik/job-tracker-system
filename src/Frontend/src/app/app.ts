@@ -44,15 +44,17 @@ export class App implements AfterViewInit {
     private readonly notificationService: NotificationService,
     private readonly themeService: ThemeService,
   ) {
-    // Robustly track auth page status
+    // Robustly track full-page layout status (Landing or Auth)
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.isAuthPage.set(this._router.url.startsWith('/auth'));
+      const url = this._router.url.split('?')[0]; // Ignore query params
+      this.isAuthPage.set(url === '/' || url.startsWith('/auth'));
     });
 
     // Initial check
-    this.isAuthPage.set(globalThis.location?.pathname?.startsWith('/auth') ?? false);
+    const path = globalThis.location?.pathname ?? '';
+    this.isAuthPage.set(path === '/' || path.startsWith('/auth'));
   }
 
   /**

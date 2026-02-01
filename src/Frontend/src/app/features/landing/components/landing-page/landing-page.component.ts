@@ -1,0 +1,85 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/auth';
+import {
+    LucideAngularModule,
+    LUCIDE_ICONS,
+    LucideIconProvider,
+    FileText,
+    MessageSquare,
+    PenTool,
+    Radar,
+    Mic,
+    Layout,
+    CheckCircle,
+    AlertCircle,
+    ArrowRight,
+    Sparkles,
+    Search,
+    Zap,
+    ShieldCheck,
+    TrendingUp,
+    Cpu,
+    Github,
+} from 'lucide-angular';
+
+@Component({
+    selector: 'app-landing-page',
+    standalone: true,
+    imports: [RouterLink, LucideAngularModule],
+    providers: [
+        {
+            provide: LUCIDE_ICONS,
+            multi: true,
+            useValue: new LucideIconProvider({
+                FileText,
+                MessageSquare,
+                PenTool,
+                Radar,
+                Mic,
+                Layout,
+                CheckCircle,
+                AlertCircle,
+                ArrowRight,
+                Sparkles,
+                Search,
+                Zap,
+                ShieldCheck,
+                TrendingUp,
+                Cpu,
+                Github,
+            }),
+        },
+    ],
+    templateUrl: './landing-page.component.html',
+    styleUrls: ['./landing-page.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: {
+        class: 'block w-full min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500/30',
+    },
+})
+export class LandingPageComponent {
+    private readonly authService = inject(AuthService);
+
+    readonly isAuthenticated = this.authService.isAuthenticated;
+
+    // Icons for use in template (if needed by name)
+    readonly icons = {
+        FileText,
+        MessageSquare,
+        PenTool,
+        Radar,
+        Mic,
+        Layout,
+        CheckCircle,
+        AlertCircle,
+        ArrowRight,
+        Sparkles,
+        Search,
+        Zap,
+        ShieldCheck,
+        TrendingUp,
+        Cpu,
+        Github,
+    };
+}

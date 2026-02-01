@@ -83,8 +83,12 @@ export class AuthService {
         error: null,
       });
     } else {
-      this._state.update((s) => ({ ...s, isLoading: false }));
-      this.logout();
+      this._state.set({
+        isAuthenticated: false,
+        user: null,
+        isLoading: false,
+        error: null,
+      });
     }
   }
 

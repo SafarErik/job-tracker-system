@@ -7,10 +7,8 @@ import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle
   standalone: true,
   imports: [RouterOutlet],
   template: `
-    <div class="min-h-screen w-full flex items-center justify-center p-4">
-      <div class="w-full max-w-[480px] animate-in fade-in zoom-in-95 duration-700">
-        <router-outlet></router-outlet>
-      </div>
+    <div class="h-screen w-full overflow-hidden">
+      <router-outlet />
     </div>
   `
 })

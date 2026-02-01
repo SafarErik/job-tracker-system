@@ -17,7 +17,7 @@
     }
 
     <!-- Main Content -->
-    <main class="flex-grow mx-auto w-full max-w-7xl px-6 lg:px-8 py-8 md:py-12">
+    <main [class]="isAuthPage() ? 'w-full flex-grow' : 'flex-grow mx-auto w-full max-w-7xl px-6 lg:px-8 py-8 md:py-12'">
       <router-outlet></router-outlet>
     </main>
 

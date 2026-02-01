@@ -130,6 +130,7 @@ export class JobApplicationStore {
             total: apps.length,
             active: activeCount,
             interviewing: interviewCount,
+            offers: offerCount,
             successRate,
             responseRate
         };
@@ -139,6 +140,7 @@ export class JobApplicationStore {
 
     loadAll() {
         this._isLoading.set(true);
+        this._error.set(null);
         this.applicationService.getApplications().pipe(
             tap((apps) => this._applications.set(apps)),
             catchError((err) => {

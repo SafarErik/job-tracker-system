@@ -22,8 +22,12 @@ export interface JobApplication {
   priority: JobPriority;
   matchScore: number;
   salaryOffer?: number;
+  generatedCoverLetter?: string;
+  aiFeedback?: string;
+  skills: string[];
   primaryContactId?: string;
   primaryContact?: CompanyContact;
+  rowVersion: number;
 }
 
 export interface CreateJobApplication {
@@ -38,6 +42,8 @@ export interface CreateJobApplication {
   workplaceType?: WorkplaceType;
   priority?: JobPriority;
   matchScore?: number;
+  generatedCoverLetter?: string;
+  aiFeedback?: string;
   primaryContactId?: string;
 }
 

@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 
 @Component({
-    selector: 'app-company-notes',
-    standalone: true,
-    imports: [CommonModule, FormsModule, ...HlmInputImports],
-    template: `
+  selector: 'app-company-notes',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ...HlmInputImports],
+  template: `
     <div
       class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 shadow-lg relative min-h-[400px] flex flex-col">
       <div class="confidential-stamp">CONFIDENTIAL</div>
@@ -17,9 +17,10 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
         <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Scratchpad</h3>
       </div>
 
-      <textarea hlmInput [ngModel]="notes()" (ngModelChange)="onNotesChange($event)"
+      <label for="company-notes-textarea" class="sr-only">Strategic scratchpad notes</label>
+      <textarea hlmInput id="company-notes-textarea" [ngModel]="notes()" (ngModelChange)="onNotesChange($event)"
         placeholder="Operational notes, internal intel, and strategic positioning..."
-        class="flex-1 w-full !bg-transparent border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
+        class="flex-1 w-full bg-transparent! border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
       </textarea>
 
       <div class="mt-8 pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -31,7 +32,7 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .confidential-stamp {
       position: absolute;
       top: 2rem;
@@ -47,13 +48,13 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
       letter-spacing: 0.1em;
     }
   `],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompanyNotesComponent {
-    notes = input('');
-    notesChange = output<string>();
+  notes = input('');
+  notesChange = output<string>();
 
-    onNotesChange(value: string): void {
-        this.notesChange.emit(value);
-    }
+  onNotesChange(value: string): void {
+    this.notesChange.emit(value);
+  }
 }

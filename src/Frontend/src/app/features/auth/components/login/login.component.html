@@ -17,7 +17,7 @@
       <!-- Header -->
       <div class="space-y-2">
         <h1
-          class="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          class="text-4xl font-extrabold tracking-tight lg:text-5xl bg-linear-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
           Welcome back
         </h1>
         <p class="text-muted-foreground text-lg">
@@ -105,7 +105,7 @@
 
         <!-- Submit Button -->
         <button hlmBtn type="submit" [disabled]="isLoading()"
-          class="w-full h-12 text-base font-bold tracking-wide shadow-lg shadow-primary/25 bg-gradient-to-r from-primary to-primary/80 hover:to-primary hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 rounded-lg group">
+          class="w-full h-12 text-base font-bold tracking-wide shadow-lg shadow-primary/25 bg-linear-to-r from-primary to-primary/80 hover:to-primary hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 rounded-lg group">
           @if (isLoading()) {
           <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
           Authenticating...
@@ -167,7 +167,7 @@
   <div class="hidden lg:flex lg:w-[60%] relative bg-muted/10 overflow-hidden items-center justify-center p-20">
 
     <!-- Background Gradient Mesh / Abstract Shape -->
-    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-background to-purple-900/20 z-0"></div>
+    <div class="absolute inset-0 bg-linear-to-br from-indigo-900/20 via-background to-purple-900/20 z-0"></div>
     <div
       class="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-primary/20 rounded-full blur-[120px] opacity-30 animate-pulse">
     </div>
@@ -175,8 +175,7 @@
     </div>
 
     <!-- Grid Pattern Overlay -->
-    <div
-      class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light">
+    <div class="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-soft-light">
     </div>
     <div class="absolute inset-0"
       style="background-image: radial-gradient(rgba(120, 119, 198, 0.1) 1px, transparent 1px); background-size: 40px 40px;">
@@ -201,7 +200,7 @@
           </p>
           <footer class="flex items-center gap-4">
             <div
-              class="h-12 w-12 rounded-full bg-gradient-to-tr from-pink-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg">
+              class="h-12 w-12 rounded-full bg-linear-to-tr from-pink-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg">
               JS
             </div>
             <div>

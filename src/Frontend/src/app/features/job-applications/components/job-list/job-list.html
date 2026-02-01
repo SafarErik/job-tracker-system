@@ -52,7 +52,7 @@
   <!-- Quick Stats Dashboard - Neo-Professional -->
   <div *ngIf="!store.isLoading() && !store.error() && store.applications().length > 0" class="mb-8">
     <app-dashboard-metrics [total]="store.metrics().total" [active]="store.metrics().active"
-      [interviews]="store.metrics().interviewing" [offers]="store.metrics().active"
+      [interviews]="store.metrics().interviewing" [offers]="store.metrics().offers"
       [rejected]="store.metrics().total - store.metrics().active" [responseRate]="store.metrics().responseRate"
       [successRate]="store.metrics().successRate"></app-dashboard-metrics>
   </div>
@@ -180,7 +180,7 @@
           class="absolute inset-0 bg-primary/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500">
         </div>
         <div
-          class="relative h-20 w-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center text-primary shadow-inner animate-float">
+          class="relative h-20 w-20 rounded-2xl bg-linear-to-br from-primary/20 to-primary/5 border border-primary/20 flex items-center justify-center text-primary shadow-inner animate-float">
           <ng-icon name="lucideBriefcase" class="text-4xl"></ng-icon>
         </div>
       </div>

@@ -1,14 +1,11 @@
 <hlm-sidebar collapsible="icon" variant="sidebar">
   <div hlmSidebarHeader class="p-4">
     <div class="flex items-center gap-3">
-      <div
-        class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20"
-      >
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
         <ng-icon hlm name="lucideBriefcase" hlmClassName="w-5 h-5 text-white" />
       </div>
       <span
-        class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400 group-data-[collapsible=icon]:hidden"
-      >
+        class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400 group-data-[collapsible=icon]:hidden">
         JobTracker
       </span>
     </div>
@@ -16,31 +13,21 @@
 
   <div hlmSidebarContent>
     <div hlmSidebarGroup>
-      <div
-        hlmSidebarGroupLabel
-        hlmClassName="text-sidebar-foreground/50 uppercase tracking-widest text-[10px] font-bold px-4 mb-2"
-      >
+      <div hlmSidebarGroupLabel
+        hlmClassName="text-sidebar-foreground/50 uppercase tracking-widest text-[10px] font-bold px-4 mb-2">
         Main Navigation
       </div>
       <div hlmSidebarGroupContent>
         <ul hlmSidebarMenu class="px-2">
           @for (item of navItems; track item.label) {
-            <li hlmSidebarMenuItem>
-              <a
-                hlmSidebarMenuButton
-                [routerLink]="item.link"
-                routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
-                [routerLinkActiveOptions]="{ exact: item.exact }"
-                class="group rounded-lg mb-1"
-              >
-                <ng-icon
-                  hlm
-                  [name]="item.icon"
-                  hlmClassName="w-5 h-5 group-hover:text-primary transition-colors"
-                />
-                <span>{{ item.label }}</span>
-              </a>
-            </li>
+          <li hlmSidebarMenuItem>
+            <a hlmSidebarMenuButton [routerLink]="item.link"
+              routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
+              [routerLinkActiveOptions]="{ exact: item.exact }" class="group rounded-lg mb-1">
+              <ng-icon hlm [name]="item.icon" hlmClassName="w-5 h-5 group-hover:text-primary transition-colors" />
+              <span>{{ item.label }}</span>
+            </a>
+          </li>
           }
         </ul>
       </div>
@@ -49,12 +36,8 @@
 
   <div hlmSidebarFooter class="p-4 border-t border-sidebar-border">
     <div class="flex items-center gap-3 w-full">
-      <button
-        [hlmDropdownMenuTrigger]="userMenu"
-        hlmBtn
-        variant="ghost"
-        class="flex items-center gap-3 p-2 h-auto w-full justify-start hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group"
-      >
+      <button [hlmDropdownMenuTrigger]="userMenu" hlmBtn variant="ghost"
+        class="flex items-center gap-3 p-2 h-auto w-full justify-start hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group">
         <hlm-avatar hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border">
           <span hlmAvatarFallback hlmClassName="bg-indigo-600 text-white text-[10px]">JD</span>
         </hlm-avatar>
@@ -62,11 +45,8 @@
           <p class="text-sm font-semibold text-sidebar-foreground">John Doe</p>
           <p class="text-[10px] text-sidebar-foreground/50 font-medium tracking-wide">ELITE PLAN</p>
         </div>
-        <ng-icon
-          hlm
-          name="lucideChevronUp"
-          hlmClassName="w-4 h-4 text-sidebar-foreground/50 group-data-[collapsible=icon]:hidden group-hover:text-sidebar-foreground transition-colors"
-        />
+        <ng-icon hlm name="lucideChevronUp"
+          hlmClassName="w-4 h-4 text-sidebar-foreground/50 group-data-[collapsible=icon]:hidden group-hover:text-sidebar-foreground transition-colors" />
       </button>
     </div>
   </div>
@@ -75,14 +55,9 @@
 </hlm-sidebar>
 
 <ng-template #userMenu>
-  <div
-    hlmDropdownMenu
-    class="w-64 bg-slate-950/95 backdrop-blur-xl border-white/10 p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95"
-  >
-    <div
-      hlmDropdownMenuLabel
-      hlmClassName="px-2 py-1.5 text-xs font-bold text-slate-500 uppercase tracking-widest"
-    >
+  <div hlmDropdownMenu
+    class="w-64 bg-slate-950/95 backdrop-blur-xl border-white/10 p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95">
+    <div hlmDropdownMenuLabel hlmClassName="px-2 py-1.5 text-xs font-bold text-slate-500 uppercase tracking-widest">
       Account Settings
     </div>
     <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
@@ -102,10 +77,7 @@
 
     <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
 
-    <div
-      hlmDropdownMenuItem
-      class="flex items-center justify-between rounded-lg cursor-default focus:bg-transparent"
-    >
+    <div hlmDropdownMenuItem class="flex items-center justify-between rounded-lg cursor-default focus:bg-transparent">
       <div class="flex items-center gap-2">
         <ng-icon hlm [name]="isDarkMode ? 'lucideMoon' : 'lucideSun'" hlmDropdownMenuIcon />
         <span>{{ isDarkMode ? 'Obsidian Mode' : 'Ceramic Mode' }}</span>
@@ -115,10 +87,8 @@
 
     <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
 
-    <button
-      hlmDropdownMenuItem
-      class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg"
-    >
+    <button hlmDropdownMenuItem (click)="onLogout()"
+      class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg">
       <ng-icon hlm name="lucideLogOut" hlmDropdownMenuIcon />
       <span>Log out</span>
     </button>

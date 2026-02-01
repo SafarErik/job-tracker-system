@@ -9,6 +9,7 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
 
 @Component({
 	selector: 'hlm-sidebar',
+	standalone: true,
 	imports: [NgTemplateOutlet, HlmSheetImports, BrnSheetImports],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	host: {
@@ -36,7 +37,7 @@ import { injectHlmSidebarConfig } from './hlm-sidebar.token';
 					data-slot="sidebar"
 					data-sidebar="sidebar"
 					data-mobile="true"
-					class="bg-sidebar text-sidebar-foreground h-svh w-[var(--sidebar-width)] p-0 [&>button]:hidden"
+					class="bg-sidebar text-sidebar-foreground h-svh w-(--sidebar-width) p-0 [&>button]:hidden"
 					[style.--sidebar-width]="sidebarWidthMobile()"
 				>
 					<div class="flex h-full w-full flex-col">

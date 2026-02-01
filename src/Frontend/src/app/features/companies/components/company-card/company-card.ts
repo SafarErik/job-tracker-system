@@ -71,12 +71,6 @@ export class CompanyCardComponent {
    * Get Clearbit logo URL using website domain
    */
   readonly logoUrl = computed(() => {
-    // Note: logoFailed is non-signal mutable state, so we can't make this fully pure if we depend on it 
-    // strictly inside computed without it being a signal.
-    // However, if we just return the URL, the template can handle the error event and set a flag to hide it.
-    // For now, let's keep getLogoUrl() method or make logoFailed a signal.
-    // But since logoFailed is updated by an event, let's leave it as a method or simple getter in template.
-    // Actually, simpler: return the URL, and if it fails, the img tag `(error)` handler handles UI.
     const domain = this.websiteDomain();
     return domain ? `https://logo.clearbit.com/${domain}` : null;
   });

@@ -21,6 +21,7 @@ import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { ThemeService } from '../../../core/services';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -55,6 +56,11 @@ import { ThemeService } from '../../../core/services';
 })
 export class SidebarComponent {
   private themeService = inject(ThemeService);
+  private authService = inject(AuthService);
+
+  onLogout() {
+    this.authService.logout();
+  }
 
   navItems = [
     { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },

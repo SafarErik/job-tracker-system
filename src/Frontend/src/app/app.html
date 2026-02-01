@@ -10,36 +10,8 @@
     class="fixed bottom-[-10%] right-[-10%] h-[800px] w-[800px] rounded-full bg-primary/5 dark:bg-primary/10 blur-[140px] pointer-events-none">
   </div>
 
-  <div class="relative z-10 flex flex-col min-h-screen">
-    <!-- Glass Navigation Header -->
-    @if (!isAuthPage()) {
-    <app-navbar />
-    }
-
-    <!-- Main Content -->
-    <main [class]="isAuthPage() ? 'w-full flex-grow' : 'flex-grow mx-auto w-full max-w-7xl px-6 lg:px-8 py-8 md:py-12'">
-      <router-outlet></router-outlet>
-    </main>
-
-    <!-- Refined Footer -->
-    @if (!isAuthPage()) {
-    <footer class="mt-auto border-t border-border/40 bg-background/20 backdrop-blur-md py-10">
-      <div
-        class="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-        <div class="flex flex-col gap-1">
-          <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/80">JobTracker v2.0</div>
-          <div class="text-xs font-medium text-muted-foreground/60 tracking-wider">CAREER COMMAND CENTER © 2026</div>
-        </div>
-
-        <div class="flex items-center gap-8 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
-          <a href="#" class="hover:text-primary transition-colors duration-200">Privacy</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">Terms</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">System Status</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">Support</a>
-        </div>
-      </div>
-    </footer>
-    }
+  <div class="relative z-10 min-h-screen">
+    <router-outlet></router-outlet>
   </div>
 
   <!-- Toast Notifications -->

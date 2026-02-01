@@ -60,6 +60,16 @@
   --info: 214 95% 53%;
   --destructive: 345 100% 60%;
   --destructive-foreground: 0 0% 100%;
+
+  /* Sidebar Variables - Ceramic */
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 240 100% 74%;
 }
 
 .dark {
@@ -84,7 +94,18 @@
   --info: 214 95% 65%;
   --destructive: 345 100% 60%;
   --destructive-foreground: 0 0% 100%;
+
+  /* Sidebar Variables - Obsidian */
+  --sidebar-background: 231 27% 8%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 240 100% 74%;
+  --sidebar-primary-foreground: 231 27% 8%;
+  --sidebar-accent: 231 24% 12%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 228 20% 18%;
+  --sidebar-ring: 240 100% 74%;
 }
+
 
 /* 
    GLOBAL STYLES & TRANSITIONS 

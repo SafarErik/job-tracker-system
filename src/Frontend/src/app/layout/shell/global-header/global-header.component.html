@@ -1,0 +1,78 @@
+<div class="flex items-center justify-between w-full px-4">
+    <!-- Breadcrumbs -->
+    <nav hlmBreadcrumb>
+        <ol hlmBreadcrumbList>
+            <li hlmBreadcrumbItem>
+                <a hlmBreadcrumbLink routerLink="/">Home</a>
+            </li>
+            <li hlmBreadcrumbSeparator></li>
+            <li hlmBreadcrumbItem>
+                <span hlmBreadcrumbPage>Dashboard</span>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Command Palette Trigger -->
+    <button (click)="isOpen.set(true)" hlmBtn variant="outline"
+        class="relative h-9 w-64 justify-start rounded-xl bg-slate-900/50 border-white/5 text-sm font-normal text-slate-400 shadow-none hover:bg-white/5 hover:text-white transition-all overflow-hidden group">
+        <div
+            class="absolute inset-0 bg-linear-to-r from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+        </div>
+        <ng-icon hlm name="lucideSearch" class="mr-2 h-4 w-4" />
+        <span class="inline-flex relative z-10">Ask AI or search...</span>
+        <kbd
+            class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-6 select-none items-center gap-1 rounded border border-white/10 bg-white/5 px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex text-slate-500">
+            <span class="text-xs">⌘</span>K
+        </kbd>
+    </button>
+
+    <!-- Command Palette Dialog -->
+    <hlm-dialog [state]="isOpen() ? 'open' : 'closed'" (closed)="isOpen.set(false)">
+        <hlm-dialog-content hlmCommandDialog
+            class="max-w-[90vw] md:max-w-2xl bg-slate-950/95 backdrop-blur-xl border-white/10 p-0 overflow-hidden">
+            <hlm-command hlmClassName="bg-transparent border-none">
+                <input hlmCommandSearchInput placeholder="Type a command or search..."
+                    class="h-12 border-b border-white/5" />
+                <hlm-command-list hlmClassName="max-h-[300px] overflow-y-auto scrollbar-hide py-2 px-2">
+                    <div *hlmCommandEmptyState hlmCommandEmpty class="py-6 text-center text-sm text-slate-500">No
+                        results found.</div>
+
+                    <hlm-command-group label="Suggestions">
+                        <button hlmCommandItem value="calendar">
+                            <ng-icon hlm name="lucideCalendar" hlmCommandIcon />
+                            <span>Calendar</span>
+                        </button>
+                        <button hlmCommandItem value="emoji">
+                            <ng-icon hlm name="lucideSmile" hlmCommandIcon />
+                            <span>Search Emoji</span>
+                        </button>
+                        <button hlmCommandItem value="calculator">
+                            <ng-icon hlm name="lucideCalculator" hlmCommandIcon />
+                            <span>Calculator</span>
+                        </button>
+                    </hlm-command-group>
+
+                    <hlm-command-separator />
+
+                    <hlm-command-group label="Settings">
+                        <button hlmCommandItem value="profile">
+                            <ng-icon hlm name="lucideUser" hlmCommandIcon />
+                            <span>Profile</span>
+                            <hlm-command-shortcut>⌘P</hlm-command-shortcut>
+                        </button>
+                        <button hlmCommandItem value="mail">
+                            <ng-icon hlm name="lucideMail" hlmCommandIcon />
+                            <span>Mail</span>
+                            <hlm-command-shortcut>⌘B</hlm-command-shortcut>
+                        </button>
+                        <button hlmCommandItem value="settings">
+                            <ng-icon hlm name="lucideSettings" hlmCommandIcon />
+                            <span>Settings</span>
+                            <hlm-command-shortcut>⌘S</hlm-command-shortcut>
+                        </button>
+                    </hlm-command-group>
+                </hlm-command-list>
+            </hlm-command>
+        </hlm-dialog-content>
+    </hlm-dialog>
+</div>

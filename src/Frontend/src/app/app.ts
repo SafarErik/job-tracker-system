@@ -29,7 +29,6 @@ import {
   imports: [
     CommonModule,
     RouterOutlet,
-    NavbarComponent,
     ToastNotificationComponent,
     ConfirmDialogComponent,
   ],

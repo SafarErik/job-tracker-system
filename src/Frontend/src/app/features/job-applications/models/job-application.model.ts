@@ -5,14 +5,14 @@ import { JobPriority } from './job-priority.enum';
 import { CompanyContact } from '../../companies/models/company.model';
 
 export interface JobApplication {
-  id: number;
+  id: string;
   position: string;
   jobUrl?: string;
   jobDescription?: string; // Full job posting text for AI analysis
   description?: string; // Private notes (salary, thoughts, etc.)
   appliedAt: string; // ISO date string in JSON
   status: JobApplicationStatus;
-  companyId: number;
+  companyId: string;
   companyName?: string;
   documentId?: string | null;
   documentName?: string | null;
@@ -22,13 +22,13 @@ export interface JobApplication {
   priority: JobPriority;
   matchScore: number;
   salaryOffer?: number;
-  primaryContactId?: number;
+  primaryContactId?: string;
   primaryContact?: CompanyContact;
 }
 
 export interface CreateJobApplication {
   position: string;
-  companyId: number;
+  companyId: string;
   jobUrl?: string;
   jobDescription?: string; // Full job posting text for AI analysis
   description?: string; // Private notes (salary, thoughts, etc.)
@@ -38,6 +38,6 @@ export interface CreateJobApplication {
   workplaceType?: WorkplaceType;
   priority?: JobPriority;
   matchScore?: number;
-  primaryContactId?: number;
+  primaryContactId?: string;
 }
 

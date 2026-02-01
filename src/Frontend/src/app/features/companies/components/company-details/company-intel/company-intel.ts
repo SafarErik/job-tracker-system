@@ -64,7 +64,7 @@ export class CompanyIntelComponent {
   history = input<ApplicationHistory[]>([]);
   loading = input(false);
 
-  viewApplication = output<number>();
+  viewApplication = output<string>();
 
   formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString('en-US', {

@@ -336,26 +336,21 @@ export class JobWorkstationComponent implements OnInit {
             this.route.parent?.snapshot.paramMap.get('id');
 
         if (id) {
-            const parsedId = Number.parseInt(id, 10);
-            if (!isNaN(parsedId)) {
-                this.store.selectApplication(parsedId);
-                // Also load documents
-                this.loadDocuments();
+            this.store.selectApplication(id);
+            // Also load documents
+            this.loadDocuments();
 
-                // Set initial tab from query params if available
-                const tab = this.route.snapshot.queryParamMap.get('tab') as WorkstationTab;
-                if (tab && this.tabs.some(t => t.id === tab)) {
-                    this.activeTab.set(tab);
-                    this.breadcrumbService.setLastWorkstationState(parsedId, tab);
-                } else {
-                    this.breadcrumbService.setLastWorkstationState(parsedId, this.activeTab());
-                }
-
-                // Company Contacts? We need app data first.
-                // We can react to application signal change.
+            // Set initial tab from query params if available
+            const tab = this.route.snapshot.queryParamMap.get('tab') as WorkstationTab;
+            if (tab && this.tabs.some(t => t.id === tab)) {
+                this.activeTab.set(tab);
+                this.breadcrumbService.setLastWorkstationState(id, tab);
             } else {
-                // Handle invalid ID
+                this.breadcrumbService.setLastWorkstationState(id, this.activeTab());
             }
+
+            // Company Contacts? We need app data first.
+            // We can react to application signal change.
         }
     }
 
@@ -398,7 +393,7 @@ export class JobWorkstationComponent implements OnInit {
 
 
 
-    private loadCompanyContacts(companyId: number): void {
+    private loadCompanyContacts(companyId: string): void {
         this.companyService.getCompanyDetails(companyId).subscribe({
             next: (details) => {
                 this.companyContacts.set(details.contacts || []);
@@ -460,7 +455,7 @@ export class JobWorkstationComponent implements OnInit {
         this.store.updateApplication(app.id, { workplaceType });
     }
 
-    selectPrimaryContact(contactId: number): void {
+    selectPrimaryContact(contactId: string): void {
         const app = this.store.selectedApplication();
         if (!app) return;
 

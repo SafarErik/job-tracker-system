@@ -43,7 +43,7 @@ export class CompanyListComponent implements OnInit {
 
   // Local state
   searchTerm = signal('');
-  logoFailedIds = signal<Set<number>>(new Set());
+  logoFailedIds = signal<Set<string>>(new Set());
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
@@ -97,7 +97,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Navigate to company details page
    */
-  viewCompanyDetails(companyId: number): void {
+  viewCompanyDetails(companyId: string): void {
     this.router.navigate(['/companies', companyId]);
   }
 
@@ -126,7 +126,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Navigate to edit company
    */
-  editCompany(companyId: number, event: Event): void {
+  editCompany(companyId: string, event: Event): void {
     event.stopPropagation();
     this.router.navigate(['/companies/edit', companyId]);
   }
@@ -167,7 +167,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Handle keyboard navigation for table rows
    */
-  onRowKeyDown(event: KeyboardEvent, companyId: number): void {
+  onRowKeyDown(event: KeyboardEvent, companyId: string): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.viewCompanyDetails(companyId);
@@ -186,7 +186,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Handle logo load error
    */
-  onLogoError(companyId: number): void {
+  onLogoError(companyId: string): void {
     this.logoFailedIds.update((ids) => {
       const newSet = new Set(ids);
       newSet.add(companyId);
@@ -197,7 +197,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Check if logo failed for company
    */
-  isLogoFailed(companyId: number): boolean {
+  isLogoFailed(companyId: string): boolean {
     return this.logoFailedIds().has(companyId);
   }
 

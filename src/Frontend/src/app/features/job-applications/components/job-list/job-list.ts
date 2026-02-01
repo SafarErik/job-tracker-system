@@ -110,16 +110,16 @@ export class JobList implements OnInit {
   }
 
   // Getters for Select Options
-  get companyOptions(): { id: number; name: string }[] {
+  get companyOptions(): { id: string; name: string }[] {
     // Generate company options from the *full* application list in the store
     const options = this.store.applications()
       .filter((app) => app.companyId)
       .map((app) => ({
-        id: Number(app.companyId),
+        id: app.companyId,
         name: app.companyName ?? 'Unknown Company',
       }));
 
-    const unique = new Map<number, string>();
+    const unique = new Map<string, string>();
     options.forEach((option) => unique.set(option.id, option.name));
 
     return Array.from(unique.entries())
@@ -179,13 +179,13 @@ export class JobList implements OnInit {
     if (this.isCompanyFilterOpen) this.isStatusFilterOpen = false;
   }
 
-  selectCompanyFilter(value: number | 'all', event?: Event): void {
+  selectCompanyFilter(value: string | 'all', event?: Event): void {
     event?.stopPropagation();
     this.store.setCompanyFilter(value);
     this.isCompanyFilterOpen = false;
   }
 
-  async deleteApplication(id: number, event?: Event): Promise<void> {
+  async deleteApplication(id: string, event?: Event): Promise<void> {
     event?.stopPropagation();
 
     // Find the application (from store)
@@ -210,7 +210,7 @@ export class JobList implements OnInit {
     return this.currentView === mode;
   }
 
-  viewApplicationDetail(id: number): void {
+  viewApplicationDetail(id: string): void {
     this.store.selectApplication(id);
     this.router.navigate(['/applications', id]);
   }
@@ -233,7 +233,7 @@ export class JobList implements OnInit {
     }
   }
 
-  onStatusChange(event: { applicationId: number; status: JobApplicationStatus }): void {
+  onStatusChange(event: { applicationId: string; status: JobApplicationStatus }): void {
     this.store.updateApplication(event.applicationId, { status: event.status });
   }
 }

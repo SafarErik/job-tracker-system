@@ -64,7 +64,7 @@ export class CompanyService {
    * Load detailed company information including application history
    * @param id Company ID
    */
-  loadCompanyDetails(id: number): void {
+  loadCompanyDetails(id: string): void {
     this._isLoading.set(true);
     this._error.set(null);
     // Reset active company while loading new one, or keep old one? Better to clear or show loading.
@@ -86,7 +86,7 @@ export class CompanyService {
    * Use this for forms or background fetching.
    * @param id Company ID
    */
-  getCompanyDetails(id: number): Observable<CompanyDetail> {
+  getCompanyDetails(id: string): Observable<CompanyDetail> {
     return this.http.get<CompanyDetail>(`${this.apiUrl}/${id}/details`);
   }
 
@@ -110,7 +110,7 @@ export class CompanyService {
    * @param id Company ID
    * @param company Company data to update
    */
-  updateCompany(id: number, company: UpdateCompany): Observable<void> {
+  updateCompany(id: string, company: UpdateCompany): Observable<void> {
     // We don't set global loading here to avoid freezing the UI for small updates
     // Components can track their own loading state for specific actions if needed
     return this.http.put<void>(`${this.apiUrl}/${id}`, company).pipe(
@@ -135,7 +135,7 @@ export class CompanyService {
    * Delete a company
    * @param id Company ID
    */
-  deleteCompany(id: number): Observable<void> {
+  deleteCompany(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       tap(() => {
         this._companies.update(list => list.filter(c => c.id !== id));
@@ -149,7 +149,7 @@ export class CompanyService {
   }
 
   // Helper to directly get a company by ID from the store (synchronous)
-  getCompanyByIdSync(id: number): Company | undefined {
+  getCompanyByIdSync(id: string): Company | undefined {
     return this.companies().find(c => c.id === id);
   }
 }

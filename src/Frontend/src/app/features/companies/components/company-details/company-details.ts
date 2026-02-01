@@ -54,7 +54,7 @@ export class CompanyDetailsComponent implements OnInit {
 
   // Local state for Notes (to handle debouncing without glitching)
   companyNotes = signal('');
-  private lastCompanyId: number | null = null;
+  private lastCompanyId: string | null = null;
 
   // Derived state
   successRate = computed(() => {
@@ -106,7 +106,7 @@ export class CompanyDetailsComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.companyService.loadCompanyDetails(Number.parseInt(id, 10));
+        this.companyService.loadCompanyDetails(id);
       } else {
         this.router.navigate(['/companies']);
       }
@@ -237,7 +237,7 @@ export class CompanyDetailsComponent implements OnInit {
     const contacts = current.contacts || [];
     let newContacts: CompanyContact[];
 
-    if (contact.id === 0) {
+    if (!contact.id || contact.id === '0') {
       // Create new
       newContacts = [...contacts, contact];
     } else {
@@ -254,7 +254,7 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
-  async handleDeleteContact(contactId: number): Promise<void> {
+  async handleDeleteContact(contactId: string): Promise<void> {
     const current = this.company();
     if (!current) return;
 
@@ -272,7 +272,7 @@ export class CompanyDetailsComponent implements OnInit {
   }
 
   // Navigation
-  viewApplication(appId: number): void {
+  viewApplication(appId: string): void {
     const current = this.company();
     this.router.navigate(['/view', appId], {
       queryParams: { from: 'company', companyId: current?.id }

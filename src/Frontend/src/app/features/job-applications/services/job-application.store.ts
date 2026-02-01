@@ -9,12 +9,12 @@ import { NotificationService } from '../../../core/services/notification.service
 
 export interface JobApplicationState {
     applications: JobApplication[];
-    selectedApplicationId: number | null;
+    selectedApplicationId: string | null;
     isLoading: boolean;
     error: string | null;
     filters: {
         status: JobApplicationStatus | 'all';
-        companyId: number | 'all';
+        companyId: string | 'all';
         search: string;
     };
 }
@@ -28,13 +28,13 @@ export class JobApplicationStore {
 
     // State Signals
     private readonly _applications = signal<JobApplication[]>([]);
-    private readonly _selectedApplicationId = signal<number | null>(null);
+    private readonly _selectedApplicationId = signal<string | null>(null);
     private readonly _isLoading = signal<boolean>(false);
     private readonly _error = signal<string | null>(null);
 
     // Filter Signals
     private readonly _filterStatus = signal<JobApplicationStatus | 'all'>('all');
-    private readonly _filterCompanyId = signal<number | 'all'>('all');
+    private readonly _filterCompanyId = signal<string | 'all'>('all');
     private readonly _filterSearch = signal<string>('');
 
     // Public Read-only Signals
@@ -72,7 +72,7 @@ export class JobApplicationStore {
             if (status !== 'all' && app.status !== status) return false;
 
             // 2. Company Filter
-            if (companyId !== 'all' && Number(app.companyId) !== companyId) return false;
+            if (companyId !== 'all' && app.companyId !== companyId) return false;
 
             // 3. Search Filter
             if (search) {
@@ -151,7 +151,7 @@ export class JobApplicationStore {
         ).subscribe();
     }
 
-    selectApplication(id: number | null) {
+    selectApplication(id: string | null) {
         this._selectedApplicationId.set(id);
         if (id !== null) {
             // Logic to ensure details are full if needed, but assuming list provides enough or we fetch details separately
@@ -183,7 +183,7 @@ export class JobApplicationStore {
         });
     }
 
-    updateApplication(id: number, changes: Partial<JobApplication>) {
+    updateApplication(id: string, changes: Partial<JobApplication>) {
         const originalApps = this._applications();
         const appIndex = originalApps.findIndex(a => a.id === id);
         if (appIndex === -1) return;
@@ -211,7 +211,7 @@ export class JobApplicationStore {
         });
     }
 
-    deleteApplication(id: number) {
+    deleteApplication(id: string) {
         const originalApps = this._applications();
         const originalSelectedId = this._selectedApplicationId();
 
@@ -244,7 +244,7 @@ export class JobApplicationStore {
         this._filterStatus.set(status);
     }
 
-    setCompanyFilter(companyId: number | 'all') {
+    setCompanyFilter(companyId: string | 'all') {
         this._filterCompanyId.set(companyId);
     }
 

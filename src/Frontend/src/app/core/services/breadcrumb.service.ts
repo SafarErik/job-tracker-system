@@ -5,9 +5,9 @@ import { Injectable, signal } from '@angular/core';
 })
 export class BreadcrumbService {
     private lastWorkstationTab = signal<string>('overview');
-    private lastApplicationId = signal<number | null>(null);
+    private lastApplicationId = signal<string | null>(null);
 
-    setLastWorkstationState(applicationId: number, tab: string) {
+    setLastWorkstationState(applicationId: string, tab: string) {
         this.lastApplicationId.set(applicationId);
         this.lastWorkstationTab.set(tab);
     }

@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 export class ApplicationService {
   private readonly apiUrl = `${environment.apiBaseUrl}/JobApplications`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   // 1. Lista lekérése
   getApplications(): Observable<JobApplication[]> {
@@ -23,17 +23,17 @@ export class ApplicationService {
   }
 
   // 3. Törlés
-  deleteApplication(id: number): Observable<any> {
+  deleteApplication(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   // 4. Get single application by ID (for editing)
-  getApplicationById(id: number): Observable<JobApplication> {
+  getApplicationById(id: string): Observable<JobApplication> {
     return this.http.get<JobApplication>(`${this.apiUrl}/${id}`);
   }
 
   // 5. Update application (for editing and status changes)
-  updateApplication(id: number, application: Partial<JobApplication>): Observable<void> {
+  updateApplication(id: string, application: Partial<JobApplication>): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, application);
   }
 }

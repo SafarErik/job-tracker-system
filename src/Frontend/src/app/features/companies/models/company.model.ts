@@ -1,5 +1,5 @@
 export interface Company {
-  id: number;
+  id: string;
   name: string;
   website?: string;
   address?: string;
@@ -15,7 +15,7 @@ export interface Company {
 }
 
 export interface ApplicationPreview {
-  id: number;
+  id: string;
   position: string;
   status: string;
 }
@@ -51,7 +51,7 @@ export interface UpdateCompany {
 }
 
 export interface CompanyDetail {
-  id: number;
+  id: string;
   name: string;
   website?: string;
   address?: string;
@@ -72,7 +72,7 @@ import type { CompanyContact } from '../../../core/models/company-contact.model'
 export type { CompanyContact };
 
 export interface JobApplicationHistory {
-  id: number;
+  id: string;
   position: string;
   appliedAt: string;
   status: string;

@@ -39,7 +39,7 @@ export class KanbanBoardComponent {
   applications = input.required<JobApplication[]>();
 
   // Outputs
-  statusChange = output<{ applicationId: number; status: JobApplicationStatus }>();
+  statusChange = output<{ applicationId: string; status: JobApplicationStatus }>();
 
   // Expose status enum
   readonly Status = JobApplicationStatus;
@@ -126,7 +126,7 @@ export class KanbanBoardComponent {
     });
   }
 
-  navigateToCompany(event: Event, companyId: number): void {
+  navigateToCompany(event: Event, companyId: string): void {
     event.preventDefault();
     event.stopPropagation();
     this.router.navigate(['/company', companyId]);
@@ -136,7 +136,7 @@ export class KanbanBoardComponent {
     return this.columns().map(c => c.id);
   }
 
-  onOpenWorkstation(applicationId: number): void {
+  onOpenWorkstation(applicationId: string): void {
     this.router.navigate(['/applications', applicationId]);
   }
 

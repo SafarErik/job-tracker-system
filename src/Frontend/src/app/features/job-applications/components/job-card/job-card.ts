@@ -49,7 +49,7 @@ export class JobCardComponent {
     compact = input<boolean>(false); // Compact mode for Kanban boards
 
     // Outputs
-    openWorkstation = output<number>();
+    openWorkstation = output<string>();
     openJobUrl = output<string>();
 
     // Logo loading state

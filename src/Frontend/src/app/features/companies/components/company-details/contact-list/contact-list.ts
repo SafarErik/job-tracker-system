@@ -6,35 +6,35 @@ import { HlmButtonImports } from '../../../../../../../libs/ui/button';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-    lucidePlus,
-    lucideLinkedin,
-    lucideExternalLink,
-    lucidePencil,
-    lucideTrash2,
-    lucideBuilding2
+  lucidePlus,
+  lucideLinkedin,
+  lucideExternalLink,
+  lucidePencil,
+  lucideTrash2,
+  lucideBuilding2
 } from '@ng-icons/lucide';
 
 @Component({
-    selector: 'app-contact-list',
-    standalone: true,
-    imports: [
-        CommonModule,
-        FormsModule,
-        ...HlmButtonImports,
-        ...HlmInputImports,
-        NgIcon
-    ],
-    providers: [
-        provideIcons({
-            lucidePlus,
-            lucideLinkedin,
-            lucideExternalLink,
-            lucidePencil,
-            lucideTrash2,
-            lucideBuilding2
-        })
-    ],
-    template: `
+  selector: 'app-contact-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ...HlmButtonImports,
+    ...HlmInputImports,
+    NgIcon
+  ],
+  providers: [
+    provideIcons({
+      lucidePlus,
+      lucideLinkedin,
+      lucideExternalLink,
+      lucidePencil,
+      lucideTrash2,
+      lucideBuilding2
+    })
+  ],
+  template: `
     <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10">
       <div class="flex items-center justify-between mb-8">
         <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
@@ -139,7 +139,7 @@ import {
         }
 
         <!-- Add New Contact Form -->
-        @if (editingContactId() === 0) {
+        @if (editingContactId() === '0') {
         <div
           class="bg-card border-2 border-dashed border-primary/30 rounded-[1.5rem] p-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
           <div class="grid grid-cols-2 gap-3">
@@ -197,66 +197,66 @@ import {
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactListComponent {
-    contacts = input.required<CompanyContact[]>();
+  contacts = input.required<CompanyContact[]>();
 
-    save = output<CompanyContact>();
-    deleteContact = output<number>();
+  save = output<CompanyContact>();
+  deleteContact = output<string>();
 
-    // Local state
-    editingContactId = signal<number | null>(null); // 0 for new
+  // Local state
+  editingContactId = signal<string | null>(null); // '0' for new
 
-    editForm = {
-        name: signal(''),
-        role: signal(''),
-        email: signal(''),
-        linkedIn: signal('')
+  editForm = {
+    name: signal(''),
+    role: signal(''),
+    email: signal(''),
+    linkedIn: signal('')
+  };
+
+  startAddContact(): void {
+    this.editForm.name.set('');
+    this.editForm.role.set('');
+    this.editForm.email.set('');
+    this.editForm.linkedIn.set('');
+    this.editingContactId.set('0');
+  }
+
+  startEditContact(contact: CompanyContact): void {
+    this.editForm.name.set(contact.name);
+    this.editForm.role.set(contact.role || '');
+    this.editForm.email.set(contact.email || '');
+    this.editForm.linkedIn.set(contact.linkedIn || '');
+    this.editingContactId.set(contact.id);
+  }
+
+  cancelEdit(): void {
+    this.editingContactId.set(null);
+  }
+
+  saveContact(): void {
+    const editId = this.editingContactId();
+    if (editId === null) return;
+
+    const contact: CompanyContact = {
+      id: editId,
+      name: this.editForm.name(),
+      role: this.editForm.role(),
+      email: this.editForm.email() || undefined,
+      linkedIn: this.editForm.linkedIn() || undefined
     };
 
-    startAddContact(): void {
-        this.editForm.name.set('');
-        this.editForm.role.set('');
-        this.editForm.email.set('');
-        this.editForm.linkedIn.set('');
-        this.editingContactId.set(0);
+    if (!contact.name || !contact.role) {
+      // Basic validation, UI could show error but for now we just return
+      // Ideally inject NotificationService or emit an error event? 
+      // Dumb components shouldn't inject Services if possible.
+      // Let's assume parent handles validation or we just don't emit.
+      // Or we can add a local error signal.
+      return;
     }
 
-    startEditContact(contact: CompanyContact): void {
-        this.editForm.name.set(contact.name);
-        this.editForm.role.set(contact.role || '');
-        this.editForm.email.set(contact.email || '');
-        this.editForm.linkedIn.set(contact.linkedIn || '');
-        this.editingContactId.set(contact.id);
-    }
-
-    cancelEdit(): void {
-        this.editingContactId.set(null);
-    }
-
-    saveContact(): void {
-        const editId = this.editingContactId();
-        if (editId === null) return;
-
-        const contact: CompanyContact = {
-            id: editId,
-            name: this.editForm.name(),
-            role: this.editForm.role(),
-            email: this.editForm.email() || undefined,
-            linkedIn: this.editForm.linkedIn() || undefined
-        };
-
-        if (!contact.name || !contact.role) {
-            // Basic validation, UI could show error but for now we just return
-            // Ideally inject NotificationService or emit an error event? 
-            // Dumb components shouldn't inject Services if possible.
-            // Let's assume parent handles validation or we just don't emit.
-            // Or we can add a local error signal.
-            return;
-        }
-
-        this.save.emit(contact);
-        this.editingContactId.set(null);
-    }
+    this.save.emit(contact);
+    this.editingContactId.set(null);
+  }
 }

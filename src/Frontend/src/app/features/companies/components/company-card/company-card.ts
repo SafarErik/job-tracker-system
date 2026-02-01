@@ -32,7 +32,7 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
 })
 export class CompanyCardComponent {
   company = input.required<Company>();
-  viewDossier = output<number>();
+  viewDossier = output<string>();
 
   logoFailed = false;
 
@@ -89,7 +89,9 @@ export class CompanyCardComponent {
     if (actual && actual.length > 0) return actual;
 
     // Mock data for demo - deterministic based on company ID
-    const index = this.company().id % this.mockTechStacks.length;
+    // Simplified hash for string ID
+    const hash = this.company().id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = hash % this.mockTechStacks.length;
     return this.mockTechStacks[index];
   });
 

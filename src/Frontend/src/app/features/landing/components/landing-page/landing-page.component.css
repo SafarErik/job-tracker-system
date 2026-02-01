@@ -13,6 +13,10 @@
     transform: rotateY(-10deg) rotateX(5deg);
 }
 
+.rotate-3d {
+    transform: rotateY(-5deg) rotateX(5deg);
+}
+
 /* Animations */
 @keyframes scan {
     0% {

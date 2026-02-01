@@ -21,7 +21,7 @@ public class JobApplicationsController : ControllerBase
     private readonly IDocumentRepository _documentRepository;
 
     public JobApplicationsController(
-        IJobApplicationRepository repository, 
+        IJobApplicationRepository repository,
         IDocumentRepository documentRepository)
     {
         _repository = repository;
@@ -46,7 +46,7 @@ public class JobApplicationsController : ControllerBase
         {
             return Unauthorized("User ID not found in token");
         }
-        
+
         // Only get applications belonging to the current user
         var applications = await _repository.GetAllByUserIdAsync(userId);
 
@@ -82,7 +82,7 @@ public class JobApplicationsController : ControllerBase
 
     // GET: api/jobapplications/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<JobApplicationDto>> Get(int id)
+    public async Task<ActionResult<JobApplicationDto>> Get(Guid id)
     {
         // Validate user is authenticated
         var userId = GetUserId();
@@ -171,10 +171,10 @@ public class JobApplicationsController : ControllerBase
         // AddAsync doesn't automatically populate navigation properties from IDs
         var createdApp = await _repository.GetByIdAsync(application.Id);
 
-        if (createdApp == null) 
+        if (createdApp == null)
         {
-             // Should not happen if add succeeded
-             return StatusCode(500, "Failed to retrieve created application");
+            // Should not happen if add succeeded
+            return StatusCode(500, "Failed to retrieve created application");
         }
 
         application = createdApp;
@@ -224,7 +224,7 @@ public class JobApplicationsController : ControllerBase
     /// Only the owner of the application can update it.
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateJobApplicationDto updateDto)
+    public async Task<IActionResult> Update(Guid id, UpdateJobApplicationDto updateDto)
     {
         // Validate user is authenticated
         var userId = GetUserId();
@@ -246,16 +246,16 @@ public class JobApplicationsController : ControllerBase
         // Partial update - only update fields that are provided
         if (updateDto.Position != null)
             existingApp.Position = updateDto.Position;
-        
+
         if (updateDto.CompanyId.HasValue)
             existingApp.CompanyId = updateDto.CompanyId.Value;
-        
+
         if (updateDto.JobUrl != null)
             existingApp.JobUrl = updateDto.JobUrl;
-        
+
         if (updateDto.Description != null)
             existingApp.Description = updateDto.Description;
-        
+
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
 
@@ -273,7 +273,7 @@ public class JobApplicationsController : ControllerBase
 
         if (updateDto.SalaryOffer.HasValue)
             existingApp.SalaryOffer = updateDto.SalaryOffer.Value;
-        
+
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;
 
@@ -290,7 +290,7 @@ public class JobApplicationsController : ControllerBase
     /// Delete a job application. Only the owner can delete.
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         // Validate user is authenticated
         var userId = GetUserId();
@@ -300,7 +300,7 @@ public class JobApplicationsController : ControllerBase
         }
 
         var app = await _repository.GetByIdAsync(id);
-        
+
         if (app == null) return NotFound();
 
         // Security check: Only allow owners to delete their applications
@@ -313,5 +313,5 @@ public class JobApplicationsController : ControllerBase
         return NoContent();
     }
 
-    
+
 }

@@ -71,7 +71,15 @@ public static class DataSeeder
         Console.WriteLine("✅ Demo user skills assigned");
 
         // ============================================
-        // 4. CREATE JOB APPLICATIONS
+        // 5. CREATE DOCUMENTS (Master Resume)
+        // ============================================
+        var resume = CreateMasterResume(demoUser.Id);
+        await context.Documents.AddAsync(resume);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ Master Resume created");
+
+        // ============================================
+        // 6. CREATE JOB APPLICATIONS
         // ============================================
         var applications = CreateJobApplications(companies, skills, demoUser.Id);
         await context.JobApplications.AddRangeAsync(applications);
@@ -269,6 +277,25 @@ public static class DataSeeder
     }
 
     /// <summary>
+    /// Creates a dummy master resume for the demo user
+    /// </summary>
+    private static Document CreateMasterResume(string userId)
+    {
+        return new Document
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            FileName = "demo_resume.pdf",
+            OriginalFileName = "Demo_User_Resume_2026.pdf",
+            ContentType = "application/pdf",
+            FileSize = 1024 * 540, // ~540KB
+            UploadedAt = DateTime.UtcNow.AddDays(-30),
+            Type = DocumentType.Resume,
+            IsMaster = true
+        };
+    }
+
+    /// <summary>
     /// Creates skills with categories for better organization
     /// </summary>
     private static List<Skill> CreateSkills()
@@ -325,6 +352,53 @@ public static class DataSeeder
             "QA Automation Engineer"
         };
 
+        var jobDescriptions = new[]
+        {
+            @"We are looking for a skilled Software Engineer to join our dynamic team.
+            
+            Responsibilities:
+            - Design and build scalable backend services using .NET Core and C#.
+            - Collaborate with frontend engineers to integrate user-facing elements.
+            - Optimize applications for maximum speed and scalability.
+            - Participate in code reviews and architectural discussions.
+            
+            Requirements:
+            - 3+ years of experience with C# and the .NET ecosystem.
+            - Strong understanding of RESTful API design.
+            - Experience with SQL and NoSQL databases.
+            - Familiarity with cloud platforms like Azure or AWS.
+            - Bachelor's degree in Computer Science or related field.",
+
+            @"Join our frontend team to build modern web applications using Angular and TypeScript.
+            
+            What you'll do:
+            - Develop responsive and interactive user interfaces.
+            - Translate design mockups into high-quality code.
+            - Ensure cross-browser compatibility and accessibility.
+            - Write unit and integration tests for UI components.
+            
+            What we're looking for:
+            - Proficiency in HTML, CSS, and JavaScript/TypeScript.
+            - Deep knowledge of Angular (v14+) framework.
+            - Experience with state management (NgRx or Signals).
+            - Familiarity with build tools like Webpack or Vite.
+            - Detail-oriented mindset with a passion for UX.",
+
+            @"Seeking a DevOps Engineer to automate and streamline our operations and processes.
+            
+            Key Responsibilities:
+            - Manage and monitor cloud infrastructure on AWS.
+            - implement CI/CD pipelines using GitHub Actions or Azure DevOps.
+            - Containerize applications using Docker and Kubernetes.
+            - Ensure system security and compliance.
+            
+            Qualifications:
+            - Experience with Linux administration and shell scripting.
+            - Hands-on experience with Docker and Kubernetes.
+            - Knowledge of Infrastructure as Code (Terraform or Ansible).
+            - Understanding of network security best practices."
+        };
+
         var statuses = Enum.GetValues<JobApplicationStatus>();
         var random = new Random(42); // Fixed seed for reproducible results
 
@@ -336,6 +410,7 @@ public static class DataSeeder
             var position = positions[random.Next(positions.Length)];
             var status = statuses[random.Next(statuses.Length)];
             var daysAgo = random.Next(1, 60);
+            var description = jobDescriptions[random.Next(jobDescriptions.Length)];
 
             // Randomly select new metadata
             var jobTypes = Enum.GetValues<JobType>();
@@ -349,8 +424,7 @@ public static class DataSeeder
                 Position = position,
                 CompanyId = company.Id,
                 JobUrl = $"https://jobs.example.com/{company.Name.Replace(" ", "-").ToLower()}/{i}",
-                Description = $"Application for {position} position at {company.Name}. " +
-                             $"This role offers exciting opportunities for career growth.",
+                Description = description,
                 AppliedAt = DateTime.UtcNow.AddDays(-daysAgo),
                 Status = status,
                 JobType = jobTypes[random.Next(jobTypes.Length)],

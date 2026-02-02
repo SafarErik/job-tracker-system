@@ -19,13 +19,16 @@ public class JobApplicationsController : ControllerBase
 {
     private readonly IJobApplicationRepository _repository;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IJobApplicationService _jobApplicationService;
 
     public JobApplicationsController(
         IJobApplicationRepository repository,
-        IDocumentRepository documentRepository)
+        IDocumentRepository documentRepository,
+        IJobApplicationService jobApplicationService)
     {
         _repository = repository;
         _documentRepository = documentRepository;
+        _jobApplicationService = jobApplicationService;
     }
 
     /// <summary>
@@ -313,5 +316,36 @@ public class JobApplicationsController : ControllerBase
         return NoContent();
     }
 
+    // POST: api/jobapplications/{id}/analyze
+    /// <summary>
+    /// Trigger AI analysis for a job application.
+    /// Analyzes the job description against the user's master resume.
+    /// Updates the application with match score and AI feedback.
+    /// </summary>
+    /// <param name="id">The job application ID</param>
+    /// <returns>Updated job application with AI analysis results</returns>
+    [HttpPost("{id}/analyze")]
+    public async Task<ActionResult<JobApplicationDto>> Analyze(Guid id)
+    {
+        // Validate user is authenticated
+        var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
 
+        try
+        {
+            var result = await _jobApplicationService.TriggerAIAnalysisAsync(id, userId);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound($"Job application {id} not found");
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
 }

@@ -9,14 +9,14 @@ public static class DatabaseExtensions
     {
         using var scope = app.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        
+
         Console.WriteLine("🗑️  Deleting database...");
         await context.Database.EnsureDeletedAsync();
         Console.WriteLine("✅ Database deleted!");
-        
+
         Console.WriteLine("🔨 Recreating database...");
-        await context.Database.EnsureCreatedAsync();
-        
+        await context.Database.MigrateAsync();
+
         Console.WriteLine("✅ Database successfully reset!");
     }
 }

@@ -36,4 +36,10 @@ export class ApplicationService {
   updateApplication(id: string, application: Partial<JobApplication>): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, application);
   }
+
+  // 6. Trigger AI analysis for a job application
+  analyzeJob(id: string): Observable<JobApplication> {
+    return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
+  }
 }
+

@@ -30,6 +30,7 @@ export class JobApplicationStore {
     private readonly _applications = signal<JobApplication[]>([]);
     private readonly _selectedApplicationId = signal<string | null>(null);
     private readonly _isLoading = signal<boolean>(false);
+    private readonly _isAnalyzing = signal<boolean>(false);
     private readonly _error = signal<string | null>(null);
 
     // Filter Signals
@@ -41,6 +42,7 @@ export class JobApplicationStore {
     readonly applications = this._applications.asReadonly();
     readonly selectedApplicationId = this._selectedApplicationId.asReadonly();
     readonly isLoading = this._isLoading.asReadonly();
+    readonly isAnalyzing = this._isAnalyzing.asReadonly();
     readonly error = this._error.asReadonly();
 
     readonly filterStatus = this._filterStatus.asReadonly();
@@ -233,6 +235,51 @@ export class JobApplicationStore {
                 // Revert
                 this._applications.set(originalApps);
                 this._selectedApplicationId.set(originalSelectedId);
+            }
+        });
+    }
+
+    /**
+     * Trigger AI analysis for a job application.
+     * Analyzes the job description against the user's master resume.
+     */
+    analyzeApplication(id: string) {
+        this._isAnalyzing.set(true);
+        this._error.set(null);
+
+        this.applicationService.analyzeJob(id).subscribe({
+            next: (updatedApp) => {
+                // Update the application in the store with AI analysis results
+                this._applications.update(apps =>
+                    apps.map(app => app.id === id ? updatedApp : app)
+                );
+                this._isAnalyzing.set(false);
+
+                if (updatedApp.matchScore > 0) {
+                    this.notificationService.success(
+                        `Analysis complete! Match score: ${updatedApp.matchScore}%`,
+                        'AI Analysis'
+                    );
+                } else if (updatedApp.aiFeedback?.includes('No Master Resume')) {
+                    this.notificationService.error(
+                        'Please upload a Master Resume first',
+                        'Analysis Failed'
+                    );
+                } else {
+                    this.notificationService.info(
+                        'Analysis complete. Check AI Feedback for details.',
+                        'AI Analysis'
+                    );
+                }
+            },
+            error: (err) => {
+                console.error('Failed to analyze application', err);
+                this._isAnalyzing.set(false);
+                this._error.set('AI analysis failed');
+                this.notificationService.error(
+                    'Failed to analyze application. Please try again.',
+                    'Error'
+                );
             }
         });
     }

@@ -157,6 +157,8 @@ export class JobWorkstationComponent implements OnInit {
   // Workstation State
   currentPhase = signal<'strategy' | 'assets' | 'interview'>('strategy');
   isCommandBarOpen = signal(false);
+  isPastingManually = signal(false);
+  manualPasteText = signal('');
 
   private readonly sanitizer = inject(DomSanitizer);
 
@@ -279,6 +281,41 @@ export class JobWorkstationComponent implements OnInit {
         this.store.deleteApplication(app.id);
         this.goBack();
       }
+    }
+  }
+
+  /**
+   * Trigger AI analysis for the current job application.
+   * Analyzes the job description against the user's master resume.
+   */
+  triggerAnalysis(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.analyzeApplication(app.id);
+    }
+  }
+
+  // Manual Paste Methods
+  startManualPaste(): void {
+    const current = this.store.selectedApplication()?.jobDescription || '';
+    this.isPastingManually.set(true);
+    this.manualPasteText.set(current);
+  }
+
+  cancelManualPaste(): void {
+    this.isPastingManually.set(false);
+    this.manualPasteText.set('');
+  }
+
+  saveManualPaste(): void {
+    const app = this.store.selectedApplication();
+    const text = this.manualPasteText().trim();
+
+    if (app && text) {
+      this.store.updateApplication(app.id, { jobDescription: text });
+      this.isPastingManually.set(false);
+      this.manualPasteText.set('');
+      this.notificationService.success('Job description saved!', 'Job Context');
     }
   }
 }

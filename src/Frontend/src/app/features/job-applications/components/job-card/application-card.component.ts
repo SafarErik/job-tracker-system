@@ -157,15 +157,17 @@ export class JobCardComponent {
         }
 
         if (this.isOffer()) {
-            return `${base} border-success/30 shadow-lg shadow-success/10 hover:-translate-y-1.5 hover:shadow-2xl hover:border-success/50`;
+            // Removed under-glow shadows, kept translation and border
+            return `${base} border-success/40 hover:-translate-y-1 hover:border-success/60`;
         }
 
         if (this.isOverdue()) {
-            return `${base} border-warning/40 hover:-translate-y-1.5 hover:shadow-2xl`;
+            // Removed under-glow shadows
+            return `${base} border-warning/40 hover:-translate-y-1 hover:border-warning/60`;
         }
 
-        // Standard Card: Premium Primary Gradient Border effect
-        return `${base} ${borderColor} hover:border-primary/50 hover:-translate-y-1.5 hover:shadow-xl`;
+        // Standard Card: Removed primary shadow glow
+        return `${base} ${borderColor} hover:border-primary/50 hover:-translate-y-1`;
     });
 
     // Computed: Status Strip Color (The Left Border)

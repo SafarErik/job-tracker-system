@@ -1,4 +1,4 @@
-<div class="relative flex w-full flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:ring-2 hover:ring-primary/20 active:cursor-grabbing cursor-grab group overflow-hidden"
+<div class="relative flex w-full flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm transition-all duration-300 hover:border-primary/40 active:cursor-grabbing cursor-grab group overflow-hidden"
     (click)="onCardClick()">
 
     <!-- Priority Strip (Left Edge) -->
@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between pl-2">
         <!-- Tiny Logo -->
         <div
-            class="h-6 w-6 shrink-0 rounded-md bg-secondary border border-border/50 overflow-hidden flex items-center justify-center">
+            class="h-6 w-6 shrink-0 rounded-md bg-secondary/50 border border-border/50 overflow-hidden flex items-center justify-center shadow-inner">
             @if (logoUrl() && !logoFailed()) {
             <img [src]="logoUrl()" [alt]="application().companyName" class="h-full w-full object-contain p-0.5"
                 (error)="onLogoError()">
@@ -19,12 +19,13 @@
         </div>
 
         <!-- Time Ago -->
-        <span class="text-[10px] text-muted-foreground font-medium">{{ timeSinceUpdate() }}</span>
+        <span class="text-[10px] text-muted-foreground font-medium group-hover:text-foreground transition-colors">{{
+            timeSinceUpdate() }}</span>
     </div>
 
     <!-- Middle Row: Company + Role -->
     <div class="flex flex-col pl-2 min-w-0">
-        <h4 class="text-sm font-semibold text-foreground truncate leading-tight">
+        <h4 class="text-sm font-bold text-foreground truncate leading-tight group-hover:text-primary transition-colors">
             {{ application().companyName || 'Unknown' }}
         </h4>
         <p class="text-xs text-muted-foreground truncate leading-tight mt-0.5">

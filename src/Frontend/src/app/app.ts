@@ -15,23 +15,17 @@ import { filter } from 'rxjs';
 // Core services
 import { NotificationService, ThemeService } from './core/services';
 
-// Layout components
-import { NavbarComponent } from './layout';
-
 // Shared components
 import {
   ToastNotificationComponent,
   ConfirmDialogComponent,
 } from './shared/components';
+import { ApplicationAddSheetComponent } from './features/job-applications/components/application-add-sheet/application-add-sheet.component';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    ToastNotificationComponent,
-    ConfirmDialogComponent,
-  ],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, ToastNotificationComponent, ConfirmDialogComponent, ApplicationAddSheetComponent],
   templateUrl: './app.html',
 })
 export class App implements AfterViewInit {

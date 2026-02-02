@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { UiStateService } from '../../../../core/services';
 
 // Services
 import { JobApplicationStore } from '../../services/job-application.store';
@@ -37,6 +38,7 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
     ApplicationKanbanComponent,
     ...HlmButtonImports,
     NgIcon,
+    RouterModule,
   ],
   providers: [provideIcons({
     lucideBriefcase,
@@ -57,6 +59,7 @@ export class ApplicationsComponent implements OnInit {
 
   // Dependencies
   public readonly store = inject(JobApplicationStore);
+  public readonly uiService = inject(UiStateService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);

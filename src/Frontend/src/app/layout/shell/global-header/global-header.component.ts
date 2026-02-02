@@ -14,11 +14,14 @@ import {
     lucideUser,
     lucideSettings,
     lucideMail,
+    lucidePlus,
 } from '@ng-icons/lucide';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
+import { UiStateService } from '../../../core/services';
+import { inject } from '@angular/core';
 
 @Component({
     selector: 'app-global-header',
@@ -44,6 +47,7 @@ import { HlmDialogImports } from '@spartan-ng/helm/dialog';
             lucideUser,
             lucideSettings,
             lucideMail,
+            lucidePlus,
         }),
     ],
     templateUrl: './global-header.component.html',
@@ -51,6 +55,7 @@ import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 })
 export class GlobalHeaderComponent {
     public readonly isOpen = signal(false);
+    public readonly uiService = inject(UiStateService);
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent) {

@@ -48,7 +48,8 @@
       </div>
 
       <!-- New Application Button -->
-      <button hlmBtn class="bg-primary text-primary-foreground gap-2 rounded-xl h-10 px-4">
+      <button hlmBtn (click)="uiService.openAddAppSheet()"
+        class="bg-primary text-primary-foreground gap-2 rounded-xl h-10 px-4">
         <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
         New Application
       </button>

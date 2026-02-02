@@ -1,0 +1,111 @@
+<hlm-sheet side="right" [state]="uiState.isAddAppSheetOpen() ? 'open' : 'closed'" (closed)="uiState.closeAddAppSheet()">
+    <hlm-sheet-content *brnSheetContent="let ctx">
+        <hlm-sheet-header class="mb-6">
+            <h3 hlmSheetTitle>Add Application</h3>
+            <p hlmSheetDescription>
+                Track a new job opportunity.
+            </p>
+        </hlm-sheet-header>
+
+        <div [formGroup]="form" class="flex flex-col gap-5 pb-6">
+
+            <!-- Magic Header -->
+            <div
+                class="p-4 rounded-lg bg-linear-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border border-blue-100 dark:border-slate-700 space-y-3">
+                <label hlmLabel class="flex items-center gap-2 font-medium text-blue-700 dark:text-blue-300">
+                    <ng-icon hlm name="lucideSparkles" size="sm" class="text-amber-400" />
+                    Magic Auto-Fill
+                </label>
+                <div class="flex gap-2">
+                    <input hlmInput formControlName="jobUrl" placeholder="Paste Job URL..."
+                        class="flex-1 bg-white dark:bg-slate-950" autoFocus />
+                    <button hlmBtn variant="secondary" (click)="autoFill()" [disabled]="isAutoFilling()">
+                        {{ isAutoFilling() ? 'Thinking...' : 'Fill' }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Core Data -->
+            <div class="space-y-4">
+                <div class="grid gap-2">
+                    <label hlmLabel>Position</label>
+                    <input hlmInput formControlName="position" placeholder="e.g. Frontend Developer" />
+                </div>
+
+                <div class="grid gap-2">
+                    <label hlmLabel>Company</label>
+                    <input hlmInput formControlName="company" placeholder="e.g. Acme Corp" />
+                </div>
+
+                <div class="grid gap-2">
+                    <label hlmLabel>Status</label>
+                    <brn-select class="w-full" formControlName="status" placeholder="Select Status">
+                        <hlm-select-trigger class="w-full">
+                            <hlm-select-value />
+                        </hlm-select-trigger>
+                        <hlm-select-content class="w-full">
+                            @for (option of statusOptions; track option.value) {
+                            <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
+                            }
+                        </hlm-select-content>
+                    </brn-select>
+                </div>
+
+                <div class="grid gap-2">
+                    <label hlmLabel>Priority</label>
+                    <!-- Using simple radio/segment styling for now since hlm-toggle-group might not be imported yet, using simple button group concept or native radio mocks -->
+                    <div class="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-md">
+                        <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
+                            [class.bg-white]="form.get('priority')?.value === JobPriority.Low"
+                            [class.shadow-sm]="form.get('priority')?.value === JobPriority.Low"
+                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.Low"
+                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.Low"
+                            (click)="form.patchValue({priority: JobPriority.Low})">
+                            Low
+                        </button>
+                        <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
+                            [class.bg-white]="form.get('priority')?.value === JobPriority.Medium"
+                            [class.shadow-sm]="form.get('priority')?.value === JobPriority.Medium"
+                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.Medium"
+                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.Medium"
+                            (click)="form.patchValue({priority: JobPriority.Medium})">
+                            Med
+                        </button>
+                        <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
+                            [class.bg-white]="form.get('priority')?.value === JobPriority.High"
+                            [class.shadow-sm]="form.get('priority')?.value === JobPriority.High"
+                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.High"
+                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.High"
+                            (click)="form.patchValue({priority: JobPriority.High})">
+                            High
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="grid gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div class="grid gap-2">
+                    <label hlmLabel>Location</label>
+                    <input hlmInput formControlName="location" placeholder="e.g. Remote, London" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="grid gap-2">
+                        <label hlmLabel>Min Salary</label>
+                        <input hlmInput type="number" formControlName="salaryMin" placeholder="0" />
+                    </div>
+                    <div class="grid gap-2">
+                        <label hlmLabel>Max Salary</label>
+                        <input hlmInput type="number" formControlName="salaryMax" placeholder="0" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hlm-sheet-footer>
+            <button hlmBtn (click)="onSubmit()">Create Application</button>
+        </hlm-sheet-footer>
+    </hlm-sheet-content>
+</hlm-sheet>

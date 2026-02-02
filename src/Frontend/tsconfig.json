@@ -18,6 +18,9 @@
       "@ui/*": [
         "libs/ui/*"
       ],
+      "@core/*": [
+        "src/app/core/*"
+      ],
       "@spartan-ng/helm/button": [
         "./libs/ui/button/src/index"
       ],

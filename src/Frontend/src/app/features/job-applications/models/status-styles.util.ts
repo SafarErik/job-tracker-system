@@ -23,10 +23,10 @@ export interface StatusStyle {
  */
 export const STATUS_STYLES: Record<JobApplicationStatus, StatusStyle> = {
     [JobApplicationStatus.Applied]: {
-        badge: 'bg-slate-500/10 text-slate-300 border-slate-500/30 shadow-[0_0_12px_-3px_rgba(100,116,139,0.3)]',
+        badge: 'bg-zinc-500/10 text-zinc-300 border-zinc-500/30 shadow-[0_0_12px_-3px_rgba(161,161,170,0.3)]',
         label: 'Applied',
-        columnBorder: 'border-slate-500/50',
-        columnText: 'text-slate-400',
+        columnBorder: 'border-zinc-500/50',
+        columnText: 'text-zinc-400',
     },
     [JobApplicationStatus.PhoneScreen]: {
         badge: 'bg-blue-500/10 text-blue-300 border-blue-500/30 shadow-[0_0_12px_-3px_rgba(59,130,246,0.3)]',

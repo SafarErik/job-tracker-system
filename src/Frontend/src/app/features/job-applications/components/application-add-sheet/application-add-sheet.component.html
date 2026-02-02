@@ -12,24 +12,23 @@
             <!-- Magic Header -->
             <!-- Magic Header -->
             <div
-                class="relative overflow-hidden p-4 rounded-xl border-2 border-indigo-500/20 bg-indigo-500/5 dark:bg-indigo-500/10 space-y-3 group">
+                class="relative overflow-hidden p-4 rounded-xl border-2 border-primary/20 bg-primary/5 space-y-3 group">
                 <!-- Shimmer effect -->
                 <div
-                    class="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none">
+                    class="absolute inset-0 bg-linear-to-r from-transparent via-primary/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none">
                 </div>
 
-                <label hlmLabel class="flex items-center gap-2 font-bold text-indigo-600 dark:text-indigo-400">
-                    <div class="flex items-center justify-center p-1 rounded-md bg-indigo-500/20">
-                        <ng-icon hlm name="lucideSparkles" size="sm" class="text-indigo-500" />
+                <label hlmLabel class="flex items-center gap-2 font-bold text-primary">
+                    <div class="flex items-center justify-center p-1 rounded-md bg-primary/20">
+                        <ng-icon hlm name="lucideSparkles" size="sm" class="text-primary" />
                     </div>
                     Magic Auto-Fill
                 </label>
                 <div class="flex gap-2 relative z-10">
                     <input hlmInput formControlName="jobUrl" placeholder="Paste Job URL to auto-fill..."
-                        class="flex-1 bg-white/50 dark:bg-slate-950/50 border-indigo-200 dark:border-indigo-900 focus:border-indigo-500 transition-colors"
-                        autoFocus />
+                        class="flex-1 bg-card/50 border-primary/20 focus:border-primary transition-colors" autoFocus />
                     <button hlmBtn variant="default"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-md shadow-indigo-500/20"
+                        class="bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-md shadow-primary/20"
                         (click)="autoFill()" [disabled]="isAutoFilling()">
                         {{ isAutoFilling() ? 'Thinking...' : 'Auto-Fill' }}
                     </button>
@@ -70,28 +69,28 @@
 
                 <div class="grid gap-2">
                     <label hlmLabel>Priority</label>
-                    <div class="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-md">
+                    <div class="flex gap-2 p-1 bg-muted rounded-md">
                         <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
-                            [class.bg-white]="form.get('priority')?.value === JobPriority.Low"
+                            [class.bg-card]="form.get('priority')?.value === JobPriority.Low"
                             [class.shadow-sm]="form.get('priority')?.value === JobPriority.Low"
-                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.Low"
-                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.Low"
+                            [class.text-foreground]="form.get('priority')?.value === JobPriority.Low"
+                            [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Low"
                             (click)="form.patchValue({priority: JobPriority.Low})">
                             Low
                         </button>
                         <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
-                            [class.bg-white]="form.get('priority')?.value === JobPriority.Medium"
+                            [class.bg-card]="form.get('priority')?.value === JobPriority.Medium"
                             [class.shadow-sm]="form.get('priority')?.value === JobPriority.Medium"
-                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.Medium"
-                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.Medium"
+                            [class.text-foreground]="form.get('priority')?.value === JobPriority.Medium"
+                            [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Medium"
                             (click)="form.patchValue({priority: JobPriority.Medium})">
                             Med
                         </button>
                         <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
-                            [class.bg-white]="form.get('priority')?.value === JobPriority.High"
+                            [class.bg-card]="form.get('priority')?.value === JobPriority.High"
                             [class.shadow-sm]="form.get('priority')?.value === JobPriority.High"
-                            [class.text-slate-900]="form.get('priority')?.value === JobPriority.High"
-                            [class.text-slate-500]="form.get('priority')?.value !== JobPriority.High"
+                            [class.text-foreground]="form.get('priority')?.value === JobPriority.High"
+                            [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.High"
                             (click)="form.patchValue({priority: JobPriority.High})">
                             High
                         </button>
@@ -100,7 +99,7 @@
             </div>
 
             <!-- Details -->
-            <div class="grid gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div class="grid gap-4 pt-2 border-t border-border">
                 <div class="grid gap-2">
                     <label hlmLabel>Location</label>
                     <input hlmInput formControlName="location" placeholder="e.g. Remote, London" />

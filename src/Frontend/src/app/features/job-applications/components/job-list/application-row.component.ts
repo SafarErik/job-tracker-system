@@ -81,13 +81,13 @@ export class ApplicationRowComponent {
         const isDead = status === JobApplicationStatus.Rejected || status === JobApplicationStatus.Ghosted;
 
         if (isDead) {
-            return 'text-slate-500/50 line-through grayscale opacity-50';
+            return 'text-muted-foreground/50 line-through grayscale opacity-50';
         }
 
         const score = this.application().matchScore || 0;
         if (score >= 80) return 'text-emerald-500';
         if (score >= 50) return 'text-amber-500';
-        return 'text-slate-400';
+        return 'text-muted-foreground';
     });
 
     // Computed: Smart Action logic
@@ -102,7 +102,7 @@ export class ApplicationRowComponent {
         ].includes(status)) {
             return {
                 text: 'Prepare for Interview',
-                color: 'text-indigo-400',
+                color: 'text-primary',
                 icon: 'lucideZap'
             };
         }
@@ -130,7 +130,7 @@ export class ApplicationRowComponent {
             }
             return {
                 text: 'Awaiting Response',
-                color: 'text-slate-500',
+                color: 'text-muted-foreground',
                 icon: 'lucideClock'
             };
         }
@@ -153,7 +153,7 @@ export class ApplicationRowComponent {
 
         return {
             text: 'Keep tracking',
-            color: 'text-slate-500',
+            color: 'text-muted-foreground',
             icon: 'lucideCircle'
         };
     });

@@ -148,7 +148,7 @@ export class JobCardComponent {
 
         if (score >= 80) borderColor = 'border-emerald-500/40';
         else if (score >= 50) borderColor = 'border-amber-500/40';
-        else borderColor = 'border-slate-500/20';
+        else borderColor = 'border-muted-foreground/20';
 
         if (this.isDead()) {
             return `${base} ${borderColor} opacity-60 grayscale hover:opacity-100 hover:grayscale-0 shadow-none`;
@@ -376,12 +376,12 @@ export class JobCardComponent {
 
         // 2. Interviewing
         if (this.isInterviewing()) {
-            return { text: 'Interview Stage', classes: 'text-indigo-400 font-medium', icon: 'lucideZap' };
+            return { text: 'Interview Stage', classes: 'text-primary font-medium', icon: 'lucideZap' };
         }
 
         // 3. Stale State
         if (days > 14 && !this.isDead()) {
-            return { text: `No Activity (${days}d)`, classes: 'text-slate-400', icon: 'lucideClock' };
+            return { text: `No Activity (${days}d)`, classes: 'text-muted-foreground', icon: 'lucideClock' };
         }
         if (days > 7 && !this.isDead()) {
             return { text: `Follow-up Due`, classes: 'text-amber-400', icon: 'lucideTimer' };
@@ -399,7 +399,7 @@ export class JobCardComponent {
             return { text: `Analysis: ${snippet}`, classes: 'text-sky-400', icon: 'lucideZap' };
         }
 
-        return { text: 'Application Sent', classes: 'text-slate-500', icon: 'lucideCheckCircle2' };
+        return { text: 'Application Sent', classes: 'text-muted-foreground', icon: 'lucideCheckCircle2' };
     });
 
     // Computed: Smart Action logic
@@ -415,7 +415,7 @@ export class JobCardComponent {
         ].includes(status)) {
             return {
                 text: 'Prepare for Interview',
-                color: 'text-indigo-400',
+                color: 'text-primary',
                 icon: 'lucideZap'
             };
         }
@@ -445,7 +445,7 @@ export class JobCardComponent {
             }
             return {
                 text: 'Awaiting Response',
-                color: 'text-slate-500',
+                color: 'text-muted-foreground',
                 icon: 'lucideClock'
             };
         }

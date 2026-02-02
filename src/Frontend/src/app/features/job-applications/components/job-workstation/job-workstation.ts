@@ -1,15 +1,13 @@
 import {
-    Component,
-    OnInit,
-    signal,
-    computed,
-    ChangeDetectionStrategy,
-    inject,
+  Component,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Location } from '@angular/common';
-import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ApplicationService } from '../../services/application.service';
 import { JobApplicationStore } from '../../services/job-application.store';
@@ -17,26 +15,12 @@ import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { CompanyService } from '../../../companies/services/company.service';
-import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
-import { JobType } from '../../models/job-type.enum';
-import { WorkplaceType } from '../../models/workplace-type.enum';
-import { JobPriority } from '../../models/job-priority.enum';
-import { getStatusStyle, getStatusBadgeClasses } from '../../models/status-styles.util';
-import {
-    AiAnalysisResult,
-    InterviewQuestion,
-    TimelineEvent,
-    ResumeEnhancement,
-    CoverLetterDraft,
-} from '../../models/ai-analysis.model';
-import { Document } from '../../../../core/models/document.model';
-import { CompanyContact } from '../../../../core/models/company-contact.model';
+import { getStatusStyle } from '../../models/status-styles.util';
 
 // Spartan UI
+// ...
 import { HlmLabelImports } from '@spartan-ng/helm/label';
-import { HlmTabsImports } from '@spartan-ng/helm/tabs';
-import { BrnTabsImports } from '@spartan-ng/brain/tabs';
 import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -48,777 +32,157 @@ import { HlmInputImports } from '@spartan-ng/helm/input';
 // Icons
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
-    lucideLayoutDashboard,
-    lucideFileSearch,
-    lucideSparkles,
-    lucideFolderKanban,
-    lucideMic2,
-    lucideSwords,
-    lucideCalendar,
-    lucideMapPin,
-    lucideChevronRight,
-    lucideExternalLink,
-    lucideClipboardList,
-    lucideChevronDown,
-    lucideDownload,
-    lucideFileText,
-    lucideBrain,
-    lucideLightbulb,
-    lucideTarget,
-    lucideLoader2,
-    lucideChevronLeft,
-    lucideActivity,
-    lucideArrowRight,
-    lucideZap,
-    lucideTrash2,
-    lucidePlus,
-    lucideLinkedin,
-    lucideRotateCw,
-    lucideArrowLeft
+  lucideLayoutDashboard,
+  lucideFileSearch,
+  lucideSparkles,
+  lucideFolderKanban,
+  lucideMic2,
+  lucideSwords,
+  lucideCalendar,
+  lucideMapPin,
+  lucideChevronRight,
+  lucideExternalLink,
+  lucideClipboardList,
+  lucideChevronDown,
+  lucideDownload,
+  lucideFileText,
+  lucideBrain,
+  lucideLightbulb,
+  lucideTarget,
+  lucideLoader2,
+  lucideChevronLeft,
+  lucideActivity,
+  lucideArrowRight,
+  lucideZap,
+  lucideTrash2,
+  lucidePlus,
+  lucideLinkedin,
+  lucideRotateCw,
+  lucideArrowLeft,
+  lucideSearch,
+  lucideCommand
 } from '@ng-icons/lucide';
 
-type WorkstationTab = 'overview' | 'context' | 'coach' | 'documents' | 'interview' | 'strategy';
-
 @Component({
-    selector: 'app-job-workstation',
-    imports: [
-        CommonModule,
-        FormsModule,
-        RouterLink,
-        NgIcon,
-        ReactiveFormsModule,
-        ...HlmInputImports,
-        ...HlmLabelImports,
-        ...HlmTabsImports,
-        ...BrnTabsImports,
-        ...HlmSeparatorImports,
-        ...HlmCardImports,
-        ...HlmButtonImports,
-        ...HlmBadgeImports,
-        ...HlmBreadCrumbImports,
-        ...HlmDropdownMenuImports
-    ],
-    providers: [
-        provideIcons({
-            lucideLayoutDashboard,
-            lucideFileSearch,
-            lucideSparkles,
-            lucideFolderKanban,
-            lucideMic2,
-            lucideSwords,
-            lucideCalendar,
-            lucideMapPin,
-            lucideChevronRight,
-            lucideExternalLink,
-            lucideClipboardList,
-            lucideChevronDown,
-            lucideDownload,
-            lucideFileText,
-            lucideBrain,
-            lucideLightbulb,
-            lucideTarget,
-            lucideLoader2,
-            lucideChevronLeft,
-            lucideActivity,
-            lucideArrowRight,
-            lucideZap,
-            lucideTrash2,
-            lucidePlus,
-            lucideLinkedin,
-            lucideRotateCw,
-            lucideArrowLeft
-        })
-    ],
-    styleUrls: ['./workstation-animations.css'],
-    templateUrl: './job-workstation.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-job-workstation',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    NgIcon,
+    ReactiveFormsModule,
+    ...HlmInputImports,
+    ...HlmLabelImports,
+    ...HlmSeparatorImports,
+    ...HlmCardImports,
+    ...HlmButtonImports,
+    ...HlmBadgeImports,
+    ...HlmBreadCrumbImports,
+    ...HlmDropdownMenuImports
+  ],
+  providers: [
+    provideIcons({
+      lucideLayoutDashboard,
+      lucideFileSearch,
+      lucideSparkles,
+      lucideFolderKanban,
+      lucideMic2,
+      lucideSwords,
+      lucideCalendar,
+      lucideMapPin,
+      lucideChevronRight,
+      lucideExternalLink,
+      lucideClipboardList,
+      lucideChevronDown,
+      lucideDownload,
+      lucideFileText,
+      lucideBrain,
+      lucideLightbulb,
+      lucideTarget,
+      lucideLoader2,
+      lucideChevronLeft,
+      lucideActivity,
+      lucideArrowRight,
+      lucideZap,
+      lucideTrash2,
+      lucidePlus,
+      lucideLinkedin,
+      lucideRotateCw,
+      lucideArrowLeft,
+      lucideSearch,
+      lucideCommand
+    })
+  ],
+  styleUrls: ['./workstation-animations.css'],
+  templateUrl: './job-workstation.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobWorkstationComponent implements OnInit {
-    public readonly route = inject(ActivatedRoute);
-    private readonly router = inject(Router);
-    private readonly location = inject(Location);
-    // Remove ApplicationService injection, replace with Store
-    public readonly store = inject(JobApplicationStore);
-    private readonly applicationService = inject(ApplicationService); // Keep for direct calls if strictly needed, but prefer store
-    private readonly documentService = inject(DocumentService);
-    private readonly notificationService = inject(NotificationService);
-    private readonly breadcrumbService = inject(BreadcrumbService);
-    private readonly companyService = inject(CompanyService);
+  public readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  public readonly store = inject(JobApplicationStore);
+  private readonly applicationService = inject(ApplicationService);
+  private readonly documentService = inject(DocumentService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly companyService = inject(CompanyService);
 
-    // Core state - derived from store
-    // application = signal<JobApplication | null>(null); -> Replaced by store.selectedApplication
-    companyContacts = signal<CompanyContact[]>([]);
-    // isLoading = signal(true); -> Replaced by store.isLoading
-    // error = signal<string | null>(null); -> Replaced by store.error
+  // Workstation State
+  currentPhase = signal<'strategy' | 'assets' | 'interview'>('strategy');
+  isCommandBarOpen = signal(false);
 
-    // Inline Editing State
-    editingField = signal<string | null>(null);
-    lastSavedField = signal<string | null>(null);
+  // Expose types for template
+  readonly Phase = {
+    Strategy: 'strategy' as const,
+    Assets: 'assets' as const,
+    Interview: 'interview' as const
+  };
 
-    // Forms
-    editForm = inject(FormBuilder).group({
-        position: ['', [Validators.required, Validators.maxLength(100)]]
-    });
+  // Phase Configuration
+  phases = [
+    { id: 'strategy' as const, label: 'Strategy', icon: 'lucideSwords' },
+    { id: 'assets' as const, label: 'Assets', icon: 'lucideFolderKanban' },
+    { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
+  ];
 
-    // Tab state
-    activeTab = signal<WorkstationTab>('overview');
-    aiCoachActiveTab = signal<'suggestions' | 'analysis'>('suggestions');
-    tabs: { id: WorkstationTab; label: string; icon: string }[] = [
-        { id: 'overview', label: 'Overview', icon: 'lucideLayoutDashboard' },
-        { id: 'context', label: 'Job Context', icon: 'lucideFileSearch' },
-        { id: 'coach', label: 'AI Coach', icon: 'lucideSparkles' },
-        { id: 'documents', label: 'Documents', icon: 'lucideFolderKanban' },
-        { id: 'interview', label: 'Interview Prep', icon: 'lucideMic2' },
-        { id: 'strategy', label: 'Strategy', icon: 'lucideSwords' },
-    ];
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id') ||
+               this.route.parent?.snapshot.paramMap.get('id');
 
-    // Status management
-    statusOptions = [
-        { value: JobApplicationStatus.Applied, label: 'Applied' },
-        { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
-        { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
-        { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
-        { value: JobApplicationStatus.Offer, label: 'Offer Received' },
-        { value: JobApplicationStatus.Accepted, label: 'Accepted' },
-        { value: JobApplicationStatus.Rejected, label: 'Rejected' },
-        { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
-    ];
-    isStatusDropdownOpen = signal(false);
-
-    // Priority Options
-    priorityOptions = [
-        { value: JobPriority.High, label: 'High Priority' },
-        { value: JobPriority.Medium, label: 'Medium Priority' },
-        { value: JobPriority.Low, label: 'Low Priority' },
-    ];
-
-    // Workplace Options
-    workplaceOptions = [
-        { value: WorkplaceType.OnSite, label: 'On-site' },
-        { value: WorkplaceType.Remote, label: 'Remote' },
-        { value: WorkplaceType.Hybrid, label: 'Hybrid' },
-    ];
-
-    // Job Context tab
-    jobDescriptionInput = signal('');
-    isAnalyzing = signal(false);
-
-    // AI Coach tab
-    aiAnalysis = signal<AiAnalysisResult | null>(null);
-
-    // Documents tab
-    documents = signal<Document[]>([]);
-    selectedResumeId = signal<string | null>(null);
-    coverLetter = signal<CoverLetterDraft>({ content: '', isEdited: false });
-    isGeneratingCoverLetter = signal(false);
-
-    // Interview Prep State
-    interviewQuestions = signal<{ id: number; question: string; answer: string; category: string; flipped: boolean }[]>([
-        {
-            id: 1,
-            question: "Can you tell me about yourself and your experience with Angular?",
-            answer: "Focus on your role in the JobTracker project, emphasizing the use of Signals for state management and Spartan UI for the atomic design system. Mention the performance gains from lazy-loaded feature modules.",
-            category: "Behavioral",
-            flipped: false
-        },
-        {
-            id: 2,
-            question: "How do you handle state management in large scale applications?",
-            answer: "Discuss the shift from RxJS-heavy patterns to the signal-based architecture in Angular. Explain how Signals provide local reactivity without full zone.js pollution.",
-            category: "Technical",
-            flipped: false
-        },
-        {
-            id: 3,
-            question: "Why do you want to work at this company?",
-            answer: "Use the insights from the Job Intelligence tab. Pivot to their tech stack or mission statement found during analysis.",
-            category: "Culture",
-            flipped: false
-        }
-    ]);
-    isGeneratingQuestions = signal(false);
-    activeFlashcardIndex = signal(0);
-    isFlashcardFlipped = signal(false);
-    expandedQuestionId = signal<string | null>(null);
-
-    // Timeline
-    timeline = signal<TimelineEvent[]>([]);
-
-    // Mobile menu
-    isMobileMenuOpen = signal(false);
-
-    // Strategy tab
-    targetSalary = signal<number | null>(null);
-    actualOffer = signal<number | null>(null);
-    equityBonus = signal('');
-    greenFlags = signal<string[]>([]);
-    redFlags = signal<string[]>([]);
-    strategyNotes = signal('');
-    newGreenFlag = signal('');
-    newRedFlag = signal('');
-
-    // Computed values
-    matchScoreColor = computed(() => {
-        const score = this.store.selectedApplication()?.matchScore ?? 0;
-        if (score >= 80) return 'text-success';
-        if (score >= 50) return 'text-warning';
-        return 'text-destructive';
-    });
-
-    matchScoreBg = computed(() => {
-        const score = this.store.selectedApplication()?.matchScore ?? 0;
-        if (score >= 80) return 'bg-success/20';
-        if (score >= 50) return 'bg-warning/20';
-        return 'bg-muted/30';
-    });
-
-    startEditing(field: string): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        if (field === 'position') {
-            this.editForm.patchValue({ position: app.position });
-        }
-
-        this.editingField.set(field);
+    if (id) {
+      this.store.selectApplication(id);
     }
+  }
 
-    saveField(field: string): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
+  // Helpers
+  setPhase(phase: 'strategy' | 'assets' | 'interview'): void {
+    this.currentPhase.set(phase);
+  }
 
-        if (field === 'position') {
-            const newPosition = this.editForm.get('position')?.value;
-            if (!newPosition || newPosition === app.position) {
-                this.editingField.set(null);
-                return;
-            }
+  toggleCommandBar(): void {
+    this.isCommandBarOpen.update(v => !v);
+  }
 
-            this.store.updateApplication(app.id, { position: newPosition });
-            this.editingField.set(null);
-            this.lastSavedField.set(field);
-            setTimeout(() => this.lastSavedField.set(null), 2000);
-        }
+  goBack(): void {
+    this.location.back();
+  }
+
+  getStatusBadgeClasses(status: JobApplicationStatus | undefined): string {
+    if (!status) return 'bg-zinc-800 text-zinc-400';
+    switch (status) {
+      case JobApplicationStatus.Interviewing:
+        return 'bg-violet-500/10 text-violet-400 border border-violet-500/20';
+      case JobApplicationStatus.Offer:
+        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+      default:
+        return 'bg-zinc-800 text-zinc-400 border border-zinc-700';
     }
-
-    async deleteApplication(): Promise<void> {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        const confirmed = await this.notificationService.confirm(
-            `This will permanently delete your application for "${app.position}" at ${app.companyName}. This action cannot be undone.`,
-            'Delete Application?',
-            {
-                confirmText: 'Delete Mission',
-                isDangerous: true,
-            },
-        );
-
-        if (!confirmed) return;
-
-        this.store.deleteApplication(app.id);
-        this.router.navigate(['/applications']);
-    }
-
-    // Helper computed for active tab display (no arrow functions in templates)
-    activeTabIcon = computed(() => {
-        const tab = this.tabs.find((t) => t.id === this.activeTab());
-        return tab?.icon ?? '';
-    });
-
-    activeTabLabel = computed(() => {
-        const tab = this.tabs.find((t) => t.id === this.activeTab());
-        return tab?.label ?? '';
-    });
-
-    ngOnInit(): void {
-        // Check local snapshot OR parent snapshot for the ID
-        const id = this.route.snapshot.paramMap.get('id') ||
-            this.route.parent?.snapshot.paramMap.get('id');
-
-        if (id) {
-            this.store.selectApplication(id);
-            // Also load documents
-            this.loadDocuments();
-
-            // Set initial tab from query params if available
-            const tab = this.route.snapshot.queryParamMap.get('tab') as WorkstationTab;
-            if (tab && this.tabs.some(t => t.id === tab)) {
-                this.activeTab.set(tab);
-                this.breadcrumbService.setLastWorkstationState(id, tab);
-            } else {
-                this.breadcrumbService.setLastWorkstationState(id, this.activeTab());
-            }
-
-            // Company Contacts? We need app data first.
-            // We can react to application signal change.
-        }
-    }
-
-    // Effect/Watch for application changes to load side-data
-    constructor() {
-        // Use angular effect if needed, or just rely on computed
-        // Actually, since signals are reactive, we can use an effect
-        // or just load contacts when application becomes available
-        // BUT, constructor is early.
-        // Let's implement a computed side-effect or logic in the store select?
-        // Simpler: Just rely on the store having data.
-        // The store `selectApplication` might async fetch details.
-    }
-
-    private loadDocuments(): void {
-        this.documentService.getAllDocuments().subscribe({
-            next: (docs: Document[]) => this.documents.set(docs),
-            error: (err: unknown) => console.error('Error loading documents:', err),
-        });
-    }
-
-    private generateMockTimeline(app: JobApplication): void {
-        const events: TimelineEvent[] = [
-            {
-                id: '1',
-                type: 'created',
-                title: 'Application Created',
-                timestamp: new Date(app.appliedAt),
-            },
-            {
-                id: '2',
-                type: 'applied',
-                title: 'Applied to Position',
-                description: `Applied for ${app.position} at ${app.companyName}`,
-                timestamp: new Date(app.appliedAt),
-            },
-        ];
-        this.timeline.set(events);
-    }
-
-
-
-    private loadCompanyContacts(companyId: string): void {
-        this.companyService.getCompanyDetails(companyId).subscribe({
-            next: (details) => {
-                this.companyContacts.set(details.contacts || []);
-            },
-            error: (err: unknown) => console.error('Error loading company contacts:', err)
-        });
-    }
-
-
-
-    // Tab navigation
-    setActiveTab(tab: string | WorkstationTab): void {
-        const tabId = tab as WorkstationTab;
-        this.activeTab.set(tabId);
-        this.isMobileMenuOpen.set(false);
-        const app = this.store.selectedApplication();
-        if (app) {
-            this.breadcrumbService.setLastWorkstationState(app.id, tabId);
-        }
-
-        // Sync with query params for persistence
-        this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { tab: tabId },
-            queryParamsHandling: 'merge'
-        });
-    }
-
-    toggleMobileMenu(): void {
-        this.isMobileMenuOpen.update((v) => !v);
-    }
-
-    // Status management
-    toggleStatusDropdown(): void {
-        this.isStatusDropdownOpen.update((v) => !v);
-    }
-
-    selectStatus(status: JobApplicationStatus): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        this.store.updateApplication(app.id, { status });
-        this.isStatusDropdownOpen.set(false);
-    }
-
-    // Priority Selection
-    selectPriority(priority: JobPriority): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        this.store.updateApplication(app.id, { priority });
-    }
-
-    // Workplace Selection
-    selectWorkplace(workplaceType: WorkplaceType): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        this.store.updateApplication(app.id, { workplaceType });
-    }
-
-    selectPrimaryContact(contactId: string): void {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        this.store.updateApplication(app.id, { primaryContactId: contactId });
-        // Optimistically update contact object locally or trust store checks?
-        // Store will refresh list, but selectedApplication updates might need explicit check or just rely on 'selectedApplication' re-computation.
-        // Optimistic update in store updates 'primaryContactId'.
-        // If we want the contract object to update immediately, we might need more logic or just wait for backend/refresh.
-        // For now, strict requirement: "update UI signal immediately".
-        // The store handles changes partial.
-    }
-
-    getStatusLabel(status: JobApplicationStatus | undefined): string {
-        if (status === undefined) return 'Unknown';
-        return getStatusStyle(status).label;
-    }
-
-    getStatusClass(status: JobApplicationStatus | undefined): string {
-        if (status === undefined) return 'px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border bg-secondary/10 text-secondary-foreground border-secondary/20';
-        return getStatusBadgeClasses(status);
-    }
-
-    getJobTypeLabel(type: JobType | undefined): string {
-        if (type === undefined) return 'Unknown';
-        switch (type) {
-            case JobType.FullTime: return 'Full-time';
-            case JobType.PartTime: return 'Part-time';
-            case JobType.Internship: return 'Internship';
-            case JobType.Contract: return 'Contract';
-            case JobType.Freelance: return 'Freelance';
-            default: return 'Unknown';
-        }
-    }
-
-    getWorkplaceLabel(type: WorkplaceType | undefined): string {
-        if (type === undefined) return 'Unknown';
-        switch (type) {
-            case WorkplaceType.OnSite: return 'On-site';
-            case WorkplaceType.Remote: return 'Remote';
-            case WorkplaceType.Hybrid: return 'Hybrid';
-            default: return 'Unknown';
-        }
-    }
-
-    getPriorityLabel(priority: JobPriority | undefined): string {
-        if (priority === undefined) return 'Medium';
-        switch (priority) {
-            case JobPriority.High: return 'High Priority';
-            case JobPriority.Medium: return 'Medium Priority';
-            case JobPriority.Low: return 'Low Priority';
-            default: return 'Medium';
-        }
-    }
-
-    getPriorityClass(priority: JobPriority | undefined): string {
-        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
-        if (priority === undefined) return base;
-
-        switch (priority as JobPriority) {
-            case JobPriority.High:
-                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
-            case JobPriority.Medium:
-                return `${base} bg-warning/10 text-warning border-warning/20`;
-            case JobPriority.Low:
-                return `${base} bg-info/10 text-info border-info/20`;
-            default:
-                return `${base} bg-secondary text-secondary-foreground border-border`;
-        }
-    }
-
-    // Job Context - AI Analysis
-    async analyzeJobDescription(): Promise<void> {
-        const description = this.jobDescriptionInput();
-        if (!description.trim()) {
-            this.notificationService.error('Please enter a job description', 'Error');
-            return;
-        }
-
-        this.isAnalyzing.set(true);
-
-        // Simulate AI analysis
-        await this.delay(2000);
-
-        const app = this.store.selectedApplication();
-        const position = app?.position || 'target';
-
-        const mockAnalysis: AiAnalysisResult = {
-            matchScore: Math.floor(Math.random() * 30) + 70,
-            gapAnalysis: `Based on the job description, you have a strong match for this ${position} role. Your experience with web development and API design aligns well with the requirements. However, there are a few areas where you could strengthen your application.`,
-            missingSkills: ['Kubernetes', 'GraphQL', 'AWS Lambda'],
-            matchedSkills: ['TypeScript', 'Angular', 'RESTful APIs', 'Agile', 'Git'],
-            resumeEnhancements: [
-                {
-                    id: '1',
-                    originalBullet: 'Developed web applications using Angular',
-                    rebrandedBullet: 'Architected and delivered 5+ enterprise Angular applications serving 10,000+ daily active users, reducing page load times by 40%',
-                    reasoning: 'Quantify impact and scope to demonstrate scale of experience',
-                    category: 'experience',
-                },
-                {
-                    id: '2',
-                    originalBullet: 'Worked on API development',
-                    rebrandedBullet: 'Designed and implemented RESTful APIs processing 1M+ requests/day with 99.9% uptime, improving data retrieval speed by 60%',
-                    reasoning: 'Add metrics and reliability indicators that hiring managers value',
-                    category: 'experience',
-                },
-            ],
-            generatedAt: new Date(),
-        };
-
-        this.aiAnalysis.set(mockAnalysis);
-
-        if (app) {
-            this.store.updateApplication(app.id, { matchScore: mockAnalysis.matchScore });
-        }
-
-        // Add to timeline
-        this.timeline.update((events) => [
-            ...events,
-            {
-                id: String(events.length + 1),
-                type: 'ai_analysis',
-                title: 'AI Analysis Completed',
-                description: `Match score: ${mockAnalysis.matchScore}%`,
-                timestamp: new Date(),
-            },
-        ]);
-
-        this.isAnalyzing.set(false);
-        this.notificationService.success('Analysis complete!', 'AI Coach');
-    }
-
-    // Cover Letter Generation
-    async generateCoverLetter(): Promise<void> {
-        const app = this.store.selectedApplication();
-        if (!app) return;
-
-        this.isGeneratingCoverLetter.set(true);
-
-        await this.delay(2500);
-
-        const letter = `Dear Hiring Manager,
-
-I am writing to express my strong interest in the ${app.position} position at ${app.companyName}. Having followed your company's innovative work, I am confident that my skills and experience make me an excellent candidate for this role.
-
-In my current role, I have successfully delivered multiple high-impact projects that directly align with your requirements. I have demonstrated expertise in building scalable applications and collaborating with cross-functional teams to achieve business objectives.
-
-What excites me most about this opportunity is the chance to contribute to ${app.companyName}'s mission while continuing to grow as a professional. I am particularly drawn to the innovative culture and the opportunity to work on challenging problems.
-
-I would welcome the opportunity to discuss how my background and skills align with your team's needs. Thank you for considering my application.
-
-Best regards,
-[Your Name]`;
-
-        this.coverLetter.set({
-            content: letter,
-            generatedAt: new Date(),
-            isEdited: false,
-        });
-
-        this.isGeneratingCoverLetter.set(false);
-    }
-
-    updateCoverLetter(content: string): void {
-        this.coverLetter.update((cl) => ({ ...cl, content, isEdited: true }));
-    }
-
-    saveCoverLetterAsPdf(): void {
-        this.notificationService.info('PDF generation coming soon!', 'Feature Preview');
-    }
-
-    // Interview Prep
-    async generateInterviewQuestions(): Promise<void> {
-        this.isGeneratingQuestions.set(true);
-
-        await this.delay(2000);
-
-        const questions: InterviewQuestion[] = [
-            {
-                id: '1',
-                question: 'Tell me about a challenging project you worked on and how you overcame obstacles.',
-                category: 'behavioral',
-                difficulty: 'medium',
-                draftAnswer: '',
-                tips: 'Use the STAR method: Situation, Task, Action, Result',
-            },
-            {
-                id: '2',
-                question: 'How do you approach debugging a complex issue in a production system?',
-                category: 'technical',
-                difficulty: 'hard',
-                draftAnswer: '',
-                tips: 'Walk through your systematic approach and mention specific tools',
-            },
-            {
-                id: '3',
-                question: 'Describe a time when you had to work with a difficult team member.',
-                category: 'behavioral',
-                difficulty: 'medium',
-                draftAnswer: '',
-                tips: 'Focus on resolution and what you learned',
-            },
-            {
-                id: '4',
-                question: 'What interests you most about our company and this role?',
-                category: 'company',
-                difficulty: 'easy',
-                draftAnswer: '',
-                tips: 'Research the company beforehand and be specific',
-            },
-        ];
-
-        // Note: The mock data provided in the instruction has a different structure
-        // than the InterviewQuestion interface. For faithful application of the change,
-        // the `interviewQuestions` signal type was updated to match the provided mock.
-        // If the original InterviewQuestion interface should be strictly adhered to,
-        // the mock data would need to be adjusted.
-        // This `generateInterviewQuestions` method is now redundant if the signal is
-        // initialized with mock data, but kept for completeness based on original code.
-        // If the intent is to replace the initial empty array with this generated data,
-        // then the initial signal definition should be empty and this method would populate it.
-        // Given the instruction, the signal is initialized with the mock data directly.
-
-        // this.interviewQuestions.set(questions); // This line would be used if generating dynamically
-        this.isGeneratingQuestions.set(false);
-    }
-
-    toggleQuestion(id: string): void {
-        this.expandedQuestionId.update((current) => (current === id ? null : id));
-    }
-
-    updateAnswer(questionId: string, answer: string): void {
-        // This method assumes the original InterviewQuestion type with string IDs.
-        // If the new mock data with number IDs is used, this method would need adjustment.
-        // For now, it's kept as is, assuming it might be used for dynamically generated questions.
-        // If the mock data is the only source, this method might become obsolete or need refactoring.
-        this.interviewQuestions.update((questions) =>
-            questions.map((q) => (q.id === Number(questionId) ? { ...q, answer: answer } : q)),
-        );
-    }
-
-    // Flashcard methods
-    flipFlashcard(): void {
-        this.isFlashcardFlipped.update(v => !v);
-    }
-
-    updateCoverLetterContent(content: string): void {
-        this.coverLetter.update(s => ({ ...s, content, isEdited: true }));
-    }
-
-    flipCard(id: number): void {
-        this.interviewQuestions.update(questions =>
-            questions.map(q => q.id === id ? { ...q, flipped: !q.flipped } : q)
-        );
-    }
-
-    setAiCoachTab(tab: 'suggestions' | 'analysis'): void {
-        this.aiCoachActiveTab.set(tab);
-    }
-
-    updateStrategyNotes(notes: string): void {
-        this.strategyNotes.set(notes);
-    }
-
-    nextFlashcard(): void {
-        if (this.activeFlashcardIndex() < this.interviewQuestions().length - 1) {
-            this.activeFlashcardIndex.update(i => i + 1);
-            this.isFlashcardFlipped.set(false);
-        }
-    }
-
-    prevFlashcard(): void {
-        if (this.activeFlashcardIndex() > 0) {
-            this.activeFlashcardIndex.update(i => i - 1);
-            this.isFlashcardFlipped.set(false);
-        }
-    }
-
-
-    /**
-     * Download a document
-     */
-    downloadDocument(doc: Document): void {
-        if (!doc) return;
-
-        // Use direct Blob download
-        this.notificationService.info(`Starting download: ${doc.originalFileName}`, 'Download');
-
-        this.documentService.getDocumentBlob(doc.id).subscribe({
-            next: (blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const link = window.document.createElement('a');
-                link.href = url;
-                link.download = doc.originalFileName;
-                link.click();
-                window.URL.revokeObjectURL(url);
-                this.notificationService.success('Download complete', 'Success');
-            },
-            error: (err) => {
-                console.error('Download failed:', err);
-                this.notificationService.error('Failed to download document', 'Error');
-            }
-        });
-    }
-
-    // Utility
-    copyToClipboard(text: string): void {
-        navigator.clipboard.writeText(text)
-            .then(() => {
-                this.notificationService.success('Copied to clipboard!', 'Success');
-            })
-            .catch((err) => {
-                console.error('Clipboard error:', err);
-                this.notificationService.error('Failed to copy to clipboard', 'Error');
-            });
-    }
-
-    formatDate(date: string | Date): string {
-        return new Date(date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    }
-
-    goBack(): void {
-        this.location.back();
-    }
-
-    private delay(ms: number): Promise<void> {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    // Strategy tab methods
-    addGreenFlag(): void {
-        const flag = this.newGreenFlag().trim();
-        if (flag) {
-            this.greenFlags.update((flags) => [...flags, flag]);
-            this.newGreenFlag.set('');
-        }
-    }
-
-    removeGreenFlag(index: number): void {
-        this.greenFlags.update((flags) => flags.filter((_, i) => i !== index));
-    }
-
-    addRedFlag(): void {
-        const flag = this.newRedFlag().trim();
-        if (flag) {
-            this.redFlags.update((flags) => [...flags, flag]);
-            this.newRedFlag.set('');
-        }
-    }
-
-    removeRedFlag(index: number): void {
-        this.redFlags.update((flags) => flags.filter((_, i) => i !== index));
-    }
-
-    // Computed: Is offer below target?
-    isOfferBelowTarget(): boolean {
-        const target = this.targetSalary();
-        const offer = this.actualOffer();
-        return offer !== null && offer > 0 && target !== null && offer < target;
-    }
+  }
+
+  getStatusLabel(status: JobApplicationStatus | undefined): string {
+    if (status === undefined) return 'Unknown';
+    return getStatusStyle(status).label;
+  }
 }

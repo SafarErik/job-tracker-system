@@ -1,11 +1,11 @@
 <hlm-sidebar collapsible="icon" variant="sidebar">
   <div hlmSidebarHeader class="p-4">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-        <ng-icon hlm name="lucideBriefcase" hlmClassName="w-5 h-5 text-white" />
+      <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+        <ng-icon hlm name="lucideBriefcase" hlmClassName="w-5 h-5 text-primary-foreground" />
       </div>
       <span
-        class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-white to-slate-400 group-data-[collapsible=icon]:hidden">
+        class="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-foreground to-muted-foreground group-data-[collapsible=icon]:hidden">
         JobTracker
       </span>
     </div>
@@ -39,7 +39,7 @@
       <button [hlmDropdownMenuTrigger]="userMenu" hlmBtn variant="ghost"
         class="flex items-center gap-3 p-2 h-auto w-full justify-start hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group">
         <hlm-avatar hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border">
-          <span hlmAvatarFallback hlmClassName="bg-indigo-600 text-white text-[10px]">JD</span>
+          <span hlmAvatarFallback hlmClassName="bg-primary text-primary-foreground text-[10px]">JD</span>
         </hlm-avatar>
         <div class="flex-1 text-left group-data-[collapsible=icon]:hidden">
           <p class="text-sm font-semibold text-sidebar-foreground">John Doe</p>
@@ -56,11 +56,12 @@
 
 <ng-template #userMenu>
   <div hlmDropdownMenu
-    class="w-64 bg-slate-950/95 backdrop-blur-xl border-white/10 p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95">
-    <div hlmDropdownMenuLabel hlmClassName="px-2 py-1.5 text-xs font-bold text-slate-500 uppercase tracking-widest">
+    class="w-64 bg-popover/95 backdrop-blur-xl border-border p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in-95">
+    <div hlmDropdownMenuLabel
+      hlmClassName="px-2 py-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
       Account Settings
     </div>
-    <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
+    <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
     <div hlmDropdownMenuGroup>
       <button hlmDropdownMenuItem routerLink="/profile" hlmClassName="rounded-lg">
@@ -75,7 +76,7 @@
       </button>
     </div>
 
-    <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
+    <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
     <div hlmDropdownMenuItem class="flex items-center justify-between rounded-lg cursor-default focus:bg-transparent">
       <div class="flex items-center gap-2">
@@ -85,7 +86,7 @@
       <hlm-switch [checked]="isDarkMode" (changed)="toggleTheme()" />
     </div>
 
-    <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
+    <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
     <button hlmDropdownMenuItem (click)="onLogout()"
       class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg">

@@ -46,12 +46,12 @@
         <!-- Dropdown Menu -->
         <ng-template #statusMenu>
             <div hlmDropdownMenu
-                class="w-48 bg-slate-950/95 backdrop-blur-xl border-white/10 p-1 rounded-xl shadow-2xl z-50">
+                class="w-48 bg-popover/95 backdrop-blur-xl border-border p-1 rounded-xl shadow-2xl z-50">
                 <div hlmDropdownMenuLabel
-                    hlmClassName="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    hlmClassName="px-2 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                     Update Status
                 </div>
-                <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
+                <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
                 <div class="max-h-64 overflow-y-auto custom-scrollbar">
                     @for (status of statusOptions(); track status) {
                     <button hlmDropdownMenuItem (click)="onStatusSelect(status, $event)"

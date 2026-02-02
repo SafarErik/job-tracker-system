@@ -1,0 +1,82 @@
+<td class="px-6 py-4">
+    <div class="flex items-center gap-3">
+        <div class="h-10 w-10 shrink-0 rounded-lg overflow-hidden border border-border/50 bg-secondary/30">
+            @if (logoUrl()) {
+            <img [src]="logoUrl()" [alt]="application().companyName" class="h-full w-full object-contain p-1">
+            } @else {
+            <app-logo-placeholder [companyName]="application().companyName || '?'"></app-logo-placeholder>
+            }
+        </div>
+        <div class="min-w-0">
+            <div class="text-sm font-bold text-foreground truncate">{{ application().position }}</div>
+            <div class="text-xs text-muted-foreground truncate">{{ application().companyName }}</div>
+        </div>
+    </div>
+</td>
+
+<td class="px-6 py-4">
+    <div class="flex flex-col gap-1.5 min-w-[140px]">
+        <div class="flex items-center gap-1.5">
+            <div class="h-1.5 w-1.5 rounded-full" [class]="getStepClass(statusDepth())"></div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
+                {{ statusLabel() }}
+            </span>
+        </div>
+        <div class="flex gap-1 h-1 w-full">
+            @for (step of [1, 2, 3, 4, 5]; track step) {
+            <div class="flex-1 rounded-full transition-all duration-500" [class]="getStepClass(step)">
+            </div>
+            }
+        </div>
+    </div>
+</td>
+
+<td class="px-6 py-4">
+    <div class="flex flex-col">
+        @if (application().salaryOffer) {
+        <span class="text-xs font-bold text-emerald-500">
+            {{ application().salaryOffer |
+            salaryFormatter:undefined:application().currency:application().salaryPeriod:true }}
+        </span>
+        } @else if (application().salaryMin) {
+        <span class="text-xs text-muted-foreground">
+            {{ application().salaryMin |
+            salaryFormatter:application().salaryMax:application().currency:application().salaryPeriod }}
+        </span>
+        } @else {
+        <span class="italic text-slate-600 text-xs">Not specified</span>
+        }
+    </div>
+</td>
+
+<td class="px-6 py-4">
+    <hlm-tooltip hlmClassName="z-50 border-white/10 bg-slate-900/95 backdrop-blur-md text-white shadow-2xl">
+        <div class="flex items-center gap-2" hlmTooltipTrigger>
+            <span class="text-sm font-bold" [class]="matchScoreClasses()">{{ application().matchScore || 0 }}%</span>
+        </div>
+        <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
+            Description.</span>
+    </hlm-tooltip>
+</td>
+
+<td class="px-6 py-4">
+    <span class="text-xs text-muted-foreground">{{ lastActivity() }}</span>
+</td>
+
+<td class="px-4 py-4 text-right">
+    <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button hlmBtn variant="ghost" size="icon" class="h-8 w-8 hover:bg-primary/10 hover:text-primary transition-all"
+            (click)="onArchive($event)" title="Archive">
+            <ng-icon name="lucideArchive" class="size-4"></ng-icon>
+        </button>
+        <button hlmBtn variant="ghost" size="icon" class="h-8 w-8 hover:bg-secondary/50 transition-all"
+            title="More Options">
+            <ng-icon name="lucideMoreHorizontal" class="size-4"></ng-icon>
+        </button>
+        <div class="ml-2 px-3 h-8 flex items-center justify-center rounded-full bg-primary/10 transition-all hover:bg-primary/20"
+            [class]="smartAction().color">
+            <span class="text-[10px] font-bold mr-2 uppercase tracking-wide">{{ smartAction().text }}</span>
+            <ng-icon [name]="smartAction().icon" class="size-4"></ng-icon>
+        </div>
+    </div>
+</td>

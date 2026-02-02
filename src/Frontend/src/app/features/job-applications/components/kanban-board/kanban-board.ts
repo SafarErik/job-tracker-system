@@ -137,7 +137,7 @@ export class ApplicationKanbanComponent {
   }
 
   onOpenWorkstation(applicationId: string): void {
-    this.router.navigate(['/applications', applicationId]);
+    this.router.navigate(['/workstation', applicationId]);
   }
 
   onOpenJobUrl(url: string): void {

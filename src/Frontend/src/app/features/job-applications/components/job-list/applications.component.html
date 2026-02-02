@@ -48,10 +48,10 @@
       </div>
 
       <!-- New Application Button -->
-      <a routerLink="/new" hlmBtn class="bg-primary text-primary-foreground gap-2 rounded-xl h-10 px-4">
+      <button hlmBtn class="bg-primary text-primary-foreground gap-2 rounded-xl h-10 px-4">
         <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
         New Application
-      </a>
+      </button>
     </div>
   </div>
 
@@ -80,10 +80,22 @@
     <app-application-grid [apps]="filteredApps()" />
     }
     @case ('kanban') {
+    @defer (on idle) {
     <app-application-kanban [apps]="filteredApps()" (statusChange)="onStatusChange($event)" />
+    } @placeholder {
+    <div class="flex items-center justify-center py-20">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+    }
     }
     @case ('list') {
+    @defer (on idle) {
     <app-application-list [apps]="filteredApps()" />
+    } @placeholder {
+    <div class="flex items-center justify-center py-20">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+    }
     }
     }
   </div>

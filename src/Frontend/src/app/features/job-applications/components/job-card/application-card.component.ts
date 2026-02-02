@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { HlmCard } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmTooltipImports } from '@spartan-ng/helm/tooltip';
+import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
@@ -15,6 +17,18 @@ import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
+import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+    lucideZap,
+    lucideTimer,
+    lucideCircle,
+    lucideSparkles,
+    lucideArchive,
+    lucideSend,
+    lucideCheckCircle2,
+    lucideClock,
+} from '@ng-icons/lucide';
 
 /**
  * Job Card Component
@@ -27,7 +41,23 @@ import { LogoPlaceholderComponent } from '../../../../shared/components/logo-pla
         CommonModule,
         HlmCard,
         ...HlmButtonImports,
+        ...HlmTooltipImports,
+        ...BrnTooltipImports,
         LogoPlaceholderComponent,
+        SalaryFormatterPipe,
+        NgIcon,
+    ],
+    providers: [
+        provideIcons({
+            lucideZap,
+            lucideTimer,
+            lucideCircle,
+            lucideSparkles,
+            lucideArchive,
+            lucideSend,
+            lucideCheckCircle2,
+            lucideClock,
+        }),
     ],
     templateUrl: './application-card.component.html',
     styleUrl: './application-card.component.css',
@@ -94,14 +124,11 @@ export class JobCardComponent {
         this.application().status === JobApplicationStatus.Offer
     );
 
-    // Computed: Is application stale (>14 days)
-    isStale = computed(() => {
-        const app = this.application();
-        return (
-            !this.isDead() &&
-            !this.isOffer() &&
-            this.daysSinceUpdate() > 14
-        );
+    // Computed: Is overdue
+    isOverdue = computed(() => {
+        const nextDate = this.application().nextFollowUpDate;
+        if (!nextDate) return false;
+        return new Date(nextDate) < new Date();
     });
 
     // Computed: Dynamic Container Classes
@@ -112,9 +139,9 @@ export class JobCardComponent {
         const score = this.application().matchScore || 0;
         let borderColor = 'border-border/50';
 
-        if (score >= 80) borderColor = 'border-emerald-500/20';
-        else if (score >= 50) borderColor = 'border-amber-500/20';
-        else borderColor = 'border-slate-500/10';
+        if (score >= 80) borderColor = 'border-emerald-500/40';
+        else if (score >= 50) borderColor = 'border-amber-500/40';
+        else borderColor = 'border-slate-500/20';
 
         if (this.isDead()) {
             return `${base} ${borderColor} opacity-60 grayscale hover:opacity-100 hover:grayscale-0 shadow-none`;
@@ -124,7 +151,7 @@ export class JobCardComponent {
             return `${base} border-success/30 shadow-lg shadow-success/10 hover:-translate-y-1.5 hover:shadow-2xl hover:border-success/50`;
         }
 
-        if (this.isStale()) {
+        if (this.isOverdue()) {
             return `${base} border-warning/40 hover:-translate-y-1.5 hover:shadow-2xl`;
         }
 
@@ -136,7 +163,7 @@ export class JobCardComponent {
     statusStripColor = computed(() => {
         if (this.isOffer()) return 'bg-success';
         if (this.isDead()) return 'bg-muted-foreground/30';
-        if (this.isStale()) return 'bg-warning';
+        if (this.isOverdue()) return 'bg-warning';
         return 'bg-primary';
     });
 
@@ -336,9 +363,88 @@ export class JobCardComponent {
     // Computed: Match Score Color
     matchScoreColorClasses = computed(() => {
         const score = this.application().matchScore || 0;
+        const isDead = this.isDead();
+
+        if (isDead) {
+            return 'bg-muted-foreground/10 text-muted-foreground/50 border-muted-foreground/20 opacity-50 saturate-0 line-through';
+        }
+
         if (score >= 80) return 'bg-success/10 text-success border-success/20';
         if (score >= 50) return 'bg-info/10 text-info border-info/20';
         return 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20';
+    });
+
+    // Computed: Smart Action logic
+    smartAction = computed(() => {
+        const app = this.application();
+        const status = app.status;
+
+        // Interviewing statuses
+        if ([
+            JobApplicationStatus.PhoneScreen,
+            JobApplicationStatus.TechnicalTask,
+            JobApplicationStatus.Interviewing
+        ].includes(status)) {
+            return {
+                text: 'Prepare for Interview',
+                color: 'text-indigo-400',
+                icon: 'lucideZap'
+            };
+        }
+
+        // Offer statuses
+        if (status === JobApplicationStatus.Offer) {
+            return {
+                text: 'Review Offer Details',
+                color: 'text-emerald-400 font-bold',
+                icon: 'lucideCheckCircle2'
+            };
+        }
+
+        // Applied status with follow-up logic
+        if (status === JobApplicationStatus.Applied) {
+            const lastUpdated = app.updatedAt || app.appliedAt;
+            const updatedAt = new Date(lastUpdated);
+            const now = new Date();
+            const diffDays = Math.ceil(Math.abs(now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 7) {
+                return {
+                    text: 'Follow-up Recommended',
+                    color: 'text-amber-400',
+                    icon: 'lucideTimer'
+                };
+            }
+            return {
+                text: 'Awaiting Response',
+                color: 'text-slate-500',
+                icon: 'lucideClock'
+            };
+        }
+
+        // Rejected
+        if (status === JobApplicationStatus.Rejected) {
+            return {
+                text: 'Archive Application',
+                color: 'text-red-400',
+                icon: 'lucideArchive'
+            };
+        }
+
+        // Ghosted
+        if (status === JobApplicationStatus.Ghosted) {
+            return {
+                text: 'Send Nudge',
+                color: 'text-orange-400',
+                icon: 'lucideSend'
+            };
+        }
+
+        return {
+            text: 'Keep tracking',
+            color: 'text-slate-500',
+            icon: 'lucideCircle'
+        };
     });
 
     // Format date

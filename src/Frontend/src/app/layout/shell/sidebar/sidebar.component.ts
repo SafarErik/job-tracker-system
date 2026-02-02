@@ -53,6 +53,9 @@ import { AuthService } from '../../../core/auth/auth.service';
   ],
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    'class': 'border-r border-white/10 shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]'
+  }
 })
 export class SidebarComponent {
   private themeService = inject(ThemeService);

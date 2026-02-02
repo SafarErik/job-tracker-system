@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 // Services
 import { JobApplicationStore } from '../../services/job-application.store';
@@ -32,7 +32,6 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ApplicationGridComponent,
     ApplicationListComponent,
     ApplicationKanbanComponent,
@@ -71,9 +70,8 @@ export class ApplicationsComponent implements OnInit {
 
   // Categories for the Segmented Control
   categories = [
-    { id: 'all', label: 'All Apps' },
-    { id: 'in-progress', label: 'In Progress' },
-    { id: 'interviews', label: 'Interviews' },
+    { id: 'all', label: 'All' },
+    { id: 'interviews', label: 'Interviewing' },
     { id: 'offers', label: 'Offers' },
     { id: 'archived', label: 'Archived' },
   ];
@@ -94,7 +92,6 @@ export class ApplicationsComponent implements OnInit {
 
       // Category filter
       if (category === 'all') return true;
-      if (category === 'in-progress') return app.status === JobApplicationStatus.Applied;
       if (category === 'interviews') return [
         JobApplicationStatus.PhoneScreen,
         JobApplicationStatus.TechnicalTask,
@@ -165,7 +162,7 @@ export class ApplicationsComponent implements OnInit {
 
   viewApplicationDetail(id: string): void {
     this.store.selectApplication(id);
-    this.router.navigate(['/applications', id]);
+    this.router.navigate(['/workstation', id]);
   }
 
   // Welcome Message Logic

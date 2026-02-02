@@ -11,6 +11,7 @@ import { Component, ViewChild, AfterViewInit, inject, signal, effect } from '@an
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
+import { NgxSonnerToaster } from 'ngx-sonner';
 
 // Core services
 import { NotificationService, ThemeService } from './core/services';
@@ -25,7 +26,7 @@ import { ApplicationAddSheetComponent } from './features/job-applications/compon
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ToastNotificationComponent, ConfirmDialogComponent, ApplicationAddSheetComponent],
+  imports: [CommonModule, RouterOutlet, ToastNotificationComponent, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster],
   templateUrl: './app.html',
 })
 export class App implements AfterViewInit {

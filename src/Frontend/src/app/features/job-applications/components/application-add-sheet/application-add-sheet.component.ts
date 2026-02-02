@@ -63,9 +63,10 @@ export class ApplicationAddSheetComponent {
 
     statusOptions = [
         { value: JobApplicationStatus.Applied, label: 'Applied' },
+        { value: JobApplicationStatus.PhoneScreen, label: 'Phone Screen' },
+        { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
         { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
         { value: JobApplicationStatus.Offer, label: 'Offer' },
-        { value: JobApplicationStatus.Rejected, label: 'Rejected' },
     ];
 
     public autoFill() {

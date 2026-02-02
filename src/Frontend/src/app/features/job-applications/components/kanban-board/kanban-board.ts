@@ -16,14 +16,18 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobCardComponent } from '../job-card/application-card.component';
 
 /**
- * Status Column Configuration
+ * Bucket Column Configuration (5 Columns)
+ * Each column can contain multiple statuses
  */
-interface StatusColumn {
+interface BucketColumn {
   id: string;
   title: string;
-  status: JobApplicationStatus;
-  color: string;
+  statuses: JobApplicationStatus[];
+  borderColor: string;
+  textColor: string;
   applications: JobApplication[];
+  /** Optional limit for items (used for Archive column) */
+  limit?: number;
 }
 
 @Component({
@@ -46,27 +50,63 @@ export class ApplicationKanbanComponent {
 
   constructor(private readonly router: Router) { }
 
-  // Computed Columns
+  // Computed Columns (5 Buckets)
   columns = computed(() => {
     const apps = this.apps();
 
-    // Define base columns structure
-    const cols: StatusColumn[] = [
-      { id: 'Applied', title: 'Applied', status: JobApplicationStatus.Applied, color: 'border-info/20 bg-info/5', applications: [] },
-      { id: 'PhoneScreen', title: 'Phone Screen', status: JobApplicationStatus.PhoneScreen, color: 'border-info/20 bg-info/5', applications: [] },
-      { id: 'TechnicalTask', title: 'Tech Task', status: JobApplicationStatus.TechnicalTask, color: 'border-warning/20 bg-warning/5', applications: [] },
-      { id: 'Interviewing', title: 'Interviewing', status: JobApplicationStatus.Interviewing, color: 'border-primary/20 bg-primary/5', applications: [] },
-      { id: 'Offer', title: 'Offer', status: JobApplicationStatus.Offer, color: 'border-success/30 bg-success/5', applications: [] },
-      { id: 'Accepted', title: 'Accepted', status: JobApplicationStatus.Accepted, color: 'border-success/20 bg-success/5', applications: [] },
-      { id: 'Rejected', title: 'Rejected', status: JobApplicationStatus.Rejected, color: 'border-destructive/20 bg-destructive/5', applications: [] },
-      { id: 'Ghosted', title: 'Ghosted', status: JobApplicationStatus.Ghosted, color: 'border-muted-foreground/20 bg-muted-foreground/5', applications: [] },
+    // Define 5 bucket columns
+    const cols: BucketColumn[] = [
+      {
+        id: 'inbox',
+        title: 'Inbox',
+        statuses: [JobApplicationStatus.Applied],
+        borderColor: 'border-slate-500',
+        textColor: 'text-slate-500',
+        applications: [],
+      },
+      {
+        id: 'screening',
+        title: 'Screening',
+        statuses: [JobApplicationStatus.PhoneScreen],
+        borderColor: 'border-sky-500',
+        textColor: 'text-sky-500',
+        applications: [],
+      },
+      {
+        id: 'active',
+        title: 'Active',
+        statuses: [JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing],
+        borderColor: 'border-violet-500',
+        textColor: 'text-violet-500',
+        applications: [],
+      },
+      {
+        id: 'offers',
+        title: 'Offers',
+        statuses: [JobApplicationStatus.Offer, JobApplicationStatus.Accepted],
+        borderColor: 'border-emerald-500',
+        textColor: 'text-emerald-500',
+        applications: [],
+      },
+      {
+        id: 'archive',
+        title: 'Archive',
+        statuses: [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted],
+        borderColor: 'border-slate-400',
+        textColor: 'text-slate-400',
+        applications: [],
+        limit: 20, // Performance limit
+      },
     ];
 
-    // Distribute applications
+    // Distribute applications to buckets
     apps.forEach(app => {
-      const col = cols.find(c => c.status === app.status);
+      const col = cols.find(c => c.statuses.includes(app.status));
       if (col) {
-        col.applications.push(app);
+        // Respect limit if set
+        if (!col.limit || col.applications.length < col.limit) {
+          col.applications.push(app);
+        }
       }
     });
 
@@ -84,11 +124,6 @@ export class ApplicationKanbanComponent {
 
     // Status change
     const movedApp = event.previousContainer.data[event.previousIndex];
-    // Find new status based on container mapped to column
-    // Since we rebuild columns effectively, and CdkDragDrop connects to 'data'.
-    // We can get status from the target column's 'data' (if we knew which one it was associated with easily via ID)
-    // Or closer: The 'id' of the connected list is the column ID (which we set to status-like string).
-
     const targetColId = event.container.id;
     const targetStatus = this.getStatusFromColumnId(targetColId);
 
@@ -97,27 +132,29 @@ export class ApplicationKanbanComponent {
     }
   }
 
+  /**
+   * Get the default status for a bucket column ID
+   * Rules:
+   * - Active -> Interviewing
+   * - Archive -> Rejected
+   * - Screening -> PhoneScreen
+   * - Inbox -> Applied
+   * - Offers -> Offer
+   */
   private getStatusFromColumnId(id: string): JobApplicationStatus | undefined {
-    const col = this.columns().find(c => c.id === id);
-    return col?.status;
+    switch (id) {
+      case 'active': return JobApplicationStatus.Interviewing;
+      case 'archive': return JobApplicationStatus.Rejected;
+      case 'screening': return JobApplicationStatus.PhoneScreen;
+      case 'inbox': return JobApplicationStatus.Applied;
+      case 'offers': return JobApplicationStatus.Offer;
+      default: return undefined;
+    }
   }
 
   /**
    * Helpers
    */
-  getColumnColorClass(status: JobApplicationStatus): string {
-    switch (status) {
-      case JobApplicationStatus.Applied: return 'text-info';
-      case JobApplicationStatus.PhoneScreen: return 'text-info/80';
-      case JobApplicationStatus.TechnicalTask: return 'text-warning/80';
-      case JobApplicationStatus.Interviewing: return 'text-primary';
-      case JobApplicationStatus.Offer: return 'text-success';
-      case JobApplicationStatus.Accepted: return 'text-success/80';
-      case JobApplicationStatus.Rejected: return 'text-destructive';
-      case JobApplicationStatus.Ghosted: return 'text-muted-foreground';
-      default: return 'text-muted-foreground';
-    }
-  }
 
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('en-US', {

@@ -1,39 +1,24 @@
-<!-- Open Air Kanban Board - Premium Design with Horizontal Scroll -->
+<!-- Open Air Kanban Board - 5-Bucket Design with Horizontal Scroll -->
 <div class="h-[calc(100vh-140px)] w-full overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar">
 
   <!-- The Board: Flex Row with Gap -->
   <div class="flex h-full gap-6 px-1" cdkDropListGroup>
 
-    <!-- COLUMN LOOP -->
+    <!-- COLUMN LOOP (5 Buckets) -->
     @for (column of columns(); track column.id) {
 
     <!-- 
-         COLUMN: 
+         BUCKET COLUMN: 
          - w-80 (320px) Fixed Width. 
          - bg-muted/30 (Transparent effect).
-         - Status-colored top border.
+         - Dynamic border color from column config.
       -->
     <div
       class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/30 pb-2 border-t-4 shadow-sm transition-all duration-300"
-      [class.border-info]="column.status === Status.Applied"
-      [class.border-info/80]="column.status === Status.PhoneScreen"
-      [class.border-warning/80]="column.status === Status.TechnicalTask"
-      [class.border-primary]="column.status === Status.Interviewing"
-      [class.border-success]="column.status === Status.Offer"
-      [class.border-success/80]="column.status === Status.Accepted"
-      [class.border-destructive]="column.status === Status.Rejected"
-      [class.border-muted-foreground]="column.status === Status.Ghosted">
-      <!-- Header - Colorful Titles -->
+      [class]="column.borderColor">
+      <!-- Header - Dynamic Colors -->
       <div class="flex items-center justify-between px-3 pt-4 pb-2">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider transition-colors"
-          [class.text-info]="column.status === Status.Applied"
-          [class.text-info/80]="column.status === Status.PhoneScreen"
-          [class.text-warning/80]="column.status === Status.TechnicalTask"
-          [class.text-primary]="column.status === Status.Interviewing"
-          [class.text-success]="column.status === Status.Offer"
-          [class.text-success/80]="column.status === Status.Accepted"
-          [class.text-destructive]="column.status === Status.Rejected"
-          [class.text-muted-foreground]="column.status === Status.Ghosted">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider transition-colors" [class]="column.textColor">
           {{ column.title }}
         </h3>
         <span
@@ -53,7 +38,7 @@
           </div>
 
           <app-job-card [application]="app" [compact]="true" (openWorkstation)="onOpenWorkstation($event)"
-            (openJobUrl)="onOpenJobUrl($event)"></app-job-card>
+            (openJobUrl)="onOpenJobUrl($event)" (statusChange)="statusChange.emit($event)"></app-job-card>
         </div>
         }
 
@@ -65,6 +50,13 @@
               d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
           </svg>
           <p class="text-[10px] font-bold uppercase tracking-widest opacity-40">Empty lane</p>
+        </div>
+        }
+
+        <!-- Archive Limit Indicator -->
+        @if (column.limit && column.applications.length >= column.limit) {
+        <div class="text-center py-2 text-[10px] text-muted-foreground/50 italic">
+          Showing latest {{ column.limit }} items
         </div>
         }
       </div>

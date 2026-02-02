@@ -23,16 +23,19 @@ export class ApplicationListComponent implements AfterViewInit {
 
     listBody = viewChild<ElementRef>('listBody');
 
+    viewDetail = output<string>();
+    archive = output<string>();
+
     ngAfterViewInit(): void {
         const el = this.listBody()?.nativeElement;
         if (el) autoAnimate(el);
     }
 
     viewApplicationDetail(id: string): void {
-        this.router.navigate(['/workstation', id]);
+        this.viewDetail.emit(id);
     }
 
     onArchive(id: string): void {
-        console.log('Archive', id);
+        this.archive.emit(id);
     }
 }

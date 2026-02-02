@@ -1,6 +1,7 @@
 import { Component, input, output, ChangeDetectionStrategy, inject, viewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
+import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobCardComponent } from '../job-card/application-card.component';
 import { Router } from '@angular/router';
 import autoAnimate from '@formkit/auto-animate';
@@ -14,6 +15,7 @@ import autoAnimate from '@formkit/auto-animate';
 })
 export class ApplicationGridComponent implements AfterViewInit {
     apps = input.required<JobApplication[]>();
+    statusChange = output<{ applicationId: string; status: JobApplicationStatus }>();
     private readonly router = inject(Router);
 
     gridContainer = viewChild<ElementRef>('gridContainer');
@@ -24,6 +26,6 @@ export class ApplicationGridComponent implements AfterViewInit {
     }
 
     viewApplicationDetail(id: string): void {
-        this.router.navigate(['/applications', id]);
+        this.router.navigate(['/workstation', id]);
     }
 }

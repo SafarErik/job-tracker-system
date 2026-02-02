@@ -5,7 +5,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock } from '@ng-icons/lucide';
+import { lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock, lucideExternalLink } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmTooltipImports } from '@spartan-ng/helm/tooltip';
 import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
@@ -22,7 +22,7 @@ import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
         ...HlmTooltipImports,
         ...BrnTooltipImports,
     ],
-    providers: [provideIcons({ lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock })],
+    providers: [provideIcons({ lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock, lucideExternalLink })],
     templateUrl: './application-row.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
@@ -44,6 +44,11 @@ export class ApplicationRowComponent {
     onArchive(event: Event): void {
         event.stopPropagation();
         this.archive.emit(this.application().id);
+    }
+
+    onViewDetail(event: Event): void {
+        event.stopPropagation();
+        this.viewDetail.emit(this.application().id);
     }
 
     // Computed: Status label

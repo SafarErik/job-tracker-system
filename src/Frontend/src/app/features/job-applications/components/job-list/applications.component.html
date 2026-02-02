@@ -78,7 +78,7 @@
   <div *ngIf="!store.isLoading() && filteredApps().length > 0">
     @switch (viewMode()) {
     @case ('grid') {
-    <app-application-grid [apps]="filteredApps()" />
+    <app-application-grid [apps]="filteredApps()" (statusChange)="onStatusChange($event)" />
     }
     @case ('kanban') {
     @defer (on idle) {
@@ -91,7 +91,8 @@
     }
     @case ('list') {
     @defer (on idle) {
-    <app-application-list [apps]="filteredApps()" />
+    <app-application-list [apps]="filteredApps()" (viewDetail)="viewApplicationDetail($event)"
+      (archive)="onArchive($event)" />
     } @placeholder {
     <div class="flex items-center justify-center py-20">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

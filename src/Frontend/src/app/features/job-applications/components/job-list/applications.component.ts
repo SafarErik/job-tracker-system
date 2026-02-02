@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeD
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UiStateService } from '../../../../core/services';
+import { toast } from 'ngx-sonner';
 
 // Services
 import { JobApplicationStore } from '../../services/job-application.store';
@@ -71,46 +72,67 @@ export class ApplicationsComponent implements OnInit {
 
   Status = JobApplicationStatus;
 
-  // Categories for the Segmented Control
+  // Categories for the Segmented Control (4 Buckets)
   categories = [
     { id: 'all', label: 'All' },
-    { id: 'interviews', label: 'Interviewing' },
+    { id: 'inbox', label: 'Inbox' },
+    { id: 'active', label: 'Active' },
     { id: 'offers', label: 'Offers' },
     { id: 'archived', label: 'Archived' },
   ];
 
-  // Logic to filter applications based on category
+  // Logic to filter applications based on category (4 Buckets)
   filteredApps = computed(() => {
     const apps = this.store.applications();
     const category = this.selectedCategory();
     const search = this.searchQuery().toLowerCase();
 
-    return apps.filter(app => {
-      // Search filter
+    // Filter by search first
+    let filtered = apps.filter(app => {
       const matchesSearch = !search ||
         app.position.toLowerCase().includes(search) ||
         (app.companyName?.toLowerCase().includes(search));
-
-      if (!matchesSearch) return false;
-
-      // Category filter
-      if (category === 'all') return true;
-      if (category === 'interviews') return [
-        JobApplicationStatus.PhoneScreen,
-        JobApplicationStatus.TechnicalTask,
-        JobApplicationStatus.Interviewing
-      ].includes(app.status);
-      if (category === 'offers') return [
-        JobApplicationStatus.Offer,
-        JobApplicationStatus.Accepted
-      ].includes(app.status);
-      if (category === 'archived') return [
-        JobApplicationStatus.Rejected,
-        JobApplicationStatus.Ghosted
-      ].includes(app.status);
-
-      return true;
+      return matchesSearch;
     });
+
+    // Apply category filter
+    switch (category) {
+      case 'inbox':
+        filtered = filtered.filter(app => app.status === JobApplicationStatus.Applied);
+        break;
+      case 'active':
+        filtered = filtered.filter(app => [
+          JobApplicationStatus.PhoneScreen,
+          JobApplicationStatus.TechnicalTask,
+          JobApplicationStatus.Interviewing
+        ].includes(app.status));
+        break;
+      case 'offers':
+        filtered = filtered.filter(app => [
+          JobApplicationStatus.Offer,
+          JobApplicationStatus.Accepted
+        ].includes(app.status));
+        break;
+      case 'archived':
+        filtered = filtered.filter(app => [
+          JobApplicationStatus.Rejected,
+          JobApplicationStatus.Ghosted
+        ].includes(app.status));
+        break;
+      case 'all':
+      default:
+        // Sort: Non-archived first, then archived at the bottom
+        filtered = [...filtered].sort((a, b) => {
+          const aArchived = [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted].includes(a.status);
+          const bArchived = [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted].includes(b.status);
+          if (aArchived && !bArchived) return 1;
+          if (!aArchived && bArchived) return -1;
+          return 0;
+        });
+        break;
+    }
+
+    return filtered;
   });
 
   ngOnInit(): void {
@@ -188,5 +210,21 @@ export class ApplicationsComponent implements OnInit {
 
   onStatusChange(event: { applicationId: string; status: JobApplicationStatus }): void {
     this.store.updateApplication(event.applicationId, { status: event.status });
+  }
+
+  onArchive(id: string): void {
+    const app = this.store.applications().find(a => a.id === id);
+    if (!app) return;
+
+    const originalStatus = app.status;
+    this.store.updateApplication(id, { status: JobApplicationStatus.Rejected });
+
+    toast.success(`Application for ${app.companyName} archived`, {
+      description: 'Moved to Rejected status',
+      action: {
+        label: 'Undo',
+        onClick: () => this.store.updateApplication(id, { status: originalStatus })
+      }
+    });
   }
 }

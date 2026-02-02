@@ -102,6 +102,29 @@ export class ApplicationKanbanComponent {
       }
     });
 
+    // Custom Sort for Active Column
+    const activeCol = cols.find(c => c.id === 'active');
+    if (activeCol) {
+      activeCol.applications.sort((a, b) => {
+        // 1. Status Priority
+        const priority: Partial<Record<JobApplicationStatus, number>> = {
+          [JobApplicationStatus.Interviewing]: 3,
+          [JobApplicationStatus.TechnicalTask]: 2,
+          [JobApplicationStatus.PhoneScreen]: 1
+        };
+
+        const priorityA = priority[a.status] || 0;
+        const priorityB = priority[b.status] || 0;
+
+        if (priorityA !== priorityB) {
+          return priorityB - priorityA; // Higher priority first
+        }
+
+        // 2. UpdatedAt (Newest First)
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+      });
+    }
+
     return cols;
   });
 

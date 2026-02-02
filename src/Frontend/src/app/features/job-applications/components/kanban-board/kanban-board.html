@@ -48,8 +48,14 @@
         <!-- Empty State -->
         @if (column.applications.length === 0) {
         <div
-          class="flex flex-col items-center justify-center h-32 m-2 rounded-2xl border-2 border-dashed border-border/40 bg-muted/20 text-muted-foreground/40 group-hover:border-primary/30 group-hover:text-primary/50 transition-colors">
-          <span class="text-[10px] font-bold uppercase tracking-widest">Drop item here</span>
+          class="h-32 rounded-lg border-2 border-dashed border-muted/30 flex items-center justify-center text-muted-foreground text-sm italic mx-2 my-2">
+          @switch (column.id) {
+          @case ('inbox') { <span>No new apps</span> }
+          @case ('active') { <span>No active processes</span> }
+          @case ('offers') { <span>No offers yet</span> }
+          @case ('archive') { <span>History clear</span> }
+          @default { <span>Drop item here</span> }
+          }
         </div>
         }
 

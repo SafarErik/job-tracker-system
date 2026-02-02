@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeD
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { UiStateService } from '../../../../core/services';
-import { toast } from 'ngx-sonner';
 
 // Services
 import { JobApplicationStore } from '../../services/job-application.store';
@@ -221,7 +220,7 @@ export class ApplicationsComponent implements OnInit {
     const originalStatus = app.status;
     this.store.updateApplication(id, { status: JobApplicationStatus.Rejected });
 
-    toast.success(`Application for ${app.companyName} archived`, {
+    this.notificationService.success(`Application for ${app.companyName} archived`, 'Success', {
       description: 'Moved to Rejected status',
       action: {
         label: 'Undo',

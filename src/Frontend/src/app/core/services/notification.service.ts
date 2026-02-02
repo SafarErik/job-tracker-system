@@ -34,6 +34,7 @@ export class NotificationService {
     message: string,
     title?: string,
     duration = 4000,
+    options?: any
   ) {
     const toastFn = (type === 'error' ? toast.error :
       type === 'warning' ? toast.warning :
@@ -41,25 +42,26 @@ export class NotificationService {
 
     toastFn(title || type.toUpperCase(), {
       description: message,
-      duration: duration
+      duration: duration,
+      ...options
     });
   }
 
   // Helper shortcuts
-  success(message: string, title?: string) {
-    this.show('success', message, title);
+  success(message: string, title?: string, options?: any) {
+    this.show('success', message, title, 4000, options);
   }
 
-  error(message: string, title?: string) {
-    this.show('error', message, title, 6000); // Errors stay longer
+  error(message: string, title?: string, options?: any) {
+    this.show('error', message, title, 6000, options); // Errors stay longer
   }
 
-  warning(message: string, title?: string) {
-    this.show('warning', message, title);
+  warning(message: string, title?: string, options?: any) {
+    this.show('warning', message, title, 4000, options);
   }
 
-  info(message: string, title?: string) {
-    this.show('info', message, title);
+  info(message: string, title?: string, options?: any) {
+    this.show('info', message, title, 4000, options);
   }
 
   /**

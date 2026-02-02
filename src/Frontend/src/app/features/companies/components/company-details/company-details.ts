@@ -114,14 +114,22 @@ export class CompanyDetailsComponent implements OnInit {
     });
   }
 
+  private latestNewsRequestId = 0;
   private loadCompanyNews(name: string): void {
+    const requestId = ++this.latestNewsRequestId;
     this.newsLoading.set(true);
     this.intelligenceService.getCompanyNews(name, 3).subscribe({
       next: (news) => {
-        this.companyNews.set(news);
-        this.newsLoading.set(false);
+        if (requestId === this.latestNewsRequestId) {
+          this.companyNews.set(news);
+          this.newsLoading.set(false);
+        }
       },
-      error: () => this.newsLoading.set(false)
+      error: () => {
+        if (requestId === this.latestNewsRequestId) {
+          this.newsLoading.set(false);
+        }
+      }
     });
   }
 

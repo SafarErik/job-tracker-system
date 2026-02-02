@@ -11,7 +11,7 @@ import {
     lucideX,
     lucideMessageSquare
 } from '@ng-icons/lucide';
-import { JobApplicationStore } from '../../../services/job-application.store';
+import { FormsModule } from '@angular/forms';
 
 interface Message {
     id: string;
@@ -23,7 +23,7 @@ interface Message {
 @Component({
     selector: 'app-interview-view',
     standalone: true,
-    imports: [CommonModule, NgIcon],
+    imports: [CommonModule, NgIcon, FormsModule],
     providers: [
         provideIcons({
             lucideMic,
@@ -41,9 +41,8 @@ interface Message {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterviewViewComponent {
-    public readonly store = inject(JobApplicationStore);
-
     messages = signal<Message[]>([]);
+    responseText = signal('');
     isRecording = signal(false);
     isTextMode = signal(false);
 
@@ -104,6 +103,19 @@ export class InterviewViewComponent {
 
     toggleTextMode() {
         this.isTextMode.update(v => !v);
+    }
+
+    sendResponse() {
+        const text = this.responseText().trim();
+        if (!text) return;
+
+        this.addMessage('user', text);
+        this.responseText.set('');
+
+        // Simulate AI response
+        setTimeout(() => {
+            this.addMessage('ai', 'That sounds like a solid approach. Can you elaborate on how you would measure the success of that strategy?');
+        }, 1500);
     }
 
     endSession() {

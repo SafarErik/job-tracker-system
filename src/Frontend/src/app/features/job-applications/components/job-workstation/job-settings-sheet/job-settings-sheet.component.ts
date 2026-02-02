@@ -61,6 +61,7 @@ export class JobSettingsSheetComponent {
         currency: ['USD'],
         jobType: [null, Validators.required],
         location: [''],
+        workplaceType: ['Remote'],
         notes: ['']
     });
 
@@ -107,8 +108,9 @@ export class JobSettingsSheetComponent {
                     priority: app.priority,
                     salaryMin: app.salaryMin,
                     jobType: app.jobType,
-                    location: app.location || 'Remote',
-                    notes: app.description // Using description as tactical context for now as per model
+                    location: app.location || '',
+                    workplaceType: app.workplaceType || 'Remote',
+                    notes: app.description
                 });
             }
         });
@@ -123,9 +125,11 @@ export class JobSettingsSheetComponent {
                     jobUrl: this.form.get('jobUrl')?.value,
                     status: this.form.get('status')?.value,
                     priority: this.form.get('priority')?.value,
-                    salaryMin: Number(this.form.get('salaryMin')?.value) || undefined,
+                    salaryMin: this.form.get('salaryMin')?.value === '' || this.form.get('salaryMin')?.value == null ? undefined : Number(this.form.get('salaryMin')?.value),
+                    currency: this.form.get('currency')?.value,
                     jobType: this.form.get('jobType')?.value,
                     location: this.form.get('location')?.value,
+                    workplaceType: this.form.get('workplaceType')?.value,
                     description: this.form.get('notes')?.value
                 };
 

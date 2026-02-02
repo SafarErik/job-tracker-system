@@ -61,12 +61,13 @@
 
       <!-- Match Score Badge with Glowing Ring -->
       <hlm-tooltip hlmClassName="z-50 border-border bg-popover/95 backdrop-blur-md text-foreground shadow-2xl">
-        <button [class]="matchScoreColorClasses()"
-          class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all duration-300 hover:scale-105 hover:shadow-[0_0_10px_-2px_currentColor]"
-          hlmTooltipTrigger>
+        <span [class]="matchScoreColorClasses()"
+          class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all duration-300 hover:scale-105 hover:shadow-[0_0_10px_-2px_currentColor] cursor-help focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          hlmTooltipTrigger tabindex="0" role="button" aria-label="AI Match Score" (click)="$event.stopPropagation()"
+          (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()">
           <ng-icon name="lucideSparkles" class="size-3.5"></ng-icon>
           {{ application().matchScore || 0 }}%
-        </button>
+        </span>
         <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
           Description.</span>
       </hlm-tooltip>
@@ -86,7 +87,7 @@
     <!-- Skills Tags (New) -->
     @if (application().skills && application().skills.length > 0) {
     <div class="flex flex-wrap gap-1.5">
-      @for (skill of application().skills.slice(0, 3); track skill) {
+      @for (skill of application().skills.slice(0, 3); track $index) {
       <span
         class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-secondary/40 text-secondary-foreground border border-white/5 whitespace-nowrap">
         {{ skill }}

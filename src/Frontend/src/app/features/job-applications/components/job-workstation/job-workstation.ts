@@ -7,7 +7,6 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -160,23 +159,29 @@ export class JobWorkstationComponent implements OnInit {
   isPastingManually = signal(false);
   manualPasteText = signal('');
 
-  private readonly sanitizer = inject(DomSanitizer);
-
   // Computed: Highlighted Job Description
-  highlightedDescription = computed<SafeHtml | null>(() => {
+  highlightedDescription = computed<string | null>(() => {
     const desc = this.store.selectedApplication()?.jobDescription;
     if (!desc) return null;
 
     const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems'];
 
-    let html = desc.replace(/\n/g, '<br>');
+    // Escape HTML to prevent XSS before adding our own spans
+    let escaped = desc
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    let html = escaped.replace(/\n/g, '<br>');
 
     keywords.forEach(kw => {
       const regex = new RegExp(`(${kw})`, 'gi');
       html = html.replace(regex, '<span class="bg-violet-500/20 text-violet-300 px-1 rounded">$1</span>');
     });
 
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return html;
   });
 
   // Computed: Line Numbers
@@ -240,6 +245,14 @@ export class JobWorkstationComponent implements OnInit {
 
   toggleCommandBar(): void {
     this.isCommandBarOpen.update(v => !v);
+  }
+
+  closeCommandBar(): void {
+    this.isCommandBarOpen.set(false);
+  }
+
+  onAddWorkstationItem(): void {
+    this.notificationService.info('Adding new items to the workstation is coming soon.', 'Feature Preview');
   }
 
   goBack(): void {

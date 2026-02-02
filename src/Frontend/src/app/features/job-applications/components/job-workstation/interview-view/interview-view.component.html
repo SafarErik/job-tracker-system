@@ -108,10 +108,11 @@
                 }
                 <button (click)="toggleRecording()" [class.bg-red-600]="isRecording()"
                     [class.border-red-500]="isRecording()" [class.bg-zinc-900]="!isRecording()"
-                    [class.border-zinc-800]="!isRecording()"
+                    [class.border-zinc-800]="!isRecording()" [attr.aria-pressed]="isRecording()"
+                    [aria-label]="isRecording() ? 'Stop recording' : 'Start voice response'"
                     class="w-20 h-20 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl relative z-10 group/mic">
                     <ng-icon name="lucideMic" [class.text-white]="isRecording()" [class.text-zinc-400]="!isRecording()"
-                        class="text-3xl group-hover/mic:text-zinc-100 transition-colors"></ng-icon>
+                        class="text-3xl group-hover/mic:text-zinc-100 transition-colors" aria-hidden="true"></ng-icon>
                 </button>
             </div>
 
@@ -129,10 +130,12 @@
             [class.mt-4]="isTextMode()">
             <div class="max-w-lg mx-auto">
                 <div class="relative">
-                    <input type="text" placeholder="Type your response..."
+                    <input type="text" placeholder="Type your response..." [(ngModel)]="responseText"
+                        (keyup.enter)="sendResponse()"
                         class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50 focus:ring-4 focus:ring-violet-500/5 transition-all">
-                    <button
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-violet-400 transition-colors">
+                    <button (click)="sendResponse()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-violet-400 transition-colors"
+                        aria-label="Send message">
                         <ng-icon name="lucideMessageSquare" class="text-lg"></ng-icon>
                     </button>
                 </div>

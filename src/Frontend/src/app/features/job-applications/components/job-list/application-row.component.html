@@ -15,19 +15,11 @@
 </td>
 
 <td class="px-6 py-4">
-    <div class="flex flex-col gap-1.5 min-w-[140px]">
-        <div class="flex items-center gap-1.5">
-            <div class="h-1.5 w-1.5 rounded-full" [class]="getStepClass(statusDepth())"></div>
-            <span class="text-[10px] font-bold uppercase tracking-wider" [class]="statusTextClass()">
-                {{ statusLabel() }}
-            </span>
-        </div>
-        <div class="flex gap-1 h-1 w-full">
-            @for (step of [1, 2, 3, 4, 5]; track step) {
-            <div class="flex-1 rounded-full transition-all duration-500" [class]="getStepClass(step)">
-            </div>
-            }
-        </div>
+    <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full" [class]="getStepClass(statusDepth())"></div>
+        <span class="text-xs font-bold uppercase tracking-wide" [class]="statusTextClass()">
+            {{ statusLabel() }}
+        </span>
     </div>
 </td>
 

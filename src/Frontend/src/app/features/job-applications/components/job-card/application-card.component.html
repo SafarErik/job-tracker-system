@@ -41,10 +41,22 @@
       </div>
     </div>
 
-    <div class="relative">
+    <div class="flex flex-col items-end gap-2">
       <span [class]="getStatusClasses(application().status)">
         {{ statusLabel() }}
       </span>
+
+      <!-- Match Score Badge with Tooltip -->
+      <hlm-tooltip hlmClassName="z-50 border-white/10 bg-slate-900/95 backdrop-blur-md text-white shadow-2xl">
+        <button [class]="matchScoreColorClasses()"
+          class="shrink-0 flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold border transition-all duration-300 hover:scale-105"
+          hlmTooltipTrigger>
+          <ng-icon name="lucideSparkles" class="size-3"></ng-icon>
+          {{ application().matchScore || 0 }}%
+        </button>
+        <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
+          Description.</span>
+      </hlm-tooltip>
     </div>
   </div>
 
@@ -90,17 +102,7 @@
         }
       </div>
 
-      <!-- Match Score Badge with Tooltip -->
-      <hlm-tooltip hlmClassName="z-50 border-white/10 bg-slate-900/95 backdrop-blur-md text-white shadow-2xl">
-        <button [class]="matchScoreColorClasses()"
-          class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border transition-all duration-300 hover:scale-105"
-          hlmTooltipTrigger>
-          <ng-icon name="lucideSparkles" class="size-3.5"></ng-icon>
-          {{ application().matchScore || 0 }}%
-        </button>
-        <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
-          Description.</span>
-      </hlm-tooltip>
+
     </div>
   </div>
 

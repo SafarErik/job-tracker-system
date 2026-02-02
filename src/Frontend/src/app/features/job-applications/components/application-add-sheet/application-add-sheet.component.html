@@ -10,17 +10,28 @@
         <div [formGroup]="form" class="flex flex-col gap-5 pb-6">
 
             <!-- Magic Header -->
+            <!-- Magic Header -->
             <div
-                class="p-4 rounded-lg bg-linear-to-r from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 border border-blue-100 dark:border-slate-700 space-y-3">
-                <label hlmLabel class="flex items-center gap-2 font-medium text-blue-700 dark:text-blue-300">
-                    <ng-icon hlm name="lucideSparkles" size="sm" class="text-amber-400" />
+                class="relative overflow-hidden p-4 rounded-xl border-2 border-indigo-500/20 bg-indigo-500/5 dark:bg-indigo-500/10 space-y-3 group">
+                <!-- Shimmer effect -->
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none">
+                </div>
+
+                <label hlmLabel class="flex items-center gap-2 font-bold text-indigo-600 dark:text-indigo-400">
+                    <div class="flex items-center justify-center p-1 rounded-md bg-indigo-500/20">
+                        <ng-icon hlm name="lucideSparkles" size="sm" class="text-indigo-500" />
+                    </div>
                     Magic Auto-Fill
                 </label>
-                <div class="flex gap-2">
-                    <input hlmInput formControlName="jobUrl" placeholder="Paste Job URL..."
-                        class="flex-1 bg-white dark:bg-slate-950" autoFocus />
-                    <button hlmBtn variant="secondary" (click)="autoFill()" [disabled]="isAutoFilling()">
-                        {{ isAutoFilling() ? 'Thinking...' : 'Fill' }}
+                <div class="flex gap-2 relative z-10">
+                    <input hlmInput formControlName="jobUrl" placeholder="Paste Job URL to auto-fill..."
+                        class="flex-1 bg-white/50 dark:bg-slate-950/50 border-indigo-200 dark:border-indigo-900 focus:border-indigo-500 transition-colors"
+                        autoFocus />
+                    <button hlmBtn variant="default"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white border-none shadow-md shadow-indigo-500/20"
+                        (click)="autoFill()" [disabled]="isAutoFilling()">
+                        {{ isAutoFilling() ? 'Thinking...' : 'Auto-Fill' }}
                     </button>
                 </div>
             </div>

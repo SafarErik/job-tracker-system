@@ -1,4 +1,5 @@
 import { JobApplicationStatus } from './application-status.enum';
+import { JobPriority } from './job-priority.enum';
 
 /**
  * Status Style Configuration
@@ -141,4 +142,24 @@ export function isOfferStatus(status: JobApplicationStatus): boolean {
  */
 export function isInboxStatus(status: JobApplicationStatus): boolean {
     return status === JobApplicationStatus.Applied;
+}
+
+/**
+ * Get the semantic Tailwind classes for a priority badge
+ */
+export function getPriorityBadgeClasses(priority: JobPriority | undefined): string {
+    const base = 'px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border';
+
+    if (priority === undefined) return `${base} bg-zinc-800 text-zinc-400 border-zinc-700`;
+
+    switch (priority) {
+        case JobPriority.High:
+            return `${base} text-violet-400 bg-violet-400/10 border-violet-400/20 shadow-[0_0_12px_-3px_rgba(167,139,250,0.3)]`;
+        case JobPriority.Medium:
+            return `${base} text-zinc-300 bg-zinc-800 border-zinc-700`;
+        case JobPriority.Low:
+            return `${base} text-zinc-500 bg-zinc-900/50 border-zinc-800/50`;
+        default:
+            return `${base} bg-zinc-800 text-zinc-400 border-zinc-700`;
+    }
 }

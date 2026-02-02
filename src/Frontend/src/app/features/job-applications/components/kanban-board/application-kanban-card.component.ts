@@ -12,7 +12,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
-import { getStatusBadgeClasses, getStatusStyle } from '../../models/status-styles.util';
+import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
 
@@ -71,9 +71,9 @@ export class ApplicationKanbanCardComponent {
     // Computed: Priority Color for Left Strip
     priorityClass = computed(() => {
         switch (this.application().priority) {
-            case JobPriority.High: return 'bg-amber-500'; // Golden Yellow
-            case JobPriority.Medium: return 'bg-blue-500'; // Blueish
-            default: return 'bg-transparent'; // Low
+            case JobPriority.High: return 'bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.4)]';
+            case JobPriority.Medium: return 'bg-zinc-600';
+            default: return 'bg-transparent';
         }
     });
 

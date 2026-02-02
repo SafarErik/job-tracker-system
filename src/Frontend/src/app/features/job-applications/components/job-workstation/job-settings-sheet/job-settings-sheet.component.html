@@ -1,0 +1,184 @@
+<hlm-sheet side="right" [state]="uiState.isJobSettingsOpen() ? 'open' : 'closed'" (closed)="uiState.closeJobSettings()">
+    <hlm-sheet-content *brnSheetContent="let ctx"
+        class="bg-zinc-950 border-l border-zinc-800 w-full sm:max-w-md p-0 flex flex-col h-full">
+
+        <!-- Header -->
+        <div class="px-6 py-6 border-b border-zinc-800 flex items-center justify-between shrink-0">
+            <div>
+                <h2 hlmSheetTitle class="text-xl font-serif font-bold text-zinc-100">Application Metadata</h2>
+                <p hlmSheetDescription class="text-xs text-zinc-500 mt-1">Refine the tactical core of this position.</p>
+            </div>
+            <button (click)="uiState.closeJobSettings()" class="text-zinc-500 hover:text-zinc-300 transition-colors">
+                <ng-icon name="lucideX" class="text-xl"></ng-icon>
+            </button>
+        </div>
+
+        <!-- Scrollable Form Area -->
+        <div class="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-zinc-800">
+            <form [formGroup]="form" (ngSubmit)="save()" class="space-y-8">
+
+                <!-- Section 1: Logistics -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-1 h-4 bg-violet-500 rounded-full"></div>
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Logistics</h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid gap-2">
+                            <label hlmLabel class="text-xs text-zinc-400">Company Name</label>
+                            <input hlmInput formControlName="companyName"
+                                class="bg-zinc-900 border-zinc-800 text-zinc-500" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label hlmLabel class="text-xs text-zinc-400">Position Title</label>
+                            <input hlmInput formControlName="position" placeholder="e.g. Senior Frontend Engineer"
+                                class="bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-violet-500" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label hlmLabel class="text-xs text-zinc-400">Job URL</label>
+                            <input hlmInput formControlName="jobUrl" placeholder="https://..."
+                                class="bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-violet-500" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="grid gap-2">
+                                <label hlmLabel class="text-xs text-zinc-400">Status</label>
+                                <brn-select formControlName="status" placeholder="Select Status">
+                                    <hlm-select-trigger
+                                        class="w-full bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                                        <hlm-select-value />
+                                    </hlm-select-trigger>
+                                    <hlm-select-content class="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                        @for (option of statusOptions; track option.value) {
+                                        <hlm-option [value]="option.value" class="text-xs">{{ option.label
+                                            }}</hlm-option>
+                                        }
+                                    </hlm-select-content>
+                                </brn-select>
+                            </div>
+
+                            <div class="grid gap-2">
+                                <label hlmLabel class="text-xs text-zinc-400">Priority</label>
+                                <brn-select formControlName="priority" placeholder="Select Priority">
+                                    <hlm-select-trigger
+                                        class="w-full bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                                        <hlm-select-value />
+                                    </hlm-select-trigger>
+                                    <hlm-select-content class="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                        @for (option of priorityOptions; track option.value) {
+                                        <hlm-option [value]="option.value" class="text-xs">{{ option.label
+                                            }}</hlm-option>
+                                        }
+                                    </hlm-select-content>
+                                </brn-select>
+                            </div>
+
+                            <div class="grid gap-2">
+                                <label hlmLabel class="text-xs text-zinc-400">Job Type</label>
+                                <brn-select formControlName="jobType" placeholder="Select Job Type">
+                                    <hlm-select-trigger
+                                        class="w-full bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                                        <hlm-select-value />
+                                    </hlm-select-trigger>
+                                    <hlm-select-content class="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                        @for (option of jobTypeOptions; track option.value) {
+                                        <hlm-option [value]="option.value" class="text-xs">{{ option.label
+                                            }}</hlm-option>
+                                        }
+                                    </hlm-select-content>
+                                </brn-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: The Deal -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-1 h-4 bg-emerald-500 rounded-full"></div>
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">The Deal</h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="grid gap-2 col-span-1">
+                                <label hlmLabel class="text-xs text-zinc-400">Currency</label>
+                                <brn-select formControlName="currency">
+                                    <hlm-select-trigger
+                                        class="w-full bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                                        <hlm-select-value />
+                                    </hlm-select-trigger>
+                                    <hlm-select-content class="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                        <hlm-option value="USD">USD</hlm-option>
+                                        <hlm-option value="EUR">EUR</hlm-option>
+                                        <hlm-option value="GBP">GBP</hlm-option>
+                                    </hlm-select-content>
+                                </brn-select>
+                            </div>
+                            <div class="grid gap-2 col-span-2">
+                                <label hlmLabel class="text-xs text-zinc-400">Salary</label>
+                                <input hlmInput formControlName="salaryMin" placeholder="e.g. 150000"
+                                    class="bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-violet-500" />
+                            </div>
+                        </div>
+
+                        <div class="grid gap-2">
+                            <label hlmLabel class="text-xs text-zinc-400">Location Type</label>
+                            <brn-select formControlName="location">
+                                <hlm-select-trigger class="w-full bg-zinc-900 border-zinc-800 text-zinc-100 text-xs">
+                                    <hlm-select-value />
+                                </hlm-select-trigger>
+                                <hlm-select-content class="bg-zinc-900 border-zinc-800 text-zinc-100">
+                                    @for (loc of locationOptions; track loc.value) {
+                                    <hlm-option [value]="loc.value" class="text-xs">{{ loc.label }}</hlm-option>
+                                    }
+                                </hlm-select-content>
+                            </brn-select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Tactical Context -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-1 h-4 bg-amber-500 rounded-full"></div>
+                        <h3 class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Tactical Context</h3>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label hlmLabel class="text-xs text-zinc-400">Internal Context & Notes</label>
+                        <textarea hlmInput formControlName="notes" rows="6"
+                            class="bg-zinc-900 border-zinc-800 text-zinc-100 focus:border-violet-500 min-h-[120px] py-3 text-xs leading-relaxed"
+                            placeholder="Add notes about the hiring manager or tech stack constraints to guide the AI..."></textarea>
+                        <p class="text-[10px] text-zinc-600 italic">This data is fed into the forge to optimize your
+                            tailored output.</p>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-6 border-t border-zinc-800 bg-zinc-950/50 flex flex-col gap-3 shrink-0">
+            <button hlmBtn [disabled]="form.invalid" (click)="save()"
+                class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold h-11 rounded-xl shadow-lg shadow-violet-500/10">
+                @if (store.isLoading()) {
+                <span class="animate-spin mr-2">◌</span>
+                } @else {
+                <ng-icon name="lucideSave" class="mr-2"></ng-icon>
+                }
+                Save Changes
+            </button>
+
+            <button (click)="delete()"
+                class="w-full h-11 text-xs font-bold text-red-500/70 hover:text-red-500 hover:bg-red-500/5 transition-all rounded-xl flex items-center justify-center gap-2">
+                <ng-icon name="lucideTrash2"></ng-icon>
+                Delete Application
+            </button>
+        </div>
+
+    </hlm-sheet-content>
+</hlm-sheet>

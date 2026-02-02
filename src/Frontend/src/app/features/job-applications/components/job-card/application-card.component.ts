@@ -18,7 +18,7 @@ import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
-import { getStatusBadgeClasses } from '../../models/status-styles.util';
+import { getStatusBadgeClasses, getPriorityBadgeClasses } from '../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     lucideZap,
@@ -335,17 +335,7 @@ export class JobCardComponent {
 
     // Computed: Priority Color (Tailwind classes)
     priorityColorClasses = computed(() => {
-        const priority = this.application().priority;
-        switch (priority) {
-            case JobPriority.High:
-                return 'bg-destructive/10 text-destructive border-destructive/20';
-            case JobPriority.Medium:
-                return 'bg-warning/10 text-warning border-warning/20';
-            case JobPriority.Low:
-                return 'bg-info/10 text-info border-info/20';
-            default:
-                return 'bg-muted text-muted-foreground';
-        }
+        return getPriorityBadgeClasses(this.application().priority);
     });
 
     // Computed: Match Score Color

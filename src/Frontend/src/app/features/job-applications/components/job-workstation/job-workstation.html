@@ -32,11 +32,82 @@
       </button>
     </div>
 
-    <div class="flex items-center gap-4">
-      <div [class]="getStatusBadgeClasses(store.selectedApplication()?.status)"
-        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+    <div class="flex items-center gap-3">
+      <!-- Status Dropdown -->
+      <button [hlmDropdownMenuTrigger]="statusMenu" [class]="getStatusBadgeClasses(store.selectedApplication()?.status)"
+        class="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all cursor-pointer border-none h-auto">
         {{ getStatusLabel(store.selectedApplication()?.status) }}
-      </div>
+        <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
+      </button>
+
+      <ng-template #statusMenu>
+        <div hlmDropdownMenu class="w-48 bg-zinc-900 border-zinc-800 shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel class="px-2 py-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+            Update Status</div>
+          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Applied)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Applied</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.PhoneScreen)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Phone Screen</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.TechnicalTask)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Technical Task</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Interviewing)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Interviewing</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Offer)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Offer Received</button>
+          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Accepted)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-emerald-400">Accepted</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Rejected)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-red-400">Rejected</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Ghosted)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-500">Ghosted</button>
+        </div>
+      </ng-template>
+
+      <!-- Priority Dropdown -->
+      <button [hlmDropdownMenuTrigger]="priorityMenu"
+        [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)"
+        class="flex items-center gap-2 transition-all cursor-pointer h-auto">
+        {{ store.selectedApplication()?.priority | jobPriority }} Priority
+        <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
+      </button>
+
+      <ng-template #priorityMenu>
+        <div hlmDropdownMenu class="w-40 bg-zinc-900 border-zinc-800 shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel class="px-2 py-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+            Set Priority</div>
+          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Low)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-500 flex items-center">
+            <div class="w-2 h-2 rounded-full bg-zinc-600 mr-2"></div> Low
+          </button>
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Medium)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-blue-400 flex items-center">
+            <div class="w-2 h-2 rounded-full bg-blue-500 mr-2"></div> Medium
+          </button>
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.High)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-red-400 flex items-center">
+            <div class="w-2 h-2 rounded-full bg-red-500 mr-2"></div> High
+          </button>
+        </div>
+      </ng-template>
+
+      <div class="w-px h-6 bg-zinc-800 mx-1"></div>
+
+      <!-- Action Buttons -->
+      <button (click)="uiState.openJobSettings()"
+        class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-300 transition-colors tooltip"
+        title="Edit Application Metadata">
+        <ng-icon name="lucideSettings" class="text-sm"></ng-icon>
+      </button>
+
+      <button (click)="deleteApplication()"
+        class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-red-400 transition-colors tooltip"
+        title="Delete Application">
+        <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
+      </button>
+
       <button class="p-2 hover:bg-zinc-900 rounded-lg text-zinc-400 transition-colors">
         <ng-icon name="lucidePlus" class="text-xl"></ng-icon>
       </button>
@@ -149,19 +220,24 @@
             </h3>
             <div class="grid grid-cols-3 gap-6">
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Priority</p>
-                <p class="text-xl font-bold text-zinc-100">{{ store.selectedApplication()?.priority | jobPriority }}</p>
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Priority</p>
+                <div [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)" class="inline-block">
+                  {{ store.selectedApplication()?.priority | jobPriority }}
+                </div>
               </div>
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Match Score</p>
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Match Score</p>
                 <div class="flex items-baseline gap-1">
                   <span class="text-xl font-bold text-emerald-400">{{ store.selectedApplication()?.matchScore }}</span>
                   <span class="text-xs text-emerald-500/60 font-medium">%</span>
                 </div>
               </div>
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Type</p>
-                <p class="text-xl font-bold text-zinc-100">{{ store.selectedApplication()?.jobType | jobType }}</p>
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Type</p>
+                <div
+                  class="bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">
+                  {{ store.selectedApplication()?.jobType | jobType }}
+                </div>
               </div>
             </div>
           </div>
@@ -269,3 +345,6 @@
   </div>
   }
 </div>
+
+<!-- Slide-over Panels -->
+<app-job-settings-sheet />

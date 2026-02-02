@@ -5,6 +5,7 @@ import { Injectable, signal } from '@angular/core';
 })
 export class UiStateService {
     readonly isAddAppSheetOpen = signal(false);
+    readonly isJobSettingsOpen = signal(false);
 
     openAddAppSheet() {
         this.isAddAppSheetOpen.set(true);
@@ -14,7 +15,11 @@ export class UiStateService {
         this.isAddAppSheetOpen.set(false);
     }
 
-    toggleAddAppSheet() {
-        this.isAddAppSheetOpen.update(v => !v);
+    openJobSettings() {
+        this.isJobSettingsOpen.set(true);
+    }
+
+    closeJobSettings() {
+        this.isJobSettingsOpen.set(false);
     }
 }

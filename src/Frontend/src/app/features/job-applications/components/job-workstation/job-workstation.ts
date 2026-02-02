@@ -17,11 +17,14 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
-import { getStatusStyle } from '../../models/status-styles.util';
+import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../models/status-styles.util';
 import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
 import { JobTypePipe } from '../../pipes/job-type.pipe';
+import { JobPriority } from '../../models/job-priority.enum';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
 import { InterviewViewComponent } from './interview-view/interview-view.component';
+import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
+import { UiStateService } from '../../../../core/services/ui-state.service';
 
 // Spartan UI
 // ...
@@ -31,7 +34,7 @@ import { HlmCardImports } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
-import { HlmDropdownMenuImports } from '@spartan-ng/helm/dropdown-menu';
+import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 
 // Icons
@@ -67,7 +70,8 @@ import {
   lucideCommand,
   lucideCheckCircle2,
   lucideAlertCircle,
-  lucideLink
+  lucideLink,
+  lucideSettings
 } from '@ng-icons/lucide';
 
 interface GapAnalysisItem {
@@ -92,10 +96,12 @@ interface GapAnalysisItem {
     ...HlmBadgeImports,
     ...HlmBreadCrumbImports,
     ...HlmDropdownMenuImports,
+    HlmDropdownMenuTrigger,
     JobPriorityPipe,
     JobTypePipe,
     AssetsViewComponent,
-    InterviewViewComponent
+    InterviewViewComponent,
+    JobSettingsSheetComponent
   ],
   providers: [
     provideIcons({
@@ -129,7 +135,8 @@ interface GapAnalysisItem {
       lucideCommand,
       lucideCheckCircle2,
       lucideAlertCircle,
-      lucideLink
+      lucideLink,
+      lucideSettings
     })
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -138,6 +145,7 @@ interface GapAnalysisItem {
 })
 export class JobWorkstationComponent implements OnInit {
   public readonly route = inject(ActivatedRoute);
+  public readonly uiState = inject(UiStateService);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   public readonly store = inject(JobApplicationStore);
@@ -204,6 +212,9 @@ export class JobWorkstationComponent implements OnInit {
     Interview: 'interview' as const
   };
 
+  readonly JobStatus = JobApplicationStatus;
+  readonly JobPriority = JobPriority;
+
   // Phase Configuration
   phases = [
     { id: 'strategy' as const, label: 'Strategy', icon: 'lucideSwords' },
@@ -234,19 +245,40 @@ export class JobWorkstationComponent implements OnInit {
   }
 
   getStatusBadgeClasses(status: JobApplicationStatus | undefined): string {
-    if (!status) return 'bg-zinc-800 text-zinc-400';
-    switch (status) {
-      case JobApplicationStatus.Interviewing:
-        return 'bg-violet-500/10 text-violet-400 border border-violet-500/20';
-      case JobApplicationStatus.Offer:
-        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-      default:
-        return 'bg-zinc-800 text-zinc-400 border border-zinc-700';
-    }
+    if (status === undefined) return 'bg-zinc-800 text-zinc-400 border border-zinc-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
+    return getStatusBadgeClasses(status);
+  }
+
+  getPriorityBadgeClasses(priority: JobPriority | undefined): string {
+    return getPriorityBadgeClasses(priority);
   }
 
   getStatusLabel(status: JobApplicationStatus | undefined): string {
     if (status === undefined) return 'Unknown';
     return getStatusStyle(status).label;
+  }
+
+  updateStatus(status: JobApplicationStatus): void {
+    const app = this.store.selectedApplication();
+    if (app && app.status !== status) {
+      this.store.updateApplication(app.id, { status });
+    }
+  }
+
+  updatePriority(priority: JobPriority): void {
+    const app = this.store.selectedApplication();
+    if (app && app.priority !== priority) {
+      this.store.updateApplication(app.id, { priority });
+    }
+  }
+
+  deleteApplication(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      if (confirm(`Are you sure you want to delete the application for ${app.companyName}?`)) {
+        this.store.deleteApplication(app.id);
+        this.goBack();
+      }
+    }
   }
 }

@@ -6,14 +6,7 @@ import {
     ChangeDetectionStrategy,
     signal,
 } from '@angular/core';
-import {
-    HlmCardHeader,
-    HlmCardTitle,
-    HlmCardDescription,
-    HlmCardContent,
-    HlmCardFooter,
-} from '@spartan-ng/helm/card';
-
+import { HlmCard } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
@@ -31,16 +24,11 @@ import { JobPriority } from '../../models/job-priority.enum';
     selector: 'app-job-card',
     imports: [
         CommonModule,
-        HlmCardHeader,
-        HlmCardTitle,
-        HlmCardDescription,
-        HlmCardContent,
-        HlmCardFooter,
-
+        HlmCard,
         ...HlmButtonImports,
     ],
-    templateUrl: './job-card.html',
-    styleUrl: './job-card.css',
+    templateUrl: './application-card.component.html',
+    styleUrl: './application-card.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobCardComponent {
@@ -90,19 +78,26 @@ export class JobCardComponent {
         ),
     );
 
-    // Computed: Is application stale (>14 days, status is Applied or Interviewing)
-    isStale = computed(() => {
-        const app = this.application();
-        const staleStatuses = [
-            JobApplicationStatus.Applied,
-            JobApplicationStatus.Interviewing,
+    // Computed: Is Interviewing (for pulse effect)
+    isInterviewing = computed(() =>
+        [
             JobApplicationStatus.PhoneScreen,
             JobApplicationStatus.TechnicalTask,
-        ];
+            JobApplicationStatus.Interviewing,
+        ].includes(this.application().status),
+    );
+
+    // Computed: Is Offer (for glow effect)
+    isOfferReceived = computed(() =>
+        this.application().status === JobApplicationStatus.Offer
+    );
+
+    // Computed: Is application stale (>14 days)
+    isStale = computed(() => {
+        const app = this.application();
         return (
             !this.isDead() &&
             !this.isOffer() &&
-            staleStatuses.includes(app.status) &&
             this.daysSinceUpdate() > 14
         );
     });
@@ -211,35 +206,29 @@ export class JobCardComponent {
     });
 
     /**
-     * Get consistent tailwind classes for status badges (Pill style)
+     * Get consistent tailwind classes for status badges
      */
     getStatusClasses(status: JobApplicationStatus): string {
-        const base = 'px-2 py-0.5 rounded-full text-[10px] font-semibold border border-transparent transition-all duration-300';
+        const base = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300';
 
         switch (status) {
             case JobApplicationStatus.Applied:
-                return `${base} bg-info/10 text-info`;
+                return `${base} bg-blue-500/10 text-blue-500 border border-blue-500/20`;
 
             case JobApplicationStatus.PhoneScreen:
-                return `${base} bg-info/10 text-info`;
-
             case JobApplicationStatus.TechnicalTask:
-                return `${base} bg-warning/10 text-warning`;
-
             case JobApplicationStatus.Interviewing:
-                return `${base} bg-primary/10 text-primary`;
+                return `${base} bg-amber-500/10 text-amber-500 border border-amber-500/20 animate-pulse`;
 
             case JobApplicationStatus.Offer:
-                return `${base} bg-success/10 text-success border-success/20`;
+                return `${base} bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.5)]`;
 
             case JobApplicationStatus.Accepted:
-                return `${base} bg-success/10 text-success`;
+                return `${base} bg-emerald-500/10 text-emerald-500 border border-emerald-500/20`;
 
             case JobApplicationStatus.Rejected:
-                return `${base} bg-destructive/10 text-destructive`;
-
             case JobApplicationStatus.Ghosted:
-                return `${base} bg-muted-foreground/10 text-muted-foreground`;
+                return `${base} bg-destructive/10 text-destructive border border-destructive/20`;
 
             default:
                 return `${base} bg-muted text-muted-foreground`;

@@ -13,7 +13,7 @@ import { authGuard } from '../../core/auth';
 export const JOB_APPLICATIONS_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./components/job-list/job-list').then((m) => m.JobList),
+    loadComponent: () => import('./components/job-list/applications.component').then((m) => m.ApplicationsComponent),
     canActivate: [authGuard],
     title: 'Applications - JobTracker',
   },

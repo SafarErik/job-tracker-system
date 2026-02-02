@@ -13,7 +13,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Components
-import { JobCardComponent } from '../job-card/job-card';
+import { JobCardComponent } from '../job-card/application-card.component';
 
 /**
  * Status Column Configuration

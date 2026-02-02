@@ -59,7 +59,7 @@ export const routes: Routes = [
       {
         path: 'applications',
         loadComponent: () =>
-          import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
+          import('./features/job-applications/components/job-list/applications.component').then((m) => m.ApplicationsComponent),
         title: 'Applications - JobTracker',
       },
       {

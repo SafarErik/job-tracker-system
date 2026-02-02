@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { CompanyCardComponent } from '../company-card/company-card';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
@@ -148,17 +149,15 @@ export class CompanyListComponent implements OnInit {
 
     this.companyService.deleteCompany(company.id).subscribe({
       next: () => {
-        this.notificationService.success(
-          `${company.name} has been deleted successfully.`,
-          'Company Deleted',
-        );
+        toast.success('Company Deleted', {
+          description: `${company.name} has been deleted successfully.`,
+        });
         // No need to manually reload, the service updates the signal
       },
       error: (err) => {
-        this.notificationService.error(
-          'An error occurred while deleting the company. Please try again.',
-          'Delete Failed',
-        );
+        toast.error('Delete Failed', {
+          description: 'An error occurred while deleting the company. Please try again.',
+        });
         console.error(err);
       },
     });

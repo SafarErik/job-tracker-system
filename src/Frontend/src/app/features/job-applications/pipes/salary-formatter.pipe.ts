@@ -11,15 +11,15 @@ export class SalaryFormatterPipe implements PipeTransform {
         period: string = 'yearly',
         isOffer: boolean = false
     ): string {
-        if (isOffer && value) {
+        if (value != null && isOffer) {
             return `${this.getCurrencySymbol(currency)}${this.formatNumber(value)}${this.getPeriodSuffix(period)} Offer`;
         }
 
-        if (value && max) {
+        if (value != null && max != null) {
             return `Est. ${this.getCurrencySymbol(currency)}${this.formatNumber(value)} - ${this.formatNumber(max)}${this.getPeriodSuffix(period)}`;
         }
 
-        if (value) {
+        if (value != null) {
             return `Est. ${this.getCurrencySymbol(currency)}${this.formatNumber(value)}${this.getPeriodSuffix(period)}`;
         }
 

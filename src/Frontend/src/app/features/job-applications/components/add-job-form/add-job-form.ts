@@ -13,6 +13,7 @@ import { Router, RouterModule } from '@angular/router';
 // Services
 import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { CompanyService } from '../../../companies/services/company.service';
 
 // Models
@@ -245,9 +246,9 @@ export class AddJobFormComponent {
             const text = await navigator.clipboard.readText();
             if (text && (text.startsWith('http') || text.startsWith('www'))) {
                 this.form.patchValue({ jobUrl: text });
-                this.notificationService.success('URL pasted!', 'Success');
+                toast.success('Success', { description: 'URL pasted!' });
             } else {
-                this.notificationService.info('Clipboard does not contain a broad URL.', 'Info');
+                toast.info('Info', { description: 'Clipboard does not contain a broad URL.' });
             }
         } catch (err) {
             console.error('Failed to read clipboard', err);
@@ -290,18 +291,18 @@ export class AddJobFormComponent {
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            this.notificationService.error('Invalid file type. Please upload PDF or Word document.', 'Error');
+            toast.error('Error', { description: 'Invalid file type. Please upload PDF or Word document.' });
             return;
         }
 
         // Validate size (e.g., 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            this.notificationService.error('File too large. Max size is 5MB.', 'Error');
+            toast.error('Error', { description: 'File too large. Max size is 5MB.' });
             return;
         }
 
         this.selectedFile.set(file);
-        this.notificationService.success(`File "${file.name}" ready to upload.`, 'File Selected');
+        toast.success('File Selected', { description: `File "${file.name}" ready to upload.` });
     }
 
     removeFile(event?: Event) {
@@ -347,7 +348,7 @@ export class AddJobFormComponent {
                 },
                 error: () => {
                     this.isSubmitting.set(false);
-                    this.notificationService.error('Could not create company.', 'Error');
+                    toast.error('Error', { description: 'Could not create company.' });
                 }
             });
         }
@@ -364,12 +365,12 @@ export class AddJobFormComponent {
 
         this.applicationService.createApplication(apiPayload).subscribe({
             next: () => {
-                this.notificationService.success('Application saved!', 'Success');
+                toast.success('Success', { description: 'Application saved!' });
                 this.router.navigate(['/']);
             },
             error: () => {
                 this.isSubmitting.set(false);
-                this.notificationService.error('Failed to save.', 'Error');
+                toast.error('Error', { description: 'Failed to save.' });
             }
         });
     }

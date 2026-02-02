@@ -120,8 +120,10 @@ export class ApplicationKanbanComponent {
           return priorityB - priorityA; // Higher priority first
         }
 
-        // 2. UpdatedAt (Newest First)
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        // 2. UpdatedAt (Newest First) - with fallback to AppliedAt
+        const dateA = new Date(a.updatedAt || a.appliedAt).getTime();
+        const dateB = new Date(b.updatedAt || b.appliedAt).getTime();
+        return dateB - dateA;
       });
     }
 
@@ -133,7 +135,8 @@ export class ApplicationKanbanComponent {
    */
   onCardDropped(event: CdkDragDrop<JobApplication[]>): void {
     if (event.previousContainer === event.container) {
-      // Reorder within column (visual only, not persisted yet)
+      // Reorder within column
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       return;
     }
 
@@ -159,7 +162,7 @@ export class ApplicationKanbanComponent {
   private getStatusFromColumnId(id: string): JobApplicationStatus | undefined {
     switch (id) {
       case 'inbox': return JobApplicationStatus.Applied;
-      case 'active': return JobApplicationStatus.PhoneScreen; // Entry point to active
+      case 'active': return JobApplicationStatus.Interviewing; // Entry point to active
       case 'offers': return JobApplicationStatus.Offer;
       case 'archive': return JobApplicationStatus.Rejected;
       default: return undefined;
@@ -192,6 +195,6 @@ export class ApplicationKanbanComponent {
   }
 
   onOpenJobUrl(url: string): void {
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

@@ -18,6 +18,10 @@
 }
 
 /* Smooth reordering animation */
+.kanban-column .card {
+    @apply transition-transform duration-200;
+}
+
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
     height: 8px;

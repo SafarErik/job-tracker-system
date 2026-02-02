@@ -160,10 +160,11 @@ export class ApplicationRowComponent {
 
     // Computed: Last Activity text
     lastActivity = computed(() => {
-        const appliedDate = new Date(this.application().appliedAt);
+        const lastDate = this.application().updatedAt ?? this.application().appliedAt;
+        const updatedAt = new Date(lastDate);
         const now = new Date();
-        const diffTime = Math.abs(now.getTime() - appliedDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffTime = Math.abs(now.getTime() - updatedAt.getTime());
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays === 0) return 'Today';
         if (diffDays === 1) return 'Yesterday';

@@ -10,6 +10,7 @@ import {
 import { ProfileService } from '../../services/profile.service';
 import { SkillService } from '../../../skills/services/skill.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { UserProfile, ProfileStats, UserSkill } from '../../models/profile.model';
 import { Skill } from '../../../skills/models/skill.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -246,10 +247,9 @@ export class ProfileComponent implements OnInit {
     const control = this.profileForm.get(field);
 
     if (control?.invalid) {
-      this.notificationService.error(
-        'Please enter a valid value',
-        'Validation Error',
-      );
+      toast.error('Validation Error', {
+        description: 'Please enter a valid value',
+      });
       return;
     }
 
@@ -278,10 +278,9 @@ export class ProfileComponent implements OnInit {
         setTimeout(() => this.lastSavedField.set(null), 2000);
       },
       error: (err) => {
-        this.notificationService.error(
-          'Failed to update profile.',
-          'Update Failed',
-        );
+        toast.error('Update Failed', {
+          description: 'Failed to update profile.',
+        });
         console.error(err);
         // Revert form
         if (this.profile()) this.populateForm(this.profile()!);
@@ -297,14 +296,14 @@ export class ProfileComponent implements OnInit {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      this.notificationService.error('Please select a valid image file', 'Invalid File Type');
+      toast.error('Invalid File Type', { description: 'Please select a valid image file' });
       input.value = '';
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      this.notificationService.error('Image size must not exceed 5MB', 'File Too Large');
+      toast.error('File Too Large', { description: 'Image size must not exceed 5MB' });
       input.value = '';
       return;
     }
@@ -317,15 +316,14 @@ export class ProfileComponent implements OnInit {
           this.profile.update((p) => ({ ...p!, profilePictureUrl: response.url }));
         }
         this.isUploadingPicture.set(false);
-        this.notificationService.success(
-          'Profile picture updated successfully!',
-          'Upload Complete',
-        );
+        toast.success('Upload Complete', {
+          description: 'Profile picture updated successfully!',
+        });
         input.value = '';
       },
       error: (err) => {
         this.isUploadingPicture.set(false);
-        this.notificationService.error('Failed to upload profile picture', 'Upload Failed');
+        toast.error('Upload Failed', { description: 'Failed to upload profile picture' });
         console.error(err);
         input.value = '';
       },
@@ -363,13 +361,12 @@ export class ProfileComponent implements OnInit {
           { id: skill.id, name: skill.name, category: skill.category || 'Other' },
         ]);
         this.skillSearchControl.reset();
-        this.notificationService.success(
-          `${skill.name} has been added to your profile`,
-          'Skill Added',
-        );
+        toast.success('Skill Added', {
+          description: `${skill.name} has been added to your profile`,
+        });
       },
       error: (err) => {
-        this.notificationService.error('Failed to add skill', 'Error');
+        toast.error('Error', { description: 'Failed to add skill' });
         console.error(err);
       },
     });
@@ -381,13 +378,13 @@ export class ProfileComponent implements OnInit {
     const category = this.skillCategoryControl.value?.toString().trim();
 
     if (!name) {
-      this.notificationService.error('Please enter a skill name first', 'Missing Name');
+      toast.error('Missing Name', { description: 'Please enter a skill name first' });
       return;
     }
 
     const lower = name.toLowerCase();
     if (this.userSkills().some((s) => s.name.toLowerCase() === lower)) {
-      this.notificationService.error('You already have this skill', 'Duplicate');
+      toast.error('Duplicate', { description: 'You already have this skill' });
       return;
     }
 
@@ -408,14 +405,13 @@ export class ProfileComponent implements OnInit {
         this.skillSearchControl.setValue('');
         this.skillCategoryControl.setValue('');
         this.isAddingSkill.set(false);
-        this.notificationService.success(
-          `${userSkill.name} has been added as a new skill`,
-          'Skill Added',
-        );
+        toast.success('Skill Added', {
+          description: `${userSkill.name} has been added as a new skill`,
+        });
       },
       error: (err) => {
         this.isAddingSkill.set(false);
-        this.notificationService.error('Failed to add custom skill', 'Error');
+        toast.error('Error', { description: 'Failed to add custom skill' });
         console.error(err);
       },
     });
@@ -443,13 +439,12 @@ export class ProfileComponent implements OnInit {
     this.profileService.removeSkill(skill.id).subscribe({
       next: () => {
         this.userSkills.update((skills) => skills.filter((s) => s.id !== skill.id));
-        this.notificationService.success(
-          `${skill.name} has been removed from your profile`,
-          'Skill Removed',
-        );
+        toast.success('Skill Removed', {
+          description: `${skill.name} has been removed from your profile`,
+        });
       },
       error: (err) => {
-        this.notificationService.error('Failed to remove skill', 'Error');
+        toast.error('Error', { description: 'Failed to remove skill' });
         console.error(err);
       },
     });

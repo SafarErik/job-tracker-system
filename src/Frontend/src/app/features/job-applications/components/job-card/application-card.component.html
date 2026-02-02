@@ -1,7 +1,9 @@
 <!-- Smart Card - Pipeline Manager Design -->
 <div hlmCard [class]="containerClasses()"
-  class="group h-full transition-all duration-300 hover:border-primary/50 cursor-pointer flex flex-col shadow-sm"
-  (click)="onCardClick()">
+  class="group h-full transition-all duration-300 hover:border-primary/50 cursor-pointer flex flex-col shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+  tabindex="0" role="button"
+  [attr.aria-label]="'View details for ' + application().position + ' at ' + application().companyName"
+  (click)="onCardClick()" (keydown.enter)="onCardClick()" (keydown.space)="$event.preventDefault(); onCardClick()">
 
   <!-- Header: Logo + Company Name + Status Badge -->
   <div class="p-5 flex items-start justify-between gap-4">

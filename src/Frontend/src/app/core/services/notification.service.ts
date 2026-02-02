@@ -1,5 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import type { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { toast } from 'ngx-sonner';
 
 /**
  * Notification Message Interface
@@ -16,15 +17,12 @@ export interface Notification {
  * NotificationService
  *
  * A service for displaying toast notifications to users.
- * Uses a signal-based queue for reactive state.
+ * Now acts as a bridge to ngx-sonner for consistent toast logic.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  // A signal holding an array of active notifications
-  readonly queue = signal<Notification[]>([]);
-
   /**
    * Reference to the confirm dialog component
    * Set by the app component on initialization
@@ -37,23 +35,14 @@ export class NotificationService {
     title?: string,
     duration = 4000,
   ) {
-    const id = Date.now();
-    const newNotif: Notification = {
-      id,
-      type,
-      message,
-      title: title ?? type.toUpperCase(),
-      duration,
-    };
+    const toastFn = (type === 'error' ? toast.error :
+      type === 'warning' ? toast.warning :
+        type === 'info' ? toast.info : toast.success);
 
-    this.queue.update((q) => [...q, newNotif]);
-
-    // Auto-remove after duration
-    setTimeout(() => this.remove(id), duration);
-  }
-
-  remove(id: number) {
-    this.queue.update((q) => q.filter((n) => n.id !== id));
+    toastFn(title || type.toUpperCase(), {
+      description: message,
+      duration: duration
+    });
   }
 
   // Helper shortcuts

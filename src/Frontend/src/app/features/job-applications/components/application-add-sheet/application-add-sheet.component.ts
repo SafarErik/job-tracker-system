@@ -10,6 +10,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { UiStateService } from '../../../../core/services/ui-state.service';
 import { NotificationService } from '../../../../core/services';
+import { toast } from 'ngx-sonner';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { getStatusStyle } from '../../models/status-styles.util';
@@ -100,7 +101,7 @@ export class ApplicationAddSheetComponent {
 
             // 2. Show Success Toast
             const company = this.form.get('company')?.value || 'Unknown Company';
-            this.notificationService.success(`Application created for ${company}`);
+            toast.success('Application Created', { description: `Application created for ${company}` });
 
             // 3. Reset form (optional, but good practice)
             this.form.reset({

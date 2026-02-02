@@ -6,10 +6,9 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ApplicationService } from '../../services/application.service';
 import { JobApplicationStore } from '../../services/job-application.store';
 import { DocumentService } from '../../../documents/services/document.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -69,7 +68,6 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     NgIcon,
     ReactiveFormsModule,
     ...HlmInputImports,
@@ -123,7 +121,6 @@ export class JobWorkstationComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   public readonly store = inject(JobApplicationStore);
-  private readonly applicationService = inject(ApplicationService);
   private readonly documentService = inject(DocumentService);
   private readonly notificationService = inject(NotificationService);
   private readonly breadcrumbService = inject(BreadcrumbService);
@@ -149,7 +146,7 @@ export class JobWorkstationComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ||
-               this.route.parent?.snapshot.paramMap.get('id');
+      this.route.parent?.snapshot.paramMap.get('id');
 
     if (id) {
       this.store.selectApplication(id);

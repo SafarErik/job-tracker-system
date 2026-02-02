@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DocumentStore } from '../../services/document.store';
 import { Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 import { DocumentCardComponent } from '../document-card/document-card.component';
 import { DocumentService } from '../../services/document.service';
@@ -92,20 +93,18 @@ export class DocumentsListComponent implements OnInit {
   processFile(file: File, callback?: () => void): void {
     // Validate file type
     if (file.type !== 'application/pdf') {
-      this.notificationService.error(
-        'Please select a PDF file. Other file types are not supported.',
-        'Invalid File Type',
-      );
+      toast.error('Invalid File Type', {
+        description: 'Please select a PDF file. Other file types are not supported.',
+      });
       callback?.();
       return;
     }
 
     // Validate file size (10MB)
     if (file.size > 10 * 1024 * 1024) {
-      this.notificationService.error(
-        'The file size exceeds the 10MB limit. Please choose a smaller file.',
-        'File Too Large',
-      );
+      toast.error('File Too Large', {
+        description: 'The file size exceeds the 10MB limit. Please choose a smaller file.',
+      });
       callback?.();
       return;
     }
@@ -121,18 +120,16 @@ export class DocumentsListComponent implements OnInit {
           this.uploadProgress.set(null);
           this.store.loadAll(); // Sync store
           callback?.();
-          this.notificationService.success(
-            `${file.name} has been uploaded successfully!`,
-            'Upload Complete',
-          );
+          toast.success('Upload Complete', {
+            description: `${file.name} has been uploaded successfully!`,
+          });
         }
       },
       error: (err) => {
         this.uploadProgress.set(null);
-        this.notificationService.error(
-          'An error occurred while uploading. Please try again.',
-          'Upload Failed',
-        );
+        toast.error('Upload Failed', {
+          description: 'An error occurred while uploading. Please try again.',
+        });
         console.error(err);
         callback?.();
       },

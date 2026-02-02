@@ -145,10 +145,12 @@ export const routes: Routes = [
       {
         path: 'company/:id',
         redirectTo: 'companies/:id',
+        pathMatch: 'full',
       },
       {
         path: 'companies/:id/details',
         redirectTo: 'companies/:id',
+        pathMatch: 'full',
       },
     ],
   },

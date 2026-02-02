@@ -18,7 +18,6 @@ import { NotificationService, ThemeService } from './core/services';
 
 // Shared components
 import {
-  ToastNotificationComponent,
   ConfirmDialogComponent,
 } from './shared/components';
 import { ApplicationAddSheetComponent } from './features/job-applications/components/application-add-sheet/application-add-sheet.component';
@@ -26,7 +25,7 @@ import { ApplicationAddSheetComponent } from './features/job-applications/compon
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, ToastNotificationComponent, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster],
+  imports: [CommonModule, RouterOutlet, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster],
   templateUrl: './app.html',
 })
 export class App implements AfterViewInit {

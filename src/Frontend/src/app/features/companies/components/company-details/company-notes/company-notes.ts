@@ -20,7 +20,7 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
       <label for="company-notes-textarea" class="sr-only">Strategic scratchpad notes</label>
       <textarea hlmInput id="company-notes-textarea" [ngModel]="notes()" (ngModelChange)="onNotesChange($event)"
         placeholder="Operational notes, internal intel, and strategic positioning..."
-        class="flex-1 w-full bg-transparent! border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
+        class="flex-1 w-full !bg-transparent border-none focus:ring-0 p-0 font-mono text-sm leading-loose custom-scrollbar resize-none placeholder:text-muted-foreground/30">
       </textarea>
 
       <div class="mt-8 pt-6 border-t border-border/20 flex flex-col sm:flex-row items-center justify-between gap-2">

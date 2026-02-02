@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { CompanyNews, CompanyContact } from '../../models/company.model';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
@@ -141,7 +142,7 @@ export class CompanyDetailsComponent implements OnInit {
     const current = this.company();
     if (current) {
       this.companyService.updateCompany(current.id, { name }).subscribe({
-        error: () => this.notificationService.error('Failed to update name', 'Error')
+        error: () => toast.error('Error', { description: 'Failed to update name' })
       });
     }
   }
@@ -150,8 +151,8 @@ export class CompanyDetailsComponent implements OnInit {
     const current = this.company();
     if (current) {
       this.companyService.updateCompany(current.id, { priority }).subscribe({
-        next: () => this.notificationService.success('Priority updated', 'Success'),
-        error: () => this.notificationService.error('Failed to update priority', 'Error')
+        next: () => toast.success('Success', { description: 'Priority updated' }),
+        error: () => toast.error('Error', { description: 'Failed to update priority' })
       });
     }
   }
@@ -160,8 +161,8 @@ export class CompanyDetailsComponent implements OnInit {
     const current = this.company();
     if (current) {
       this.companyService.updateCompany(current.id, { industry }).subscribe({
-        next: () => this.notificationService.success('Industry updated', 'Success'),
-        error: () => this.notificationService.error('Failed to update industry', 'Error')
+        next: () => toast.success('Success', { description: 'Industry updated' }),
+        error: () => toast.error('Error', { description: 'Failed to update industry' })
       });
     }
   }
@@ -179,10 +180,10 @@ export class CompanyDetailsComponent implements OnInit {
     if (confirmed) {
       this.companyService.deleteCompany(current.id).subscribe({
         next: () => {
-          this.notificationService.success('Company deleted', 'Success');
+          toast.success('Success', { description: 'Company deleted' });
           this.router.navigate(['/companies']);
         },
-        error: () => this.notificationService.error('Failed to delete company', 'Error')
+        error: () => toast.error('Error', { description: 'Failed to delete company' })
       });
     }
   }
@@ -195,8 +196,8 @@ export class CompanyDetailsComponent implements OnInit {
     if (stack.includes(skill)) return;
 
     this.companyService.updateCompany(current.id, { techStack: [...stack, skill] }).subscribe({
-      next: () => this.notificationService.success('Skill added', 'Updated'),
-      error: () => this.notificationService.error('Failed to add skill', 'Error')
+      next: () => toast.success('Updated', { description: 'Skill added' }),
+      error: () => toast.error('Error', { description: 'Failed to add skill' })
     });
   }
 
@@ -207,8 +208,8 @@ export class CompanyDetailsComponent implements OnInit {
     const newStack = stack.filter(s => s !== skill);
 
     this.companyService.updateCompany(current.id, { techStack: newStack }).subscribe({
-      next: () => this.notificationService.success('Skill removed', 'Updated'),
-      error: () => this.notificationService.error('Failed to remove skill', 'Error')
+      next: () => toast.success('Updated', { description: 'Skill removed' }),
+      error: () => toast.error('Error', { description: 'Failed to remove skill' })
     });
   }
 
@@ -248,9 +249,9 @@ export class CompanyDetailsComponent implements OnInit {
     this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
       next: () => {
         this.companyService.loadCompanyDetails(current.id); // Reload to get IDs
-        this.notificationService.success('Contact saved', 'Success');
+        toast.success('Success', { description: 'Contact saved' });
       },
-      error: () => this.notificationService.error('Failed to save contact', 'Error')
+      error: () => toast.error('Error', { description: 'Failed to save contact' })
     });
   }
 
@@ -265,8 +266,8 @@ export class CompanyDetailsComponent implements OnInit {
     if (confirmed) {
       const newContacts = (current.contacts || []).filter(c => c.id !== contactId);
       this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
-        next: () => this.notificationService.success('Contact removed', 'Success'),
-        error: () => this.notificationService.error('Failed to remove contact', 'Error')
+        next: () => toast.success('Success', { description: 'Contact removed' }),
+        error: () => toast.error('Error', { description: 'Failed to remove contact' })
       });
     }
   }

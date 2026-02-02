@@ -26,6 +26,6 @@ export class ApplicationGridComponent implements AfterViewInit {
     }
 
     viewApplicationDetail(id: string): void {
-        this.router.navigate(['/workstation', id]);
+        this.router.navigate(['/applications', id]);
     }
 }

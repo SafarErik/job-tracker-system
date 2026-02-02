@@ -189,7 +189,7 @@ export class ApplicationsComponent implements OnInit {
 
   viewApplicationDetail(id: string): void {
     this.store.selectApplication(id);
-    this.router.navigate(['/workstation', id]);
+    this.router.navigate(['/applications', id]);
   }
 
   // Welcome Message Logic

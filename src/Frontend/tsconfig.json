@@ -110,6 +110,9 @@
       ],
       "@spartan-ng/helm/switch": [
         "./libs/ui/switch/src/index.ts"
+      ],
+      "@spartan-ng/helm/calendar": [
+        "./libs/ui/calendar/src/index.ts"
       ]
     }
   },

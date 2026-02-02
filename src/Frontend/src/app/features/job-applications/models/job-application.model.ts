@@ -2,7 +2,7 @@ import { JobApplicationStatus } from './application-status.enum';
 import { JobType } from './job-type.enum';
 import { WorkplaceType } from './workplace-type.enum';
 import { JobPriority } from './job-priority.enum';
-import { CompanyContact } from '../../companies/models/company.model';
+import { CompanyContact } from '../../../core/models/company-contact.model';
 
 export interface JobApplication {
   id: string;
@@ -25,6 +25,7 @@ export interface JobApplication {
   // Money related things
   salaryMin?: number;
   salaryMax?: number;
+  salaryOffer?: number; // Hydrated if offer received
   currency?: string;
   salaryPeriod?: 'yearly' | 'monthly' | 'hourly';
 
@@ -42,6 +43,7 @@ export interface JobApplication {
   // Relations
   documentId?: string | null; // The specific CV version used
   primaryContactId?: string;
+  primaryContact?: CompanyContact;
 }
 
 export interface CreateJobApplication {
@@ -55,6 +57,11 @@ export interface CreateJobApplication {
   jobType?: JobType;
   workplaceType?: WorkplaceType;
   priority?: JobPriority;
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryOffer?: number;
+  currency?: string;
+  salaryPeriod?: string;
   matchScore?: number;
   generatedCoverLetter?: string;
   aiFeedback?: string;

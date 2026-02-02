@@ -20,6 +20,8 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { getStatusStyle } from '../../models/status-styles.util';
 import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
 import { JobTypePipe } from '../../pipes/job-type.pipe';
+import { AssetsViewComponent } from './assets-view/assets-view.component';
+import { InterviewViewComponent } from './interview-view/interview-view.component';
 
 // Spartan UI
 // ...
@@ -91,7 +93,9 @@ interface GapAnalysisItem {
     ...HlmBreadCrumbImports,
     ...HlmDropdownMenuImports,
     JobPriorityPipe,
-    JobTypePipe
+    JobTypePipe,
+    AssetsViewComponent,
+    InterviewViewComponent
   ],
   providers: [
     provideIcons({

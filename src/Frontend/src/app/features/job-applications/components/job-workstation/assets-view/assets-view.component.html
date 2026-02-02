@@ -1,0 +1,186 @@
+<div class="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+    <!-- Sub-Navigation (Pill Toggle) -->
+    <div class="flex justify-center">
+        <div class="p-1 bg-zinc-900 border border-zinc-800 rounded-xl flex gap-1">
+            <button (click)="setMode('resume')" [class.bg-zinc-800]="mode() === 'resume'"
+                [class.text-zinc-100]="mode() === 'resume'" [class.text-zinc-500]="mode() !== 'resume'"
+                class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
+                <ng-icon name="lucideFileText" class="text-sm"></ng-icon>
+                Resume
+            </button>
+            <button (click)="setMode('cover-letter')" [class.bg-zinc-800]="mode() === 'cover-letter'"
+                [class.text-zinc-100]="mode() === 'cover-letter'" [class.text-zinc-500]="mode() !== 'cover-letter'"
+                class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
+                <ng-icon name="lucideMail" class="text-sm"></ng-icon>
+                Cover Letter
+            </button>
+        </div>
+    </div>
+
+    @if (mode() === 'resume') {
+    <!-- Resume Mode: The Document Forge -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-280px)]">
+
+        <!-- Left Column: Master Source -->
+        <div class="flex flex-col min-h-0 bg-zinc-950 border border-zinc-800 rounded-3xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-zinc-800 bg-zinc-900/20 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-zinc-500">
+                    <ng-icon name="lucideLock" class="text-xs"></ng-icon>
+                    <h3 class="text-xs font-serif font-bold uppercase tracking-widest">Original Resume</h3>
+                </div>
+                <span class="text-[10px] font-mono text-zinc-600 uppercase">Read-Only</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-10 scrollbar-thin scrollbar-thumb-zinc-800 bg-zinc-900/10">
+                <div class="max-w-prose mx-auto font-mono text-sm text-zinc-500 leading-relaxed space-y-6">
+                    <div class="border-b border-zinc-800 pb-4 mb-8">
+                        <h2 class="text-lg font-bold text-zinc-400">John Doe</h2>
+                        <p class="text-xs">Senior Frontend Engineer | john.doe@example.com</p>
+                    </div>
+
+                    <section>
+                        <h4 class="text-zinc-400 font-bold mb-2 uppercase text-[10px] tracking-wide">Professional
+                            Summary</h4>
+                        <p>Experienced software engineer with over 8 years in web development. Strong foundation in
+                            JavaScript and modern frameworks. Focused on building clean, maintainable codebases and
+                            mentoring junior developers.</p>
+                    </section>
+
+                    <section>
+                        <h4 class="text-zinc-400 font-bold mb-2 uppercase text-[10px] tracking-wide">Experience</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="font-bold text-zinc-400">Senior Web Developer @ TechSolutions</p>
+                                <p class="text-[10px] mb-1">2019 - Present</p>
+                                <p>Developed complex web applications using React and Node.js. Improved application
+                                    performance by 30% through code optimization and efficient data structures. Led a
+                                    team of 4 developers.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Tailored Output -->
+        <div
+            class="flex flex-col min-h-0 bg-zinc-950 border border-zinc-700/50 rounded-3xl overflow-hidden shadow-2xl shadow-violet-500/5 relative">
+            <div class="px-6 py-4 border-b border-zinc-800 bg-zinc-900/40 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-violet-400">
+                    <ng-icon name="lucideSparkles" class="text-xs"></ng-icon>
+                    <h3 class="text-xs font-serif font-bold uppercase tracking-widest">Targeted Version</h3>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button class="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 transition-colors tooltip"
+                        title="Copy Text">
+                        <ng-icon name="lucideCopy"></ng-icon>
+                    </button>
+                    <button class="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 transition-colors tooltip"
+                        title="Download PDF">
+                        <ng-icon name="lucideDownload"></ng-icon>
+                    </button>
+                    <button
+                        class="ml-2 px-4 py-1.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-violet-500/20 hover:scale-105 transition-transform active:scale-95">
+                        Tailor with AI
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-10 scrollbar-thin scrollbar-thumb-zinc-800 bg-zinc-900/20">
+                <div class="max-w-prose mx-auto font-mono text-sm text-zinc-300 leading-relaxed space-y-6">
+                    <div class="border-b border-zinc-800 pb-4 mb-8">
+                        <h2 class="text-lg font-bold text-zinc-100">John Doe</h2>
+                        <p class="text-xs text-zinc-400">Senior <span class="text-violet-400 font-bold">Angular</span>
+                            Engineer | FinTech Specialist</p>
+                    </div>
+
+                    <section>
+                        <h4 class="text-zinc-400 font-bold mb-2 uppercase text-[10px] tracking-wide">Professional
+                            Summary</h4>
+                        <p>
+                            Experienced software engineer with over 8 years in web development.
+                            <span class="bg-red-500/10 text-red-400/80 line-through decoration-red-500/50">Strong
+                                foundation in JavaScript and modern frameworks.</span>
+                            <span class="bg-emerald-500/10 text-emerald-400 px-1 rounded-sm">Expert in Angular 18+,
+                                Signals-based state management, and high-performance financial dashboards.</span>
+                            Focused on building scalable codebases and driving <span class="text-violet-400">Frontend
+                                Excellence</span>.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h4 class="text-zinc-400 font-bold mb-2 uppercase text-[10px] tracking-wide">Experience</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <p class="font-bold text-zinc-100 italic">Senior Lead Engineer @ TechSolutions</p>
+                                <p class="text-[10px] mb-1">2019 - Present</p>
+                                <p>
+                                    Architected complex financial workstations using <span
+                                        class="text-violet-400">Angular and RXJS</span>.
+                                    Improved application performance by 30% through
+                                    <span class="bg-emerald-500/10 text-emerald-400 px-1 rounded-sm">OnPush change
+                                        detection and heavy Signal optimization</span>.
+                                    Mentored a team of 4 developers on scalable architecture patterns.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    } @else {
+    <!-- Cover Letter Mode: Focused Editor -->
+    <div
+        class="max-w-3xl mx-auto w-full h-[calc(100vh-280px)] flex flex-col bg-zinc-950 border border-zinc-800 rounded-[40px] overflow-hidden">
+        <div class="px-8 py-5 border-b border-zinc-800 bg-zinc-900/20 flex items-center justify-between">
+            <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-500">Tailored Cover Letter</h3>
+            @if (hasCoverLetter()) {
+            <div class="flex gap-2">
+                <button
+                    class="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-bold uppercase rounded-xl transition-colors">Download
+                    PDF</button>
+                <button
+                    class="px-4 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[10px] font-bold uppercase rounded-xl transition-colors">Save
+                    Changes</button>
+            </div>
+            }
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-12 scrollbar-thin scrollbar-thumb-zinc-800">
+            @if (hasCoverLetter()) {
+            <div class="max-w-2xl mx-auto font-mono text-sm text-zinc-300 leading-relaxed outline-none"
+                contenteditable="true">
+                <p>Dear Hiring Manager,</p>
+                <p class="mt-6">I am writing to express my strong interest in the {{
+                    store.selectedApplication()?.position }} position at {{ store.selectedApplication()?.companyName }}.
+                    With my extensive experience in Angular and specialized focus on financial data visualization, I am
+                    confident in my ability to contribute immediate value to your engineering team.</p>
+                <p class="mt-4">In my previous role, I successfully migrated a legacy dashboard to a modern
+                    signals-based architecture, resulting in a dramatic performance increase. I am particularly drawn to
+                    {{ store.selectedApplication()?.companyName }} because of your commitment to technical excellence
+                    and scalability...</p>
+                <p class="mt-8 italic font-bold">Best Regards,<br>John Doe</p>
+            </div>
+            } @else {
+            <div class="h-full flex flex-col items-center justify-center text-center">
+                <div
+                    class="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-6 text-zinc-700">
+                    <ng-icon name="lucideMail" class="text-3xl"></ng-icon>
+                </div>
+                <h4 class="text-lg font-sans font-bold text-zinc-200 mb-2">No Cover Letter Found</h4>
+                <p class="text-sm text-zinc-500 max-w-xs mb-8">Let the AI Forge draft a professional, position-aware
+                    cover letter for you.</p>
+                <button (click)="generateCoverLetter()"
+                    class="px-8 py-3 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-violet-500/20 hover:scale-105 transition-all flex items-center gap-2 group">
+                    <ng-icon name="lucideSparkles" class="text-xl group-hover:rotate-12 transition-transform"></ng-icon>
+                    Draft with AI Intelligence
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

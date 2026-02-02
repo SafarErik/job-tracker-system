@@ -37,8 +37,8 @@
           <div *cdkDragPlaceholder class="mb-3 h-24 rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5">
           </div>
 
-          <app-job-card [application]="app" [compact]="true" (openWorkstation)="onOpenWorkstation($event)"
-            (openJobUrl)="onOpenJobUrl($event)" (statusChange)="statusChange.emit($event)"></app-job-card>
+          <app-kanban-card [application]="app" (openWorkstation)="onOpenWorkstation($event)"
+            (statusChange)="statusChange.emit($event)"></app-kanban-card>
         </div>
         }
 

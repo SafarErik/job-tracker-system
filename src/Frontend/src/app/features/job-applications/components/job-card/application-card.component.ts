@@ -11,7 +11,6 @@ import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmTooltipImports } from '@spartan-ng/helm/tooltip';
 import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
 import { CommonModule } from '@angular/common';
-import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
@@ -49,8 +48,6 @@ import {
         LogoPlaceholderComponent,
         SalaryFormatterPipe,
         NgIcon,
-        ...HlmDropdownMenuImports,
-        HlmDropdownMenuTrigger,
     ],
     providers: [
         provideIcons({
@@ -78,7 +75,6 @@ export class JobCardComponent {
     // Outputs
     openWorkstation = output<string>();
     openJobUrl = output<string>();
-    statusChange = output<{ applicationId: string; status: JobApplicationStatus }>();
 
     // Logo loading state
     logoFailed = signal(false);
@@ -304,48 +300,7 @@ export class JobCardComponent {
         }
     });
 
-    /**
-     * Refinement Options based on current category
-     */
-    statusOptions = computed(() => {
-        const currentStatus = this.application().status;
 
-        // Inbox -> Applied
-        if (currentStatus === JobApplicationStatus.Applied) {
-            return [];
-        }
-
-        // Screening -> PhoneScreen
-        if (currentStatus === JobApplicationStatus.PhoneScreen) {
-            return [];
-        }
-
-        // Active Bucket
-        if ([JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing].includes(currentStatus)) {
-            return [
-                { value: JobApplicationStatus.TechnicalTask, label: 'Technical Task' },
-                { value: JobApplicationStatus.Interviewing, label: 'Interviewing' },
-            ];
-        }
-
-        // Offers Bucket
-        if ([JobApplicationStatus.Offer, JobApplicationStatus.Accepted].includes(currentStatus)) {
-            return [
-                { value: JobApplicationStatus.Offer, label: 'Offer Received' },
-                { value: JobApplicationStatus.Accepted, label: 'Accepted' },
-            ];
-        }
-
-        // Archive Bucket
-        if ([JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted].includes(currentStatus)) {
-            return [
-                { value: JobApplicationStatus.Rejected, label: 'Rejected' },
-                { value: JobApplicationStatus.Ghosted, label: 'Ghosted' },
-            ];
-        }
-
-        return [];
-    });
 
     // Computed: Job Type Label
     jobTypeLabel = computed(() => {
@@ -526,13 +481,5 @@ export class JobCardComponent {
         }
     }
 
-    onStatusSelect(status: JobApplicationStatus, event: Event): void {
-        event.stopPropagation();
-        if (status !== this.application().status) {
-            this.statusChange.emit({
-                applicationId: this.application().id,
-                status
-            });
-        }
-    }
+
 }

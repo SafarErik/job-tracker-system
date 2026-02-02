@@ -1,0 +1,69 @@
+<div class="relative flex w-full flex-col gap-2 rounded-lg border border-border bg-card p-3 shadow-sm transition-all hover:ring-2 hover:ring-primary/20 active:cursor-grabbing cursor-grab group overflow-hidden"
+    (click)="onCardClick()">
+
+    <!-- Priority Strip (Left Edge) -->
+    <div class="absolute left-0 top-0 bottom-0 w-1" [class]="priorityClass()"></div>
+
+    <!-- Top Row: Logo + Days Ago -->
+    <div class="flex items-center justify-between pl-2">
+        <!-- Tiny Logo -->
+        <div
+            class="h-6 w-6 shrink-0 rounded-md bg-secondary border border-border/50 overflow-hidden flex items-center justify-center">
+            @if (logoUrl() && !logoFailed()) {
+            <img [src]="logoUrl()" [alt]="application().companyName" class="h-full w-full object-contain p-0.5"
+                (error)="onLogoError()">
+            } @else {
+            <app-logo-placeholder [companyName]="application().companyName || '?'"
+                class="text-[10px]"></app-logo-placeholder>
+            }
+        </div>
+
+        <!-- Time Ago -->
+        <span class="text-[10px] text-muted-foreground font-medium">{{ timeSinceUpdate() }}</span>
+    </div>
+
+    <!-- Middle Row: Company + Role -->
+    <div class="flex flex-col pl-2 min-w-0">
+        <h4 class="text-sm font-semibold text-foreground truncate leading-tight">
+            {{ application().companyName || 'Unknown' }}
+        </h4>
+        <p class="text-xs text-muted-foreground truncate leading-tight mt-0.5">
+            {{ application().position }}
+        </p>
+    </div>
+
+    <!-- Bottom Row: Status Badge (Interactive) -->
+    <div class="pl-2 pt-1 flex items-center justify-between">
+        <button [hlmDropdownMenuTrigger]="statusMenu" variant="ghost"
+            class="h-auto p-0 border-none hover:bg-transparent" (click)="$event.stopPropagation()">
+            <span [class]="statusBadgeClass()"
+                class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border transition-colors hover:opacity-80">
+                {{ statusLabel() }}
+            </span>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <ng-template #statusMenu>
+            <div hlmDropdownMenu
+                class="w-48 bg-slate-950/95 backdrop-blur-xl border-white/10 p-1 rounded-xl shadow-2xl z-50">
+                <div hlmDropdownMenuLabel
+                    hlmClassName="px-2 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    Update Status
+                </div>
+                <div hlmDropdownMenuSeparator hlmClassName="bg-white/5"></div>
+                <div class="max-h-64 overflow-y-auto custom-scrollbar">
+                    @for (status of statusOptions; track status) {
+                    <button hlmDropdownMenuItem (click)="onStatusSelect(status, $event)"
+                        class="rounded-lg text-xs py-2 px-2 focus:bg-primary/10 transition-colors w-full text-left flex items-center justify-between"
+                        [class.text-primary]="status === application().status">
+                        <span>{{ getStatusLabel(status) }}</span>
+                        @if (status === application().status) {
+                        <ng-icon name="lucideCheck" class="size-3"></ng-icon>
+                        }
+                    </button>
+                    }
+                </div>
+            </div>
+        </ng-template>
+    </div>
+</div>

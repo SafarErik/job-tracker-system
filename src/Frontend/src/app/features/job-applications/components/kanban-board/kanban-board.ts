@@ -13,7 +13,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Components
-import { JobCardComponent } from '../job-card/application-card.component';
+import { ApplicationKanbanCardComponent } from './application-kanban-card.component';
 
 /**
  * Bucket Column Configuration (5 Columns)
@@ -33,7 +33,7 @@ interface BucketColumn {
 @Component({
   selector: 'app-application-kanban',
   standalone: true,
-  imports: [CommonModule, DragDropModule, JobCardComponent],
+  imports: [CommonModule, DragDropModule, ApplicationKanbanCardComponent],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

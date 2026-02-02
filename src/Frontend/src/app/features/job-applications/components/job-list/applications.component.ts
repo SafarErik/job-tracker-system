@@ -17,6 +17,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { ApplicationKanbanComponent } from '../kanban-board/kanban-board';
 import { ApplicationGridComponent } from './application-grid.component';
 import { ApplicationListComponent } from './application-list.component';
+import { ApplicationStatbarComponent } from '../application-statbar/application-statbar.component';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
 import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -37,6 +38,7 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
     ApplicationGridComponent,
     ApplicationListComponent,
     ApplicationKanbanComponent,
+    ApplicationStatbarComponent,
     ...HlmButtonImports,
     NgIcon,
     RouterModule,

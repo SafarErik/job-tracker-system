@@ -29,7 +29,6 @@ import {
     lucideSend,
     lucideCheckCircle2,
     lucideClock,
-    lucideFlame,
     lucideStar,
     lucideMapPin,
     lucideCalendar,
@@ -62,7 +61,6 @@ import {
             lucideSend,
             lucideCheckCircle2,
             lucideClock,
-            lucideFlame,
             lucideStar,
             lucideMapPin,
             lucideCalendar,
@@ -362,6 +360,46 @@ export class JobCardComponent {
         if (score >= 80) return 'bg-success/10 text-success border-success/20';
         if (score >= 50) return 'bg-info/10 text-info border-info/20';
         return 'bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20';
+    });
+
+    // Computed: Dynamic Insight (Modern Professional)
+    dynamicInsight = computed(() => {
+        const app = this.application();
+        const days = this.daysSinceUpdate();
+        const score = app.matchScore || 0;
+        const feedback = app.aiFeedback;
+
+        // 1. Offer
+        if (this.isOffer()) {
+            return { text: 'Offer Received', classes: 'text-emerald-400 font-bold', icon: 'lucideSparkles' };
+        }
+
+        // 2. Interviewing
+        if (this.isInterviewing()) {
+            return { text: 'Interview Stage', classes: 'text-indigo-400 font-medium', icon: 'lucideZap' };
+        }
+
+        // 3. Stale State
+        if (days > 14 && !this.isDead()) {
+            return { text: `No Activity (${days}d)`, classes: 'text-slate-400', icon: 'lucideClock' };
+        }
+        if (days > 7 && !this.isDead()) {
+            return { text: `Follow-up Due`, classes: 'text-amber-400', icon: 'lucideTimer' };
+        }
+
+        // 4. High Match
+        if (score >= 90) {
+            return { text: 'Strong Profile Match', classes: 'text-emerald-400', icon: 'lucideStar' };
+        }
+
+        // 5. AI Feedback Snippet
+        if (feedback) {
+            const firstSentence = feedback.split(/[.!?]/)[0];
+            const snippet = firstSentence.length > 35 ? firstSentence.substring(0, 32) + '...' : firstSentence;
+            return { text: `Analysis: ${snippet}`, classes: 'text-sky-400', icon: 'lucideZap' };
+        }
+
+        return { text: 'Application Sent', classes: 'text-slate-500', icon: 'lucideCheckCircle2' };
     });
 
     // Computed: Smart Action logic

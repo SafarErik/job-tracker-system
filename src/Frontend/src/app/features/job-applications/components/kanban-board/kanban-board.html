@@ -14,17 +14,20 @@
          - Dynamic border color from column config.
       -->
     <div
-      class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/30 pb-2 border-t-4 shadow-sm transition-all duration-300"
-      [class]="column.borderColor">
-      <!-- Header - Dynamic Colors -->
-      <div class="flex items-center justify-between px-3 pt-4 pb-2">
-        <h3 class="text-xs font-extrabold uppercase tracking-wider transition-colors" [class]="column.textColor">
-          {{ column.title }}
-        </h3>
-        <span
-          class="flex h-6 w-6 items-center justify-center rounded-md bg-card text-[10px] font-bold text-muted-foreground shadow-sm border border-border/50">
-          {{ column.applications.length }}
-        </span>
+      class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/30 pb-2 border border-border/40 shadow-sm transition-all duration-300">
+
+      <!-- Header Pill/Bar Design -->
+      <div class="px-2 pt-2">
+        <div class="flex items-center justify-between px-4 py-2 rounded-xl border border-border/10 shadow-xs"
+          [class]="column.borderColor + ' ' + column.textColor + ' ' + (column.id === 'archive' ? 'bg-zinc-900/50' : 'bg-white/50 dark:bg-slate-900/50')">
+          <h3 class="text-[11px] font-black uppercase tracking-[0.2em]">
+            {{ column.title }}
+          </h3>
+          <span
+            class="flex items-center justify-center px-2 py-0.5 rounded-lg bg-black/5 dark:bg-white/5 text-[10px] font-black tabular-nums border border-black/5 dark:border-white/5">
+            {{ column.applications.length }}
+          </span>
+        </div>
       </div>
 
       <!-- Drop List -->
@@ -37,8 +40,8 @@
           <div *cdkDragPlaceholder class="mb-3 h-24 rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5">
           </div>
 
-          <app-kanban-card [application]="app" (openWorkstation)="onOpenWorkstation($event)"
-            (statusChange)="statusChange.emit($event)"></app-kanban-card>
+          <app-kanban-card [application]="app" [columnId]="column.id" [allowedStatuses]="column.statuses"
+            (openWorkstation)="onOpenWorkstation($event)" (statusChange)="statusChange.emit($event)"></app-kanban-card>
         </div>
         }
 

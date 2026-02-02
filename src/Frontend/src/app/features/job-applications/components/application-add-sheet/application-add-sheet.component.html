@@ -38,6 +38,12 @@
                 </div>
 
                 <div class="grid gap-2">
+                    <label hlmLabel>Team / Department <span
+                            class="text-muted-foreground font-normal">(Optional)</span></label>
+                    <input hlmInput formControlName="department" placeholder="e.g. YouTube Team, Cloud Platform..." />
+                </div>
+
+                <div class="grid gap-2">
                     <label hlmLabel>Status</label>
                     <brn-select class="w-full" formControlName="status" placeholder="Select Status">
                         <hlm-select-trigger class="w-full">
@@ -53,7 +59,6 @@
 
                 <div class="grid gap-2">
                     <label hlmLabel>Priority</label>
-                    <!-- Using simple radio/segment styling for now since hlm-toggle-group might not be imported yet, using simple button group concept or native radio mocks -->
                     <div class="flex gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-md">
                         <button type="button" class="flex-1 py-1 px-3 rounded text-sm font-medium transition-colors"
                             [class.bg-white]="form.get('priority')?.value === JobPriority.Low"
@@ -101,7 +106,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <hlm-sheet-footer>

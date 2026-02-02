@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
+import { getStatusStyle, getStatusStyles } from '../../models/status-styles.util';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock, lucideExternalLink } from '@ng-icons/lucide';
@@ -53,18 +54,12 @@ export class ApplicationRowComponent {
 
     // Computed: Status label
     statusLabel = computed(() => {
-        const status = this.application().status;
-        switch (status) {
-            case JobApplicationStatus.Applied: return 'Applied';
-            case JobApplicationStatus.PhoneScreen: return 'Phone Screen';
-            case JobApplicationStatus.TechnicalTask: return 'Tech Task';
-            case JobApplicationStatus.Interviewing: return 'Interviewing';
-            case JobApplicationStatus.Offer: return 'Offer';
-            case JobApplicationStatus.Accepted: return 'Accepted';
-            case JobApplicationStatus.Rejected: return 'Rejected';
-            case JobApplicationStatus.Ghosted: return 'Ghosted';
-            default: return 'Unknown';
-        }
+        return getStatusStyle(this.application().status).label;
+    });
+
+    // Computed: Status Text Color (classes)
+    statusTextClass = computed(() => {
+        return getStatusStyle(this.application().status).columnText;
     });
 
     // Computed: Pipeline depth for progress bar
@@ -188,10 +183,11 @@ export class ApplicationRowComponent {
         const status = this.application().status;
 
         if (step <= depth) {
-            if (status === JobApplicationStatus.Offer || status === JobApplicationStatus.Accepted) {
-                return 'bg-emerald-500';
-            }
-            return 'bg-primary';
+            // Map status to its semantic color for the progress bar
+            const style = getStatusStyle(status);
+            // Extract the color name from the columnText (e.g., 'text-emerald-500' -> 'bg-emerald-500')
+            const colorClass = style.columnText.replace('text-', 'bg-');
+            return colorClass;
         }
         return 'bg-secondary';
     }

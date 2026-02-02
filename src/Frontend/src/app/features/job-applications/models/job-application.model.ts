@@ -9,6 +9,8 @@ export interface JobApplication {
   position: string;
   companyId: string;
   companyName?: string; // Hydrated from backend
+  department?: string; // e.g. "YouTube Team" or "Ads"
+  referenceId?: string; // e.g. "JOB-12345"
 
   // Status & Metadata
   status: JobApplicationStatus;
@@ -49,6 +51,8 @@ export interface JobApplication {
 export interface CreateJobApplication {
   position: string;
   companyId: string;
+  department?: string;
+  referenceId?: string;
   jobUrl?: string;
   jobDescription?: string; // Full job posting text for AI analysis
   description?: string; // Private notes (salary, thoughts, etc.)

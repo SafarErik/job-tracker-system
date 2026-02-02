@@ -22,6 +22,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
+import { getStatusStyle, getStatusBadgeClasses } from '../../models/status-styles.util';
 import {
     AiAnalysisResult,
     InterviewQuestion,
@@ -470,33 +471,12 @@ export class JobWorkstationComponent implements OnInit {
 
     getStatusLabel(status: JobApplicationStatus | undefined): string {
         if (status === undefined) return 'Unknown';
-        return this.statusOptions.find((o) => o.value === status)?.label || 'Unknown';
+        return getStatusStyle(status).label;
     }
 
     getStatusClass(status: JobApplicationStatus | undefined): string {
-        const base = 'text-sm px-3 py-1.5 font-medium border transition-all duration-300';
-        if (status === undefined) return base;
-
-        switch (status as JobApplicationStatus) {
-            case JobApplicationStatus.Applied:
-                return `${base} bg-info/10 text-info border-info/20`;
-            case JobApplicationStatus.PhoneScreen:
-                return `${base} bg-info/15 text-info border-info/30`;
-            case JobApplicationStatus.TechnicalTask:
-                return `${base} bg-warning/10 text-warning border-warning/20`;
-            case JobApplicationStatus.Interviewing:
-                return `${base} bg-primary/10 text-primary border-primary/20`;
-            case JobApplicationStatus.Offer:
-                return `${base} bg-success/15 text-success border-success/30`;
-            case JobApplicationStatus.Accepted:
-                return `${base} bg-success/10 text-success border-success/20`;
-            case JobApplicationStatus.Rejected:
-                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
-            case JobApplicationStatus.Ghosted:
-                return `${base} bg-muted text-muted-foreground border-border`;
-            default:
-                return `${base} bg-secondary text-secondary-foreground border-border`;
-        }
+        if (status === undefined) return 'px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border bg-secondary/10 text-secondary-foreground border-secondary/20';
+        return getStatusBadgeClasses(status);
     }
 
     getJobTypeLabel(type: JobType | undefined): string {

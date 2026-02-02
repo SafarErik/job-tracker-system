@@ -80,7 +80,7 @@ export class ApplicationsComponent implements OnInit {
     { id: 'inbox', label: 'Inbox' },
     { id: 'active', label: 'Active' },
     { id: 'offers', label: 'Offers' },
-    { id: 'archived', label: 'Archived' },
+    { id: 'archive', label: 'Archive' },
   ];
 
   // Logic to filter applications based on category (4 Buckets)
@@ -115,7 +115,7 @@ export class ApplicationsComponent implements OnInit {
           JobApplicationStatus.Accepted
         ].includes(app.status));
         break;
-      case 'archived':
+      case 'archive':
         filtered = filtered.filter(app => [
           JobApplicationStatus.Rejected,
           JobApplicationStatus.Ghosted

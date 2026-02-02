@@ -16,7 +16,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { ApplicationKanbanCardComponent } from './application-kanban-card.component';
 
 /**
- * Bucket Column Configuration (5 Columns)
+ * Bucket Column Configuration (4 Columns)
  * Each column can contain multiple statuses
  */
 interface BucketColumn {
@@ -50,52 +50,44 @@ export class ApplicationKanbanComponent {
 
   constructor(private readonly router: Router) { }
 
-  // Computed Columns (5 Buckets)
+  // Computed Columns (4 Buckets)
   columns = computed(() => {
     const apps = this.apps();
 
-    // Define 5 bucket columns
+    // Define 4 bucket columns (Agglomerations)
     const cols: BucketColumn[] = [
       {
         id: 'inbox',
         title: 'Inbox',
         statuses: [JobApplicationStatus.Applied],
-        borderColor: 'border-slate-500',
+        borderColor: 'border-slate-500/20',
         textColor: 'text-slate-500',
-        applications: [],
-      },
-      {
-        id: 'screening',
-        title: 'Screening',
-        statuses: [JobApplicationStatus.PhoneScreen],
-        borderColor: 'border-sky-500',
-        textColor: 'text-sky-500',
         applications: [],
       },
       {
         id: 'active',
         title: 'Active',
-        statuses: [JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing],
-        borderColor: 'border-violet-500',
-        textColor: 'text-violet-500',
+        statuses: [JobApplicationStatus.PhoneScreen, JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing],
+        borderColor: 'border-indigo-500/20',
+        textColor: 'text-indigo-400',
         applications: [],
       },
       {
         id: 'offers',
         title: 'Offers',
         statuses: [JobApplicationStatus.Offer, JobApplicationStatus.Accepted],
-        borderColor: 'border-emerald-500',
-        textColor: 'text-emerald-500',
+        borderColor: 'border-emerald-500/20',
+        textColor: 'text-emerald-400',
         applications: [],
       },
       {
         id: 'archive',
         title: 'Archive',
         statuses: [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted],
-        borderColor: 'border-slate-400',
-        textColor: 'text-slate-400',
+        borderColor: 'border-zinc-800',
+        textColor: 'text-zinc-500',
         applications: [],
-        limit: 20, // Performance limit
+        limit: 25, // Performance limit
       },
     ];
 
@@ -143,11 +135,10 @@ export class ApplicationKanbanComponent {
    */
   private getStatusFromColumnId(id: string): JobApplicationStatus | undefined {
     switch (id) {
-      case 'active': return JobApplicationStatus.Interviewing;
-      case 'archive': return JobApplicationStatus.Rejected;
-      case 'screening': return JobApplicationStatus.PhoneScreen;
       case 'inbox': return JobApplicationStatus.Applied;
+      case 'active': return JobApplicationStatus.PhoneScreen; // Entry point to active
       case 'offers': return JobApplicationStatus.Offer;
+      case 'archive': return JobApplicationStatus.Rejected;
       default: return undefined;
     }
   }

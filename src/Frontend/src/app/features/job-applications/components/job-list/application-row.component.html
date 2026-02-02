@@ -18,7 +18,7 @@
     <div class="flex flex-col gap-1.5 min-w-[140px]">
         <div class="flex items-center gap-1.5">
             <div class="h-1.5 w-1.5 rounded-full" [class]="getStepClass(statusDepth())"></div>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
+            <span class="text-[10px] font-bold uppercase tracking-wider" [class]="statusTextClass()">
                 {{ statusLabel() }}
             </span>
         </div>

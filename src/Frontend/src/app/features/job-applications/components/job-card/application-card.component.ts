@@ -18,6 +18,7 @@ import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
+import { getStatusBadgeClasses } from '../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     lucideZap,
@@ -30,6 +31,8 @@ import {
     lucideClock,
     lucideFlame,
     lucideStar,
+    lucideMapPin,
+    lucideCalendar,
 } from '@ng-icons/lucide';
 
 /**
@@ -61,6 +64,8 @@ import {
             lucideClock,
             lucideFlame,
             lucideStar,
+            lucideMapPin,
+            lucideCalendar,
         }),
     ],
     templateUrl: './application-card.component.html',
@@ -249,30 +254,7 @@ export class JobCardComponent {
      * Get consistent tailwind classes for status badges
      */
     getStatusClasses(status: JobApplicationStatus): string {
-        const base = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border';
-
-        switch (status) {
-            case JobApplicationStatus.Applied:
-                return `${base} bg-primary/10 text-primary border-primary/20`;
-
-            case JobApplicationStatus.PhoneScreen:
-            case JobApplicationStatus.TechnicalTask:
-            case JobApplicationStatus.Interviewing:
-                return `${base} bg-amber-500/10 text-amber-500 border-amber-500/20 animate-pulse`;
-
-            case JobApplicationStatus.Offer:
-                return `${base} bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]`;
-
-            case JobApplicationStatus.Accepted:
-                return `${base} bg-emerald-500/10 text-emerald-500 border-emerald-500/20`;
-
-            case JobApplicationStatus.Rejected:
-            case JobApplicationStatus.Ghosted:
-                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
-
-            default:
-                return `${base} bg-muted/10 text-muted-foreground border-muted/20`;
-        }
+        return getStatusBadgeClasses(status);
     }
 
     // Computed: Status label

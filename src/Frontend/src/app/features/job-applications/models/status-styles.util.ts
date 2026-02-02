@@ -18,19 +18,8 @@ export interface StatusStyle {
 }
 
 /**
- * Semantic Status Palette
- * 
- * Active Statuses (Tinted Glass):
- * - PhoneScreen: Sky
- * - TechnicalTask: Amber  
- * - Interviewing: Violet
- * - Offer/Accepted: Emerald
- * 
- * Inbox Status:
- * - Applied: Slate/Neutral
- * 
- * Archived Statuses (Ghost Pattern):
- * - Rejected/Ghosted: Muted with opacity-60 grayscale on container
+ * Semantic Status Palette - "Gradient of Progress"
+ * Uses "Tinted Glass" aesthetic: low opacity bg, solid text, medium opacity border.
  */
 export const STATUS_STYLES: Record<JobApplicationStatus, StatusStyle> = {
     [JobApplicationStatus.Applied]: {
@@ -58,30 +47,28 @@ export const STATUS_STYLES: Record<JobApplicationStatus, StatusStyle> = {
         columnText: 'text-violet-500',
     },
     [JobApplicationStatus.Offer]: {
-        badge: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]',
+        badge: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
         label: 'Offer Received',
         columnBorder: 'border-emerald-500',
         columnText: 'text-emerald-500',
     },
     [JobApplicationStatus.Accepted]: {
-        badge: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+        badge: 'bg-teal-500/10 text-teal-500 border-teal-500/20',
         label: 'Accepted',
-        columnBorder: 'border-emerald-500',
-        columnText: 'text-emerald-500',
+        columnBorder: 'border-teal-500',
+        columnText: 'text-teal-500',
     },
     [JobApplicationStatus.Rejected]: {
-        badge: 'bg-slate-200/10 text-slate-500 border-slate-300/20',
+        badge: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
         label: 'Rejected',
-        containerModifier: 'opacity-60 grayscale',
-        columnBorder: 'border-slate-400',
-        columnText: 'text-slate-400',
+        columnBorder: 'border-rose-500',
+        columnText: 'text-rose-500',
     },
     [JobApplicationStatus.Ghosted]: {
-        badge: 'bg-slate-200/10 text-slate-500 border-slate-300/20',
+        badge: 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20',
         label: 'Ghosted',
-        containerModifier: 'opacity-60 grayscale',
-        columnBorder: 'border-slate-400',
-        columnText: 'text-slate-400',
+        columnBorder: 'border-zinc-500',
+        columnText: 'text-zinc-500',
     },
 };
 
@@ -93,11 +80,19 @@ export function getStatusStyle(status: JobApplicationStatus): StatusStyle {
 }
 
 /**
- * Get badge classes for a status
+ * Get the semantic Tailwind classes for a status badge
+ * Returns a string of BG, Text, and Border classes.
+ */
+export function getStatusStyles(status: JobApplicationStatus): string {
+    return getStatusStyle(status).badge;
+}
+
+/**
+ * Get badge classes for a status (Enhanced with pulse animation)
  */
 export function getStatusBadgeClasses(status: JobApplicationStatus): string {
     const base = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border';
-    const style = getStatusStyle(status);
+    const styles = getStatusStyles(status);
 
     // Add pulse animation for active interviewing statuses
     const isActive = [
@@ -106,7 +101,7 @@ export function getStatusBadgeClasses(status: JobApplicationStatus): string {
         JobApplicationStatus.Interviewing,
     ].includes(status);
 
-    return `${base} ${style.badge}${isActive ? ' animate-pulse' : ''}`;
+    return `${base} ${styles}${isActive ? ' animate-pulse' : ''}`;
 }
 
 /**

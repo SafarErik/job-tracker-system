@@ -12,6 +12,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
+import { getStatusBadgeClasses, getStatusStyle } from '../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
 
@@ -78,21 +79,7 @@ export class ApplicationKanbanCardComponent {
 
     // Computed: Status Badge Classes
     statusBadgeClass = computed(() => {
-        switch (this.application().status) {
-            case JobApplicationStatus.Offer:
-            case JobApplicationStatus.Accepted:
-                return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
-            case JobApplicationStatus.Rejected:
-            case JobApplicationStatus.Ghosted:
-                return 'bg-destructive/10 text-destructive border-destructive/20';
-            case JobApplicationStatus.TechnicalTask:
-            case JobApplicationStatus.Interviewing:
-                return 'bg-violet-500/10 text-violet-500 border-violet-500/20';
-            case JobApplicationStatus.PhoneScreen:
-                return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-            default:
-                return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
-        }
+        return getStatusBadgeClasses(this.application().status);
     });
 
     // Computed: Status Label
@@ -101,22 +88,20 @@ export class ApplicationKanbanCardComponent {
     });
 
     getStatusLabel(status: JobApplicationStatus): string {
-        switch (status) {
-            case JobApplicationStatus.Applied: return 'Applied';
-            case JobApplicationStatus.PhoneScreen: return 'Screening';
-            case JobApplicationStatus.TechnicalTask: return 'Tech Task';
-            case JobApplicationStatus.Interviewing: return 'Interview';
-            case JobApplicationStatus.Offer: return 'Offer';
-            case JobApplicationStatus.Accepted: return 'Accepted';
-            case JobApplicationStatus.Rejected: return 'Rejected';
-            case JobApplicationStatus.Ghosted: return 'Ghosted';
-            default: return 'Unknown';
-        }
+        return getStatusStyle(status).label;
     }
 
-    // Status Options for Dropdown
-    statusOptions = Object.values(JobApplicationStatus)
-        .filter(val => typeof val === 'number') as JobApplicationStatus[];
+    // Column Context for Restricting Status Options
+    columnId = input.required<string>();
+    allowedStatuses = input.required<JobApplicationStatus[]>();
+
+    // Computed: Filtered Status Options for Dropdown
+    statusOptions = computed(() => {
+        if (this.columnId() === 'inbox') return [];
+        return this.allowedStatuses();
+    });
+
+    isDropdownDisabled = computed(() => this.columnId() === 'inbox');
 
     onLogoError() {
         this.logoFailed.set(true);

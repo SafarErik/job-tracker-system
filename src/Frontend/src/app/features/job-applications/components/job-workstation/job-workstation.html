@@ -89,8 +89,8 @@
 
           <!-- Status -->
           <button [hlmDropdownMenuTrigger]="statusMenu"
-            class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border-none ring-1 ring-border/40"
-            [ngClass]="getStatusClass(store.selectedApplication()?.status)">
+            class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border ring-1 ring-border/10"
+            [class]="getStatusClass(store.selectedApplication()?.status)">
             <span class="font-bold tracking-wide">{{ getStatusLabel(store.selectedApplication()?.status) }}</span>
             <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
           </button>

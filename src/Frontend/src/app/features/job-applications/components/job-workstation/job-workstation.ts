@@ -2,10 +2,12 @@ import {
   Component,
   OnInit,
   signal,
+  computed,
   ChangeDetectionStrategy,
   inject,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -16,6 +18,8 @@ import { BreadcrumbService } from '../../../../core/services/breadcrumb.service'
 import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { getStatusStyle } from '../../models/status-styles.util';
+import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
+import { JobTypePipe } from '../../pipes/job-type.pipe';
 
 // Spartan UI
 // ...
@@ -58,9 +62,17 @@ import {
   lucideLinkedin,
   lucideRotateCw,
   lucideArrowLeft,
-  lucideSearch,
-  lucideCommand
+  lucideCommand,
+  lucideCheckCircle2,
+  lucideAlertCircle,
+  lucideLink
 } from '@ng-icons/lucide';
+
+interface GapAnalysisItem {
+  name: string;
+  matched: boolean;
+  suggestion?: string;
+}
 
 @Component({
   selector: 'app-job-workstation',
@@ -77,7 +89,9 @@ import {
     ...HlmButtonImports,
     ...HlmBadgeImports,
     ...HlmBreadCrumbImports,
-    ...HlmDropdownMenuImports
+    ...HlmDropdownMenuImports,
+    JobPriorityPipe,
+    JobTypePipe
   ],
   providers: [
     provideIcons({
@@ -108,8 +122,10 @@ import {
       lucideLinkedin,
       lucideRotateCw,
       lucideArrowLeft,
-      lucideSearch,
-      lucideCommand
+      lucideCommand,
+      lucideCheckCircle2,
+      lucideAlertCircle,
+      lucideLink
     })
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -129,6 +145,53 @@ export class JobWorkstationComponent implements OnInit {
   // Workstation State
   currentPhase = signal<'strategy' | 'assets' | 'interview'>('strategy');
   isCommandBarOpen = signal(false);
+
+  private readonly sanitizer = inject(DomSanitizer);
+
+  // Computed: Highlighted Job Description
+  highlightedDescription = computed<SafeHtml | null>(() => {
+    const desc = this.store.selectedApplication()?.jobDescription;
+    if (!desc) return null;
+
+    const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems'];
+
+    let html = desc.replace(/\n/g, '<br>');
+
+    keywords.forEach(kw => {
+      const regex = new RegExp(`(${kw})`, 'gi');
+      html = html.replace(regex, '<span class="bg-violet-500/20 text-violet-300 px-1 rounded">$1</span>');
+    });
+
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  });
+
+  // Computed: Line Numbers
+  lineNumbers = computed(() => {
+    const desc = this.store.selectedApplication()?.jobDescription;
+    if (!desc) return [];
+    const lines = desc.split('\n').length;
+    return Array.from({ length: lines }, (_, i) => i + 1);
+  });
+
+  // Computed: Gap Analysis
+  gapAnalysis = computed<GapAnalysisItem[]>(() => {
+    const app = this.store.selectedApplication();
+    if (!app) return [];
+
+    const matchedSkills = app.skills || [];
+    // For demo purposes, we'll suggest some missing skills if the list is short
+    const commonTech = ['Unit Testing', 'AWS', 'Docker', 'GraphQL', 'CI/CD'];
+    const missing = commonTech.filter(s => !matchedSkills.includes(s)).slice(0, 2);
+
+    return [
+      ...matchedSkills.map(s => ({ name: s, matched: true } as GapAnalysisItem)),
+      ...missing.map(s => ({
+        name: s,
+        matched: false,
+        suggestion: `Consider adding ${s} projects to your portfolio.`
+      } as GapAnalysisItem))
+    ];
+  });
 
   // Expose types for template
   readonly Phase = {

@@ -54,7 +54,7 @@ import { AuthService } from '../../../core/auth/auth.service';
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'border-r border-sidebar-border shadow-[4px_0_24px_-12px_rgba(0,0,0,0.5)]'
+    'class': 'border-r border-sidebar-border bg-sidebar-background'
   }
 })
 export class SidebarComponent {

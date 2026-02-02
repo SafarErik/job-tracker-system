@@ -1,7 +1,6 @@
 <div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-['Inter']">
   <!-- Top Bar -->
-  <header
-    class="h-16 border-b border-zinc-800 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
+  <header class="h-16 border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50 px-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
       <button (click)="goBack()"
         class="p-2 hover:bg-zinc-900 rounded-lg transition-colors text-zinc-400 hover:text-zinc-100">
@@ -64,105 +63,157 @@
     <div class="max-w-[1400px] mx-auto">
       @switch (currentPhase()) {
       @case (Phase.Strategy) {
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <!-- Left Column: Context -->
-        <div class="space-y-6">
-          <div class="p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 backdrop-blur-xl">
-            <h3 class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
-              <ng-icon name="lucideTarget" class="text-violet-500"></ng-icon>
-              Mission Intel
-            </h3>
-            <div class="space-y-4">
-              <div class="flex justify-between items-center py-3 border-b border-zinc-800/50">
-                <span class="text-zinc-500 text-sm">Priority</span>
-                <span class="text-zinc-200 text-sm font-medium">Critical</span>
-              </div>
-              <div class="flex justify-between items-center py-3 border-b border-zinc-800/50">
-                <span class="text-zinc-500 text-sm">Match Score</span>
-                <span class="text-emerald-400 text-sm font-bold">94%</span>
-              </div>
-              <div class="flex justify-between items-center py-3">
-                <span class="text-zinc-500 text-sm">Workplace</span>
-                <span class="text-zinc-200 text-sm font-medium">Hybrid (SF)</span>
-              </div>
-            </div>
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-220px)] animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+        <!-- Left Column: Job Context (Scrollable) -->
+        <div
+          class="flex flex-col min-h-0 bg-zinc-900/30 border border-zinc-800/50 rounded-3xl overflow-hidden group/context">
+          <div class="px-6 py-4 border-b border-zinc-800/50 bg-zinc-900/20 flex items-center justify-between">
+            <h3 class="text-xs font-serif font-bold text-zinc-500 uppercase tracking-widest">Job Context</h3>
+            @if (highlightedDescription()) {
+            <button
+              class="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors uppercase font-bold tracking-tighter">Edit
+              Description</button>
+            }
           </div>
-          <div
-            class="p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 backdrop-blur-xl group hover:border-violet-500/30 transition-all cursor-pointer">
-            <h3
-              class="text-sm font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center justify-between">
-              Timeline
-              <ng-icon name="lucideActivity"
-                class="text-zinc-600 group-hover:text-violet-500 transition-colors"></ng-icon>
-            </h3>
-            <div
-              class="space-y-6 relative before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-zinc-800">
-              <div class="relative pl-8">
-                <div
-                  class="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.5)]">
-                </div>
-                <p class="text-sm text-zinc-200 font-medium">Applied</p>
-                <p class="text-xs text-zinc-500">Feb 02, 2026</p>
+
+          <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800">
+            @if (highlightedDescription()) {
+            <div class="flex min-h-full">
+              <!-- Line Numbers -->
+              <div
+                class="w-12 py-6 bg-zinc-950/20 border-r border-zinc-800/50 flex flex-col items-center select-none shrink-0">
+                @for (num of lineNumbers(); track num) {
+                <span class="text-[10px] font-mono text-zinc-600 leading-relaxed block h-5">{{ num }}</span>
+                }
+              </div>
+              <!-- Content -->
+              <div
+                class="flex-1 p-6 font-mono text-sm text-zinc-300/90 leading-relaxed whitespace-pre-wrap select-text selection:bg-violet-500/30"
+                [innerHTML]="highlightedDescription()">
               </div>
             </div>
+            } @else {
+            <!-- Enhanced Empty State -->
+            <div
+              class="h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-700">
+              <div
+                class="w-20 h-20 rounded-3xl bg-zinc-900 flex items-center justify-center mb-6 shadow-inner border border-zinc-800">
+                <ng-icon name="lucideFileText" class="text-4xl text-zinc-800"></ng-icon>
+              </div>
+              <h4 class="text-lg font-sans font-bold text-zinc-200 mb-2">No Job Description Detected</h4>
+              <p class="text-xs text-zinc-500 max-w-xs mb-8 leading-relaxed">
+                Analyze the specific role requirements to unlock tailored strategy and gap analysis.
+              </p>
+
+              <div class="w-full max-w-sm space-y-4">
+                <div class="relative group">
+                  <ng-icon name="lucideLink"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-violet-500 transition-colors"></ng-icon>
+                  <input type="text" placeholder="Paste Job URL..."
+                    class="w-full h-12 pl-11 pr-4 bg-zinc-950 border border-zinc-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50 transition-all placeholder:text-zinc-700">
+                </div>
+
+                <button
+                  class="w-full h-12 rounded-2xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2 group/btn">
+                  <ng-icon name="lucideSparkles" class="text-lg group-hover:rotate-12 transition-transform"></ng-icon>
+                  Magic Auto-Fill
+                </button>
+
+                <div class="flex items-center gap-4 py-2">
+                  <div class="h-px flex-1 bg-zinc-800/50"></div>
+                  <span class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">or</span>
+                  <div class="h-px flex-1 bg-zinc-800/50"></div>
+                </div>
+
+                <button
+                  class="w-full py-2 text-xs font-sans font-bold text-zinc-400 hover:text-zinc-200 transition-colors uppercase tracking-widest">
+                  Paste Text Manually
+                </button>
+              </div>
+            </div>
+            }
           </div>
         </div>
 
-        <!-- Center Column: Strategy Lab -->
-        <div class="lg:col-span-2 space-y-6">
-          <div
-            class="p-8 rounded-[40px] bg-linear-to-br from-zinc-900 to-zinc-950 border border-zinc-800 shadow-2xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 p-8">
-              <ng-icon name="lucideSparkles"
-                class="text-4xl text-violet-500/20 group-hover:text-violet-500/40 transition-all"></ng-icon>
-            </div>
-            <h2 class="text-3xl font-bold tracking-tight mb-4">Position Strategy</h2>
-            <p class="text-zinc-400 leading-relaxed mb-8 max-w-xl">
-              AI has identified that this role prioritizes <span class="text-violet-400 font-medium">System
-                Scalability</span> and <span class="text-violet-400 font-medium">Frontend Excellence</span>. Focus your
-              narrative on high-traffic Angular optimizations.
-            </p>
-            <div class="grid grid-cols-2 gap-4">
-              <div
-                class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-violet-500/30 transition-all group/card">
-                <ng-icon name="lucideZap" class="text-2xl text-violet-400 mb-3"></ng-icon>
-                <h4 class="font-bold text-zinc-200 mb-1">Key Advantage</h4>
-                <p class="text-xs text-zinc-500">Your 3 years in Fintech matches 100% of the domain requirements.</p>
+        <!-- Right Column: Intelligence -->
+        <div class="flex flex-col gap-6 overflow-y-auto pr-2 scrollbar-none">
+
+          <!-- Compact Mission Intel -->
+          <div class="p-5 rounded-3xl bg-zinc-900/50 border border-zinc-800 shrink-0">
+            <h3
+              class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
+              <ng-icon name="lucideTarget" class="text-violet-500"></ng-icon>
+              Mission Intel
+            </h3>
+            <div class="grid grid-cols-3 gap-6">
+              <div class="p-3">
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Priority</p>
+                <p class="text-xl font-bold text-zinc-100">{{ store.selectedApplication()?.priority | jobPriority }}</p>
               </div>
-              <div
-                class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800 hover:border-emerald-500/30 transition-all group/card">
-                <ng-icon name="lucideLightbulb" class="text-2xl text-emerald-400 mb-3"></ng-icon>
-                <h4 class="font-bold text-zinc-200 mb-1">AI Recommendation</h4>
-                <p class="text-xs text-zinc-500">Highlight your experience with Angular Signals for reactive state.</p>
+              <div class="p-3">
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Match Score</p>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-xl font-bold text-emerald-400">{{ store.selectedApplication()?.matchScore }}</span>
+                  <span class="text-xs text-emerald-500/60 font-medium">%</span>
+                </div>
+              </div>
+              <div class="p-3">
+                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-1.5">Type</p>
+                <p class="text-xl font-bold text-zinc-100">{{ store.selectedApplication()?.jobType | jobType }}</p>
               </div>
             </div>
           </div>
 
-          <div class="p-1 border border-zinc-800 rounded-[32px] bg-zinc-900/30">
-            <div class="bg-zinc-950 rounded-[30px] p-8">
-              <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
-                <ng-icon name="lucideClipboardList" class="text-zinc-500"></ng-icon>
-                Action Items
-              </h3>
-              <div class="space-y-4">
-                <div
-                  class="flex items-center gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 group hover:border-zinc-700 transition-all">
-                  <div
-                    class="w-6 h-6 rounded border border-zinc-700 flex items-center justify-center group-hover:border-violet-500 transition-colors">
+          <!-- Gap Analysis -->
+          <div class="p-6 rounded-[32px] bg-zinc-900/50 border border-zinc-800 flex-1 min-h-0">
+            <h3
+              class="text-sm font-serif font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
+              <ng-icon name="lucideBrain" class="text-violet-500"></ng-icon>
+              Gap Analysis
+            </h3>
+
+            <div class="space-y-4">
+              @for (item of gapAnalysis(); track item.name) {
+              <div class="p-4 rounded-2xl border transition-all"
+                [class]="item.matched ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-destructive/5 border-destructive/20'">
+
+                <div class="flex items-start gap-3">
+                  <div class="mt-0.5">
+                    @if (item.matched) {
+                    <ng-icon name="lucideCheckCircle2" class="text-emerald-500 text-lg"></ng-icon>
+                    } @else {
+                    <ng-icon name="lucideAlertCircle" class="text-destructive text-lg"></ng-icon>
+                    }
                   </div>
-                  <span class="text-zinc-300 text-sm">Refine resume bullet for "Performance Optimization"</span>
-                </div>
-                <div
-                  class="flex items-center gap-4 p-4 rounded-2xl bg-zinc-900/50 border border-zinc-800 group hover:border-zinc-700 transition-all">
-                  <div
-                    class="w-6 h-6 rounded border border-zinc-700 flex items-center justify-center group-hover:border-violet-500 transition-colors text-violet-500">
-                    <ng-icon name="lucideChevronRight"></ng-icon>
+                  <div class="flex-1">
+                    <h4 class="text-sm font-bold" [class.text-emerald-400]="item.matched"
+                      [class.text-destructive]="!item.matched">
+                      {{ item.name }}
+                    </h4>
+                    @if (!item.matched) {
+                    <p class="text-xs text-zinc-500 mt-1 leading-tight">{{ item.suggestion }}</p>
+                    }
                   </div>
-                  <span class="text-zinc-300 text-sm">Request referral from LinkedIn contact</span>
                 </div>
               </div>
+              }
+            </div>
+
+            <!-- Position Strategy (Embedded) -->
+            <div class="mt-8 pt-6 border-t border-zinc-800">
+              <div class="flex items-center gap-2 mb-4">
+                <ng-icon name="lucideSparkles" class="text-violet-500"></ng-icon>
+                <h4 class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-400">Position Strategy</h4>
+              </div>
+              <p class="text-xs text-zinc-400 leading-relaxed italic">
+                Focus your narrative on <span class="text-violet-400 font-medium">System Scalability</span> and <span
+                  class="text-violet-400 font-medium">Frontend Excellence</span>.
+              </p>
             </div>
           </div>
+
         </div>
       </div>
       }

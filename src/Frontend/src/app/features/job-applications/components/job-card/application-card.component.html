@@ -13,9 +13,7 @@
         <img [src]="logoUrl()" [alt]="application().companyName" class="h-full w-full object-contain p-1"
           (error)="onLogoError()">
         } @else {
-        <span class="text-sm font-bold text-muted-foreground uppercase">
-          {{ (application().companyName || '?').charAt(0) }}
-        </span>
+        <app-logo-placeholder [companyName]="application().companyName || '?'"></app-logo-placeholder>
         }
       </div>
       <!-- Company Name -->

@@ -14,6 +14,7 @@ import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
+import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 
 /**
  * Job Card Component
@@ -26,6 +27,7 @@ import { JobPriority } from '../../models/job-priority.enum';
         CommonModule,
         HlmCard,
         ...HlmButtonImports,
+        LogoPlaceholderComponent,
     ],
     templateUrl: './application-card.component.html',
     styleUrl: './application-card.component.css',
@@ -107,8 +109,15 @@ export class JobCardComponent {
         const base =
             'group relative w-full flex flex-col cursor-pointer bg-card rounded-2xl border transition-all duration-300 ease-out shadow-sm';
 
+        const score = this.application().matchScore || 0;
+        let borderColor = 'border-border/50';
+
+        if (score >= 80) borderColor = 'border-emerald-500/20';
+        else if (score >= 50) borderColor = 'border-amber-500/20';
+        else borderColor = 'border-slate-500/10';
+
         if (this.isDead()) {
-            return `${base} border-white/5 opacity-60 grayscale hover:opacity-100 hover:grayscale-0`;
+            return `${base} ${borderColor} opacity-60 grayscale hover:opacity-100 hover:grayscale-0 shadow-none`;
         }
 
         if (this.isOffer()) {
@@ -120,7 +129,7 @@ export class JobCardComponent {
         }
 
         // Standard Card: Premium Primary Gradient Border effect
-        return `${base} p-[1px] bg-linear-to-br from-primary/40 via-primary/20 to-primary/40 border-0 hover:from-primary hover:via-primary/80 hover:to-primary hover:-translate-y-1.5 hover:shadow-xl`;
+        return `${base} ${borderColor} hover:border-primary/50 hover:-translate-y-1.5 hover:shadow-xl`;
     });
 
     // Computed: Status Strip Color (The Left Border)
@@ -209,29 +218,29 @@ export class JobCardComponent {
      * Get consistent tailwind classes for status badges
      */
     getStatusClasses(status: JobApplicationStatus): string {
-        const base = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300';
+        const base = 'px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border';
 
         switch (status) {
             case JobApplicationStatus.Applied:
-                return `${base} bg-blue-500/10 text-blue-500 border border-blue-500/20`;
+                return `${base} bg-primary/10 text-primary border-primary/20`;
 
             case JobApplicationStatus.PhoneScreen:
             case JobApplicationStatus.TechnicalTask:
             case JobApplicationStatus.Interviewing:
-                return `${base} bg-amber-500/10 text-amber-500 border border-amber-500/20 animate-pulse`;
+                return `${base} bg-amber-500/10 text-amber-500 border-amber-500/20 animate-pulse`;
 
             case JobApplicationStatus.Offer:
-                return `${base} bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.5)]`;
+                return `${base} bg-emerald-500/10 text-emerald-500 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]`;
 
             case JobApplicationStatus.Accepted:
-                return `${base} bg-emerald-500/10 text-emerald-500 border border-emerald-500/20`;
+                return `${base} bg-emerald-500/10 text-emerald-500 border-emerald-500/20`;
 
             case JobApplicationStatus.Rejected:
             case JobApplicationStatus.Ghosted:
-                return `${base} bg-destructive/10 text-destructive border border-destructive/20`;
+                return `${base} bg-destructive/10 text-destructive border-destructive/20`;
 
             default:
-                return `${base} bg-muted text-muted-foreground`;
+                return `${base} bg-muted/10 text-muted-foreground border-muted/20`;
         }
     }
 

@@ -1,0 +1,98 @@
+<div class="w-full overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead
+                class="bg-secondary/30 text-[10px] uppercase tracking-wider font-bold text-muted-foreground/70 border-b border-border/50">
+                <tr>
+                    <th class="px-6 py-3 font-semibold">Company & Position</th>
+                    <th class="px-6 py-3 font-semibold">Pipeline Depth</th>
+                    <th class="px-6 py-3 font-semibold">Salary</th>
+                    <th class="px-6 py-3 font-semibold">Match</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border/30" #listBody>
+                @for (app of apps(); track app.id) {
+                <tr class="group hover:bg-secondary/10 transition-colors cursor-pointer"
+                    (click)="viewApplicationDetail(app.id)">
+                    <!-- Column 1: Company & Position -->
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 shrink-0 rounded-lg overflow-hidden border border-border/50">
+                                @if (getLogoUrl(app.companyName)) {
+                                <img [src]="getLogoUrl(app.companyName)" [alt]="app.companyName"
+                                    class="h-full w-full object-contain p-1" (error)="onLogoError($event)">
+                                } @else {
+                                <app-logo-placeholder [companyName]="app.companyName || '?'"></app-logo-placeholder>
+                                }
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-sm font-bold text-foreground truncate">{{ app.position }}</div>
+                                <div class="text-xs text-muted-foreground truncate">{{ app.companyName }}</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Column 2: Status / Pipeline Depth -->
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col gap-1.5 min-w-[140px]">
+                            <span [class]="getStatusClasses(app.status)">
+                                {{ getStatusLabel(app.status) }}
+                            </span>
+                            <!-- Segmented Progress Bar -->
+                            <div class="flex gap-1 h-1 w-full">
+                                @for (step of [0, 1, 2, 3, 4]; track step) {
+                                <div class="flex-1 rounded-full transition-all duration-500"
+                                    [class]="getStepClass(app.status, step)">
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Column 3: Salary -->
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-sm font-medium" [class]="getSalaryClass(app.salaryOffer)">
+                                {{ app.salaryOffer ? (app.salaryOffer | currency:'USD':'symbol':'1.0-0') : 'N/A' }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <!-- Column 4: Match Score -->
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="h-1.5 w-12 rounded-full bg-secondary overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000"
+                                    [style.width.%]="app.matchScore || 0" [class]="getMatchScoreClass(app.matchScore)">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold font-mono">{{ app.matchScore || 0 }}%</span>
+                        </div>
+                    </td>
+
+                    <!-- Column 5: Actions -->
+                    <td class="px-4 py-4 text-right">
+                        <div
+                            class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button hlmBtn variant="ghost" size="icon"
+                                class="h-8 w-8 hover:bg-primary/10 hover:text-primary" (click)="onEdit($event, app)">
+                                <ng-icon name="lucidePencil" class="size-4"></ng-icon>
+                            </button>
+                            <button hlmBtn variant="ghost" size="icon"
+                                class="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
+                                (click)="onArchive($event, app)">
+                                <ng-icon name="lucideArchive" class="size-4"></ng-icon>
+                            </button>
+                            <button hlmBtn variant="ghost" size="icon" class="h-8 w-8"
+                                (click)="onExternalLink($event, app.jobUrl)">
+                                <ng-icon name="lucideExternalLink" class="size-4"></ng-icon>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -27,16 +27,16 @@ interface StatusColumn {
 }
 
 @Component({
-  selector: 'app-kanban-board',
+  selector: 'app-application-kanban',
   standalone: true,
   imports: [CommonModule, DragDropModule, JobCardComponent],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KanbanBoardComponent {
+export class ApplicationKanbanComponent {
   // Inputs
-  applications = input.required<JobApplication[]>();
+  apps = input.required<JobApplication[]>();
 
   // Outputs
   statusChange = output<{ applicationId: string; status: JobApplicationStatus }>();
@@ -48,7 +48,7 @@ export class KanbanBoardComponent {
 
   // Computed Columns
   columns = computed(() => {
-    const apps = this.applications();
+    const apps = this.apps();
 
     // Define base columns structure
     const cols: StatusColumn[] = [

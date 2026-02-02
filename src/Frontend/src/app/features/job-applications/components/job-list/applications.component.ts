@@ -12,9 +12,10 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Components
-import { KanbanBoardComponent } from '../kanban-board/kanban-board';
+import { ApplicationKanbanComponent } from '../kanban-board/kanban-board';
+import { ApplicationGridComponent } from './application-grid.component';
+import { ApplicationListComponent } from './application-list.component';
 import { CalendarViewComponent } from '../calendar-view/calendar-view';
-import { JobCardComponent } from '../job-card/application-card.component';
 import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
@@ -24,14 +25,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSlidersHorizontal, lucideLayoutGrid, lucideLayoutList, lucideCalendar } from '@ng-icons/lucide';
-
-export enum ViewMode {
-  Grid = 'grid',
-  List = 'list',
-  Kanban = 'kanban',
-  Calendar = 'calendar',
-}
+import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSlidersHorizontal, lucideLayoutGrid, lucideLayoutList, lucideCalendar, lucideKanban } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-job-list',
@@ -39,7 +33,9 @@ export enum ViewMode {
   imports: [
     CommonModule,
     RouterLink,
-    JobCardComponent,
+    ApplicationGridComponent,
+    ApplicationListComponent,
+    ApplicationKanbanComponent,
     ...HlmButtonImports,
     NgIcon,
   ],
@@ -51,7 +47,8 @@ export enum ViewMode {
     lucideSlidersHorizontal,
     lucideLayoutGrid,
     lucideLayoutList,
-    lucideCalendar
+    lucideCalendar,
+    lucideKanban
   })],
   templateUrl: './applications.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -66,12 +63,10 @@ export class ApplicationsComponent implements OnInit {
   private readonly authService = inject(AuthService);
 
   // Local State
-  currentView = signal<ViewMode>(ViewMode.Grid);
+  viewMode = signal<'grid' | 'kanban' | 'list'>('grid');
   selectedCategory = signal<string>('all');
   searchQuery = signal<string>('');
 
-  // Enums for Template
-  ViewMode = ViewMode;
   Status = JobApplicationStatus;
 
   // Categories for the Segmented Control
@@ -84,7 +79,7 @@ export class ApplicationsComponent implements OnInit {
   ];
 
   // Logic to filter applications based on category
-  filteredByGroup = computed(() => {
+  filteredApps = computed(() => {
     const apps = this.store.applications();
     const category = this.selectedCategory();
     const search = this.searchQuery().toLowerCase();
@@ -152,8 +147,8 @@ export class ApplicationsComponent implements OnInit {
     this.selectedCategory.set(id);
   }
 
-  switchView(mode: ViewMode): void {
-    this.currentView.set(mode);
+  switchView(mode: 'grid' | 'kanban' | 'list'): void {
+    this.viewMode.set(mode);
   }
 
   get hasActiveFilters(): boolean {
@@ -164,8 +159,8 @@ export class ApplicationsComponent implements OnInit {
     );
   }
 
-  isViewActive(mode: ViewMode): boolean {
-    return this.currentView() === mode;
+  isViewActive(mode: 'grid' | 'kanban' | 'list'): boolean {
+    return this.viewMode() === mode;
   }
 
   viewApplicationDetail(id: string): void {

@@ -19,31 +19,73 @@
     </div>
   </div>
 
+  <!-- Command Deck (Metrics Row) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+    <div
+      class="bg-zinc-900/50 border border-zinc-800 p-5 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-colors">
+      <div>
+        <p class="text-[10px] font-sans uppercase tracking-[0.2em] text-zinc-500 mb-1">Total Network</p>
+        <h4 class="text-3xl font-serif text-zinc-100">{{ totalNetwork() }}</h4>
+        <p class="text-[10px] text-zinc-600 font-medium uppercase tracking-wider mt-1">Companies Tracked</p>
+      </div>
+      <div
+        class="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-500 group-hover:text-zinc-300 transition-colors">
+        <ng-icon name="lucideBuilding2" class="h-6 w-6"></ng-icon>
+      </div>
+    </div>
+
+    <div
+      class="bg-zinc-900/50 border border-zinc-800 p-5 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-colors">
+      <div>
+        <p class="text-[10px] font-sans uppercase tracking-[0.2em] text-zinc-500 mb-1">Active Pursuits</p>
+        <h4 class="text-3xl font-serif text-zinc-100">{{ activePursuits() }}</h4>
+        <p class="text-[10px] text-zinc-600 font-medium uppercase tracking-wider mt-1">Current Pipelines</p>
+      </div>
+      <div
+        class="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-500 group-hover:text-zinc-300 transition-colors">
+        <ng-icon name="lucideActivity" class="h-6 w-6"></ng-icon>
+      </div>
+    </div>
+
+    <div
+      class="bg-zinc-900/50 border border-zinc-800 p-5 rounded-xl flex items-center justify-between group hover:border-zinc-700 transition-colors">
+      <div>
+        <p class="text-[10px] font-sans uppercase tracking-[0.2em] text-zinc-500 mb-1">Response Rate</p>
+        <h4 class="text-3xl font-serif text-zinc-100">{{ responseRate() }}</h4>
+        <p class="text-[10px] text-zinc-600 font-medium uppercase tracking-wider mt-1">Global Average</p>
+      </div>
+      <div
+        class="p-3 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-500 group-hover:text-zinc-300 transition-colors">
+        <ng-icon name="lucideTrendingUp" class="h-6 w-6"></ng-icon>
+      </div>
+    </div>
+  </div>
+
   <!-- Search Hub - The "Command Center" -->
-  <div class="mb-10">
+  <div class="mb-12">
     <div class="group relative w-full max-w-2xl transition-all duration-300">
       <!-- Unified Container -->
       <div
-        class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
+        class="relative flex items-center p-1.5 rounded-[2rem] border border-zinc-800 bg-zinc-900/50 backdrop-blur-md transition-all duration-300 focus-within:border-zinc-600 focus-within:ring-1 focus-within:ring-zinc-800">
 
         <!-- Search Input Wrapper -->
         <div class="relative flex-1 flex items-center">
           <!-- SEARCH ICON -->
           <div
-            class="absolute left-4 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
+            class="absolute left-4 flex items-center justify-center text-zinc-500 group-focus-within:text-zinc-300 transition-colors">
             <ng-icon name="lucideSearch" class="h-5 w-5 stroke-[1.5]"></ng-icon>
           </div>
 
           <!-- THE ACTUAL INPUT -->
           <input #searchInput type="text" [value]="searchTerm()" (input)="onSearchChange($event)"
-            placeholder="Search companies by name, website, or industry..."
-            class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
+            placeholder="Search companies by name..."
+            class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none text-zinc-100 placeholder:text-zinc-500"
             id="company-search">
 
           <!-- KEYBOARD SHORTCUT HINT -->
           <div class="absolute right-4 hidden items-center gap-1 sm:flex">
             <kbd
-              class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 transition-opacity">
+              class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-zinc-800 bg-zinc-900/50 px-1.5 font-mono text-[10px] font-medium text-zinc-500 opacity-100 group-focus-within:opacity-0 transition-opacity">
               <span class="text-xs">⌘</span>K
             </kbd>
           </div>

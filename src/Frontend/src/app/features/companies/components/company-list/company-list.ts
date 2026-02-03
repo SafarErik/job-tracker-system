@@ -11,7 +11,7 @@ import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmLabelImports } from '../../../../../../libs/ui/label';
 import { LucideAngularModule } from 'lucide-angular';
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle } from '@ng-icons/lucide';
+import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp } from '@ng-icons/lucide';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
 @Component({
@@ -27,7 +27,7 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
     ErrorStateComponent
   ],
   providers: [
-    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle })
+    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp })
   ],
   templateUrl: './company-list.html',
 })
@@ -62,6 +62,33 @@ export class CompanyListComponent implements OnInit {
         company.address?.toLowerCase().includes(term) ||
         company.industry?.toLowerCase().includes(term),
     );
+  });
+
+  // Computed: Metrics for the Command Deck
+  totalNetwork = computed(() => this.companies().length);
+  activePursuits = computed(() =>
+    this.companies().filter(c => c.totalApplications > 0).length
+  );
+  responseRate = computed(() => {
+    const totalWithApps = this.companies().filter(c => c.totalApplications > 0);
+    if (totalWithApps.length === 0) return '0%';
+
+    // Simple heuristic: if furthest status is past 'Applied', it's a response
+    const statusWeights: Record<string, number> = {
+      'Applied': 1,
+      'Rejected': 1,
+      'Ghosted': 1
+    };
+
+    const responses = totalWithApps.filter(c => {
+      const apps = c.recentApplications || [];
+      return apps.some(a => {
+        const s = a.status || 'Applied';
+        return !statusWeights[s] || statusWeights[s] > 1;
+      });
+    }).length;
+
+    return Math.round((responses / totalWithApps.length) * 100) + '%';
   });
 
   constructor() { }

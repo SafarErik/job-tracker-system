@@ -17,23 +17,16 @@ namespace JobTracker.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize] // Requires authentication for all endpoints
-public class JobApplicationsController : ControllerBase
+public class JobApplicationsController(
+    IJobApplicationRepository repository,
+    IDocumentRepository documentRepository,
+    IJobApplicationService jobApplicationService) : ControllerBase
 {
     private const string UserIdNotFoundMessage = "User ID not found in token";
 
-    private readonly IJobApplicationRepository _repository;
-    private readonly IDocumentRepository _documentRepository;
-    private readonly IJobApplicationService _jobApplicationService;
-
-    public JobApplicationsController(
-        IJobApplicationRepository repository,
-        IDocumentRepository documentRepository,
-        IJobApplicationService jobApplicationService)
-    {
-        _repository = repository;
-        _documentRepository = documentRepository;
-        _jobApplicationService = jobApplicationService;
-    }
+    private readonly IJobApplicationRepository _repository = repository;
+    private readonly IDocumentRepository _documentRepository = documentRepository;
+    private readonly IJobApplicationService _jobApplicationService = jobApplicationService;
 
     /// <summary>
     /// Gets the current authenticated user's ID from the JWT token claims.

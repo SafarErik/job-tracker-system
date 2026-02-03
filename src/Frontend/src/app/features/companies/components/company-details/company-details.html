@@ -33,48 +33,35 @@
       (updateName)="handleUpdateName($event)" (updatePriority)="handleUpdatePriority($event)"
       (updateIndustry)="handleUpdateIndustry($event)" (deleteCompany)="handleDeleteCompany()"></app-company-header>
 
-    <!-- Bento Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Bento Grid Layout: Mission Briefing Style -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
 
-      <!-- Column 1: Stats & Stack (Span 3) -->
-      <div class="lg:col-span-3 space-y-6">
+      <!-- Left Column: Tactical Stack (Span 3) -->
+      <div class="md:col-span-3 space-y-6">
         <app-company-stats [totalApplications]="details.totalApplications" [successRate]="successRate()"
           [techStack]="details.techStack || []" (techAdd)="handleAddTech($event)"
           (techRemove)="handleRemoveTech($event)"></app-company-stats>
-      </div>
-
-      <!-- Column 2: Notes & Contacts (Span 6) -->
-      <div class="lg:col-span-6 space-y-6">
-        <app-company-notes [notes]="companyNotes()" [lastUpdated]="formatDate(details.updatedAt)"
-          (notesChange)="handleNotesChange($event)">
-        </app-company-notes>
 
         <app-contact-list [contacts]="details.contacts || []" (save)="handleSaveContact($event)"
           (deleteContact)="handleDeleteContact($event)"></app-contact-list>
       </div>
 
-      <!-- Column 3: Intel (News & History) (Span 3) -->
-      <div class="lg:col-span-3 space-y-6">
+      <!-- Center Column: Central Intelligence (Span 6) -->
+      <div class="md:col-span-6 space-y-6">
+        <app-company-notes [notes]="companyNotes()" [briefing]="intelligenceBriefing()"
+          [lastUpdated]="formatDate(details.updatedAt)" (notesChange)="handleNotesChange($event)"
+          (regenerate)="handleRegenerateBriefing()">
+        </app-company-notes>
+      </div>
+
+      <!-- Right Column: Edge & Pulse (Span 3) -->
+      <div class="md:col-span-3 space-y-6">
+        <app-interview-tactics></app-interview-tactics>
+
         <app-company-intel [news]="companyNews()" [loading]="newsLoading()" [history]="details.applicationHistory"
           (viewApplication)="viewApplication($event)"></app-company-intel>
       </div>
 
-    </div>
-
-    <!-- Danger Zone -->
-    <div class="mt-20 pt-10 border-t border-zinc-900 leading-none">
-      <div
-        class="bg-destructive/5 border border-destructive/20 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="space-y-1 text-center md:text-left">
-          <h3 class="text-lg font-black uppercase tracking-widest text-destructive">Danger Zone</h3>
-          <p class="text-sm text-zinc-500 font-medium">Permanently expunge this asset and all associated intelligence
-            from the system.</p>
-        </div>
-        <button hlmBtn variant="destructive" (click)="handleDeleteCompany()"
-          class="rounded-2xl px-8 h-12 font-black uppercase tracking-widest">
-          Expunge Asset
-        </button>
-      </div>
     </div>
   </div>
   }

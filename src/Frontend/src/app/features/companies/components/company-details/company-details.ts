@@ -5,7 +5,7 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { toast } from 'ngx-sonner';
-import { CompanyNews, CompanyContact } from '../../models/company.model';
+import { CompanyNews, CompanyContact, IntelligenceBriefing } from '../../models/company.model';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -17,6 +17,7 @@ import { CompanyStatsComponent } from './company-stats/company-stats';
 import { CompanyNotesComponent } from './company-notes/company-notes';
 import { ContactListComponent } from './contact-list/contact-list';
 import { CompanyIntelComponent } from './company-intel/company-intel';
+import { InterviewTacticsComponent } from './interview-tactics/interview-tactics';
 
 @Component({
   selector: 'app-company-details',
@@ -29,7 +30,8 @@ import { CompanyIntelComponent } from './company-intel/company-intel';
     CompanyStatsComponent,
     CompanyNotesComponent,
     ContactListComponent,
-    CompanyIntelComponent
+    CompanyIntelComponent,
+    InterviewTacticsComponent
   ],
   providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft })],
   templateUrl: './company-details.html',
@@ -52,6 +54,10 @@ export class CompanyDetailsComponent implements OnInit {
   // Local state for Intel (News)
   companyNews = signal<CompanyNews[]>([]);
   newsLoading = signal(false);
+
+  // AI Briefing State
+  intelligenceBriefing = signal<IntelligenceBriefing | null>(null);
+  briefingLoading = signal(false);
 
   // Local state for Notes (to handle debouncing without glitching)
   companyNotes = signal('');
@@ -107,6 +113,7 @@ export class CompanyDetailsComponent implements OnInit {
           untracked(() => {
             this.companyNotes.set(current.notes || '');
             this.loadCompanyNews(current.name);
+            this.handleRegenerateBriefing(); // Load initial briefing
             this.lastCompanyId = current.id;
           });
         }
@@ -122,6 +129,22 @@ export class CompanyDetailsComponent implements OnInit {
       } else {
         this.router.navigate(['/companies']);
       }
+    });
+  }
+
+  handleRegenerateBriefing(): void {
+    const current = this.company();
+    if (!current) return;
+
+    this.briefingLoading.set(true);
+    this.intelligenceService.generateIntelligenceBriefing(current.name).subscribe({
+      next: (briefing) => {
+        this.intelligenceBriefing.set(briefing);
+        this.briefingLoading.set(false);
+        // Refresh news as well as requested in the prompt
+        this.loadCompanyNews(current.name);
+      },
+      error: () => this.briefingLoading.set(false)
     });
   }
 

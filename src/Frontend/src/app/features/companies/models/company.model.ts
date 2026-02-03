@@ -89,3 +89,9 @@ export interface CompanyNews {
   source: string;
 }
 
+export interface IntelligenceBriefing {
+  mission: string;
+  fit: string[];
+  risks: string;
+}
+

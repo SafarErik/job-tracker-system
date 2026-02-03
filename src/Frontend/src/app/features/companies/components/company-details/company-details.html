@@ -33,36 +33,166 @@
       (updateName)="handleUpdateName($event)" (updatePriority)="handleUpdatePriority($event)"
       (updateIndustry)="handleUpdateIndustry($event)" (deleteCompany)="handleDeleteCompany()"></app-company-header>
 
-    <!-- Bento Grid Layout: Mission Briefing Style -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-
-      <!-- Left Column: Tactical Stack (Span 3) -->
-      <div class="md:col-span-3 space-y-6">
-        <app-company-stats [totalApplications]="details.totalApplications" [successRate]="successRate()"
-          [techStack]="details.techStack || []" (techAdd)="handleAddTech($event)"
-          (techRemove)="handleRemoveTech($event)"></app-company-stats>
-
-        <app-contact-list [contacts]="details.contacts || []" (save)="handleSaveContact($event)"
-          (deleteContact)="handleDeleteContact($event)"></app-contact-list>
+    <!-- Sub-Navigation Bar -->
+    <div
+      class="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between border-b border-zinc-800/50 pb-4 pt-2">
+      <div class="flex items-center gap-1 p-1 bg-zinc-900/50 rounded-2xl border border-zinc-800">
+        <button (click)="activeTab.set('mission')"
+          [class]="activeTab() === 'mission' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
+          <ng-icon name="lucideLayoutDashboard" class="h-3.5 w-3.5"></ng-icon>
+          Mission Control
+        </button>
+        <button (click)="activeTab.set('intel')"
+          [class]="activeTab() === 'intel' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
+          <ng-icon name="lucideMicroscope" class="h-3.5 w-3.5"></ng-icon>
+          Intelligence Lab
+        </button>
+        <button (click)="activeTab.set('history')"
+          [class]="activeTab() === 'history' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
+          <ng-icon name="lucideHistory" class="h-3.5 w-3.5"></ng-icon>
+          Engagement Log
+        </button>
       </div>
 
-      <!-- Center Column: Central Intelligence (Span 6) -->
-      <div class="md:col-span-6 space-y-6">
-        <app-company-notes [notes]="companyNotes()" [briefing]="intelligenceBriefing()"
-          [lastUpdated]="formatDate(details.updatedAt)" (notesChange)="handleNotesChange($event)"
-          (regenerate)="handleRegenerateBriefing()">
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-4 py-2 bg-zinc-950 border border-zinc-900 rounded-xl">
+          <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">System Online</span>
+        </div>
+        <button
+          class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-all">
+          <ng-icon name="lucideSettings" class="h-4 w-4"></ng-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- View Layer -->
+    @switch (activeTab()) {
+    @case ('mission') {
+    <!-- View 1: Mission Control (High-Density Bento Grid 3 Column) -->
+    <div
+      class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-220px)] min-h-[600px] animate-in fade-in duration-500">
+      <!-- Left Column: Metrics & Stack -->
+      <div class="flex flex-col gap-4 h-full">
+        <!-- Expanded Metrics & Stack Component -->
+        <app-company-stats class="flex-1" [totalApplications]="details.totalApplications" [successRate]="successRate()"
+          [techStack]="details.techStack || []" (techAdd)="handleAddTech($event)"
+          (techRemove)="handleRemoveTech($event)"></app-company-stats>
+      </div>
+
+      <!-- Center Column: Briefing Summary (Spans full height) -->
+      <div class="h-full">
+        <app-company-notes class="h-full block" [mode]="'compact'" [notes]="companyNotes()"
+          [briefing]="intelligenceBriefing()" [lastUpdated]="formatDate(details.updatedAt)"
+          (notesChange)="handleNotesChange($event)" (regenerate)="handleRegenerateBriefing()">
         </app-company-notes>
       </div>
 
-      <!-- Right Column: Edge & Pulse (Span 3) -->
-      <div class="md:col-span-3 space-y-6">
-        <app-interview-tactics></app-interview-tactics>
+      <!-- Right Column: Edge & Personnel -->
+      <div class="flex flex-col gap-4 h-full">
+        <div class="flex-1">
+          <app-interview-tactics class="h-full block"></app-interview-tactics>
+        </div>
+        <div class="flex-1 min-h-[250px]">
+          <!-- Limit contacts to 4? or let it scroll internally -->
+          <app-contact-list class="h-full block" [contacts]="(details.contacts || [])" [maxDisplay]="4"
+            (save)="handleSaveContact($event)" (deleteContact)="handleDeleteContact($event)"></app-contact-list>
+        </div>
+      </div>
+    </div>
+    }
 
-        <app-company-intel [news]="companyNews()" [loading]="newsLoading()" [history]="details.applicationHistory"
-          (viewApplication)="viewApplication($event)"></app-company-intel>
+    @case ('intel') {
+    <!-- View 2: Intelligence Lab (Deep Dive Split) -->
+    <div class="grid grid-cols-1 lg:grid-cols-10 gap-6 h-[700px] animate-in slide-in-from-bottom-5 duration-500">
+      <!-- Left (40%): AI Analyst Chat -->
+      <div class="lg:col-span-4 rounded-3xl bg-zinc-900/50 border border-zinc-800 flex flex-col overflow-hidden">
+        <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-zinc-100">AI Analyst</h3>
+            <p class="text-[9px] text-zinc-500 uppercase mt-1">Specialized context: {{ details.name }}</p>
+          </div>
+          <div
+            class="px-2 py-1 rounded bg-violet-500/10 border border-violet-500/20 text-[9px] font-black text-violet-400">
+            CONTEXT_LOADED</div>
+        </div>
+        <div class="flex-1 overflow-hidden">
+          <app-ai-analyst-chat [companyName]="details.name"
+            [companyContext]="intelligenceBriefing()?.mission || ''"></app-ai-analyst-chat>
+        </div>
       </div>
 
+      <!-- Right (60%): News Reader -->
+      <div class="lg:col-span-6 space-y-6 overflow-y-auto custom-scrollbar pr-2">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-black uppercase tracking-[0.2em] text-zinc-500">Market Pulse Data</h3>
+          <button (click)="handleSummarizeNews()"
+            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-black uppercase tracking-widest hover:bg-violet-500/20 transition-all">
+            <ng-icon name="lucideWand2" class="h-3 w-3"></ng-icon>
+            Summarize All News
+          </button>
+        </div>
+        <app-company-intel [news]="companyNews()" [loading]="newsLoading()"></app-company-intel>
+      </div>
     </div>
+    }
+
+    @case ('history') {
+    <!-- View 3: Engagement Log (Full-width Timeline) -->
+    <div
+      class="animate-in slide-in-from-right-10 duration-500 min-h-[500px] rounded-3xl bg-zinc-900/30 border border-zinc-800/50 p-12 overflow-y-auto custom-scrollbar">
+      <div class="max-w-4xl mx-auto space-y-12">
+        <div class="flex items-center gap-4 mb-16">
+          <div class="h-px flex-1 bg-zinc-800/50"></div>
+          <h2 class="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Tactical Timeline</h2>
+          <div class="h-px flex-1 bg-zinc-800/50"></div>
+        </div>
+
+        @for (app of details.applicationHistory; track app.id) {
+        <div class="relative pl-12 border-l border-zinc-800 pb-12 last:pb-0 group">
+          <!-- Timeline Dot -->
+          <div
+            class="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-zinc-700 group-hover:bg-violet-500 transition-colors shadow-[0_0_10px_rgba(139,92,246,0)] group-hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]">
+          </div>
+
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-2xl bg-zinc-950/50 border border-zinc-900 group-hover:border-zinc-800 transition-all">
+            <div>
+              <p class="text-[10px] font-black text-zinc-600 uppercase mb-1">{{ app.appliedAt | date:'MMMM dd, yyyy' }}
+              </p>
+              <h4 class="text-base font-bold text-zinc-100 tracking-tight">{{ app.position }}</h4>
+              <p class="text-xs text-zinc-500 mt-1">Application Entry #{{ app.id.slice(0, 8) }}</p>
+            </div>
+
+            <div class="flex items-center gap-6">
+              <div class="text-right">
+                <p class="text-[9px] font-black text-zinc-600 uppercase mb-1">Status</p>
+                <span
+                  class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-400">{{
+                  app.status }}</span>
+              </div>
+
+              <button hlmBtn variant="outline"
+                class="h-9 px-3 text-xs gap-2 text-zinc-400 hover:text-zinc-100 border-zinc-800 hover:bg-zinc-900">
+                <ng-icon name="lucideFileText" class="h-3.5 w-3.5"></ng-icon>
+                Notes
+              </button>
+
+              <button hlmBtn variant="ghost" (click)="viewApplication(app.id)"
+                class="rounded-xl h-12 w-12 p-0 border border-transparent hover:border-zinc-800 hover:bg-zinc-900 text-zinc-500 hover:text-zinc-100 transition-all">
+                <ng-icon name="lucideArrowLeft" class="h-4 w-4 rotate-180"></ng-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+    }
   </div>
   }
 </div>

@@ -17,11 +17,11 @@ export interface IntelligenceBriefing {
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
   providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert })],
   template: `
-    <div class="rounded-3xl bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 p-8 flex flex-col h-full group hover:border-zinc-700 transition-all duration-500 shadow-2xl overflow-hidden relative font-mono text-zinc-300">
+    <div class="rounded-3xl bg-zinc-900/60 backdrop-blur-md border border-zinc-800 p-8 flex flex-col h-full group hover:border-zinc-700 transition-all duration-500 shadow-none overflow-hidden relative font-mono text-zinc-300">
       
       <!-- Top Secret Watermarks -->
-      <div class="absolute top-10 right-10 opacity-[0.03] select-none pointer-events-none rotate-12 border-4 border-violet-500 p-4 text-4xl font-black text-violet-500">
-        TOP SECRET
+      <div class="absolute top-10 right-10 opacity-[0.03] select-none pointer-events-none -rotate-12 border-4 border-violet-500 p-4 text-4xl font-black text-violet-500">
+        TOP SECRET // INTEL Only
       </div>
       <div class="absolute bottom-1/4 left-10 opacity-[0.02] select-none pointer-events-none -rotate-12 border-2 border-zinc-500 p-2 text-2xl font-black text-zinc-500">
         EYES ONLY
@@ -66,6 +66,7 @@ export interface IntelligenceBriefing {
         </section>
 
         <!-- Section: STRATEGIC FIT -->
+        @if (mode() === 'full') {
         <section class="space-y-3">
           <div class="flex items-center gap-2 text-emerald-400/80">
             <div class="h-1 w-4 bg-current"></div>
@@ -94,6 +95,25 @@ export interface IntelligenceBriefing {
             </p>
           </div>
         </section>
+        } @else {
+         <!-- Compact Mode Summary -->
+          <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-zinc-800/50">
+             <div>
+                <h4 class="text-[9px] font-black uppercase tracking-widest text-emerald-500/80 mb-2">Strategic Fit</h4>
+                <div class="space-y-1">
+                  @for (fit of displayedStrategicFit().slice(0, 2); track $index) {
+                     <p class="text-[10px] text-zinc-500 truncate pl-2 border-l border-zinc-800">{{ fit }}</p>
+                  }
+                </div>
+             </div>
+             <div>
+                <h4 class="text-[9px] font-black uppercase tracking-widest text-amber-500/80 mb-2">Risks Detected</h4>
+                 <p class="text-[10px] text-zinc-500 line-clamp-2 leading-relaxed">
+                  {{ displayedRisksIntel() || 'No active risk vectors identified in initial scan.' }}
+                </p>
+             </div>
+          </div>
+        }
 
         <!-- Optional: Field Notes Extension -->
         @if (isEditingNotes()) {
@@ -136,6 +156,7 @@ export interface IntelligenceBriefing {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyNotesComponent {
+  mode = input<'compact' | 'full'>('full');
   notes = input('');
   briefing = input<IntelligenceBriefing | null>(null);
   lastUpdated = input<string | null>(null);

@@ -1,5 +1,6 @@
-import { Component, input, output, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toast } from 'ngx-sonner';
 import { FormsModule } from '@angular/forms';
 import { CompanyContact } from '../../../models/company.model';
 import { HlmButtonImports } from '../../../../../../../libs/ui/button';
@@ -35,62 +36,64 @@ import {
     })
   ],
   template: `
-    <div class="bg-zinc-900/40 rounded-[2.5rem] border border-zinc-800 p-10">
-      <div class="flex items-center justify-between mb-10 leading-none">
-        <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-500">Personnel Hierarchy</h3>
-        <button hlmBtn variant="ghost" size="icon-xs" class="h-8 w-8 rounded-full border border-zinc-800 text-zinc-600 hover:text-violet-400 hover:border-violet-500/30 transition-all font-serif"
-          (click)="startAddContact()" *ngIf="editingContactId() === null">
+    <div class="bg-zinc-900/40 rounded-3xl border border-zinc-800 p-5 h-full flex flex-col">
+      <div class="flex items-center justify-between mb-4 leading-none shrink-0">
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Personnel Hierarchy</h3>
+        <button hlmBtn variant="ghost" size="icon-xs" class="h-6 w-6 rounded-md border border-zinc-800 text-zinc-600 hover:text-violet-400 hover:border-violet-500/30 transition-all font-serif"
+          (click)="startAddContact()" *ngIf="editingContactId() === null && !maxDisplay()">
           <ng-icon name="lucidePlus"></ng-icon>
         </button>
       </div>
 
-      <div class="space-y-4">
+      <div class="space-y-2 flex-1 overflow-y-auto custom-scrollbar">
         <!-- Contact List -->
-        @for (contact of contacts(); track contact.id) {
-        <div class="bg-zinc-950/50 border border-zinc-900 rounded-[1.5rem] overflow-hidden group hover:border-zinc-700 transition-all font-sans"
+        @for (contact of displayedContacts(); track contact.id) {
+        <div class="bg-zinc-950/30 border border-zinc-900 rounded-xl overflow-hidden group hover:border-zinc-700 transition-all font-sans"
           [class.bg-zinc-900]="editingContactId() === contact.id"
           [class.border-violet-500/30]="editingContactId() === contact.id">
 
           @if (editingContactId() !== contact.id) {
-          <div
-            class="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 leading-none">
-            <div class="flex items-center gap-5 w-full">
-              <div
-                class="h-14 w-14 rounded-2xl bg-zinc-900 border-2 flex items-center justify-center text-zinc-100 font-serif text-xl shrink-0 transition-colors"
-                [class]="getSeniorityBorder(contact.role)">
-                {{ contact.name.charAt(0) }}
-              </div>
+          <div class="p-3 flex items-center justify-between gap-3">
+             <div class="flex items-center gap-3 min-w-0">
+                <div
+                  class="h-8 w-8 rounded-lg bg-zinc-900 border flex items-center justify-center text-zinc-100 font-serif text-sm shrink-0 transition-colors"
+                  [class]="getSeniorityBorder(contact.role)">
+                  {{ contact.name.charAt(0) }}
+                </div>
+                <div class="min-w-0">
+                   <p class="text-xs font-serif text-zinc-100 truncate">{{ contact.name }}</p>
+                   <p class="text-[9px] font-black text-zinc-600 uppercase tracking-widest truncate">{{ contact.role }}</p>
+                </div>
+             </div>
 
-              <div class="flex-1">
-                <p class="text-sm font-serif text-zinc-100">{{ contact.name }}</p>
-                <p class="text-[10px] font-black text-zinc-600 uppercase tracking-widest mt-0.5">{{ contact.role }}</p>
-              </div>
-            </div>
+            <div class="flex items-center gap-2 shrink-0">
+               <!-- LinkedIn (Always Visible) -->
+               <button (click)="openLinkedIn(contact.linkedIn)"
+                 class="h-8 w-8 rounded-lg border flex items-center justify-center transition-all shadow-sm"
+                 [class]="contact.linkedIn ? 'bg-violet-500/10 border-violet-500/20 text-violet-400 hover:bg-violet-500/20' : 'bg-zinc-900 border-zinc-800 text-zinc-600 hover:text-zinc-400'">
+                 <ng-icon name="lucideLinkedin" size="14"></ng-icon>
+               </button>
 
-            <div
-              class="flex flex-wrap items-center gap-2">
-              @if (contact.linkedIn) {
-              <a [href]="contact.linkedIn" target="_blank" rel="noopener noreferrer"
-                class="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 hover:bg-violet-500/20 transition-all shadow-sm"
-                title="LinkedIn Discovery">
-                <ng-icon name="lucideLinkedin"></ng-icon>
-              </a>
-              }
-              @if (contact.email) {
-              <a [href]="'mailto:' + contact.email"
-                class="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-100 transition-all">
-                <ng-icon name="lucideExternalLink" size="14"></ng-icon>
-              </a>
-              }
-              <div class="w-px h-6 bg-zinc-800 mx-1 hidden sm:block"></div>
-              <button (click)="startEditContact(contact)"
-                class="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-all">
-                <ng-icon name="lucidePencil" size="14"></ng-icon>
-              </button>
-              <button (click)="deleteContact.emit(contact.id)"
-                class="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-destructive transition-all">
-                <ng-icon name="lucideTrash2" size="14"></ng-icon>
-              </button>
+               @if (contact.email) {
+               <a [href]="'mailto:' + contact.email"
+                 class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-100 transition-all">
+                 <ng-icon name="lucideExternalLink" size="14"></ng-icon>
+               </a>
+               }
+               
+               <div class="w-px h-4 bg-zinc-800 mx-1 hidden sm:block"></div>
+               
+               <!-- Edit/Delete Group -->
+               <div class="flex items-center gap-1">
+                  <button (click)="startEditContact(contact)"
+                    class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-all">
+                    <ng-icon name="lucidePencil" size="14"></ng-icon>
+                  </button>
+                  <button (click)="deleteContact.emit(contact.id)"
+                    class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-destructive transition-all">
+                    <ng-icon name="lucideTrash2" size="14"></ng-icon>
+                  </button>
+               </div>
             </div>
           </div>
           } @else {
@@ -204,6 +207,13 @@ import {
 })
 export class ContactListComponent {
   contacts = input.required<CompanyContact[]>();
+  maxDisplay = input<number | null>(null);
+
+  displayedContacts = computed(() => {
+    const all = this.contacts();
+    const max = this.maxDisplay();
+    return max ? all.slice(0, max) : all;
+  });
 
   save = output<CompanyContact>();
   deleteContact = output<string>();
@@ -272,5 +282,16 @@ export class ContactListComponent {
       return 'border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)] bg-blue-500/5';
     }
     return 'border-zinc-800';
+  }
+
+  openLinkedIn(url: string | undefined | null): void {
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      toast.error('No Signal Detected', {
+        description: 'This personnel does not have a linked intelligence profile.',
+        duration: 3000
+      });
+    }
   }
 }

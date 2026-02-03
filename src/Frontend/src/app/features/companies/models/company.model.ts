@@ -87,6 +87,7 @@ export interface CompanyNews {
   title: string;
   date: string;
   source: string;
+  summary?: string;
 }
 
 export interface IntelligenceBriefing {

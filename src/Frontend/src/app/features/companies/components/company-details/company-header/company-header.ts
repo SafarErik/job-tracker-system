@@ -49,7 +49,7 @@ import {
       <!-- Top Action Bar -->
       <div class="flex items-center justify-between">
         <button hlmBtn variant="ghost" size="sm" (click)="goBack.emit()" 
-          class="rounded-xl text-zinc-500 hover:text-zinc-100 hover:bg-zinc-900/50 group transition-all px-2">
+          class="rounded-xl text-zinc-500 hover:text-zinc-200 hover:bg-zinc-900/50 group transition-all px-2">
           <ng-icon name="lucideArrowLeft" class="mr-2 group-hover:-translate-x-1 transition-transform"></ng-icon>
           <span class="text-[10px] font-black uppercase tracking-[0.2em]">Return to Registry</span>
         </button>

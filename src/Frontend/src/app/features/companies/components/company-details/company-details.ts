@@ -9,7 +9,7 @@ import { CompanyNews, CompanyContact, IntelligenceBriefing } from '../../models/
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoader2, lucideBuilding2, lucideArrowLeft } from '@ng-icons/lucide';
+import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings } from '@ng-icons/lucide';
 
 // Dumb Components
 import { CompanyHeaderComponent } from './company-header/company-header';
@@ -18,6 +18,7 @@ import { CompanyNotesComponent } from './company-notes/company-notes';
 import { ContactListComponent } from './contact-list/contact-list';
 import { CompanyIntelComponent } from './company-intel/company-intel';
 import { InterviewTacticsComponent } from './interview-tactics/interview-tactics';
+import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
 
 @Component({
   selector: 'app-company-details',
@@ -31,9 +32,10 @@ import { InterviewTacticsComponent } from './interview-tactics/interview-tactics
     CompanyNotesComponent,
     ContactListComponent,
     CompanyIntelComponent,
-    InterviewTacticsComponent
+    InterviewTacticsComponent,
+    AiAnalystChatComponent
   ],
-  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft })],
+  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings })],
   templateUrl: './company-details.html',
   styleUrl: './company-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,6 +60,9 @@ export class CompanyDetailsComponent implements OnInit {
   // AI Briefing State
   intelligenceBriefing = signal<IntelligenceBriefing | null>(null);
   briefingLoading = signal(false);
+
+  // Tab Navigation State
+  activeTab = signal<'mission' | 'intel' | 'history'>('mission');
 
   // Local state for Notes (to handle debouncing without glitching)
   companyNotes = signal('');
@@ -170,6 +175,22 @@ export class CompanyDetailsComponent implements OnInit {
   // ==========================================
   // Actions
   // ==========================================
+
+  // Tab Actions
+  setTab(tab: 'mission' | 'intel' | 'history'): void {
+    this.activeTab.set(tab);
+  }
+
+  handleSummarizeNews(): void {
+    const current = this.company();
+    if (!current) return;
+
+    toast.info('AI Analyst', { description: 'Synthesizing market intelligence...' });
+    // In a real app, this would call intelligenceService.summarizeNews(this.companyNews())
+    setTimeout(() => {
+      toast.success('Summary Ready', { description: 'News digest updated in Intelligence Lab.' });
+    }, 2000);
+  }
 
   goBack(): void {
     const fromApp = this.route.snapshot.queryParamMap.get('from') === 'application';

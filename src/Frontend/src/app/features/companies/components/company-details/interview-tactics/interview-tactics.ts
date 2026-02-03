@@ -4,14 +4,14 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare } from '@ng-icons/lucide';
 
 @Component({
-    selector: 'app-interview-tactics',
-    standalone: true,
-    imports: [CommonModule, NgIcon],
-    providers: [provideIcons({ lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare })],
-    template: `
-    <div class="rounded-3xl bg-primary/5 backdrop-blur-xl border border-primary/20 p-8 flex flex-col relative overflow-hidden group hover:border-primary/40 transition-all duration-500">
+  selector: 'app-interview-tactics',
+  standalone: true,
+  imports: [CommonModule, NgIcon],
+  providers: [provideIcons({ lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare })],
+  template: `
+    <div class="rounded-3xl bg-zinc-900/40 border border-zinc-800 p-5 flex flex-col relative overflow-hidden group hover:border-violet-500/30 transition-all duration-500 h-full">
       <!-- Background Glow -->
-      <div class="absolute top-0 right-0 p-4 opacity-10 rotate-12 scale-150 transition-transform group-hover:scale-[1.7] duration-700">
+      <div class="absolute top-0 right-0 p-4 opacity-5 rotate-12 scale-150 transition-transform group-hover:scale-[1.7] duration-700">
         <ng-icon name="lucideSparkles" class="w-32 h-32 text-primary"></ng-icon>
       </div>
 
@@ -23,8 +23,8 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare } fr
 
         <div class="space-y-5">
           <!-- Culture Tip -->
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+          <div class="flex gap-3 items-start">
+            <div class="w-8 h-8 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center shrink-0">
               <ng-icon name="lucideLightbulb" class="w-5 h-5 text-primary"></ng-icon>
             </div>
             <div>
@@ -64,6 +64,6 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare } fr
       </div>
     </div>
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterviewTacticsComponent { }

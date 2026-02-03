@@ -161,7 +161,7 @@ export class JobWorkstationComponent implements OnInit {
 
   // Computed: Highlighted Job Description
   highlightedDescription = computed<string | null>(() => {
-    const desc = this.store.selectedApplication()?.jobDescription;
+    const desc = this.store.selectedApplication()?.description;
     if (!desc) return null;
 
     const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems'];
@@ -186,7 +186,7 @@ export class JobWorkstationComponent implements OnInit {
 
   // Computed: Line Numbers
   lineNumbers = computed(() => {
-    const desc = this.store.selectedApplication()?.jobDescription;
+    const desc = this.store.selectedApplication()?.description;
     if (!desc) return [];
     const lines = desc.split('\n').length;
     return Array.from({ length: lines }, (_, i) => i + 1);
@@ -310,7 +310,7 @@ export class JobWorkstationComponent implements OnInit {
 
   // Manual Paste Methods
   startManualPaste(): void {
-    const current = this.store.selectedApplication()?.jobDescription || '';
+    const current = this.store.selectedApplication()?.description || '';
     this.isPastingManually.set(true);
     this.manualPasteText.set(current);
   }
@@ -325,7 +325,7 @@ export class JobWorkstationComponent implements OnInit {
     const text = this.manualPasteText().trim();
 
     if (app && text) {
-      this.store.updateApplication(app.id, { jobDescription: text });
+      this.store.updateApplication(app.id, { description: text });
       this.isPastingManually.set(false);
       this.manualPasteText.set('');
       this.notificationService.success('Job description saved!', 'Job Context');

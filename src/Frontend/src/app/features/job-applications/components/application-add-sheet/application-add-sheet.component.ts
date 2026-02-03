@@ -11,8 +11,10 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { UiStateService } from '../../../../core/services/ui-state.service';
 import { NotificationService } from '../../../../core/services';
 import { toast } from 'ngx-sonner';
+import { JobApplicationStore } from '../../services/job-application.store';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
+import { CreateJobApplication } from '../../models/job-application.model';
 import { getStatusStyle } from '../../models/status-styles.util';
 import { provideIcons } from '@ng-icons/core';
 import { lucideSparkles, lucideX } from '@ng-icons/lucide';
@@ -40,6 +42,7 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
 export class ApplicationAddSheetComponent {
     private fb = inject(FormBuilder);
     public uiState = inject(UiStateService);
+    public store = inject(JobApplicationStore);
     private notificationService = inject(NotificationService);
 
     // Controlled by parent/service now
@@ -48,7 +51,7 @@ export class ApplicationAddSheetComponent {
     form: FormGroup = this.fb.group({
         jobUrl: [''],
         position: ['', Validators.required],
-        company: ['', Validators.required],
+        companyName: ['', Validators.required],
         department: [''], // Optional
         status: [JobApplicationStatus.Applied, Validators.required],
         priority: [JobPriority.Medium, Validators.required],
@@ -81,7 +84,7 @@ export class ApplicationAddSheetComponent {
             this.form.patchValue({
                 jobUrl: 'https://careers.google.com/jobs/results/1234',
                 position: 'Senior Frontend Engineer',
-                company: 'Google',
+                companyName: 'Google',
                 department: 'YouTube Team',
                 location: 'London, UK (Hybrid)',
                 salaryMin: '120000',
@@ -93,17 +96,26 @@ export class ApplicationAddSheetComponent {
 
     onSubmit() {
         if (this.form.valid) {
-            console.log('Form Submitted', this.form.value);
-            // Simulate API call success
+            const formData = this.form.value;
+
+            const application: CreateJobApplication = {
+                position: formData.position,
+                companyName: formData.companyName,
+                department: formData.department,
+                jobUrl: formData.jobUrl,
+                status: formData.status,
+                priority: formData.priority,
+                salaryMin: formData.salaryMin ? Number(formData.salaryMin) : undefined,
+                salaryMax: formData.salaryMax ? Number(formData.salaryMax) : undefined,
+                location: formData.location
+            };
+
+            this.store.addApplication(application);
 
             // 1. Close the sheet
             this.uiState.closeAddAppSheet();
 
-            // 2. Show Success Toast
-            const company = this.form.get('company')?.value || 'Unknown Company';
-            toast.success('Application Created', { description: `Application created for ${company}` });
-
-            // 3. Reset form (optional, but good practice)
+            // 2. Reset form
             this.form.reset({
                 status: JobApplicationStatus.Applied,
                 priority: JobPriority.Medium

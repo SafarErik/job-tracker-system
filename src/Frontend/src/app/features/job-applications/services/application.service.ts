@@ -41,5 +41,15 @@ export class ApplicationService {
   analyzeJob(id: string): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
   }
+
+  // 7. Generate a tailored cover letter
+  generateCoverLetter(id: string): Observable<{ content: string }> {
+    return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/cover-letter`, {});
+  }
+
+  // 8. Optimize resume for a specific job
+  optimizeResume(id: string): Observable<{ content: string }> {
+    return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/resume-optimize`, {});
+  }
 }
 

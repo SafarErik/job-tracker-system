@@ -13,6 +13,16 @@ public interface IAIService
     /// <param name="resumeText">The user's resume/CV text content</param>
     /// <returns>Analysis results including match score, gap analysis, and strategic advice</returns>
     Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string resumeText);
+
+    /// <summary>
+    /// Generates a tailored cover letter based on the job description and user's resume.
+    /// </summary>
+    Task<string> GenerateCoverLetterAsync(string jobDescription, string resumeText, string companyName, string position);
+
+    /// <summary>
+    /// Provides an optimized version of the resume tailored for a specific job description.
+    /// </summary>
+    Task<string> OptimizeResumeAsync(string jobDescription, string resumeText);
 }
 
 /// <summary>

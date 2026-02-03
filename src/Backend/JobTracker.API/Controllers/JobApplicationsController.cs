@@ -59,6 +59,8 @@ public class JobApplicationsController : ControllerBase
             Position = app.Position,
             JobUrl = app.JobUrl,
             Description = app.Description,
+            GeneratedCoverLetter = app.GeneratedCoverLetter,
+            AiFeedback = app.AiFeedback,
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
@@ -113,6 +115,8 @@ public class JobApplicationsController : ControllerBase
             Position = app.Position,
             JobUrl = app.JobUrl,
             Description = app.Description,
+            GeneratedCoverLetter = app.GeneratedCoverLetter,
+            AiFeedback = app.AiFeedback,
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
@@ -197,6 +201,8 @@ public class JobApplicationsController : ControllerBase
             Position = application.Position,
             JobUrl = application.JobUrl,
             Description = application.Description,
+            GeneratedCoverLetter = application.GeneratedCoverLetter,
+            AiFeedback = application.AiFeedback,
             AppliedAt = application.AppliedAt,
             Status = application.Status,
             CompanyId = application.CompanyId,
@@ -347,5 +353,37 @@ public class JobApplicationsController : ControllerBase
         {
             return Forbid();
         }
+    }
+
+    // POST: api/jobapplications/{id}/cover-letter
+    [HttpPost("{id}/cover-letter")]
+    public async Task<ActionResult<string>> GenerateCoverLetter(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.GenerateCoverLetterAsync(id, userId);
+            return Ok(new { content = result });
+        }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+    }
+
+    // POST: api/jobapplications/{id}/resume-optimize
+    [HttpPost("{id}/resume-optimize")]
+    public async Task<ActionResult<string>> OptimizeResume(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.OptimizeResumeAsync(id, userId);
+            return Ok(new { content = result });
+        }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
     }
 }

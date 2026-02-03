@@ -33,9 +33,9 @@ export interface JobApplication {
 
   // Workstation Core Data
   jobUrl?: string;
-  jobDescription?: string; // The "Source of Truth" for AI
-  description?: string; // Private User Notes
+  description?: string; // The "Source of Truth" for AI (Job Posting Text)
   location?: string; // e.g. "Budapest"
+  generatedCoverLetter?: string;
 
   // Frontend/AI Computed
   matchScore: number; // 0-100
@@ -44,28 +44,31 @@ export interface JobApplication {
 
   // Relations
   documentId?: string | null; // The specific CV version used
+  documentName?: string;
   primaryContactId?: string;
   primaryContact?: CompanyContact;
 }
 
 export interface CreateJobApplication {
   position: string;
-  companyId: string;
+  companyName: string;
   department?: string;
   referenceId?: string;
   jobUrl?: string;
-  jobDescription?: string; // Full job posting text for AI analysis
-  description?: string; // Private notes (salary, thoughts, etc.)
+  description?: string; // Full job posting text for AI analysis
   status: JobApplicationStatus;
   documentId?: string | null;
   jobType?: JobType;
   workplaceType?: WorkplaceType;
   priority?: JobPriority;
+  location?: string;
+  source?: string;
   salaryMin?: number;
   salaryMax?: number;
   salaryOffer?: number;
   currency?: string;
   salaryPeriod?: string;
+  nextFollowUpDate?: string;
   matchScore?: number;
   generatedCoverLetter?: string;
   aiFeedback?: string;

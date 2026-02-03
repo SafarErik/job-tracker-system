@@ -9,9 +9,11 @@ import {
     lucideDownload,
     lucideHistory,
     lucideCheck,
-    lucideMail
+    lucideMail,
+    lucideLoader2
 } from '@ng-icons/lucide';
 import { JobApplicationStore } from '../../../services/job-application.store';
+import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-assets-view',
@@ -26,7 +28,8 @@ import { JobApplicationStore } from '../../../services/job-application.store';
             lucideDownload,
             lucideHistory,
             lucideCheck,
-            lucideMail
+            lucideMail,
+            lucideLoader2
         })
     ],
     templateUrl: './assets-view.component.html',
@@ -34,15 +37,50 @@ import { JobApplicationStore } from '../../../services/job-application.store';
 })
 export class AssetsViewComponent {
     public readonly store = inject(JobApplicationStore);
+    private readonly notificationService = inject(NotificationService);
 
     mode = signal<'resume' | 'cover-letter'>('resume');
-    hasCoverLetter = signal(false);
+    optimizedResume = signal<string | null>(null);
 
     setMode(m: 'resume' | 'cover-letter') {
         this.mode.set(m);
     }
 
     generateCoverLetter() {
-        this.hasCoverLetter.set(true);
+        const app = this.store.selectedApplication();
+        if (app) {
+            this.store.generateCoverLetter(app.id);
+        }
+    }
+
+    tailorResume() {
+        const app = this.store.selectedApplication();
+        if (app) {
+            this.store.optimizeResume(app.id, (content) => {
+                this.optimizedResume.set(content);
+            });
+        }
+    }
+
+    copyContent(text: string | null | undefined) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            this.notificationService.success('Copied to clipboard!', 'Success');
+        });
+    }
+
+    downloadAsPdf(text: string | null | undefined, filename: string) {
+        if (!text) return;
+
+        // Simple text download as a placeholder for real PDF generation
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${filename}.txt`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        this.notificationService.info('Downloading as .txt (PDF generation coming soon)', 'Download');
     }
 }

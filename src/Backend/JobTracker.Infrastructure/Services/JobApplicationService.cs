@@ -63,10 +63,71 @@ public class JobApplicationService : IJobApplicationService
         throw new NotImplementedException("Deletion is handled directly by the controller");
     }
 
-    public Task<string> GenerateCoverLetterAsync(Guid jobId, string userId)
+    public async Task<string> GenerateCoverLetterAsync(Guid jobId, string userId)
     {
-        // Placeholder for future implementation
-        throw new NotImplementedException("Cover letter generation not yet implemented");
+        _logger.LogInformation("Generating cover letter for job application {JobId}", jobId);
+
+        var application = await _jobRepository.GetByIdAsync(jobId);
+        if (application == null || application.UserId != userId)
+        {
+            throw new KeyNotFoundException($"Job application {jobId} not found");
+        }
+
+        var userDocuments = await _documentRepository.GetAllByUserIdAsync(userId);
+        var masterResume = userDocuments.FirstOrDefault(d => d.IsMaster && d.Type == DocumentType.Resume);
+
+        if (masterResume == null)
+        {
+            return "No Master Resume found. Please upload a Master Resume to enable cover letter generation.";
+        }
+
+        var jobDescription = application.Description;
+        if (string.IsNullOrWhiteSpace(jobDescription))
+        {
+            return "No job description available. Please add a job description to enable cover letter generation.";
+        }
+
+        var resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction pending.";
+
+        var companyName = application.Company?.Name ?? "the hiring company";
+        var position = application.Position;
+
+        var coverLetter = await _aiService.GenerateCoverLetterAsync(jobDescription, resumeText, companyName, position);
+
+        // Optionally save to application
+        application.GeneratedCoverLetter = coverLetter;
+        await _jobRepository.UpdateAsync(application);
+
+        return coverLetter;
+    }
+
+    public async Task<string> OptimizeResumeAsync(Guid jobId, string userId)
+    {
+        _logger.LogInformation("Optimizing resume for job application {JobId}", jobId);
+
+        var application = await _jobRepository.GetByIdAsync(jobId);
+        if (application == null || application.UserId != userId)
+        {
+            throw new KeyNotFoundException($"Job application {jobId} not found");
+        }
+
+        var userDocuments = await _documentRepository.GetAllByUserIdAsync(userId);
+        var masterResume = userDocuments.FirstOrDefault(d => d.IsMaster && d.Type == DocumentType.Resume);
+
+        if (masterResume == null)
+        {
+            return "No Master Resume found. Please upload a Master Resume to enable optimization.";
+        }
+
+        var jobDescription = application.Description;
+        if (string.IsNullOrWhiteSpace(jobDescription))
+        {
+            return "No job description available. Please add a job description to enable optimization.";
+        }
+
+        var resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction pending.";
+
+        return await _aiService.OptimizeResumeAsync(jobDescription, resumeText);
     }
 
     public async Task<JobApplicationDto> TriggerAIAnalysisAsync(Guid id, string userId)

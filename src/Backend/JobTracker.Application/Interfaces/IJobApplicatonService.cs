@@ -12,6 +12,11 @@ public interface IJobApplicationService
     Task<string> GenerateCoverLetterAsync(Guid jobId, string userId);
 
     /// <summary>
+    /// Generates an optimized version of the resume tailored for a specific job.
+    /// </summary>
+    Task<string> OptimizeResumeAsync(Guid jobId, string userId);
+
+    /// <summary>
     /// Triggers AI analysis of a job application against the user's master resume.
     /// Updates the job application with match score and AI feedback.
     /// </summary>

@@ -31,6 +31,7 @@ export class JobApplicationStore {
     private readonly _selectedApplicationId = signal<string | null>(null);
     private readonly _isLoading = signal<boolean>(false);
     private readonly _isAnalyzing = signal<boolean>(false);
+    private readonly _isGeneratingAsset = signal<boolean>(false);
     private readonly _error = signal<string | null>(null);
 
     // Filter Signals
@@ -43,6 +44,7 @@ export class JobApplicationStore {
     readonly selectedApplicationId = this._selectedApplicationId.asReadonly();
     readonly isLoading = this._isLoading.asReadonly();
     readonly isAnalyzing = this._isAnalyzing.asReadonly();
+    readonly isGeneratingAsset = this._isGeneratingAsset.asReadonly();
     readonly error = this._error.asReadonly();
 
     readonly filterStatus = this._filterStatus.asReadonly();
@@ -280,6 +282,41 @@ export class JobApplicationStore {
                     'Failed to analyze application. Please try again.',
                     'Error'
                 );
+            }
+        });
+    }
+
+    generateCoverLetter(id: string) {
+        this._isGeneratingAsset.set(true);
+        this.applicationService.generateCoverLetter(id).subscribe({
+            next: (res) => {
+                // The backend also saves it to the DB, so we update the app in store
+                this._applications.update(apps =>
+                    apps.map(app => app.id === id ? { ...app, generatedCoverLetter: res.content } : app)
+                );
+                this._isGeneratingAsset.set(false);
+                this.notificationService.success('Cover letter generated!', 'AI Magic');
+            },
+            error: (err) => {
+                console.error('Failed to generate cover letter', err);
+                this._isGeneratingAsset.set(false);
+                this.notificationService.error('Failed to generate cover letter', 'Error');
+            }
+        });
+    }
+
+    optimizeResume(id: string, callback: (content: string) => void) {
+        this._isGeneratingAsset.set(true);
+        this.applicationService.optimizeResume(id).subscribe({
+            next: (res) => {
+                this._isGeneratingAsset.set(false);
+                this.notificationService.success('Resume optimized!', 'AI Magic');
+                callback(res.content);
+            },
+            error: (err) => {
+                console.error('Failed to optimize resume', err);
+                this._isGeneratingAsset.set(false);
+                this.notificationService.error('Failed to optimize resume', 'Error');
             }
         });
     }

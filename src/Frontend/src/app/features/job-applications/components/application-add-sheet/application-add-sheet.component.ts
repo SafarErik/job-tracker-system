@@ -56,8 +56,8 @@ export class ApplicationAddSheetComponent {
         status: [JobApplicationStatus.Applied, Validators.required],
         priority: [JobPriority.Medium, Validators.required],
         location: [''],
-        salaryMin: [''],
-        salaryMax: [''],
+        salaryMin: ['', Validators.pattern(/^\d*\.?\d*$/)],
+        salaryMax: ['', Validators.pattern(/^\d*\.?\d*$/)],
     });
 
     // Mock Auto-Fill Loading State

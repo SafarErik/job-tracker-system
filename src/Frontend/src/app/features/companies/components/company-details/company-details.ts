@@ -93,6 +93,17 @@ export class CompanyDetailsComponent implements OnInit {
       if (current) {
         // Sync notes only if company ID changed to avoid cursor jumps
         if (current.id !== this.lastCompanyId) {
+          // Flush pending notes save if switching companies
+          if (this.notesTimer && this.lastCompanyId) {
+            const pendingNotes = this.companyNotes();
+            const oldId = this.lastCompanyId;
+            untracked(() => {
+              this.companyService.updateCompany(oldId, { notes: pendingNotes }).subscribe();
+            });
+            clearTimeout(this.notesTimer);
+            this.notesTimer = null;
+          }
+
           untracked(() => {
             this.companyNotes.set(current.notes || '');
             this.loadCompanyNews(current.name);
@@ -247,8 +258,9 @@ export class CompanyDetailsComponent implements OnInit {
     let newContacts: CompanyContact[];
 
     if (!contact.id || contact.id === '0') {
-      // Create new
-      newContacts = [...contacts, contact];
+      // Create new - omit sentinel ID so backend generates GUID
+      const { id, ...contactData } = contact;
+      newContacts = [...contacts, contactData as CompanyContact];
     } else {
       // Update
       newContacts = contacts.map(c => c.id === contact.id ? contact : c);

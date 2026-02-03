@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -42,7 +42,7 @@ interface Message {
 })
 export class InterviewViewComponent {
     messages = signal<Message[]>([]);
-    responseText = signal('');
+    responseText = model('');
     isRecording = signal(false);
     isTextMode = signal(false);
 

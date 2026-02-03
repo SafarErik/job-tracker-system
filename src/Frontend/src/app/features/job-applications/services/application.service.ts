@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
-import { AiGeneratedAssets } from '../models/ai-analysis.model';
+import { AiGeneratedAssets } from '../../../core/models/ai-generated-assets.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({

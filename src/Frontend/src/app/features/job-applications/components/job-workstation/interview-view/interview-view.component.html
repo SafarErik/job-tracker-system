@@ -96,7 +96,8 @@
 
             <!-- Text Mode Toggle -->
             <button (click)="toggleTextMode()" [class.text-violet-400]="isTextMode()"
-                [class.text-zinc-600]="!isTextMode()" class="p-4 hover:bg-zinc-900 rounded-2xl transition-all group">
+                [class.text-zinc-600]="!isTextMode()" class="p-4 hover:bg-zinc-900 rounded-2xl transition-all group"
+                aria-label="Toggle text input mode">
                 <ng-icon name="lucideKeyboard" class="text-xl group-hover:scale-110 transition-transform"></ng-icon>
             </button>
 
@@ -118,7 +119,8 @@
 
             <!-- End Session Shortcut -->
             <button (click)="endSession()"
-                class="p-4 text-zinc-600 hover:text-red-400 hover:bg-red-950/20 rounded-2xl transition-all group">
+                class="p-4 text-zinc-600 hover:text-red-400 hover:bg-red-950/20 rounded-2xl transition-all group"
+                aria-label="End interview session">
                 <ng-icon name="lucideX"
                     class="text-xl group-hover:rotate-90 transition-transform duration-300"></ng-icon>
             </button>

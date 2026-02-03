@@ -63,7 +63,7 @@
       <hlm-tooltip hlmClassName="z-50 border-border bg-popover/95 backdrop-blur-md text-foreground shadow-2xl">
         <span [class]="matchScoreColorClasses()"
           class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all duration-300 hover:scale-105 hover:shadow-[0_0_10px_-2px_currentColor] cursor-help focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          hlmTooltipTrigger tabindex="0" role="button" aria-label="AI Match Score" (click)="$event.stopPropagation()"
+          hlmTooltipTrigger tabindex="0" aria-label="AI Match Score" (click)="$event.stopPropagation()"
           (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()">
           <ng-icon name="lucideSparkles" class="size-3.5"></ng-icon>
           {{ application().matchScore || 0 }}%

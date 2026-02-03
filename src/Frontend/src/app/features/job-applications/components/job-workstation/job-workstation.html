@@ -99,13 +99,13 @@
       <!-- Action Buttons -->
       <button (click)="uiState.openJobSettings()"
         class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-300 transition-colors tooltip"
-        title="Edit Application Metadata">
+        aria-label="Edit Application Metadata" title="Edit Application Metadata">
         <ng-icon name="lucideSettings" class="text-sm"></ng-icon>
       </button>
 
       <button (click)="deleteApplication()"
         class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-red-400 transition-colors tooltip"
-        title="Delete Application">
+        aria-label="Delete Application" title="Delete Application">
         <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
       </button>
 

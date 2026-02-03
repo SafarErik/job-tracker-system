@@ -258,16 +258,41 @@ public class JobApplicationService : IJobApplicationService
 
     private async Task<string> ExtractResumeTextAsync(Document resume)
     {
-        var filePath = Path.Combine(_uploadsPath, resume.FileName);
-
-        // Ensure directory exists if we were checking for it, but for reading we just check file
-        if (!File.Exists(filePath))
+        if (string.IsNullOrEmpty(resume.FileName))
         {
-            _logger.LogWarning("Resume file not found at {Path}", filePath);
+            _logger.LogWarning("Resume document {ResumeId} has no filename", resume.Id);
+            return $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.";
+        }
+
+        // 1. Get safe filename and join with uploads path
+        var safeFileName = Path.GetFileName(resume.FileName);
+        var candidatePath = Path.Combine(_uploadsPath, safeFileName);
+
+        // 2. Resolve full paths for comparison
+        // Ensure uploadsPath has a trailing separator for reliable StartsWith check
+        var fullUploadsPath = Path.GetFullPath(_uploadsPath);
+        if (!fullUploadsPath.EndsWith(Path.DirectorySeparatorChar))
+        {
+            fullUploadsPath += Path.DirectorySeparatorChar;
+        }
+
+        var fullCandidatePath = Path.GetFullPath(candidatePath);
+
+        // 3. Verify the candidate path is within the uploads directory
+        if (!fullCandidatePath.StartsWith(fullUploadsPath, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogError("Path traversal attempt detected! Requested file: {FileName}, Resolved Path: {Path}",
+                resume.FileName, fullCandidatePath);
+            return $"Resume: {resume.OriginalFileName}\n\nNote: Security violation - file access blocked.";
+        }
+
+        if (!File.Exists(fullCandidatePath))
+        {
+            _logger.LogWarning("Resume file not found at {Path}", fullCandidatePath);
             return $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.";
         }
 
-        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
+        var resumeText = await _textExtractor.ExtractTextAsync(fullCandidatePath);
 
         if (string.IsNullOrWhiteSpace(resumeText))
         {

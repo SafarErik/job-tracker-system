@@ -44,8 +44,7 @@ public partial class GeminiAIService : IAIService
             throw new InvalidOperationException("Gemini API key not configured. Please add 'AI:GeminiApiKey' to your configuration.");
         }
 
-        System.Environment.SetEnvironmentVariable("GOOGLE_API_KEY", apiKey);
-        _client = new Client();
+        _client = new Client(apiKey: apiKey);
         _logger = logger;
     }
 

@@ -19,7 +19,7 @@ Identify 'Gaps' (missing skills or experience).
 Provide 'StrategicAdvice' for the interview.
 Generate a 'TailoredResume' (Markdown format) that optimizes the original resume for this specific job.
 Generate a 'CoverLetter' (Markdown format).
-Return ONLY a JSON object with these keys: matchScore, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
+Return ONLY a JSON object with these keys: matchScore, gapAnalysis, missingSkills, strategicAdvice, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
 
     public const string CoverLetterSystemPrompt = @"You are a professional career coach. Write a tailored, persuasive cover letter based on the Job Description and Resume provided.
 Keep it professional, engaging, and under 300 words. 

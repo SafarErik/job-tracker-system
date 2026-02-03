@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentStore } from '../../services/document.store';
@@ -38,6 +38,31 @@ export class DocumentsListComponent implements OnInit {
   public readonly store = inject(DocumentStore);
   private readonly notificationService = inject(NotificationService);
   private readonly documentService = inject(DocumentService);
+
+  // Computed State for Layout
+  masterDocument = computed(() =>
+    this.store.filteredDocuments().find(d => d.isMaster)
+  );
+
+  deployedDocuments = computed(() =>
+    this.store.filteredDocuments().filter(d => !d.isMaster)
+  );
+
+  tailoredResumes = computed(() =>
+    this.deployedDocuments().filter(d => this.inferDocType(d) === 'Resume')
+  );
+
+  coverLetters = computed(() =>
+    this.deployedDocuments().filter(d => this.inferDocType(d) === 'Cover Letter')
+  );
+
+  // Helper to infer type if not present (simple logic for now)
+  private inferDocType(doc: Document): 'Resume' | 'Cover Letter' {
+    if (doc.docType) return doc.docType;
+    const name = doc.originalFileName.toLowerCase();
+    if (name.includes('cover') || name.includes('letter')) return 'Cover Letter';
+    return 'Resume';
+  }
 
   // Local-only UI State
   uploadProgress = signal<number | null>(null);
@@ -195,5 +220,13 @@ export class DocumentsListComponent implements OnInit {
       month: 'short',
       day: 'numeric',
     });
+  }
+
+  viewApplication(doc: Document): void {
+    if (doc.jobId) {
+      // TODO: Navigate to job application details
+      // this.router.navigate(['/applications', doc.jobId]);
+      this.notificationService.show('info', 'Navigating to Linked Application...');
+    }
   }
 }

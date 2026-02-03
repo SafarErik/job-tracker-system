@@ -5,4 +5,12 @@ export interface Document {
     contentType: string;
     uploadedAt: string;
     isMaster?: boolean;
+    // UI Metadata
+    companyName?: string;
+    companyLogo?: string;
+    compatibilityScore?: number;
+    docType?: 'Resume' | 'Cover Letter';
+    // Linkage
+    jobId?: string;
+    jobTitle?: string;
 }

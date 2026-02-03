@@ -34,75 +34,118 @@ import {
     lucideFileText
   })],
   template: `
-    <div class="group relative bg-card rounded-2xl border border-border/40 p-4 transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1 flex flex-col gap-4 h-full">
+    <div class="group relative bg-zinc-900/60 backdrop-blur-md rounded-2xl border border-white/5 p-5 transition-all duration-300 hover:border-violet-500/30 hover:shadow-[0_4px_20px_rgba(139,92,246,0.15)] hover:-translate-y-1 flex flex-col gap-4 h-full overflow-hidden">
       
+      <!-- Glow Effect -->
+      <div class="absolute inset-0 bg-linear-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
       <!-- TOP: File Type & Status -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <div class="h-10 w-10 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center font-bold text-xs">
-            PDF
+      <div class="relative flex items-start justify-between z-10">
+        <div class="flex items-center gap-3">
+          <!-- Icon / Company Logo Placeholder -->
+          <div class="h-12 w-12 rounded-xl bg-zinc-950 border border-white/10 flex items-center justify-center font-bold text-xs text-neutral-400 group-hover:text-violet-400 group-hover:border-violet-500/30 transition-colors shadow-inner">
+             @if (doc().companyLogo) {
+                <!-- Mock Image for Company -->
+                <span class="text-[10px] uppercase">{{ doc().companyName?.substring(0, 2) }}</span>
+             } @else {
+                <ng-icon name="lucideFileText" class="text-xl"></ng-icon>
+             }
           </div>
-          @if (doc().isMaster) {
-            <span class="px-2 py-0.5 rounded-md bg-warning/10 text-warning text-[10px] font-black uppercase tracking-widest border border-warning/20 flex items-center gap-1">
-              <ng-icon name="lucideAward" size="12"></ng-icon>
-              Master
-            </span>
-          }
+          
+          <div class="flex flex-col">
+             @if (doc().companyName) {
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500 flex items-center gap-1">
+                   Tailored for
+                </span>
+                <span class="text-sm font-bold text-white">{{ doc().companyName }}</span>
+             } @else {
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                   {{ doc().docType || 'General Asset' }}
+                </span>
+             }
+          </div>
         </div>
         
         <!-- Actions Dropdown (Spartan) -->
-        <button [hlmDropdownMenuTrigger]="docMenu" class="h-8 w-8 rounded-md hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors">
+        <button [hlmDropdownMenuTrigger]="docMenu" class="h-8 w-8 rounded-lg hover:bg-white/5 flex items-center justify-center text-neutral-500 hover:text-white transition-colors">
           <ng-icon name="lucideMoreVertical" class="text-base"></ng-icon>
         </button>
         
         <ng-template #docMenu>
-          <div hlmDropdownMenu class="w-48">
-            <button hlmDropdownMenuItem (click)="preview.emit(doc())">
-              <ng-icon name="lucideEye" class="mr-2 h-4 w-4"></ng-icon>
-              <span>Preview</span>
+          <div hlmDropdownMenu class="w-56 bg-zinc-950 border-zinc-800 text-neutral-300">
+            <button hlmDropdownMenuItem (click)="preview.emit(doc())" class="hover:bg-zinc-900 focus:bg-zinc-900">
+              <ng-icon name="lucideEye" class="mr-2 h-4 w-4 text-violet-400"></ng-icon>
+              <span>Quick Preview</span>
             </button>
-            <button hlmDropdownMenuItem (click)="download.emit(doc())">
+            <button hlmDropdownMenuItem (click)="download.emit(doc())" class="hover:bg-zinc-900 focus:bg-zinc-900">
               <ng-icon name="lucideDownload" class="mr-2 h-4 w-4"></ng-icon>
-              <span>Download</span>
+              <span>Download Asset</span>
             </button>
-            <div hlmDropdownMenuSeparator></div>
-            <button hlmDropdownMenuItem (click)="setMaster.emit(doc())">
-              <ng-icon name="lucideAward" class="mr-2 h-4 w-4"></ng-icon>
-              <span>Set as Master</span>
-            </button>
-            <div hlmDropdownMenuSeparator></div>
-            <button hlmDropdownMenuItem class="text-destructive focus:text-destructive" (click)="delete.emit(doc())">
+            
+            @if (doc().jobId) {
+              <div hlmDropdownMenuSeparator class="bg-zinc-800"></div>
+              <button hlmDropdownMenuItem (click)="viewApplication.emit(doc())" class="hover:bg-zinc-900 focus:bg-zinc-900">
+                <ng-icon name="lucideFileText" class="mr-2 h-4 w-4 text-violet-400"></ng-icon>
+                <span>View Linked Application</span>
+              </button>
+            }
+
+            <div hlmDropdownMenuSeparator class="bg-zinc-800"></div>
+            @if (!doc().isMaster) {
+               <button hlmDropdownMenuItem (click)="setMaster.emit(doc())" class="hover:bg-zinc-900 focus:bg-zinc-900">
+               <ng-icon name="lucideAward" class="mr-2 h-4 w-4 text-amber-400"></ng-icon>
+               <span>Promote to Master</span>
+               </button>
+            }
+            <div hlmDropdownMenuSeparator class="bg-zinc-800"></div>
+            <button hlmDropdownMenuItem class="text-rose-500 focus:text-rose-500 hover:bg-rose-950/20 focus:bg-rose-950/20" (click)="delete.emit(doc())">
               <ng-icon name="lucideTrash2" class="mr-2 h-4 w-4"></ng-icon>
-              <span>Delete</span>
+              <span>Delete Asset</span>
             </button>
           </div>
         </ng-template>
       </div>
 
-      <!-- MIDDLE: Filename -->
-      <div class="space-y-1">
-        <h3 class="font-bold text-foreground truncate group-hover:text-primary transition-colors cursor-pointer" 
+      <!-- MIDDLE: Filename & Compatibility -->
+      <div class="space-y-2 z-10 mt-1">
+        <h3 class="font-bold text-neutral-200 truncate group-hover:text-violet-200 transition-colors cursor-pointer text-sm" 
             [title]="doc().originalFileName"
             (click)="preview.emit(doc())">
           {{ doc().originalFileName }}
         </h3>
-        <p class="text-xs text-muted-foreground flex items-center gap-2">
-          <span>{{ formattedSize() }}</span>
-          <span>•</span>
-          <span>Uploaded {{ doc().uploadedAt | date:'MMM d' }}</span>
-        </p>
+        
+        @if (doc().compatibilityScore) {
+           <div class="flex items-center gap-2">
+              <div class="h-1.5 flex-1 bg-zinc-800 rounded-full overflow-hidden">
+                 <div class="h-full bg-emerald-500 rounded-full" [style.width.%]="doc().compatibilityScore"></div>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-400">{{ doc().compatibilityScore }}% Match</span>
+           </div>
+        } @else {
+           <p class="text-[11px] text-neutral-500 flex items-center gap-2">
+             <span>{{ formattedSize() }}</span>
+             <span class="w-1 h-1 rounded-full bg-zinc-800"></span>
+             <span>{{ doc().uploadedAt | date:'MMM d' }}</span>
+           </p>
+        }
       </div>
 
-      <!-- BOTTOM: Links & Context -->
-      <div class="mt-auto pt-3 border-t border-border/40 flex items-center justify-between">
-        <div class="flex -space-x-2">
-          <!-- Placeholder for future "Used In" feature -->
-          <!-- <div class="h-6 w-6 rounded-full border-2 border-card bg-muted flex items-center justify-center text-[10px] font-bold">M</div> -->
-        </div>
+      <!-- BOTTOM: Actions & Status -->
+      <div class="mt-auto pt-4 border-t border-white/5 flex items-center justify-between z-10">
+         @if (doc().isMaster) {
+            <span class="px-2 py-1 rounded-md bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 flex items-center gap-1.5">
+               <ng-icon name="lucideAward" size="10"></ng-icon>
+               Master
+             </span>
+         } @else {
+            <div class="flex -space-x-2">
+               <!-- Placeholder avatars if shared/used -->
+            </div>
+         }
         
-        <button hlmBtn variant="ghost" size="sm" class="h-8 px-2 text-xs gap-1.5 hover:text-primary" (click)="preview.emit(doc())">
+        <button hlmBtn variant="ghost" size="sm" class="h-7 px-2 text-[10px] font-bold uppercase tracking-wider text-neutral-400 hover:text-white hover:bg-white/5 gap-1.5" (click)="preview.emit(doc())">
+          Open
           <ng-icon name="lucideEye" class="text-xs"></ng-icon>
-          Preview
         </button>
       </div>
     </div>
@@ -117,6 +160,7 @@ export class DocumentCardComponent {
   download = output<Document>();
   delete = output<Document>();
   setMaster = output<Document>();
+  viewApplication = output<Document>();
 
   formattedSize = computed(() => {
     return this.documentService.formatFileSize(this.doc().fileSize);

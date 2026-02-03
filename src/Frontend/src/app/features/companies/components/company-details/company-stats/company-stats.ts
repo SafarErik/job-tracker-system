@@ -7,7 +7,7 @@ import { SkillSelectorComponent } from '../../../../../shared/components/skill-s
 @Component({
    selector: 'app-company-stats',
    standalone: true,
-   imports: [CommonModule, NgIcon, SkillSelectorComponent],
+   imports: [CommonModule, NgIcon],
    providers: [provideIcons({ lucideTrendingUp, lucideTrendingDown })],
    template: `
     <div class="space-y-4 font-sans h-full flex flex-col">

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert } from '@ng-icons/lucide';
+import { lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX } from '@ng-icons/lucide';
 
 export interface IntelligenceBriefing {
   mission: string;
@@ -15,8 +15,9 @@ export interface IntelligenceBriefing {
   selector: 'app-company-notes',
   standalone: true,
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
-  providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert })],
+  providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX })],
   template: `
+    <!-- Main Card View -->
     <div class="rounded-3xl bg-zinc-900/60 backdrop-blur-md border border-zinc-800 p-8 flex flex-col h-full group hover:border-zinc-700 transition-all duration-500 shadow-none overflow-hidden relative font-mono text-zinc-300">
       
       <!-- Top Secret Watermarks -->
@@ -28,16 +29,18 @@ export interface IntelligenceBriefing {
       </div>
 
       <div class="flex items-center justify-between mb-10 relative z-10">
-        <div class="flex items-center gap-3">
-          <div class="p-2.5 rounded-2xl bg-zinc-950 border border-zinc-800 text-violet-400">
+        <!-- Header Left -->
+        <div class="flex items-center gap-3 cursor-pointer group/header" (click)="toggleExpansion()">
+          <div class="p-2.5 rounded-2xl bg-zinc-950 border border-zinc-800 text-violet-400 group-hover/header:border-violet-500/30 transition-colors">
             <ng-icon name="lucideFileText" class="h-4 w-4"></ng-icon>
           </div>
           <div>
-            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-100 leading-none">Intelligence Briefing</h3>
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-100 leading-none group-hover/header:text-violet-400 transition-colors">Intelligence Briefing</h3>
             <p class="text-[9px] font-bold text-violet-500/60 uppercase tracking-widest mt-1">Classification: Confidential</p>
           </div>
         </div>
         
+        <!-- Header Right -->
         <div class="flex items-center gap-3">
           <button (click)="handleRegeneration()" [disabled]="isScanning()"
             class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950 border border-violet-500/20 text-violet-400 text-[10px] font-black uppercase tracking-widest hover:bg-violet-500/10 transition-all active:scale-95 group/wand disabled:opacity-50 disabled:cursor-not-allowed">
@@ -45,9 +48,9 @@ export interface IntelligenceBriefing {
             {{ isScanning() ? 'Scanning...' : 'Regenerate' }}
           </button>
           
-          <div class="text-[9px] font-black uppercase tracking-widest text-zinc-600 bg-zinc-950/50 px-3 py-1.5 rounded-full border border-zinc-800">
-            Sync: <span class="text-zinc-500">{{ lastUpdated() || 'SESSION_NEW' }}</span>
-          </div>
+          <button (click)="toggleExpansion()" class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-700 transition-all">
+             <ng-icon name="lucideMaximize2" class="h-3.5 w-3.5"></ng-icon>
+          </button>
         </div>
       </div>
 
@@ -140,11 +143,89 @@ export interface IntelligenceBriefing {
           {{ isEditingNotes() ? 'Save Field Notes' : 'Edit Technical Notes' }}
         </button>
 
+        <!-- Pinned Action Button -->
+        <div class="absolute bottom-6 right-6 z-20" *ngIf="false"> <!-- Hidden in overlay, using regular footer here -->
+             <!-- We already have the button above, but per previous request it was pinned right. Let's keep it clean. -->
+        </div>
+
         <div class="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600 flex items-center gap-2">
           Source: <span class="text-violet-500/50">Global AI Grid v4.1</span>
         </div>
       </div>
     </div>
+
+    <!-- FULL SCREEN OVERLAY -->
+    @if (isBriefingExpanded()) {
+    <div class="fixed inset-0 z-50 backdrop-blur-xl bg-black/60 flex items-center justify-center p-8 animate-in fade-in duration-300" 
+         (click)="toggleExpansion()">
+       <div class="w-full max-w-3xl max-h-[85vh] bg-zinc-900 border border-zinc-800 shadow-2xl rounded-3xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+            (click)="$event.stopPropagation()">
+          
+          <!-- Expanded Header -->
+          <div class="p-8 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/30">
+             <div class="flex items-center gap-4">
+                <div class="h-12 w-12 rounded-2xl bg-zinc-950 border border-zinc-800 text-violet-400 flex items-center justify-center">
+                  <ng-icon name="lucideFileText" class="h-6 w-6"></ng-icon>
+                </div>
+                <div>
+                   <h2 class="text-3xl font-black font-serif text-zinc-100 tracking-tight">Intelligence Briefing</h2>
+                   <p class="text-xs font-bold text-violet-500/60 uppercase tracking-widest mt-1">Classification: Top Secret // Eyes Only</p>
+                </div>
+             </div>
+             
+             <button (click)="toggleExpansion()" class="h-10 w-10 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-500 transition-all flex items-center justify-center">
+                <ng-icon name="lucideX" class="h-5 w-5"></ng-icon>
+             </button>
+          </div>
+
+          <!-- Expanded Content -->
+          <div class="flex-1 overflow-y-auto custom-scrollbar p-10 space-y-10 bg-zinc-900/50 relative font-mono">
+            <!-- Background Watermark -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.04] select-none pointer-events-none -rotate-12 border-[6px] border-violet-500 p-8 text-6xl font-black text-violet-500 whitespace-nowrap z-0">
+               TOP SECRET // INTEL Only
+            </div>
+
+             <!-- Mission -->
+             <section class="relative z-10 space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-violet-400 border-l-4 border-violet-500 pl-4 py-1">Mission Context</h3>
+                <p class="text-lg leading-relaxed text-zinc-300 indent-0">
+                   {{ briefing()?.mission }}
+                </p>
+             </section>
+
+             <!-- Strategic Fit -->
+             <section class="relative z-10 space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-400 border-l-4 border-emerald-500 pl-4 py-1">Strategic Alignment</h3>
+                <ul class="space-y-4">
+                   @for (fit of briefing()?.fit; track $index) {
+                      <li class="flex gap-4 text-base text-zinc-300 bg-zinc-950/30 p-4 rounded-xl border border-zinc-800/50">
+                         <span class="text-emerald-500 font-bold">0{{ $index + 1 }}</span>
+                         <span>{{ fit }}</span>
+                      </li>
+                   }
+                </ul>
+             </section>
+
+             <!-- Risks -->
+             <section class="relative z-10 space-y-4">
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-amber-500 border-l-4 border-amber-500 pl-4 py-1">Risk Assessment</h3>
+                <div class="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex gap-4">
+                   <ng-icon name="lucideShieldAlert" class="text-amber-500 h-6 w-6 shrink-0 mt-1"></ng-icon>
+                   <p class="text-lg leading-relaxed text-zinc-300 italic">
+                      {{ briefing()?.risks }}
+                   </p>
+                </div>
+             </section>
+          </div>
+
+          <!-- Expanded Footer -->
+          <div class="p-6 border-t border-zinc-800 bg-zinc-950/30 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">
+             <span>Source: Global AI Grid v4.1 (Encrypted)</span>
+             <span>Last Sync: {{ lastUpdated() || 'LIVE' }}</span>
+          </div>
+       </div>
+    </div>
+    }
   `,
   styles: [`
     :host { display: block; height: 100%; }
@@ -166,22 +247,49 @@ export class CompanyNotesComponent {
 
   isScanning = signal(false);
   isEditingNotes = signal(false);
+  isBriefingExpanded = signal(false);
 
   displayedMissionContext = signal('');
   displayedStrategicFit = signal<string[]>([]);
   displayedRisksIntel = signal('');
 
+
+
+  handleRegeneration(): void {
+    this.regenerate.emit();
+  }
+
+  toggleExpansion(): void {
+    this.isBriefingExpanded.update(v => !v);
+  }
+
+  // Listen for Escape key to close expansion
+  // Note: Using window binding since focus might be anywhere
   constructor() {
+    effect((onCleanup) => {
+      const expanded = this.isBriefingExpanded();
+      if (expanded) {
+        document.body.style.overflow = 'hidden';
+        const escapeHandler = (e: KeyboardEvent) => {
+          if (e.key === 'Escape') this.isBriefingExpanded.set(false);
+        };
+        window.addEventListener('keydown', escapeHandler);
+
+        onCleanup(() => {
+          document.body.style.overflow = 'auto';
+          window.removeEventListener('keydown', escapeHandler);
+        });
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    });
+
     effect(() => {
       const b = this.briefing();
       if (b) {
         this.runTypewriter(b);
       }
     });
-  }
-
-  handleRegeneration(): void {
-    this.regenerate.emit();
   }
 
   runTypewriter(b: IntelligenceBriefing): void {

@@ -299,4 +299,14 @@ export class CompanyDetailsComponent implements OnInit {
       queryParams: { from: 'company', companyId: current?.id }
     });
   }
+
+  formatDate(dateString: string | Date | undefined): string | null {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+  }
 }

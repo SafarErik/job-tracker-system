@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
+<div class="min-h-screen bg-zinc-950 text-zinc-100 pb-12 font-sans selection:bg-violet-500/20 overflow-x-hidden">
   <!-- Loading State -->
   @if (isLoading()) {
   <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
@@ -34,7 +34,7 @@
       (updateIndustry)="handleUpdateIndustry($event)" (deleteCompany)="handleDeleteCompany()"></app-company-header>
 
     <!-- Bento Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
       <!-- Column 1: Stats & Stack (Span 3) -->
       <div class="lg:col-span-3 space-y-6">
@@ -45,7 +45,9 @@
 
       <!-- Column 2: Notes & Contacts (Span 6) -->
       <div class="lg:col-span-6 space-y-6">
-        <app-company-notes [notes]="companyNotes()" (notesChange)="handleNotesChange($event)"></app-company-notes>
+        <app-company-notes [notes]="companyNotes()" [lastUpdated]="formatDate(details.updatedAt)"
+          (notesChange)="handleNotesChange($event)">
+        </app-company-notes>
 
         <app-contact-list [contacts]="details.contacts || []" (save)="handleSaveContact($event)"
           (deleteContact)="handleDeleteContact($event)"></app-contact-list>
@@ -57,6 +59,22 @@
           (viewApplication)="viewApplication($event)"></app-company-intel>
       </div>
 
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="mt-20 pt-10 border-t border-zinc-900 leading-none">
+      <div
+        class="bg-destructive/5 border border-destructive/20 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-1 text-center md:text-left">
+          <h3 class="text-lg font-black uppercase tracking-widest text-destructive">Danger Zone</h3>
+          <p class="text-sm text-zinc-500 font-medium">Permanently expunge this asset and all associated intelligence
+            from the system.</p>
+        </div>
+        <button hlmBtn variant="destructive" (click)="handleDeleteCompany()"
+          class="rounded-2xl px-8 h-12 font-black uppercase tracking-widest">
+          Expunge Asset
+        </button>
+      </div>
     </div>
   </div>
   }

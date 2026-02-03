@@ -10,6 +10,7 @@ export interface Company {
   techStack?: string[];
   totalApplications: number;
   priority: string;
+  updatedAt?: string;
   // For rich display in list view
   recentApplications?: ApplicationPreview[];
 }
@@ -62,6 +63,7 @@ export interface CompanyDetail {
   techStack?: string[];
   totalApplications: number;
   priority: string;
+  updatedAt?: string;
   applicationHistory: JobApplicationHistory[];
   // Intelligence fields (mock data for now)
   contacts?: CompanyContact[];

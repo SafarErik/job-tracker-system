@@ -2,11 +2,9 @@ import { Component, input, output, ChangeDetectionStrategy, computed, inject } f
 import {
   HlmCard,
   HlmCardHeader,
-  HlmCardTitle,
   HlmCardContent,
   HlmCardFooter,
 } from '@spartan-ng/helm/card';
-import { HlmBadge } from '@spartan-ng/helm/badge';
 import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -21,10 +19,8 @@ import { ProfileStore } from '../../../../features/profile/services/profile.stor
     NgIcon,
     HlmCard,
     HlmCardHeader,
-    HlmCardTitle,
     HlmCardContent,
     HlmCardFooter,
-    HlmBadge,
   ],
   providers: [provideIcons({ lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle })],
   templateUrl: './company-card.html',

@@ -10,28 +10,32 @@ import { lucideExternalLink, lucideLoader2 } from '@ng-icons/lucide';
   imports: [CommonModule, NgIcon],
   providers: [provideIcons({ lucideExternalLink, lucideLoader2 })],
   template: `
-    <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-8 h-full">
+    <div class="bg-zinc-900/40 rounded-[2.5rem] border border-zinc-800 p-8 h-full flex flex-col">
       <div class="flex items-center justify-between mb-8">
-        <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground">Market Signal</h3>
+        <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-500">Intel Feeds</h3>
         @if (loading()) {
-        <ng-icon name="lucideLoader2" class="animate-spin text-primary"></ng-icon>
+        <ng-icon name="lucideLoader2" class="animate-spin text-violet-400"></ng-icon>
         }
       </div>
 
-      <div class="space-y-4">
+      <div class="space-y-3 flex-1">
         @if (news().length === 0 && !loading()) {
-        <p class="text-xs font-medium text-muted-foreground/40 text-center py-10">No recent market signals detected.
-        </p>
+        <div class="flex flex-col items-center justify-center h-40 border border-dashed border-zinc-800 rounded-2xl opacity-40">
+           <p class="text-[10px] font-black uppercase tracking-widest">Scanning signals...</p>
+        </div>
         } @else {
         @for (item of news(); track item.id) {
-        <div class="news-item p-4 rounded-2xl bg-muted/30 border border-border/10">
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <h5 class="text-sm font-bold leading-snug line-clamp-2">{{ item.title }}</h5>
-            <ng-icon name="lucideExternalLink" class="text-muted-foreground/40 shrink-0 mt-1" size="14"></ng-icon>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black uppercase text-primary">{{ item.source }}</span>
-            <span class="text-[10px] font-bold text-muted-foreground/60">{{ formatDate(item.date) }}</span>
+        <div class="p-4 rounded-xl bg-zinc-950/50 border-l-2 border-l-blue-500 group hover:bg-zinc-900/80 transition-all cursor-pointer">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+              <span class="bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase px-2 py-0.5 rounded border border-blue-500/20">
+                {{ item.source }}
+              </span>
+              <span class="text-[9px] font-bold text-zinc-600 ml-auto">{{ formatDate(item.date) }}</span>
+            </div>
+            <h5 class="text-xs font-bold leading-normal text-zinc-300 group-hover:text-zinc-100 transition-colors line-clamp-2">
+              {{ item.title }}
+            </h5>
           </div>
         </div>
         }
@@ -39,15 +43,15 @@ import { lucideExternalLink, lucideLoader2 } from '@ng-icons/lucide';
       </div>
 
       @if (history().length > 0) {
-      <div class="mt-8 pt-8 border-t border-border/20">
-        <h3 class="text-sm font-black uppercase tracking-[0.2em] text-muted-foreground mb-6">Recent Log</h3>
-        <div class="space-y-3">
+      <div class="mt-8 pt-8 border-t border-zinc-800">
+        <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-6">Historical Log</h3>
+        <div class="space-y-2">
           @for (app of history().slice(0, 3); track app.id) {
           <button (click)="viewApplication.emit(app.id)"
-            class="w-full flex items-center justify-between p-3 rounded-xl bg-muted/20 border border-transparent hover:border-border/40 hover:bg-muted/40 transition-all text-left">
-            <div>
-              <p class="text-xs font-black tracking-tight truncate max-w-[120px]">{{ app.position }}</p>
-              <p class="text-[9px] font-bold text-muted-foreground">{{ formatDate(app.appliedAt) }}</p>
+            class="w-full flex items-center justify-between p-3 rounded-xl bg-zinc-950/30 border border-zinc-900 hover:border-zinc-700 transition-all text-left group">
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-zinc-400 group-hover:text-zinc-100 truncate pr-2">{{ app.position }}</p>
+              <p class="text-[9px] font-black text-zinc-600 uppercase tracking-widest">{{ formatDate(app.appliedAt) }}</p>
             </div>
             <div class="h-1.5 w-1.5 rounded-full" [class]="getStatusDotClass(app.status)"></div>
           </button>

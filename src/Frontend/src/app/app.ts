@@ -15,6 +15,7 @@ import { NgxSonnerToaster } from 'ngx-sonner';
 
 // Core services
 import { NotificationService, ThemeService } from './core/services';
+import { ProfileStore } from './features/profile/services/profile.store';
 
 // Shared components
 import {
@@ -36,7 +37,11 @@ export class App implements AfterViewInit {
   constructor(
     private readonly notificationService: NotificationService,
     private readonly themeService: ThemeService,
+    private readonly profileStore: ProfileStore,
   ) {
+    // Initialize profile and skills globally
+    this.profileStore.loadProfile();
+
     // Robustly track full-page layout status (Landing or Auth)
     this._router.events.pipe(
       filter(event => event instanceof NavigationEnd)

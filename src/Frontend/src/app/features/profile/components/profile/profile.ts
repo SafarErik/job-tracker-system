@@ -10,6 +10,7 @@ import {
 import { ProfileService } from '../../services/profile.service';
 import { SkillService } from '../../../skills/services/skill.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { ProfileStore } from '../../services/profile.store';
 import { toast } from 'ngx-sonner';
 import { UserProfile, ProfileStats, UserSkill } from '../../models/profile.model';
 import { Skill } from '../../../skills/models/skill.model';
@@ -107,6 +108,7 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
   ]
 })
 export class ProfileComponent implements OnInit {
+  private profileStore = inject(ProfileStore);
   private profileService = inject(ProfileService);
   private skillService = inject(SkillService);
   private notificationService = inject(NotificationService);
@@ -209,7 +211,10 @@ export class ProfileComponent implements OnInit {
 
   private loadSkills(): void {
     this.profileService.getUserSkills().subscribe({
-      next: (skills) => this.userSkills.set(skills),
+      next: (skills) => {
+        this.userSkills.set(skills);
+        this.profileStore.updateSkills(skills); // Sync with global store
+      },
       error: (err) => console.error('Failed to load skills:', err),
     });
   }
@@ -356,10 +361,12 @@ export class ProfileComponent implements OnInit {
   addSkill(skill: Skill): void {
     this.profileService.addSkill(skill.id).subscribe({
       next: () => {
-        this.userSkills.update((skills) => [
-          ...skills,
+        const updatedSkills = [
+          ...this.userSkills(),
           { id: skill.id, name: skill.name, category: skill.category || 'Other' },
-        ]);
+        ];
+        this.userSkills.set(updatedSkills);
+        this.profileStore.updateSkills(updatedSkills); // Sync with store
         this.skillSearchControl.reset();
         toast.success('Skill Added', {
           description: `${skill.name} has been added to your profile`,
@@ -438,7 +445,9 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.removeSkill(skill.id).subscribe({
       next: () => {
-        this.userSkills.update((skills) => skills.filter((s) => s.id !== skill.id));
+        const updatedSkills = this.userSkills().filter((s) => s.id !== skill.id);
+        this.userSkills.set(updatedSkills);
+        this.profileStore.updateSkills(updatedSkills); // Sync with global store
         toast.success('Skill Removed', {
           description: `${skill.name} has been removed from your profile`,
         });

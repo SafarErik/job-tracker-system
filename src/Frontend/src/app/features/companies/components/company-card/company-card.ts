@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import {
   HlmCard,
   HlmCardHeader,
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
+import { ProfileStore } from '../../../../features/profile/services/profile.store';
 
 @Component({
   selector: 'app-company-card',
@@ -31,6 +32,7 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyCardComponent {
+  private readonly profileStore = inject(ProfileStore);
   company = input.required<Company>();
   viewDossier = output<string>();
 
@@ -110,6 +112,30 @@ export class CompanyCardComponent {
   readonly hasApplications = computed(() => {
     return this.company().totalApplications > 0;
   });
+
+  /**
+   * Get first letter of company name for avatar
+   */
+  readonly firstLetter = computed(() => {
+    return this.company().name.charAt(0).toUpperCase();
+  });
+
+  /**
+   * Get color class for tech stack chips
+   * Highlights matched skills in Obsidian (Purple/Violet)
+   * Others in Blue theme
+   */
+  getTechColor(tech: string): string {
+    const isMatched = this.profileStore.hasSkill(tech);
+
+    if (isMatched) {
+      // Obsidian / Purple theme for matched skills
+      return 'bg-violet-500/10 text-violet-400 border-violet-500/20 hover:border-violet-500/40';
+    }
+
+    // Default Blue theme for unmatched skills
+    return 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:border-blue-500/40';
+  }
 
   /**
    * Get pipeline progress (1-4 segments)

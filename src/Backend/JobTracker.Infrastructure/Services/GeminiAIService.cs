@@ -77,18 +77,18 @@ public partial class GeminiAIService : IAIService
                 return AiAnalysisResult.CreateError("Failed to parse AI response. The model returned invalid data.");
             }
 
-            return AiAnalysisResult.CreateSuccess(new AiAnalysisResultDetails
-            {
-                MatchScore = Math.Clamp(analysisResult.MatchScore, 0, 100),
-                GapAnalysis = analysisResult.GapAnalysis ?? "No gap analysis provided.",
-                MissingSkills = analysisResult.MissingSkills ?? new List<string>(),
-                StrategicAdvice = analysisResult.StrategicAdvice ?? "No strategic advice provided.",
-                GoodPoints = analysisResult.GoodPoints ?? new List<string>(),
-                Gaps = analysisResult.Gaps ?? new List<string>(),
-                Advice = analysisResult.Advice ?? new List<string>(),
-                TailoredResume = analysisResult.TailoredResume,
-                TailoredCoverLetter = analysisResult.TailoredCoverLetter
-            });
+            var result = AiAnalysisResult.SuccessResult();
+            result.MatchScore = Math.Clamp(analysisResult.MatchScore, 0, 100);
+            result.GapAnalysis = analysisResult.GapAnalysis ?? "No gap analysis provided.";
+            result.MissingSkills = analysisResult.MissingSkills ?? new List<string>();
+            result.StrategicAdvice = analysisResult.StrategicAdvice ?? "No strategic advice provided.";
+            result.GoodPoints = analysisResult.GoodPoints ?? new List<string>();
+            result.Gaps = analysisResult.Gaps ?? new List<string>();
+            result.Advice = analysisResult.Advice ?? new List<string>();
+            result.TailoredResume = analysisResult.TailoredResume;
+            result.TailoredCoverLetter = analysisResult.TailoredCoverLetter;
+
+            return result;
         }
         catch (JsonException jsonEx)
         {
@@ -144,9 +144,12 @@ Optimize this resume for the job description.";
                 systemPrompt + "\n\n" + userPrompt
             );
 
-            if (response?.Candidates?.Count > 0 && response.Candidates[0]?.Content?.Parts?.Count > 0)
+            var candidate = response?.Candidates?.FirstOrDefault();
+            var part = candidate?.Content?.Parts?.FirstOrDefault();
+
+            if (part?.Text != null)
             {
-                return response.Candidates[0].Content.Parts[0].Text;
+                return part.Text;
             }
 
             _logger.LogWarning("Gemini API call succeeded but returned no content parts.");

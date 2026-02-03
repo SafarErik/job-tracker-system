@@ -3,6 +3,9 @@ using JobTracker.Application.DTOs.Companies;
 using JobTracker.Application.DTOs.AI;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
+using JobTracker.Application.Interfaces;
+using JobTracker.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobTracker.Infrastructure.Services;
@@ -16,17 +19,25 @@ public class JobApplicationService : IJobApplicationService
     private readonly IJobApplicationRepository _jobRepository;
     private readonly IDocumentRepository _documentRepository;
     private readonly IAIService _aiService;
+    private readonly IDocumentTextExtractor _textExtractor;
+    private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<JobApplicationService> _logger;
+
+    private const string MissingAiInputsMessage = "Please upload a Master Resume and add skills to your profile first.";
 
     public JobApplicationService(
         IJobApplicationRepository jobRepository,
         IDocumentRepository documentRepository,
         IAIService aiService,
+        IDocumentTextExtractor textExtractor,
+        ApplicationDbContext dbContext,
         ILogger<JobApplicationService> logger)
     {
         _jobRepository = jobRepository;
         _documentRepository = documentRepository;
         _aiService = aiService;
+        _textExtractor = textExtractor;
+        _dbContext = dbContext;
         _logger = logger;
     }
 
@@ -87,7 +98,15 @@ public class JobApplicationService : IJobApplicationService
             return "No job description available. Please add a job description to enable cover letter generation.";
         }
 
-        var resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction pending.";
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        var filePath = Path.Combine(uploadsFolder, masterResume.FileName);
+        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
+
+        if (string.IsNullOrWhiteSpace(resumeText))
+        {
+            resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction failed. Using metadata only.";
+        }
+
 
         var companyName = application.Company?.Name ?? "the hiring company";
         var position = application.Position;
@@ -125,7 +144,15 @@ public class JobApplicationService : IJobApplicationService
             return "No job description available. Please add a job description to enable optimization.";
         }
 
-        var resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction pending.";
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        var filePath = Path.Combine(uploadsFolder, masterResume.FileName);
+        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
+
+        if (string.IsNullOrWhiteSpace(resumeText))
+        {
+            resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction failed. Using metadata only.";
+        }
+
 
         return await _aiService.OptimizeResumeAsync(jobDescription, resumeText);
     }
@@ -134,94 +161,32 @@ public class JobApplicationService : IJobApplicationService
     {
         _logger.LogInformation("Starting AI analysis for job application {JobId}", id);
 
-        // 1. Get the job application
-        var application = await _jobRepository.GetByIdAsync(id);
-        if (application == null)
+        JobApplication application;
+        string jobDescription;
+        string skillsList;
+        string resumeText;
+
+        try
         {
-            throw new KeyNotFoundException($"Job application {id} not found");
+            (application, jobDescription, skillsList, resumeText) = await LoadAiInputsAsync(id, userId);
         }
-
-        if (application.UserId != userId)
+        catch (InvalidOperationException)
         {
-            throw new UnauthorizedAccessException("You do not have access to this job application");
-        }
-
-        // 2. Get the user's master resume
-        var userDocuments = await _documentRepository.GetAllByUserIdAsync(userId);
-        var masterResume = userDocuments.FirstOrDefault(d => d.IsMaster && d.Type == DocumentType.Resume);
-
-        if (masterResume == null)
-        {
-            _logger.LogWarning("No master resume found for user {UserId}", userId);
-
-            // Update with error feedback
-            application.AiFeedback = "No Master Resume found. Please upload and set a Master Resume in your Documents to enable AI analysis.";
-            application.MatchScore = 0;
-            await _jobRepository.UpdateAsync(application);
-
-            return MapToDto(application);
-        }
-
-        // 3. Get job description
-        var jobDescription = application.Description;
-        if (string.IsNullOrWhiteSpace(jobDescription))
-        {
-            application.AiFeedback = "No job description available. Please add a job description to enable AI analysis.";
-            application.MatchScore = 0;
-            await _jobRepository.UpdateAsync(application);
-
-            return MapToDto(application);
-        }
-
-        // 4. For now, we use the original filename as a placeholder for resume text
-        // In a real implementation, you'd extract text from the PDF/DOC file
-        // TODO: Implement document text extraction (PDF/DOC parsing)
-        var resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction from documents is pending implementation.";
-
-        // Check if we have actual text content (future: store extracted text in Document entity)
-        _logger.LogInformation("Analyzing job application {JobId} against resume {ResumeId}", id, masterResume.Id);
-
-        // 5. Call AI service
-        var analysisResult = await _aiService.AnalyzeJobAsync(jobDescription, resumeText);
-
-        // 6. Update job application with results
-        if (analysisResult.Success)
-        {
-            application.MatchScore = analysisResult.MatchScore;
-
-            // Combine gap analysis and strategic advice into AI feedback
-            var feedbackBuilder = new System.Text.StringBuilder();
-
-            if (!string.IsNullOrEmpty(analysisResult.GapAnalysis))
+            var existing = await _jobRepository.GetByIdAsync(id);
+            if (existing == null)
             {
-                feedbackBuilder.AppendLine("## Gap Analysis");
-                feedbackBuilder.AppendLine(analysisResult.GapAnalysis);
-                feedbackBuilder.AppendLine();
+                throw new KeyNotFoundException($"Job application {id} not found");
             }
 
-            if (analysisResult.MissingSkills?.Count > 0)
-            {
-                feedbackBuilder.AppendLine("## Missing Skills");
-                foreach (var skill in analysisResult.MissingSkills)
-                {
-                    feedbackBuilder.AppendLine($"- {skill}");
-                }
-                feedbackBuilder.AppendLine();
-            }
-
-            if (!string.IsNullOrEmpty(analysisResult.StrategicAdvice))
-            {
-                feedbackBuilder.AppendLine("## Strategic Advice");
-                feedbackBuilder.AppendLine(analysisResult.StrategicAdvice);
-            }
-
-            application.AiFeedback = feedbackBuilder.ToString().Trim();
+            existing.AiFeedback = MissingAiInputsMessage;
+            existing.MatchScore = 0;
+            await _jobRepository.UpdateAsync(existing);
+            return MapToDto(existing);
         }
-        else
-        {
-            application.AiFeedback = $"Analysis failed: {analysisResult.ErrorMessage}";
-            // Keep existing match score on failure
-        }
+
+        var analysisResult = await _aiService.AnalyzeJobAsync(jobDescription, skillsList, resumeText);
+
+        ApplyAnalysisResult(application, analysisResult);
 
         // 7. Save to database
         await _jobRepository.UpdateAsync(application);
@@ -230,7 +195,159 @@ public class JobApplicationService : IJobApplicationService
             id, application.MatchScore);
 
         // 8. Return mapped DTO
-        return MapToDto(application);
+        var dto = MapToDto(application);
+        dto.AiGoodPoints = analysisResult.GoodPoints;
+        dto.AiGaps = analysisResult.Gaps;
+        dto.AiAdvice = analysisResult.Advice;
+        return dto;
+    }
+
+    public async Task<AiGeneratedAssetsDto> GenerateAssetsAsync(Guid jobId, string userId)
+    {
+        _logger.LogInformation("Generating tailored assets for job application {JobId}", jobId);
+
+        var (application, jobDescription, skillsList, resumeText) = await LoadAiInputsAsync(jobId, userId);
+
+        var analysisResult = await _aiService.AnalyzeJobAsync(jobDescription, skillsList, resumeText);
+
+        if (!analysisResult.Success)
+        {
+            throw new InvalidOperationException(analysisResult.ErrorMessage ?? "AI generation failed");
+        }
+
+        ApplyAnalysisResult(application, analysisResult);
+        await _jobRepository.UpdateAsync(application);
+
+        return new AiGeneratedAssetsDto
+        {
+            MatchScore = analysisResult.MatchScore,
+            GoodPoints = analysisResult.GoodPoints,
+            Gaps = analysisResult.Gaps,
+            Advice = analysisResult.Advice,
+            AiFeedback = application.AiFeedback ?? string.Empty,
+            TailoredResume = analysisResult.TailoredResume ?? string.Empty,
+            TailoredCoverLetter = analysisResult.TailoredCoverLetter ?? string.Empty
+        };
+    }
+
+    private async Task<(JobApplication Application, string JobDescription, string SkillsList, string ResumeText)> LoadAiInputsAsync(Guid jobId, string userId)
+    {
+        var application = await _jobRepository.GetByIdAsync(jobId);
+        if (application == null)
+        {
+            throw new KeyNotFoundException($"Job application {jobId} not found");
+        }
+
+        if (application.UserId != userId)
+        {
+            throw new UnauthorizedAccessException("You do not have access to this job application");
+        }
+
+        var user = await _dbContext.Users
+            .Include(u => u.Skills)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("User not found");
+        }
+
+        var skills = user.Skills
+            .Select(s => s.Name)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .ToList();
+
+        if (skills.Count == 0)
+        {
+            throw new InvalidOperationException(MissingAiInputsMessage);
+        }
+
+        var userDocuments = await _documentRepository.GetAllByUserIdAsync(userId);
+        var masterResume = userDocuments.FirstOrDefault(d => d.IsMaster && d.Type == DocumentType.Resume);
+
+        if (masterResume == null)
+        {
+            throw new InvalidOperationException(MissingAiInputsMessage);
+        }
+
+        var jobDescription = application.Description;
+        if (string.IsNullOrWhiteSpace(jobDescription))
+        {
+            throw new InvalidOperationException(MissingAiInputsMessage);
+        }
+
+        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        var filePath = Path.Combine(uploadsFolder, masterResume.FileName);
+        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
+
+        if (string.IsNullOrWhiteSpace(resumeText))
+        {
+            _logger.LogWarning("Text extraction failed for resume {ResumeId}", masterResume.Id);
+            resumeText = $"Resume: {masterResume.OriginalFileName}\n\nNote: Full text extraction failed. Using metadata only.";
+        }
+
+        var skillsList = string.Join(", ", skills);
+
+        return (application, jobDescription, skillsList, resumeText);
+    }
+
+    private static string BuildAiFeedback(AiAnalysisResult analysisResult)
+    {
+        var feedbackBuilder = new System.Text.StringBuilder();
+
+        if (analysisResult.GoodPoints.Count > 0)
+        {
+            feedbackBuilder.AppendLine("## Good Points");
+            foreach (var point in analysisResult.GoodPoints)
+            {
+                feedbackBuilder.AppendLine($"- {point}");
+            }
+            feedbackBuilder.AppendLine();
+        }
+
+        if (analysisResult.Gaps.Count > 0)
+        {
+            feedbackBuilder.AppendLine("## Gaps");
+            foreach (var gap in analysisResult.Gaps)
+            {
+                feedbackBuilder.AppendLine($"- {gap}");
+            }
+            feedbackBuilder.AppendLine();
+        }
+
+        if (analysisResult.Advice.Count > 0)
+        {
+            feedbackBuilder.AppendLine("## Strategic Advice");
+            foreach (var advice in analysisResult.Advice)
+            {
+                feedbackBuilder.AppendLine($"- {advice}");
+            }
+        }
+
+        if (feedbackBuilder.Length == 0 && !string.IsNullOrWhiteSpace(analysisResult.StrategicAdvice))
+        {
+            feedbackBuilder.AppendLine(analysisResult.StrategicAdvice);
+        }
+
+        return feedbackBuilder.ToString().Trim();
+    }
+
+    private static void ApplyAnalysisResult(JobApplication application, AiAnalysisResult analysisResult)
+    {
+        if (analysisResult.Success)
+        {
+            application.MatchScore = analysisResult.MatchScore;
+            application.AiFeedback = BuildAiFeedback(analysisResult);
+
+            if (!string.IsNullOrWhiteSpace(analysisResult.TailoredCoverLetter))
+            {
+                application.GeneratedCoverLetter = analysisResult.TailoredCoverLetter;
+            }
+        }
+        else
+        {
+            application.AiFeedback = $"Analysis failed: {analysisResult.ErrorMessage}";
+        }
     }
 
     private static JobApplicationDto MapToDto(JobApplication app)
@@ -244,6 +361,9 @@ public class JobApplicationService : IJobApplicationService
             GeneratedCoverLetter = app.GeneratedCoverLetter,
             AiFeedback = app.AiFeedback,
             MatchScore = app.MatchScore,
+            AiGoodPoints = new List<string>(),
+            AiGaps = new List<string>(),
+            AiAdvice = new List<string>(),
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             JobType = app.JobType,

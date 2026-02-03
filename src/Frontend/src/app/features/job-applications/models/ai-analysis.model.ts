@@ -17,6 +17,19 @@ export interface AiAnalysisResult {
 }
 
 /**
+ * AI-generated tailored assets
+ */
+export interface AiGeneratedAssets {
+    matchScore: number;
+    goodPoints: string[];
+    gaps: string[];
+    advice: string[];
+    aiFeedback: string;
+    tailoredResume: string;
+    tailoredCoverLetter: string;
+}
+
+/**
  * A single resume bullet point enhancement suggestion
  */
 export interface ResumeEnhancement {

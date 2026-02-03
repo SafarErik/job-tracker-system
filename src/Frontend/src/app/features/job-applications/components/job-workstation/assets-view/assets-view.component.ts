@@ -13,6 +13,7 @@ import {
     lucideLoader2
 } from '@ng-icons/lucide';
 import { JobApplicationStore } from '../../../services/job-application.store';
+import { DocumentStore } from '../../../../documents/services/document.store';
 import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
@@ -37,10 +38,10 @@ import { NotificationService } from '../../../../../core/services/notification.s
 })
 export class AssetsViewComponent {
     public readonly store = inject(JobApplicationStore);
+    public readonly documentStore = inject(DocumentStore);
     private readonly notificationService = inject(NotificationService);
 
     mode = signal<'resume' | 'cover-letter'>('resume');
-    optimizedResume = signal<string | null>(null);
 
     setMode(m: 'resume' | 'cover-letter') {
         this.mode.set(m);
@@ -49,16 +50,16 @@ export class AssetsViewComponent {
     generateCoverLetter() {
         const app = this.store.selectedApplication();
         if (app) {
-            this.store.generateCoverLetter(app.id);
+            this.mode.set('cover-letter');
+            this.store.generateAssets(app.id);
         }
     }
 
     tailorResume() {
         const app = this.store.selectedApplication();
         if (app) {
-            this.store.optimizeResume(app.id, (content) => {
-                this.optimizedResume.set(content);
-            });
+            this.mode.set('resume');
+            this.store.generateAssets(app.id);
         }
     }
 
@@ -74,12 +75,12 @@ export class AssetsViewComponent {
 
         // Simple text download as a placeholder for real PDF generation
         const blob = new Blob([text], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
+        const url = globalThis.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `${filename}.txt`;
         a.click();
-        window.URL.revokeObjectURL(url);
+        globalThis.URL.revokeObjectURL(url);
 
         this.notificationService.info('Downloading as .txt (PDF generation coming soon)', 'Download');
     }

@@ -41,6 +41,10 @@ export interface JobApplication {
   matchScore: number; // 0-100
   skills: string[]; // Extracted keywords
   aiFeedback?: string; // The "Coach" output
+  aiGoodPoints?: string[];
+  aiGaps?: string[];
+  aiAdvice?: string[];
+  tailoredResume?: string;
 
   // Relations
   documentId?: string | null; // The specific CV version used

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
+import { AiGeneratedAssets } from '../models/ai-analysis.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -42,12 +43,17 @@ export class ApplicationService {
     return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
   }
 
-  // 7. Generate a tailored cover letter
+  // 7. Generate tailored resume + cover letter assets
+  generateAssets(id: string): Observable<AiGeneratedAssets> {
+    return this.http.post<AiGeneratedAssets>(`${this.apiUrl}/${id}/generate-assets`, {});
+  }
+
+  // 8. Generate a tailored cover letter
   generateCoverLetter(id: string): Observable<{ content: string }> {
     return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/cover-letter`, {});
   }
 
-  // 8. Optimize resume for a specific job
+  // 9. Optimize resume for a specific job
   optimizeResume(id: string): Observable<{ content: string }> {
     return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/resume-optimize`, {});
   }

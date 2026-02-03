@@ -39,12 +39,20 @@
                         <ng-icon name="lucideFileText"></ng-icon>
                         {{ store.selectedApplication()?.documentName }}
                     </p>
-                    <p>Original resume text extraction is currently pending. The AI is using the document metadata and
-                        pre-scanned highlights for now.</p>
+                    <p>This resume is linked specifically to this job application. The AI uses this content for tailoring.</p>
+                    } @else if (documentStore.masterResume()) {
+                    <p class="text-xs uppercase tracking-widest text-violet-400 mb-4 flex items-center gap-2">
+                        <ng-icon name="lucideSparkles"></ng-icon>
+                        Master Resume: {{ documentStore.masterResume()?.originalFileName }}
+                    </p>
+                    <p class="text-zinc-400">No specific resume linked. Using your global <b>Master Resume</b> as the
+                        source for AI generation.</p>
                     } @else {
                     <div class="h-full flex flex-col items-center justify-center text-center py-20 opacity-50">
-                        <ng-icon name="lucideLock" class="text-4xl mb-4"></ng-icon>
+                        <ng-icon name="lucideFileText" class="text-4xl mb-4"></ng-icon>
                         <p>No document associated.</p>
+                        <p class="text-[10px] mt-2 max-w-[200px]">Upload a Master Resume in the Documents tab to enable
+                            AI features.</p>
                     </div>
                     }
                 </div>
@@ -61,22 +69,22 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    @if (optimizedResume()) {
-                    <button (click)="copyContent(optimizedResume())"
+                    @if (store.tailoredResume()) {
+                    <button (click)="copyContent(store.tailoredResume())"
                         class="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 transition-colors tooltip"
                         title="Copy Text">
                         <ng-icon name="lucideCopy"></ng-icon>
                     </button>
-                    <button (click)="downloadAsPdf(optimizedResume(), 'tailored_resume')"
+                    <button (click)="downloadAsPdf(store.tailoredResume(), 'tailored_resume')"
                         class="p-1.5 hover:bg-zinc-800 rounded-lg text-zinc-400 transition-colors tooltip"
                         title="Download PDF">
                         <ng-icon name="lucideDownload"></ng-icon>
                     </button>
                     }
 
-                    <button (click)="tailorResume()" [disabled]="store.isGeneratingAsset()"
+                    <button (click)="tailorResume()" [disabled]="store.isProcessing()"
                         class="ml-2 px-4 py-1.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-lg shadow-violet-500/20 hover:scale-105 transition-transform active:scale-95 flex items-center gap-2">
-                        @if (store.isGeneratingAsset()) {
+                        @if (store.isProcessing()) {
                         <ng-icon name="lucideLoader2" class="animate-spin"></ng-icon>
                         Thinking...
                         } @else {
@@ -89,8 +97,8 @@
 
             <div class="flex-1 overflow-y-auto p-10 scrollbar-thin scrollbar-thumb-zinc-800 bg-zinc-900/20">
                 <div class="max-w-prose mx-auto font-mono text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
-                    @if (optimizedResume()) {
-                    {{ optimizedResume() }}
+                    @if (store.tailoredResume()) {
+                    {{ store.tailoredResume() }}
                     } @else {
                     <div class="h-full flex flex-col items-center justify-center text-center opacity-40 py-20">
                         <ng-icon name="lucideSparkles" class="text-4xl mb-4"></ng-icon>
@@ -136,9 +144,9 @@
                 <h4 class="text-lg font-sans font-bold text-zinc-200 mb-2">No Cover Letter Found</h4>
                 <p class="text-sm text-zinc-500 max-w-xs mb-8">Let the AI Forge draft a professional, position-aware
                     cover letter for you.</p>
-                <button (click)="generateCoverLetter()" [disabled]="store.isGeneratingAsset()"
+                <button (click)="generateCoverLetter()" [disabled]="store.isProcessing()"
                     class="px-8 py-3 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-violet-500/20 hover:scale-105 transition-all flex items-center gap-2 group">
-                    @if (store.isGeneratingAsset()) {
+                    @if (store.isProcessing()) {
                     <ng-icon name="lucideLoader2" class="animate-spin text-xl"></ng-icon>
                     Forging Content...
                     } @else {

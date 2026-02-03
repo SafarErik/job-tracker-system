@@ -64,6 +64,11 @@ export class DocumentStore {
     });
 
     /**
+     * The master resume document
+     */
+    readonly masterResume = computed(() => this._documents().find((d) => d.isMaster));
+
+    /**
      * Storage Metrics
      */
     readonly totalStorage = 10 * 1024 * 1024; // 10MB limit

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JobTracker.Infrastructure.Data;
 using JobTracker.Infrastructure.Repositories;
+using JobTracker.Infrastructure.Services;
 using JobTracker.Core.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.API.Extensions;
@@ -12,6 +13,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using JobTracker.API.Middleware;
 using AspNetCoreRateLimit;
+using JobTracker.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -150,6 +152,7 @@ builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>(
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
 
 // ============================================
 // AI & APPLICATION SERVICES REGISTRATION
@@ -338,7 +341,7 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost;
     // Clear default restrictions to trust any proxy
-    options.KnownNetworks.Clear();
+    options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
 

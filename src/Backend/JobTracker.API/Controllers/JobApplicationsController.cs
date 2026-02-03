@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
+using JobTracker.Application.Interfaces;
 using JobTracker.Application.DTOs.JobApplications;
+using JobTracker.Application.DTOs.AI;
 using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.API.Controllers;
@@ -17,6 +19,8 @@ namespace JobTracker.API.Controllers;
 [Authorize] // Requires authentication for all endpoints
 public class JobApplicationsController : ControllerBase
 {
+    private const string UserIdNotFoundMessage = "User ID not found in token";
+
     private readonly IJobApplicationRepository _repository;
     private readonly IDocumentRepository _documentRepository;
     private readonly IJobApplicationService _jobApplicationService;
@@ -47,7 +51,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         // Only get applications belonging to the current user
@@ -93,7 +97,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var app = await _repository.GetByIdAsync(id);
@@ -149,7 +153,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         // MAPPING: DTO -> Entity
@@ -239,7 +243,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var existingApp = await _repository.GetByIdAsync(id);
@@ -305,7 +309,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var app = await _repository.GetByIdAsync(id);
@@ -348,6 +352,35 @@ public class JobApplicationsController : ControllerBase
         catch (KeyNotFoundException)
         {
             return NotFound($"Job application {id} not found");
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    // POST: api/jobapplications/{id}/generate-assets
+    /// <summary>
+    /// Generates tailored resume and cover letter assets using AI.
+    /// </summary>
+    [HttpPost("{id}/generate-assets")]
+    public async Task<ActionResult<AiGeneratedAssetsDto>> GenerateAssets(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.GenerateAssetsAsync(id, userId);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
         }
         catch (UnauthorizedAccessException)
         {

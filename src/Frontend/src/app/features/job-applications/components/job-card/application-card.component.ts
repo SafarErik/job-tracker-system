@@ -32,6 +32,7 @@ import {
     lucideStar,
     lucideMapPin,
     lucideCalendar,
+    lucideFlame,
 } from '@ng-icons/lucide';
 
 /**
@@ -64,6 +65,7 @@ import {
             lucideStar,
             lucideMapPin,
             lucideCalendar,
+            lucideFlame,
         }),
     ],
     templateUrl: './application-card.component.html',

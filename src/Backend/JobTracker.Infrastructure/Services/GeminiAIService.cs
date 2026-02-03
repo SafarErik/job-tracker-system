@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Google.GenAI;
+using Google.GenAI.Types;
 using JobTracker.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -8,29 +10,32 @@ using Microsoft.Extensions.Logging;
 namespace JobTracker.Infrastructure.Services;
 
 /// <summary>
-/// Implementation of IAIService using Google Gemini 1.5 Flash API.
+/// Implementation of IAIService using Google Gemini 3 Flash Preview API.
 /// Analyzes job descriptions against resumes to provide match scores and insights.
 /// </summary>
 public class GeminiAIService : IAIService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
+    private readonly Client _client;
     private readonly ILogger<GeminiAIService> _logger;
 
-    private const string GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+    /// <summary>
+    /// The Gemini model to use for AI operations.
+    /// </summary>
+    private const string GEMINI_MODEL = "gemini-3-flash-preview";
 
-    private const string ANALYSIS_SYSTEM_PROMPT = @"You are an expert HR Tech AI. Analyze the provided Job Description against the Resume.
-
-You MUST return a valid JSON object only, with no additional text, markdown formatting, or code blocks.
-
-The JSON must have exactly these keys:
-- matchScore (integer between 0-100 representing the match percentage)
-- gapAnalysis (string with detailed analysis of gaps between resume and job requirements)
-- missingSkills (array of strings listing specific skills from the job that are missing from the resume)
-- strategicAdvice (string with actionable advice for the applicant to improve their chances)
-
-Example response format:
-{""matchScore"":75,""gapAnalysis"":""The candidate has strong frontend skills but lacks cloud experience."",""missingSkills"":[""AWS"",""Docker"",""Kubernetes""],""strategicAdvice"":""Focus on highlighting your React experience and consider getting AWS certified.""}";
+    private const string ANALYSIS_SYSTEM_PROMPT_TEMPLATE = @"System: You are a career strategist.
+Inputs:
+Job Description: {0}
+User Skills: {1}
+User Resume: {2}
+Task:
+Provide a matchScore (0-100).
+Identify 'GoodPoints' (where the user matches).
+Identify 'Gaps' (missing skills or experience).
+Provide 'StrategicAdvice' for the interview.
+Generate a 'TailoredResume' (Markdown format) that optimizes the original resume for this specific job.
+Generate a 'CoverLetter' (Markdown format).
+Return ONLY a JSON object with these keys: matchScore, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
 
     private const string COVER_LETTER_SYSTEM_PROMPT = @"You are a professional career coach. Write a tailored, persuasive cover letter based on the Job Description and Resume provided.
 Keep it professional, engaging, and under 300 words. 
@@ -42,16 +47,20 @@ Maintain a professional tone and clear structure.
 Return ONLY the reworked resume content. No preamble, no commentary, no markdown formatting.";
 
     public GeminiAIService(
-        HttpClient httpClient,
         IConfiguration configuration,
         ILogger<GeminiAIService> logger)
     {
-        _httpClient = httpClient;
-        _configuration = configuration;
+        var apiKey = configuration["AI:GeminiApiKey"];
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("Gemini API key not configured");
+        }
+        System.Environment.SetEnvironmentVariable("GOOGLE_API_KEY", apiKey);
+        _client = new Client();
         _logger = logger;
     }
 
-    public async Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string resumeText)
+    public async Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string skillsList, string resumeText)
     {
         try
         {
@@ -60,22 +69,16 @@ Return ONLY the reworked resume content. No preamble, no commentary, no markdown
                 return AiAnalysisResult.CreateError("Job description and resume are required for analysis.");
             }
 
-            var userPrompt = $@"## Job Description:
-{jobDescription}
+            var systemPrompt = string.Format(ANALYSIS_SYSTEM_PROMPT_TEMPLATE, jobDescription, skillsList, resumeText);
+            var userPrompt = "Return the JSON object only.";
 
-## Resume:
-{resumeText}
-
-Analyze the above job description against the resume and return your analysis as a JSON object.";
-
-            var textResponse = await CallGeminiAsync(ANALYSIS_SYSTEM_PROMPT, userPrompt);
+            var textResponse = await CallGeminiAsync(systemPrompt, userPrompt);
 
             if (string.IsNullOrEmpty(textResponse))
             {
-                return AiAnalysisResult.CreateError("AI returned an empty response. Please try again.");
+                return AiAnalysisResult.CreateError("AI request failed. Verify AI:GeminiApiKey is configured and try again.");
             }
 
-            // Strip markdown code block wrappers if present (```json ... ```)
             var cleanedResponse = StripMarkdownCodeBlock(textResponse);
 
             var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
@@ -86,12 +89,18 @@ Analyze the above job description against the resume and return your analysis as
                 return AiAnalysisResult.CreateError("Failed to parse AI response. Please try again.");
             }
 
-            return AiAnalysisResult.CreateSuccess(
-                matchScore: Math.Clamp(analysisResult.MatchScore, 0, 100),
-                gapAnalysis: analysisResult.GapAnalysis ?? string.Empty,
-                missingSkills: analysisResult.MissingSkills ?? new List<string>(),
-                strategicAdvice: analysisResult.StrategicAdvice ?? string.Empty
-            );
+            return AiAnalysisResult.CreateSuccess(new AiAnalysisResultDetails
+            {
+                MatchScore = Math.Clamp(analysisResult.MatchScore, 0, 100),
+                GapAnalysis = analysisResult.GapAnalysis ?? string.Empty,
+                MissingSkills = analysisResult.MissingSkills ?? new List<string>(),
+                StrategicAdvice = analysisResult.StrategicAdvice ?? string.Empty,
+                GoodPoints = analysisResult.GoodPoints ?? new List<string>(),
+                Gaps = analysisResult.Gaps ?? new List<string>(),
+                Advice = analysisResult.Advice ?? new List<string>(),
+                TailoredResume = analysisResult.TailoredResume,
+                TailoredCoverLetter = analysisResult.TailoredCoverLetter
+            });
         }
         catch (Exception ex)
         {
@@ -135,54 +144,19 @@ Optimize this resume for the job description.";
     {
         try
         {
-            var apiKey = _configuration["AI:GeminiApiKey"];
-            if (string.IsNullOrEmpty(apiKey))
+            _logger.LogDebug("Calling Gemini API with model: {Model}", GEMINI_MODEL);
+            var response = await _client.Models.GenerateContentAsync(GEMINI_MODEL, systemPrompt + "\n\n" + userPrompt);
+            if (response?.Candidates?.Count > 0 && response.Candidates[0]?.Content?.Parts?.Count > 0)
             {
-                _logger.LogError("Gemini API key is not configured");
-                return null;
+                _logger.LogDebug("Gemini API returned successful response");
+                return response.Candidates[0].Content.Parts[0].Text;
             }
-
-            var requestBody = new GeminiRequest
-            {
-                Contents = new[]
-                {
-                    new GeminiContent
-                    {
-                        Parts = new[]
-                        {
-                            new GeminiPart { Text = systemPrompt },
-                            new GeminiPart { Text = userPrompt }
-                        }
-                    }
-                },
-                GenerationConfig = new GeminiGenerationConfig
-                {
-                    Temperature = 0.7,
-                    MaxOutputTokens = 2048
-                }
-            };
-
-            var json = JsonSerializer.Serialize(requestBody, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var requestUrl = $"{GEMINI_API_BASE}?key={apiKey}";
-            var response = await _httpClient.PostAsync(requestUrl, content);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var errorContent = await response.Content.ReadAsStringAsync();
-                _logger.LogError("Gemini API error: {StatusCode} - {Content}", response.StatusCode, errorContent);
-                return null;
-            }
-
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var geminiResponse = JsonSerializer.Deserialize<GeminiResponse>(responseBody, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-            return geminiResponse?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+            _logger.LogWarning("Gemini API returned empty response");
+            return null;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error calling Gemini API");
+            _logger.LogError(ex, "Error calling Gemini API with model {Model}", GEMINI_MODEL);
             return null;
         }
     }
@@ -220,41 +194,7 @@ Optimize this resume for the job description.";
         return trimmed.Trim();
     }
 
-    #region Gemini API Models
-
-    private class GeminiRequest
-    {
-        public GeminiContent[] Contents { get; set; } = Array.Empty<GeminiContent>();
-        public GeminiGenerationConfig? GenerationConfig { get; set; }
-    }
-
-    private class GeminiContent
-    {
-        public GeminiPart[] Parts { get; set; } = Array.Empty<GeminiPart>();
-    }
-
-    private class GeminiPart
-    {
-        public string Text { get; set; } = string.Empty;
-    }
-
-    private class GeminiGenerationConfig
-    {
-        public double Temperature { get; set; }
-        public int MaxOutputTokens { get; set; }
-    }
-
-    private class GeminiResponse
-    {
-        public GeminiCandidate[]? Candidates { get; set; }
-    }
-
-    private class GeminiCandidate
-    {
-        public GeminiContent? Content { get; set; }
-    }
-
-    private class GeminiAnalysisResponse
+    private sealed class GeminiAnalysisResponse
     {
         [JsonPropertyName("matchScore")]
         public int MatchScore { get; set; }
@@ -267,7 +207,20 @@ Optimize this resume for the job description.";
 
         [JsonPropertyName("strategicAdvice")]
         public string? StrategicAdvice { get; set; }
-    }
 
-    #endregion
+        [JsonPropertyName("goodPoints")]
+        public List<string>? GoodPoints { get; set; }
+
+        [JsonPropertyName("gaps")]
+        public List<string>? Gaps { get; set; }
+
+        [JsonPropertyName("advice")]
+        public List<string>? Advice { get; set; }
+
+        [JsonPropertyName("tailoredResume")]
+        public string? TailoredResume { get; set; }
+
+        [JsonPropertyName("tailoredCoverLetter")]
+        public string? TailoredCoverLetter { get; set; }
+    }
 }

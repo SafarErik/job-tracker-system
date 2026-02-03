@@ -10,9 +10,10 @@ public interface IAIService
     /// Analyzes a job description against a resume to determine compatibility.
     /// </summary>
     /// <param name="jobDescription">The full text of the job posting</param>
+    /// <param name="skillsList">Comma-separated list of the user's skills</param>
     /// <param name="resumeText">The user's resume/CV text content</param>
     /// <returns>Analysis results including match score, gap analysis, and strategic advice</returns>
-    Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string resumeText);
+    Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string skillsList, string resumeText);
 
     /// <summary>
     /// Generates a tailored cover letter based on the job description and user's resume.
@@ -52,6 +53,31 @@ public class AiAnalysisResult
     public string StrategicAdvice { get; set; } = string.Empty;
 
     /// <summary>
+    /// Specific strengths that match the job requirements
+    /// </summary>
+    public List<string> GoodPoints { get; set; } = new();
+
+    /// <summary>
+    /// Missing skills or experience relative to the job requirements
+    /// </summary>
+    public List<string> Gaps { get; set; } = new();
+
+    /// <summary>
+    /// Actionable advice items for improving fit and interview readiness
+    /// </summary>
+    public List<string> Advice { get; set; } = new();
+
+    /// <summary>
+    /// Tailored resume content (Markdown)
+    /// </summary>
+    public string? TailoredResume { get; set; }
+
+    /// <summary>
+    /// Tailored cover letter content (Markdown)
+    /// </summary>
+    public string? TailoredCoverLetter { get; set; }
+
+    /// <summary>
     /// Whether the analysis completed successfully
     /// </summary>
     public bool Success { get; set; }
@@ -64,14 +90,19 @@ public class AiAnalysisResult
     /// <summary>
     /// Creates a successful analysis result
     /// </summary>
-    public static AiAnalysisResult CreateSuccess(int matchScore, string gapAnalysis, List<string> missingSkills, string strategicAdvice)
+    public static AiAnalysisResult CreateSuccess(AiAnalysisResultDetails details)
     {
         return new AiAnalysisResult
         {
-            MatchScore = matchScore,
-            GapAnalysis = gapAnalysis,
-            MissingSkills = missingSkills,
-            StrategicAdvice = strategicAdvice,
+            MatchScore = details.MatchScore,
+            GapAnalysis = details.GapAnalysis,
+            MissingSkills = details.MissingSkills,
+            StrategicAdvice = details.StrategicAdvice,
+            GoodPoints = details.GoodPoints,
+            Gaps = details.Gaps,
+            Advice = details.Advice,
+            TailoredResume = details.TailoredResume,
+            TailoredCoverLetter = details.TailoredCoverLetter,
             Success = true
         };
     }
@@ -87,4 +118,17 @@ public class AiAnalysisResult
             ErrorMessage = errorMessage
         };
     }
+}
+
+public sealed class AiAnalysisResultDetails
+{
+    public int MatchScore { get; set; }
+    public string GapAnalysis { get; set; } = string.Empty;
+    public List<string> MissingSkills { get; set; } = new();
+    public string StrategicAdvice { get; set; } = string.Empty;
+    public List<string> GoodPoints { get; set; } = new();
+    public List<string> Gaps { get; set; } = new();
+    public List<string> Advice { get; set; } = new();
+    public string? TailoredResume { get; set; }
+    public string? TailoredCoverLetter { get; set; }
 }

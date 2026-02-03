@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { JobApplicationStore } from '../../services/job-application.store';
 import { DocumentService } from '../../../documents/services/document.service';
+import { DocumentStore } from '../../../documents/services/document.store';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { CompanyService } from '../../../companies/services/company.service';
@@ -70,7 +71,8 @@ import {
   lucideCheckCircle2,
   lucideAlertCircle,
   lucideLink,
-  lucideSettings
+  lucideSettings,
+  lucideSearch
 } from '@ng-icons/lucide';
 
 interface GapAnalysisItem {
@@ -135,7 +137,8 @@ interface GapAnalysisItem {
       lucideCheckCircle2,
       lucideAlertCircle,
       lucideLink,
-      lucideSettings
+      lucideSettings,
+      lucideSearch
     })
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -148,7 +151,9 @@ export class JobWorkstationComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   public readonly store = inject(JobApplicationStore);
+  public readonly service = this.store;
   private readonly documentService = inject(DocumentService);
+  private readonly documentStore = inject(DocumentStore);
   private readonly notificationService = inject(NotificationService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly companyService = inject(CompanyService);
@@ -168,13 +173,13 @@ export class JobWorkstationComponent implements OnInit {
 
     // Escape HTML to prevent XSS before adding our own spans
     let escaped = desc
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
 
-    let html = escaped.replace(/\n/g, '<br>');
+    let html = escaped.replaceAll('\n', '<br>');
 
     keywords.forEach(kw => {
       const regex = new RegExp(`(${kw})`, 'gi');
@@ -194,20 +199,19 @@ export class JobWorkstationComponent implements OnInit {
 
   // Computed: Gap Analysis
   gapAnalysis = computed<GapAnalysisItem[]>(() => {
-    const app = this.store.selectedApplication();
+    const app = this.service.currentJob();
     if (!app) return [];
 
-    const matchedSkills = app.skills || [];
-    // For demo purposes, we'll suggest some missing skills if the list is short
-    const commonTech = ['Unit Testing', 'AWS', 'Docker', 'GraphQL', 'CI/CD'];
-    const missing = commonTech.filter(s => !matchedSkills.includes(s)).slice(0, 2);
+    const goodPoints = app.aiGoodPoints ?? [];
+    const gaps = app.aiGaps ?? [];
+    const advice = app.aiAdvice ?? [];
 
     return [
-      ...matchedSkills.map(s => ({ name: s, matched: true } as GapAnalysisItem)),
-      ...missing.map(s => ({
-        name: s,
+      ...goodPoints.map(point => ({ name: point, matched: true } as GapAnalysisItem)),
+      ...gaps.map((gap, index) => ({
+        name: gap,
         matched: false,
-        suggestion: `Consider adding ${s} projects to your portfolio.`
+        suggestion: advice[index]
       } as GapAnalysisItem))
     ];
   });
@@ -232,6 +236,16 @@ export class JobWorkstationComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ||
       this.route.parent?.snapshot.paramMap.get('id');
+
+    // Ensure applications are loaded (handles page refresh)
+    if (this.store.applications().length === 0) {
+      this.store.loadAll();
+    }
+
+    // Ensure documents are loaded (for master resume display)
+    if (this.documentStore.documents().length === 0) {
+      this.documentStore.loadAll();
+    }
 
     if (id) {
       this.store.selectApplication(id);
@@ -305,6 +319,13 @@ export class JobWorkstationComponent implements OnInit {
     const app = this.store.selectedApplication();
     if (app) {
       this.store.analyzeApplication(app.id);
+    }
+  }
+
+  generateAssets(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.generateAssets(app.id);
     }
   }
 

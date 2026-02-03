@@ -15,6 +15,10 @@ public class JobApplicationDto
     public string? AiFeedback { get; set; }
     public int MatchScore { get; set; }
 
+    public List<string> AiGoodPoints { get; set; } = new();
+    public List<string> AiGaps { get; set; } = new();
+    public List<string> AiAdvice { get; set; } = new();
+
     public DateTime AppliedAt { get; set; }
     public JobApplicationStatus Status { get; set; }
     public JobType JobType { get; set; }

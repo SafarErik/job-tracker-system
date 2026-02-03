@@ -252,21 +252,21 @@
               <div class="p-3">
                 <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Match Score</p>
                 <div class="flex items-baseline gap-1">
-                  @if (store.isAnalyzing()) {
+                  @if (service.isProcessing()) {
                   <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
                   } @else {
                   <span class="text-xl font-bold"
-                    [class.text-emerald-400]="(store.selectedApplication()?.matchScore ?? 0) >= 70"
-                    [class.text-amber-400]="(store.selectedApplication()?.matchScore ?? 0) >= 40 && (store.selectedApplication()?.matchScore ?? 0) < 70"
-                    [class.text-red-400]="(store.selectedApplication()?.matchScore ?? 0) > 0 && (store.selectedApplication()?.matchScore ?? 0) < 40"
-                    [class.text-zinc-500]="(store.selectedApplication()?.matchScore ?? 0) === 0">
-                    {{ store.selectedApplication()?.matchScore ?? 0 }}
+                    [class.text-emerald-400]="(service.currentJob()?.matchScore ?? 0) >= 70"
+                    [class.text-amber-400]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
+                    [class.text-red-400]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
+                    [class.text-zinc-500]="(service.currentJob()?.matchScore ?? 0) === 0">
+                    {{ service.currentJob()?.matchScore ?? 0 }}
                   </span>
                   <span class="text-xs font-medium"
-                    [class.text-emerald-500/60]="(store.selectedApplication()?.matchScore ?? 0) >= 70"
-                    [class.text-amber-500/60]="(store.selectedApplication()?.matchScore ?? 0) >= 40 && (store.selectedApplication()?.matchScore ?? 0) < 70"
-                    [class.text-red-500/60]="(store.selectedApplication()?.matchScore ?? 0) > 0 && (store.selectedApplication()?.matchScore ?? 0) < 40"
-                    [class.text-zinc-600]="(store.selectedApplication()?.matchScore ?? 0) === 0">%</span>
+                    [class.text-emerald-500/60]="(service.currentJob()?.matchScore ?? 0) >= 70"
+                    [class.text-amber-500/60]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
+                    [class.text-red-500/60]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
+                    [class.text-zinc-600]="(service.currentJob()?.matchScore ?? 0) === 0">%</span>
                   }
                 </div>
               </div>
@@ -280,9 +280,9 @@
             </div>
             <!-- Analyze Button -->
             <div class="mt-4 pt-4 border-t border-zinc-800">
-              <button (click)="triggerAnalysis()" [disabled]="store.isAnalyzing()"
+              <button (click)="triggerAnalysis()" [disabled]="service.isProcessing()"
                 class="w-full py-3 rounded-xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:from-zinc-700 disabled:to-zinc-700 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
-                @if (store.isAnalyzing()) {
+                @if (service.isProcessing()) {
                 <ng-icon name="lucideLoader2" class="text-lg animate-spin"></ng-icon>
                 Analyzing...
                 } @else {
@@ -334,10 +334,10 @@
                 <ng-icon name="lucideSparkles" class="text-violet-500"></ng-icon>
                 <h4 class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-400">AI Insights</h4>
               </div>
-              @if (store.selectedApplication()?.aiFeedback) {
+              @if (service.currentJob()?.aiFeedback) {
               <div
                 class="text-xs text-zinc-400 leading-relaxed whitespace-pre-wrap bg-zinc-950/50 p-4 rounded-xl border border-zinc-800">
-                {{ store.selectedApplication()?.aiFeedback }}
+                {{ service.currentJob()?.aiFeedback }}
               </div>
               } @else {
               <p class="text-xs text-zinc-500 leading-relaxed italic">
@@ -379,17 +379,22 @@
       <div class="p-4">
         <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-zinc-600">Quick Actions</p>
         <div class="mt-2 space-y-1">
-          <button (click)="triggerAnalysis(); toggleCommandBar()" [disabled]="store.isAnalyzing()"
+          <button (click)="triggerAnalysis(); toggleCommandBar()" [disabled]="service.isProcessing()"
             class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group disabled:opacity-50">
-            @if (store.isAnalyzing()) {
+            @if (service.isProcessing()) {
             <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
             } @else {
             <ng-icon name="lucideBrain" class="text-xl text-zinc-500 group-hover:text-violet-400"></ng-icon>
             }
             <span class="text-zinc-300">Analyze Job Description</span>
           </button>
-          <button class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group">
+          <button (click)="generateAssets(); toggleCommandBar()" [disabled]="service.isProcessing()"
+            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group disabled:opacity-50">
+            @if (service.isProcessing()) {
+            <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
+            } @else {
             <ng-icon name="lucideSparkles" class="text-xl text-zinc-500 group-hover:text-violet-400"></ng-icon>
+            }
             <span class="text-zinc-300">Generate Cover Letter</span>
           </button>
           <button class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group">

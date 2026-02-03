@@ -1,6 +1,8 @@
 using JobTracker.Application.DTOs.JobApplications;
 using JobTracker.Application.DTOs.AI;
 
+namespace JobTracker.Application.Interfaces;
+
 public interface IJobApplicationService
 {
     Task<IEnumerable<JobApplicationDto>> GetUserJobsAsync(string userId);
@@ -15,6 +17,11 @@ public interface IJobApplicationService
     /// Generates an optimized version of the resume tailored for a specific job.
     /// </summary>
     Task<string> OptimizeResumeAsync(Guid jobId, string userId);
+
+    /// <summary>
+    /// Generates tailored resume and cover letter assets based on job description, skills, and master resume.
+    /// </summary>
+    Task<AiGeneratedAssetsDto> GenerateAssetsAsync(Guid jobId, string userId);
 
     /// <summary>
     /// Triggers AI analysis of a job application against the user's master resume.

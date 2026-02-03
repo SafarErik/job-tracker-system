@@ -14,6 +14,8 @@ import { provideIcons, NgIcon } from '@ng-icons/core';
 import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp } from '@ng-icons/lucide';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
 
+import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet.component';
+
 @Component({
   selector: 'app-company-list',
   standalone: true,
@@ -24,7 +26,8 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
     ...HlmLabelImports,
     CompanyCardComponent,
     NgIcon,
-    ErrorStateComponent
+    ErrorStateComponent,
+    CompanyAddSheetComponent
   ],
   providers: [
     provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp })
@@ -144,12 +147,6 @@ export class CompanyListComponent implements OnInit {
     this.companyService.loadCompanies();
   }
 
-  /**
-   * Navigate to add new company
-   */
-  addNewCompany(): void {
-    this.router.navigate(['/companies/new']);
-  }
 
   /**
    * Navigate to edit company

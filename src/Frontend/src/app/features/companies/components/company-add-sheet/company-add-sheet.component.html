@@ -1,0 +1,191 @@
+<hlm-sheet side="right" class="border-l border-zinc-800" [state]="isOpen() ? 'open' : 'closed'" (closed)="close()">
+    <hlm-sheet-content *brnSheetContent="let ctx"
+        class="w-full sm:max-w-xl bg-zinc-950 border-l border-zinc-800 p-0 shadow-2xl overflow-y-auto custom-scrollbar flex flex-col h-full"
+        style="background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.03), transparent 40%);">
+
+        <!-- 1. Header -->
+        <hlm-sheet-header
+            class="px-8 pt-8 pb-4 space-y-2 sticky top-0 bg-zinc-950/80 backdrop-blur-xl z-20 border-b border-zinc-900/50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="h-10 w-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+                        <ng-icon name="lucideBuilding2" class="h-5 w-5"></ng-icon>
+                    </div>
+                    <div>
+                        <h3 hlmSheetTitle class="text-xl font-serif text-zinc-100 tracking-tight">Tactical Acquisition
+                        </h3>
+                        <p hlmSheetDescription class="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                            Initialize New Asset</p>
+                    </div>
+                </div>
+                <!-- Close is handled by brn-sheet default close trigger usually, but we can add one if needed. 
+             HlmSheetContent usually includes a close button. We can also add a custom one. -->
+            </div>
+        </hlm-sheet-header>
+
+        <!-- 2. Main Content (Scrollable) -->
+        <div class="flex-1 px-8 py-6 space-y-10">
+
+            <!-- MAGIC INPUT: Scout Website -->
+            <section class="space-y-4 relative group">
+                <div
+                    class="absolute -inset-4 bg-gradient-to-b from-violet-500/5 to-transparent rounded-[2rem] -z-10 group-focus-within:from-violet-500/10 transition-all duration-500">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <ng-icon name="lucideSparkles" class="text-violet-400 h-4 w-4"></ng-icon>
+                    <h4 class="text-xs font-black uppercase tracking-widest text-violet-300">Scout & Auto-Fill</h4>
+                </div>
+
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500">
+                            <ng-icon name="lucideGlobe" class="h-4 w-4"></ng-icon>
+                        </div>
+                        <input hlmInput [value]="scoutUrl()" (input)="scoutUrl.set($event.target.value)"
+                            (keydown.enter)="scanDomain()" placeholder="company-domain.com"
+                            class="pl-9 bg-zinc-900/50 border-zinc-800 text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500/50 focus:ring-violet-500/20 h-11 w-full rounded-xl transition-all font-mono text-sm" />
+                    </div>
+                    <button hlmBtn size="icon" (click)="scanDomain()" [disabled]="!scoutUrl() || isScanning()"
+                        class="h-11 w-11 rounded-xl bg-violet-500 text-white hover:bg-violet-400 border-0 shadow-[0_0_15px_-3px_rgba(139,92,246,0.6)] transition-all">
+                        <ng-icon [name]="isScanning() ? 'lucideLoader2' : 'lucideSearch'" class="h-5 w-5"
+                            [class.animate-spin]="isScanning()"></ng-icon>
+                    </button>
+                </div>
+
+                <p class="text-[10px] text-zinc-500 font-medium ml-1">
+                    Enter domain to deploy scout. Fetches identity and tech DNA automatically.
+                </p>
+            </section>
+
+            <div class="h-px bg-zinc-900"></div>
+
+            <!-- Form Fields -->
+            <form [formGroup]="form" id="addCompanyForm" (ngSubmit)="onSubmit()" class="space-y-10">
+
+                <!-- IDENTITY -->
+                <section class="space-y-5">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-700"></span> Identity Parameter
+                    </h4>
+
+                    <div class="grid gap-5">
+                        <div class="space-y-2">
+                            <label hlmLabel class="text-xs font-bold text-zinc-400 ml-1">Official Name *</label>
+                            <input hlmInput formControlName="name"
+                                class="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-12"
+                                placeholder="e.g. Acme Corp" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label hlmLabel class="text-xs font-bold text-zinc-400 ml-1">Industry</label>
+                                <input hlmInput formControlName="industry"
+                                    class="bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-12"
+                                    placeholder="Startups..." />
+                            </div>
+                            <div class="space-y-2">
+                                <label hlmLabel class="text-xs font-bold text-zinc-400 ml-1">HQ Location</label>
+                                <div class="relative">
+                                    <ng-icon name="lucideMapPin"
+                                        class="absolute left-3 top-3.5 text-zinc-600 h-4 w-4"></ng-icon>
+                                    <input hlmInput formControlName="address"
+                                        class="pl-9 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-12"
+                                        placeholder="City, Country" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- STRATEGY -->
+                <section class="space-y-5">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-700"></span> Strategy & Priority
+                    </h4>
+
+                    <div
+                        class="flex items-center justify-between gap-4 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50">
+                        <div class="flex gap-2">
+                            @for(p of priorities; track p.value) {
+                            <button type="button" (click)="setPriority(p.value)"
+                                [class]="p.value === priority() ? p.color : 'bg-transparent text-zinc-600 border-zinc-800 hover:text-zinc-400'"
+                                class="px-4 py-2 rounded-lg border text-xs font-bold uppercase tracking-wider transition-all">
+                                {{ p.label }}
+                            </button>
+                            }
+                        </div>
+
+                        <div class="flex items-center gap-3 pl-4 border-l border-zinc-800">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Dream
+                                Target</span>
+                            <hlm-switch [checked]="isDreamTarget()" (changed)="toggleDreamTarget()"
+                                class="data-[state=checked]:bg-violet-500"></hlm-switch>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TECH DNA -->
+                <section class="space-y-5">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-700"></span> Tech DNA
+                    </h4>
+                    <div class="p-5 rounded-2xl bg-zinc-900/30 border border-zinc-800/50">
+                        <app-skill-selector placeholder="Add tech stack..." [selectedSkills]="techStack()"
+                            (skillAdded)="onSkillAdded($event)" (skillRemoved)="onSkillRemoved($event)">
+                        </app-skill-selector>
+                    </div>
+                </section>
+
+                <!-- CONTACT LIAISON -->
+                <section class="space-y-5">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-700"></span> Contact Liaison
+                    </h4>
+
+                    <div class="grid gap-4">
+                        <div class="relative group">
+                            <ng-icon name="lucideUsers"
+                                class="absolute left-3 top-3.5 text-zinc-600 group-focus-within:text-violet-500 transition-colors h-4 w-4"></ng-icon>
+                            <input hlmInput formControlName="hrContactName"
+                                class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11"
+                                placeholder="Recruiter Name" />
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="relative group">
+                                <ng-icon name="lucideMail"
+                                    class="absolute left-3 top-3.5 text-zinc-600 group-focus-within:text-violet-500 transition-colors h-4 w-4"></ng-icon>
+                                <input hlmInput formControlName="hrContactEmail"
+                                    class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11"
+                                    placeholder="Email" />
+                            </div>
+                            <div class="relative group">
+                                <ng-icon name="lucideLinkedin"
+                                    class="absolute left-3 top-3.5 text-zinc-600 group-focus-within:text-violet-500 transition-colors h-4 w-4"></ng-icon>
+                                <input hlmInput formControlName="hrContactLinkedIn"
+                                    class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11"
+                                    placeholder="LinkedIn URL" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </form>
+        </div>
+
+        <!-- 3. Footer Actions -->
+        <hlm-sheet-footer class="sticky bottom-0 p-6 bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-900 z-20">
+            <button hlmBtn size="lg" (click)="onSubmit()" [disabled]="form.invalid || isLoading()"
+                class="w-full h-14 rounded-2xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-violet-500/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
+                @if(isLoading()) {
+                <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-5 w-5"></ng-icon>
+                Initializing...
+                } @else {
+                Initialize Tracking
+                }
+            </button>
+        </hlm-sheet-footer>
+
+    </hlm-sheet-content>
+</hlm-sheet>

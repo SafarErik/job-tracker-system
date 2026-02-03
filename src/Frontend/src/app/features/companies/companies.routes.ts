@@ -18,13 +18,7 @@ export const COMPANIES_ROUTES: Routes = [
     canActivate: [authGuard],
     title: 'Companies - JobTracker',
   },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('./components/company-form/company-form').then((m) => m.CompanyFormComponent),
-    canActivate: [authGuard],
-    title: 'New Company - JobTracker',
-  },
+
   {
     path: 'edit/:id',
     loadComponent: () =>

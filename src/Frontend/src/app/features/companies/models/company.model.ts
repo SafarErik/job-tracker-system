@@ -96,3 +96,25 @@ export interface IntelligenceBriefing {
   risks: string;
 }
 
+
+export interface TacticalEvent {
+  id: string;
+  type: 'Application' | 'Follow-up' | 'Networking' | 'Interview' | 'Outcome';
+  date: string | Date;
+  title: string;
+  subtitle?: string;
+  status?: string; // Original status if applicable
+  description?: string; // AI notes or manual notes
+  assets?: EventAsset[];
+  meta?: {
+    isGhosted?: boolean;
+    isTerminal?: boolean;
+    aiInsight?: string;
+  };
+}
+
+export interface EventAsset {
+  type: 'resume' | 'cover_letter' | 'link' | 'other';
+  label: string;
+  url: string;
+}

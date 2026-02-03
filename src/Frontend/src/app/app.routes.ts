@@ -99,14 +99,6 @@ export const routes: Routes = [
         title: 'Companies - JobTracker',
       },
       {
-        path: 'companies/new',
-        loadComponent: () =>
-          import('./features/companies/components/company-form/company-form').then(
-            (m) => m.CompanyFormComponent,
-          ),
-        title: 'New Company - JobTracker',
-      },
-      {
         path: 'companies/edit/:id',
         loadComponent: () =>
           import('./features/companies/components/company-form/company-form').then(

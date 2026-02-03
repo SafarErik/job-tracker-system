@@ -5,11 +5,11 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { toast } from 'ngx-sonner';
-import { CompanyNews, CompanyContact, IntelligenceBriefing } from '../../models/company.model';
+import { CompanyNews, CompanyContact, IntelligenceBriefing, TacticalEvent, EventAsset } from '../../models/company.model';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings } from '@ng-icons/lucide';
+import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings, lucideCalendarPlus } from '@ng-icons/lucide';
 
 // Dumb Components
 import { CompanyHeaderComponent } from './company-header/company-header';
@@ -35,7 +35,7 @@ import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
     InterviewTacticsComponent,
     AiAnalystChatComponent
   ],
-  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings })],
+  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings, lucideCalendarPlus })],
   templateUrl: './company-details.html',
   styleUrl: './company-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,6 +60,9 @@ export class CompanyDetailsComponent implements OnInit {
   // AI Briefing State
   intelligenceBriefing = signal<IntelligenceBriefing | null>(null);
   briefingLoading = signal(false);
+
+  // Tactical Timeline State
+  manualEvents = signal<TacticalEvent[]>([]); // For manual adds in this session
 
   // Tab Navigation State
   activeTab = signal<'mission' | 'intel' | 'history'>('mission');
@@ -96,6 +99,52 @@ export class CompanyDetailsComponent implements OnInit {
     }
     return domain ? `https://logo.clearbit.com/${domain}` : null;
   });
+
+  tacticalEvents = computed(() => {
+    const details = this.company();
+    if (!details) return [];
+
+    const history = details.applicationHistory || [];
+    const mappedEvents: TacticalEvent[] = history.map(app => {
+      const date = new Date(app.appliedAt);
+      const isTerminal = ['Rejected', 'Offer', 'Ghosted'].includes(app.status);
+      const isGhosted = app.status === 'Applied' && (Date.now() - date.getTime() > 14 * 24 * 60 * 60 * 1000);
+
+      // Mock assets for 'Application' type
+      const assets: EventAsset[] = [
+        { type: 'resume', label: 'Resume v2.1', url: '#' },
+        { type: 'cover_letter', label: 'Cover Letter', url: '#' }
+      ];
+
+      return {
+        id: app.id,
+        type: 'Application',
+        date: app.appliedAt,
+        title: app.position,
+        subtitle: `Application Entry #${app.id.slice(0, 8)}`,
+        status: app.status,
+        assets: assets,
+        meta: {
+          isTerminal,
+          isGhosted,
+          aiInsight: isTerminal ? this.getMockAiInsight(app.status) : undefined
+        }
+      } as TacticalEvent;
+    });
+
+    // Merge with manual events and sort
+    return [...mappedEvents, ...this.manualEvents()]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  });
+
+  private getMockAiInsight(status: string): string {
+    switch (status) {
+      case 'Rejected': return 'Analysis indicates a skills mismatch in "System Design". Recommend strengthening architectural portfolio.';
+      case 'Offer': return 'Strong alignment confirmed. Negotiation leverage is high due to specialized tech stack fit.';
+      case 'Ghosted': return 'Pattern suggests hiring freeze or internal restructure. Low probability of recovery.';
+      default: return 'Outcome analysis pending...';
+    }
+  }
 
   constructor() {
     // Effect to sync notes and load news when company changes
@@ -190,6 +239,20 @@ export class CompanyDetailsComponent implements OnInit {
     setTimeout(() => {
       toast.success('Summary Ready', { description: 'News digest updated in Intelligence Lab.' });
     }, 2000);
+  }
+
+  addManualEvent(): void {
+    const newEvent: TacticalEvent = {
+      id: crypto.randomUUID(),
+      type: 'Networking',
+      date: new Date(),
+      title: 'Coffee Chat with Tech Lead',
+      subtitle: 'Internal Referral Opportunity',
+      description: 'Discussed clean architecture and team culture. Strong positive signal.',
+      meta: { aiInsight: 'High potential for internal referral. Follow up in 3 days.' }
+    };
+    this.manualEvents.update(events => [newEvent, ...events]);
+    toast.success('Event Logged', { description: 'Tactical timeline updated.' });
   }
 
   goBack(): void {

@@ -142,53 +142,124 @@
 
     @case ('history') {
     <!-- View 3: Engagement Log (Full-width Timeline) -->
+    <!-- View 3: Engagement Log (Tactical Timeline) -->
     <div
       class="animate-in slide-in-from-right-10 duration-500 min-h-[500px] rounded-3xl bg-zinc-900/30 border border-zinc-800/50 p-12 overflow-y-auto custom-scrollbar">
       <div class="max-w-4xl mx-auto space-y-12">
-        <div class="flex items-center gap-4 mb-16">
-          <div class="h-px flex-1 bg-zinc-800/50"></div>
-          <h2 class="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Tactical Timeline</h2>
-          <div class="h-px flex-1 bg-zinc-800/50"></div>
+
+        <!-- Header & Action -->
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-4 flex-1">
+            <div class="h-px w-12 bg-zinc-800/50"></div>
+            <h2 class="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Tactical Timeline</h2>
+            <div class="h-px flex-1 bg-zinc-800/50"></div>
+          </div>
+          <button hlmBtn variant="outline" (click)="addManualEvent()"
+            class="ml-4 gap-2 text-xs border-zinc-800 bg-zinc-950 hover:bg-zinc-900 hover:text-zinc-100 transition-all">
+            <ng-icon name="lucideCalendarPlus" class="h-3.5 w-3.5"></ng-icon>
+            Add Manual Event
+          </button>
         </div>
 
-        @for (app of details.applicationHistory; track app.id) {
-        <div class="relative pl-12 border-l border-zinc-800 pb-12 last:pb-0 group">
-          <!-- Timeline Dot -->
-          <div
-            class="absolute left-[-5px] top-0 w-2 h-2 rounded-full bg-zinc-700 group-hover:bg-violet-500 transition-colors shadow-[0_0_10px_rgba(139,92,246,0)] group-hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]">
-          </div>
+        <div class="relative pl-8 border-l border-zinc-800 space-y-12 pb-12">
 
-          <div
-            class="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-2xl bg-zinc-950/50 border border-zinc-900 group-hover:border-zinc-800 transition-all">
-            <div>
-              <p class="text-[10px] font-black text-zinc-600 uppercase mb-1">{{ app.appliedAt | date:'MMMM dd, yyyy' }}
-              </p>
-              <h4 class="text-base font-bold text-zinc-100 tracking-tight">{{ app.position }}</h4>
-              <p class="text-xs text-zinc-500 mt-1">Application Entry #{{ app.id.slice(0, 8) }}</p>
+          @for (event of tacticalEvents(); track event.id) {
+          <div class="relative group">
+            <!-- Timeline Dot -->
+            <div [class.bg-blue-500]="event.type === 'Interview'"
+              [class.shadow-[0_0_15px_rgba(59,130,246,0.5)]]="event.type === 'Interview'"
+              [class.bg-violet-500]="event.type === 'Networking'"
+              [class.shadow-[0_0_15px_rgba(139,92,246,0.5)]]="event.type === 'Networking'"
+              [class.bg-emerald-500]="event.type === 'Outcome' && event.status === 'Offer'"
+              [class.bg-rose-500]="event.type === 'Outcome' && event.status === 'Rejected'"
+              [class.bg-zinc-600]="event.type === 'Application'"
+              class="absolute left-[-41px] top-6 w-4 h-4 rounded-full border-4 border-zinc-950 transition-all z-10 group-hover:scale-125 group-hover:bg-violet-500! group-hover:border-violet-400 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.6)]">
             </div>
 
-            <div class="flex items-center gap-6">
-              <div class="text-right">
-                <p class="text-[9px] font-black text-zinc-600 uppercase mb-1">Status</p>
+            <!-- Bento Card -->
+            <div
+              class="relative overflow-hidden rounded-2xl bg-zinc-900/40 border border-zinc-800 p-6 hover:bg-zinc-900/60 transition-all group-hover:border-zinc-700">
+
+              <!-- Ghosting Overlay Effect -->
+              @if (event.meta?.isGhosted) {
+              <div class="absolute inset-0 bg-amber-500/5 animate-pulse pointer-events-none"></div>
+              <div class="absolute top-0 right-0 p-3">
                 <span
-                  class="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-[10px] font-bold text-zinc-400">{{
-                  app.status }}</span>
+                  class="inline-flex items-center px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] font-black uppercase text-amber-500 tracking-wider">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-2"></span>
+                  Signal Lost
+                </span>
               </div>
+              }
 
-              <button hlmBtn variant="outline"
-                class="h-9 px-3 text-xs gap-2 text-zinc-400 hover:text-zinc-100 border-zinc-800 hover:bg-zinc-900">
-                <ng-icon name="lucideFileText" class="h-3.5 w-3.5"></ng-icon>
-                Notes
-              </button>
+              <div class="flex flex-col md:flex-row gap-6">
+                <!-- Left: Date & Type -->
+                <div class="md:w-32 shrink-0 flex flex-col justify-center border-r border-zinc-800/50 pr-6 mr-2">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">{{ event.date | date:'MMM
+                    dd' }}</span>
+                  <span class="text-2xl font-black text-zinc-300">{{ event.date | date:'yyyy' }}</span>
+                  <span
+                    class="mt-2 text-[10px] font-bold px-2 py-1 rounded w-fit bg-zinc-800 text-zinc-400 border border-zinc-700 uppercase">
+                    {{ event.type }}
+                  </span>
+                </div>
 
-              <button hlmBtn variant="ghost" (click)="viewApplication(app.id)"
-                class="rounded-xl h-12 w-12 p-0 border border-transparent hover:border-zinc-800 hover:bg-zinc-900 text-zinc-500 hover:text-zinc-100 transition-all">
-                <ng-icon name="lucideArrowLeft" class="h-4 w-4 rotate-180"></ng-icon>
-              </button>
+                <!-- Right: Content -->
+                <div class="flex-1 space-y-4">
+                  <div>
+                    <h4 class="text-lg font-bold text-zinc-100 tracking-tight">{{ event.title }}</h4>
+                    <p class="text-xs text-zinc-500 font-medium uppercase tracking-wide mt-0.5">{{ event.subtitle }}</p>
+
+                    @if (event.description) {
+                    <p class="text-sm text-zinc-400 mt-3 leading-relaxed border-l-2 border-zinc-700 pl-3">
+                      {{ event.description }}
+                    </p>
+                    }
+                  </div>
+
+                  <!-- Resources Snapshot -->
+                  @if (event.assets && event.assets.length > 0) {
+                  <div class="flex flex-wrap gap-3 mt-4">
+                    @for (asset of event.assets; track asset.label) {
+                    <a [href]="asset.url" target="_blank"
+                      class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-violet-500/50 hover:bg-violet-500/5 transition-all text-xs font-medium text-zinc-400 hover:text-violet-300 group/asset">
+                      <ng-icon name="lucideFileText" class="w-3.5 h-3.5 group-hover/asset:text-violet-400"></ng-icon>
+                      {{ asset.label }}
+                    </a>
+                    }
+                  </div>
+                  }
+
+                  <!-- AI Tactical Retrospective -->
+                  @if (event.meta?.aiInsight) {
+                  <div class="mt-4 p-4 rounded-xl bg-violet-500/5 border-l-2 border-violet-500/30">
+                    <div class="flex items-center gap-2 mb-2">
+                      <ng-icon name="lucideMicroscope" class="text-violet-400 w-3.5 h-3.5"></ng-icon>
+                      <span class="text-[10px] font-black uppercase tracking-widest text-violet-400">Tactical
+                        Retrospective</span>
+                    </div>
+                    <p class="text-xs text-violet-200/80 italic leading-relaxed">
+                      "{{ event.meta!.aiInsight }}"
+                    </p>
+                  </div>
+                  }
+
+                  <!-- Actions (if application) -->
+                  @if (event.type === 'Application') {
+                  <div class="flex justify-end mt-2 pt-4 border-t border-zinc-800/50">
+                    <button hlmBtn variant="ghost" (click)="viewApplication(event.id)"
+                      class="h-8 px-3 text-xs gap-2 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800/50 rounded-lg transition-all">
+                      View Full Dossier
+                      <ng-icon name="lucideArrowLeft" class="h-3 w-3 rotate-180"></ng-icon>
+                    </button>
+                  </div>
+                  }
+                </div>
+              </div>
             </div>
           </div>
+          }
         </div>
-        }
       </div>
     </div>
     }

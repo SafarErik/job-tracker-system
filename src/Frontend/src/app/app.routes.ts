@@ -30,7 +30,7 @@ export const routes: Routes = [
         (m) => m.LandingPageComponent,
       ),
     pathMatch: 'full',
-    title: 'JobTracker - Your Career, Autopilot Engaged',
+    title: 'VantageCursus - Your Career, Autopilot Engaged',
   },
 
   // ============================================
@@ -54,14 +54,14 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-        title: 'Dashboard - JobTracker',
+        title: 'Dashboard - VantageCursus',
         data: { breadcrumb: 'Dashboard' }
       },
       {
         path: 'applications',
         loadComponent: () =>
           import('./features/job-applications/components/job-list/applications.component').then((m) => m.ApplicationsComponent),
-        title: 'Applications - JobTracker',
+        title: 'Applications - VantageCursus',
         data: { breadcrumb: 'Applications' }
       },
       {
@@ -70,7 +70,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/add-job-form/add-job-form').then(
             (m) => m.AddJobFormComponent,
           ),
-        title: 'New Application - JobTracker',
+        title: 'New Application - VantageCursus',
         data: { breadcrumb: 'New Application' }
       },
       {
@@ -80,7 +80,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-workstation/job-workstation').then(
             (m) => m.JobWorkstationComponent,
           ),
-        title: 'Application Workstation - JobTracker',
+        title: 'Application Workstation - VantageCursus',
         data: { breadcrumb: 'Workstation' }
       },
       {
@@ -90,7 +90,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-workstation/job-workstation').then(
             (m) => m.JobWorkstationComponent,
           ),
-        title: 'View Application - JobTracker',
+        title: 'View Application - VantageCursus',
         data: { breadcrumb: 'View Application' }
       },
 
@@ -101,7 +101,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-list/company-list').then(
             (m) => m.CompanyListComponent,
           ),
-        title: 'Companies - JobTracker',
+        title: 'Companies - VantageCursus',
         data: { breadcrumb: 'Companies' }
       },
       {
@@ -110,7 +110,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-form/company-form').then(
             (m) => m.CompanyFormComponent,
           ),
-        title: 'Edit Company - JobTracker',
+        title: 'Edit Company - VantageCursus',
         data: { breadcrumb: 'Edit Company' }
       },
       {
@@ -119,7 +119,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-details/company-details').then(
             (m) => m.CompanyDetailsComponent,
           ),
-        title: 'Company Details - JobTracker',
+        title: 'Company Details - VantageCursus',
         data: { breadcrumb: 'Company Details' }
       },
 
@@ -130,7 +130,7 @@ export const routes: Routes = [
           import('./features/documents/components/documents-list/documents-list').then(
             (m) => m.DocumentsListComponent,
           ),
-        title: 'Documents - JobTracker',
+        title: 'Documents - VantageCursus',
         data: { breadcrumb: 'Documents' }
       },
 
@@ -139,7 +139,7 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-        title: 'Profile - JobTracker',
+        title: 'Profile - VantageCursus',
         data: { breadcrumb: 'Profile' }
       },
 

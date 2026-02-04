@@ -22,6 +22,7 @@ import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { ThemeService, UiStateService } from '../../../core/services';
 import { AuthService } from '../../../core/auth/auth.service';
+import { LogoComponent } from '../../../shared/components/logo/logo';
 
 @Component({
   selector: 'app-sidebar',
@@ -36,6 +37,7 @@ import { AuthService } from '../../../core/auth/auth.service';
     HlmDropdownMenuImports,
     HlmDropdownMenuTrigger,
     HlmSwitchImports,
+    LogoComponent,
   ],
   providers: [
     provideIcons({
@@ -54,7 +56,7 @@ import { AuthService } from '../../../core/auth/auth.service';
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'border-r border-sidebar-border bg-sidebar-background'
+    'class': 'border-r border-sidebar-border bg-sidebar-background block h-full'
   }
 })
 export class SidebarComponent {

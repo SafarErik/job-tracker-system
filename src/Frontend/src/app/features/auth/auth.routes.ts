@@ -12,18 +12,18 @@ export const AUTH_ROUTES: Routes = [
         path: 'login',
         loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent),
         canActivate: [guestGuard],
-        title: 'Sign In | JobTracker'
+        title: 'Sign In | VantageCursus'
       },
       {
         path: 'register',
         loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent),
         canActivate: [guestGuard],
-        title: 'Create Account | JobTracker'
+        title: 'Create Account | VantageCursus'
       },
       {
         path: 'callback',
         loadComponent: () => import('./components/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent),
-        title: 'Authenticating... | JobTracker'
+        title: 'Authenticating... | VantageCursus'
       }
     ]
   }

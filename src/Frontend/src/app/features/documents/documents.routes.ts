@@ -16,6 +16,6 @@ export const DOCUMENTS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/documents-list/documents-list').then((m) => m.DocumentsListComponent),
     canActivate: [authGuard],
-    title: 'Documents - JobTracker',
+    title: 'Documents - VantageCursus',
   },
 ];

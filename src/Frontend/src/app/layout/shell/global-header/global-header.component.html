@@ -1,35 +1,51 @@
-<div class="flex items-center justify-between w-full px-4">
-  <!-- Breadcrumbs -->
-  <nav hlmBreadcrumb>
-    <ol hlmBreadcrumbList>
-      <li hlmBreadcrumbItem>
-        <a hlmBreadcrumbLink [link]="'/'">Home</a>
-      </li>
-      <li hlmBreadcrumbSeparator></li>
-      <li hlmBreadcrumbItem>
-        <span hlmBreadcrumbPage>Dashboard</span>
-      </li>
-    </ol>
-  </nav>
+<div class="grid grid-cols-3 items-center w-full">
+  <!-- Left Side: Breadcrumbs -->
+  <div class="flex items-center">
+    <nav hlmBreadcrumb>
+      <ol hlmBreadcrumbList>
+        <li hlmBreadcrumbItem>
+          <a hlmBreadcrumbLink [link]="'/'">Home</a>
+        </li>
+        @for (breadcrumb of breadcrumbService.breadcrumbs(); track breadcrumb.url; let last = $last) {
+        <li hlmBreadcrumbSeparator></li>
+        <li hlmBreadcrumbItem>
+          @if (last) {
+          <span hlmBreadcrumbPage>{{ breadcrumb.label }}</span>
+          } @else {
+          <a hlmBreadcrumbLink [link]="breadcrumb.url">{{ breadcrumb.label }}</a>
+          }
+        </li>
+        }
+      </ol>
+    </nav>
+  </div>
 
-  <!-- Command Palette Trigger -->
-  <button (click)="isOpen.set(true)" hlmBtn variant="outline"
-    class="relative h-9 w-64 justify-start rounded-xl bg-muted/50 border-border text-sm font-normal text-muted-foreground shadow-none hover:bg-muted hover:text-foreground transition-all overflow-hidden group">
-    <div
-      class="absolute inset-0 bg-linear-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-    </div>
-    <ng-icon hlm name="lucideSearch" class="mr-2 h-4 w-4" />
-    <span class="inline-flex relative z-10">Ask AI or search...</span>
-    <kbd
-      class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex text-muted-foreground">
-      <span class="text-xs">⌘</span>K
-    </kbd>
-  </button>
+  <!-- Center: Command Palette Trigger -->
+  <div class="flex justify-center">
+    <button (click)="isOpen.set(true)" hlmBtn variant="outline"
+      class="relative h-9 w-64 justify-start rounded-xl bg-muted/50 border-border text-sm font-normal text-muted-foreground shadow-none hover:bg-muted hover:text-foreground transition-all overflow-hidden group">
+      <div
+        class="absolute inset-0 bg-linear-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+      </div>
+      <ng-icon hlm name="lucideSearch" class="mr-2 h-4 w-4" />
+      <span class="inline-flex relative z-10">Ask AI or search...</span>
+      <kbd
+        class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex text-muted-foreground">
+        <span class="text-xs">⌘</span>K
+      </kbd>
+    </button>
+  </div>
 
-  <!-- Global Add Trigger -->
-  <button hlmBtn variant="ghost" size="icon" (click)="uiService.openAddAppSheet()">
-    <ng-icon hlm name="lucidePlus" class="h-5 w-5" />
-  </button>
+  <!-- Right Side: Actions -->
+  <div class="flex items-center justify-end gap-1">
+    <button hlmBtn variant="ghost" size="icon" (click)="uiService.openAddAppSheet()" class="h-9 w-9">
+      <ng-icon hlm name="lucidePlus" class="h-5 w-5" />
+    </button>
+
+    <app-notification-center />
+
+    <app-theme-toggle />
+  </div>
 
   <!-- Command Palette Dialog -->
   <hlm-dialog [state]="isOpen() ? 'open' : 'closed'" (closed)="isOpen.set(false)">

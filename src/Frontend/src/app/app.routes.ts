@@ -55,12 +55,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         title: 'Dashboard - JobTracker',
+        data: { breadcrumb: 'Dashboard' }
       },
       {
         path: 'applications',
         loadComponent: () =>
           import('./features/job-applications/components/job-list/applications.component').then((m) => m.ApplicationsComponent),
         title: 'Applications - JobTracker',
+        data: { breadcrumb: 'Applications' }
       },
       {
         path: 'new',
@@ -69,6 +71,7 @@ export const routes: Routes = [
             (m) => m.AddJobFormComponent,
           ),
         title: 'New Application - JobTracker',
+        data: { breadcrumb: 'New Application' }
       },
       {
         // Application Workstation - full page view with tabs
@@ -78,6 +81,7 @@ export const routes: Routes = [
             (m) => m.JobWorkstationComponent,
           ),
         title: 'Application Workstation - JobTracker',
+        data: { breadcrumb: 'Workstation' }
       },
       {
         // Keep view/:id as alias for backwards compatibility
@@ -87,6 +91,7 @@ export const routes: Routes = [
             (m) => m.JobWorkstationComponent,
           ),
         title: 'View Application - JobTracker',
+        data: { breadcrumb: 'View Application' }
       },
 
       // Companies
@@ -97,6 +102,7 @@ export const routes: Routes = [
             (m) => m.CompanyListComponent,
           ),
         title: 'Companies - JobTracker',
+        data: { breadcrumb: 'Companies' }
       },
       {
         path: 'companies/edit/:id',
@@ -105,6 +111,7 @@ export const routes: Routes = [
             (m) => m.CompanyFormComponent,
           ),
         title: 'Edit Company - JobTracker',
+        data: { breadcrumb: 'Edit Company' }
       },
       {
         path: 'companies/:id',
@@ -113,6 +120,7 @@ export const routes: Routes = [
             (m) => m.CompanyDetailsComponent,
           ),
         title: 'Company Details - JobTracker',
+        data: { breadcrumb: 'Company Details' }
       },
 
       // Documents
@@ -123,6 +131,7 @@ export const routes: Routes = [
             (m) => m.DocumentsListComponent,
           ),
         title: 'Documents - JobTracker',
+        data: { breadcrumb: 'Documents' }
       },
 
       // Profile
@@ -131,6 +140,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
         title: 'Profile - JobTracker',
+        data: { breadcrumb: 'Profile' }
       },
 
       // Compatibility Redirects

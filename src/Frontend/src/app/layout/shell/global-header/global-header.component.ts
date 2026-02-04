@@ -20,8 +20,10 @@ import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { UiStateService } from '../../../core/services';
+import { UiStateService, BreadcrumbService } from '../../../core/services';
 import { inject } from '@angular/core';
+import { NotificationCenterComponent } from '../../../features/notifications/notification-center.component';
+import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle';
 
 @Component({
     selector: 'app-global-header',
@@ -36,6 +38,8 @@ import { inject } from '@angular/core';
         HlmCommandImports,
         BrnDialogImports,
         HlmDialogImports,
+        NotificationCenterComponent,
+        ThemeToggleComponent,
     ],
     providers: [
         provideIcons({
@@ -56,6 +60,7 @@ import { inject } from '@angular/core';
 export class GlobalHeaderComponent {
     public readonly isOpen = signal(false);
     public readonly uiService = inject(UiStateService);
+    public readonly breadcrumbService = inject(BreadcrumbService);
 
     @HostListener('window:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent) {

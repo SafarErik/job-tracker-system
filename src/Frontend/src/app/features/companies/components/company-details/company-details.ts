@@ -314,6 +314,10 @@ export class CompanyDetailsComponent implements OnInit {
     }
   }
 
+  handleOpenSettings(): void {
+    toast.info('Settings', { description: 'Asset configuration panel coming soon.' });
+  }
+
   // Tech Stack Actions
   handleAddTech(skill: string): void {
     const current = this.company();

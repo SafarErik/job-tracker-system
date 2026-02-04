@@ -78,15 +78,6 @@
 
     <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
-    <div hlmDropdownMenuItem class="flex items-center justify-between rounded-lg cursor-default focus:bg-transparent">
-      <div class="flex items-center gap-2">
-        <ng-icon hlm [name]="isDarkMode ? 'lucideMoon' : 'lucideSun'" hlmDropdownMenuIcon />
-        <span>{{ isDarkMode ? 'Obsidian Mode' : 'Ceramic Mode' }}</span>
-      </div>
-      <hlm-switch [checked]="isDarkMode" (changed)="toggleTheme()" />
-    </div>
-
-    <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
     <button hlmDropdownMenuItem (click)="onLogout()"
       class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg">

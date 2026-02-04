@@ -122,12 +122,13 @@
   <div class="p-6 flex justify-center">
     <div class="p-1.5 bg-card/80 backdrop-blur-md border border-border rounded-2xl flex gap-1 shadow-xl">
       @for (phase of phases; track phase.id) {
-      <button (click)="setPhase(phase.id)" [class.bg-foreground]="currentPhase() === phase.id"
-        [class.text-background]="currentPhase() === phase.id"
+      <button (click)="setPhase(phase.id)" [class.bg-primary]="currentPhase() === phase.id"
+        [class.text-primary-foreground]="currentPhase() === phase.id"
         [class.text-muted-foreground]="currentPhase() !== phase.id"
         [class.hover:text-foreground]="currentPhase() !== phase.id"
-        class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2">
-        <ng-icon [name]="phase.icon" class="text-lg"></ng-icon>
+        [class.hover:bg-muted/50]="currentPhase() !== phase.id"
+        class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn">
+        <ng-icon [name]="phase.icon" class="text-lg group-hover/btn:scale-110 transition-transform"></ng-icon>
         {{ phase.label }}
       </button>
       }

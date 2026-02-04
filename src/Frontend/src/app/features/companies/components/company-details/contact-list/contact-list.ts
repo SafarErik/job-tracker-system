@@ -36,10 +36,10 @@ import {
     })
   ],
   template: `
-    <div class="bg-zinc-900/40 rounded-3xl border border-zinc-800 p-5 h-full flex flex-col">
+    <div class="bg-card/50 rounded-3xl border border-border p-5 h-full flex flex-col">
       <div class="flex items-center justify-between mb-4 leading-none shrink-0">
-        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Personnel Hierarchy</h3>
-        <button hlmBtn variant="ghost" size="icon-xs" class="h-6 w-6 rounded-md border border-zinc-800 text-zinc-600 hover:text-violet-400 hover:border-violet-500/30 transition-all font-serif"
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
+        <button hlmBtn variant="ghost" size="icon-xs" class="h-6 w-6 rounded-md border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-all font-serif"
           (click)="startAddContact()" *ngIf="editingContactId() === null && !maxDisplay()">
           <ng-icon name="lucidePlus"></ng-icon>
         </button>
@@ -48,21 +48,21 @@ import {
       <div class="space-y-2 flex-1 overflow-y-auto custom-scrollbar">
         <!-- Contact List -->
         @for (contact of displayedContacts(); track contact.id) {
-        <div class="bg-zinc-950/30 border border-zinc-900 rounded-xl overflow-hidden group hover:border-zinc-700 transition-all font-sans"
-          [class.bg-zinc-900]="editingContactId() === contact.id"
-          [class.border-violet-500/30]="editingContactId() === contact.id">
+        <div class="bg-muted/30 border border-border rounded-xl overflow-hidden group hover:border-primary/30 transition-all font-sans"
+          [class.bg-card]="editingContactId() === contact.id"
+          [class.border-primary/30]="editingContactId() === contact.id">
 
           @if (editingContactId() !== contact.id) {
           <div class="p-3 flex items-center justify-between gap-3">
              <div class="flex items-center gap-3 min-w-0">
                 <div
-                  class="h-8 w-8 rounded-lg bg-zinc-900 border flex items-center justify-center text-zinc-100 font-serif text-sm shrink-0 transition-colors"
+                  class="h-8 w-8 rounded-lg bg-muted border flex items-center justify-center text-foreground font-serif text-sm shrink-0 transition-colors"
                   [class]="getSeniorityBorder(contact.role)">
                   {{ contact.name.charAt(0) }}
                 </div>
                 <div class="min-w-0">
-                   <p class="text-xs font-serif text-zinc-100 truncate">{{ contact.name }}</p>
-                   <p class="text-[9px] font-black text-zinc-600 uppercase tracking-widest truncate">{{ contact.role }}</p>
+                   <p class="text-xs font-serif text-foreground truncate">{{ contact.name }}</p>
+                   <p class="text-[9px] font-black text-muted-foreground uppercase tracking-widest truncate">{{ contact.role }}</p>
                 </div>
              </div>
 
@@ -70,27 +70,27 @@ import {
                <!-- LinkedIn (Always Visible) -->
                <button (click)="openLinkedIn(contact.linkedIn)"
                  class="h-8 w-8 rounded-lg border flex items-center justify-center transition-all shadow-sm"
-                 [class]="contact.linkedIn ? 'bg-violet-500/10 border-violet-500/20 text-violet-400 hover:bg-violet-500/20' : 'bg-zinc-900 border-zinc-800 text-zinc-600 hover:text-zinc-400'">
+                 [class]="contact.linkedIn ? 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20' : 'bg-muted border-border text-muted-foreground hover:text-foreground'">
                  <ng-icon name="lucideLinkedin" size="14"></ng-icon>
                </button>
 
                @if (contact.email) {
                <a [href]="'mailto:' + contact.email"
-                 class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-100 transition-all">
+                 class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all">
                  <ng-icon name="lucideExternalLink" size="14"></ng-icon>
                </a>
                }
                
-               <div class="w-px h-4 bg-zinc-800 mx-1 hidden sm:block"></div>
+               <div class="w-px h-4 bg-border mx-1 hidden sm:block"></div>
                
                <!-- Edit/Delete Group -->
                <div class="flex items-center gap-1">
                   <button (click)="startEditContact(contact)"
-                    class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-100 transition-all">
+                    class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all">
                     <ng-icon name="lucidePencil" size="14"></ng-icon>
                   </button>
                   <button (click)="deleteContact.emit(contact.id)"
-                    class="h-8 w-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-destructive transition-all">
+                    class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-destructive transition-all">
                     <ng-icon name="lucideTrash2" size="14"></ng-icon>
                   </button>
                </div>
@@ -101,30 +101,30 @@ import {
           <div class="p-6 space-y-4 duration-300">
             <div class="grid grid-cols-2 gap-3 font-sans">
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Member
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Member
                   Name</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.name()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.name()"
                   (ngModelChange)="editForm.name.set($event)" placeholder="e.g. Sarah Connor" autofocus />
               </div>
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Rank /
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
                   Role</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.role()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.role()"
                   (ngModelChange)="editForm.role.set($event)" placeholder="e.g. Lead Technical Recruiter" />
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-3 font-sans">
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Signal
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
                   (LinkedIn)</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.linkedIn()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.linkedIn()"
                   (ngModelChange)="editForm.linkedIn.set($event)" placeholder="LinkedIn URL" />
               </div>
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Comms
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
                   (Email)</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.email()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.email()"
                   (ngModelChange)="editForm.email.set($event)" placeholder="Email Address" />
               </div>
             </div>
@@ -134,7 +134,7 @@ import {
                 (click)="cancelEdit()">
                 Abort
               </button>
-              <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6 bg-zinc-100 text-zinc-950 hover:bg-zinc-200 font-sans"
+              <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-sans"
                 (click)="saveContact()">
                 Secure Entry
               </button>
@@ -147,32 +147,32 @@ import {
         <!-- Add New Contact Form -->
         @if (editingContactId() === '0') {
         <div
-          class="bg-zinc-900 border-2 border-dashed border-violet-500/30 rounded-[1.5rem] p-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
+          class="bg-card border-2 border-dashed border-primary/30 rounded-[1.5rem] p-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
           <div class="grid grid-cols-2 gap-3 font-sans">
             <div class="space-y-1.5">
-              <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">New Member
+              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Member
                 Name</label>
-              <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.name()"
+              <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.name()"
                 (ngModelChange)="editForm.name.set($event)" placeholder="Name" autofocus />
             </div>
             <div class="space-y-1.5">
-              <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Rank /
+              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
                 Role</label>
-              <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.role()"
+              <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.role()"
                 (ngModelChange)="editForm.role.set($event)" placeholder="Role" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3 font-sans">
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Signal
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
                   (LinkedIn)</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.linkedIn()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.linkedIn()"
                   (ngModelChange)="editForm.linkedIn.set($event)" placeholder="LinkedIn URL" />
               </div>
               <div class="space-y-1.5">
-                <label class="text-[9px] font-black uppercase tracking-widest text-zinc-500 ml-1">Comms
+                <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
                   (Email)</label>
-                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-zinc-950 border-zinc-800" [ngModel]="editForm.email()"
+                <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.email()"
                   (ngModelChange)="editForm.email.set($event)" placeholder="Email Address" />
               </div>
             </div>
@@ -181,7 +181,7 @@ import {
               (click)="cancelEdit()">
               Abort
             </button>
-            <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6 bg-violet-600 text-white hover:bg-violet-700 font-sans"
+            <button hlmBtn variant="default" size="sm" class="rounded-xl text-xs font-bold px-6 bg-primary text-primary-foreground hover:bg-primary/90 font-sans"
               (click)="saveContact()">
               Enlist Personnel
             </button>
@@ -190,11 +190,11 @@ import {
         }
 
         @if (!contacts().length && !editingContactId()) {
-        <div class="py-12 text-center border-2 border-dashed border-zinc-800 rounded-[2rem] bg-zinc-900/10">
-          <ng-icon name="lucideBuilding2" class="text-zinc-800 text-4xl mb-3"></ng-icon>
-          <p class="text-[10px] font-black text-zinc-700 uppercase tracking-widest">No Intelligence
+        <div class="py-12 text-center border-2 border-dashed border-border rounded-[2rem] bg-muted/10">
+          <ng-icon name="lucideBuilding2" class="text-muted-foreground/40 text-4xl mb-3"></ng-icon>
+          <p class="text-[10px] font-black text-muted-foreground uppercase tracking-widest">No Intelligence
             Contacts Identified</p>
-          <button hlmBtn variant="link" size="sm" class="mt-2 text-violet-400 hover:text-violet-300 font-bold font-sans"
+          <button hlmBtn variant="link" size="sm" class="mt-2 text-primary hover:text-primary/80 font-bold font-sans"
             (click)="startAddContact()">
             Identify New Contact
           </button>
@@ -276,12 +276,12 @@ export class ContactListComponent {
   getSeniorityBorder(role: string | undefined | null): string {
     const r = (role || '').toLowerCase();
     if (r.includes('director') || r.includes('head') || r.includes('lead') || r.includes('v-p') || r.includes('vp') || r.includes('cto') || r.includes('ceo')) {
-      return 'border-violet-500/50 shadow-[0_0_10px_rgba(139,92,246,0.2)] bg-violet-500/5';
+      return 'border-primary/50 shadow-[0_0_10px_rgba(var(--primary),0.2)] bg-primary/5';
     }
     if (r.includes('recruit') || r.includes('talent') || r.includes('hr') || r.includes('people')) {
-      return 'border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)] bg-blue-500/5';
+      return 'border-info/50 shadow-[0_0_10px_rgba(var(--info),0.2)] bg-info/5';
     }
-    return 'border-zinc-800';
+    return 'border-border';
   }
 
   openLinkedIn(url: string | undefined | null): void {

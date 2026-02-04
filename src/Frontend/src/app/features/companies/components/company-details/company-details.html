@@ -31,7 +31,8 @@
     <!-- Header -->
     <app-company-header [company]="details" [logoUrl]="logoUrl()" (goBack)="goBack()"
       (updateName)="handleUpdateName($event)" (updatePriority)="handleUpdatePriority($event)"
-      (updateIndustry)="handleUpdateIndustry($event)" (deleteCompany)="handleDeleteCompany()"></app-company-header>
+      (updateIndustry)="handleUpdateIndustry($event)" (deleteCompany)="handleDeleteCompany()"
+      (openSettings)="handleOpenSettings()"></app-company-header>
 
     <!-- Sub-Navigation Bar -->
     <div
@@ -62,10 +63,6 @@
           <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
           <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Online</span>
         </div>
-        <button
-          class="p-2.5 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
-          <ng-icon name="lucideSettings" class="h-4 w-4"></ng-icon>
-        </button>
       </div>
     </div>
 

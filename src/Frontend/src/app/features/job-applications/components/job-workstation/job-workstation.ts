@@ -183,7 +183,7 @@ export class JobWorkstationComponent implements OnInit {
 
     keywords.forEach(kw => {
       const regex = new RegExp(`(${kw})`, 'gi');
-      html = html.replace(regex, '<span class="bg-violet-500/20 text-violet-300 px-1 rounded">$1</span>');
+      html = html.replace(regex, '<span class="bg-primary/20 text-primary px-1 rounded">$1</span>');
     });
 
     return html;
@@ -274,7 +274,7 @@ export class JobWorkstationComponent implements OnInit {
   }
 
   getStatusBadgeClasses(status: JobApplicationStatus | undefined): string {
-    if (status === undefined) return 'bg-zinc-800 text-zinc-400 border border-zinc-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
+    if (status === undefined) return 'bg-muted text-muted-foreground border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
     return getStatusBadgeClasses(status);
   }
 

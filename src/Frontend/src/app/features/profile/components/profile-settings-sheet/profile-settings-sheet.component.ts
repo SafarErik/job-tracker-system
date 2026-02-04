@@ -31,19 +31,19 @@ import { UserProfile } from '../../models/profile.model';
         })
     ],
     template: `
-<hlm-sheet side="right" class="border-l border-zinc-800" [state]="isOpen() ? 'open' : 'closed'" (closed)="close()">
+<hlm-sheet side="right" class="border-l border-border" [state]="isOpen() ? 'open' : 'closed'" (closed)="close()">
     <hlm-sheet-content *brnSheetContent="let ctx"
-        class="w-full sm:max-w-md bg-zinc-950 border-l border-zinc-800 p-0 shadow-2xl flex flex-col h-full">
+        class="w-full sm:max-w-md bg-background border-l border-border p-0 shadow-2xl flex flex-col h-full">
 
         <!-- Header -->
-        <hlm-sheet-header class="px-8 pt-8 pb-4 space-y-2 border-b border-zinc-900/50">
+        <hlm-sheet-header class="px-8 pt-8 pb-4 space-y-2 border-b border-border/50 bg-muted/20">
             <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-xl bg-zinc-800 flex items-center justify-center text-zinc-400">
+                <div class="h-10 w-10 rounded-xl bg-muted border border-border flex items-center justify-center text-muted-foreground">
                     <ng-icon name="lucideSettings" class="h-5 w-5"></ng-icon>
                 </div>
                 <div>
-                    <h3 hlmSheetTitle class="text-xl font-serif text-zinc-100 tracking-tight">Configuration</h3>
-                    <p hlmSheetDescription class="text-[10px] font-black uppercase tracking-widest text-zinc-500">System Parameters</p>
+                    <h3 hlmSheetTitle class="text-xl font-serif text-foreground tracking-tight">Configuration</h3>
+                    <p hlmSheetDescription class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Parameters</p>
                 </div>
             </div>
         </hlm-sheet-header>
@@ -53,53 +53,53 @@ import { UserProfile } from '../../models/profile.model';
             <form [formGroup]="form" class="space-y-8">
                 <!-- Credentials Section -->
                 <section class="space-y-4">
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Identity Credentials</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Identity Credentials</h4>
                     
                     <div class="space-y-4">
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-bold text-zinc-400">Email Address</label>
+                            <label hlmLabel class="text-xs font-bold text-muted-foreground">Email Address</label>
                             <div class="relative">
-                                <ng-icon name="lucideMail" class="absolute left-3 top-3 text-zinc-500 h-4 w-4"></ng-icon>
+                                <ng-icon name="lucideMail" class="absolute left-3 top-3 text-muted-foreground h-4 w-4"></ng-icon>
                                 <input hlmInput formControlName="email" readonly
-                                    class="pl-10 bg-zinc-900/30 border-zinc-800 text-zinc-500 cursor-not-allowed rounded-xl h-11 w-full" />
+                                    class="pl-10 bg-muted/30 border-border text-muted-foreground cursor-not-allowed rounded-xl h-11 w-full" />
                             </div>
                         </div>
 
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-bold text-zinc-400">New Password</label>
+                            <label hlmLabel class="text-xs font-bold text-muted-foreground">New Password</label>
                             <div class="relative">
-                                <ng-icon name="lucideLock" class="absolute left-3 top-3 text-zinc-500 h-4 w-4"></ng-icon>
+                                <ng-icon name="lucideLock" class="absolute left-3 top-3 text-muted-foreground h-4 w-4"></ng-icon>
                                 <input hlmInput type="password" formControlName="password"
-                                    class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11 w-full"
+                                    class="pl-10 bg-muted border-border text-foreground focus:border-primary/50 rounded-xl h-11 w-full"
                                     placeholder="••••••••" />
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <div class="h-px bg-zinc-900"></div>
+                <div class="h-px bg-border"></div>
 
                 <!-- API Keys Section -->
                 <section class="space-y-4">
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Tactical API Keys</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Tactical API Keys</h4>
                     
                     <div class="space-y-4">
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-bold text-zinc-400">LinkedIn Personal Access Token</label>
+                            <label hlmLabel class="text-xs font-bold text-muted-foreground">LinkedIn Personal Access Token</label>
                             <div class="relative">
-                                <ng-icon name="lucideKey" class="absolute left-3 top-3 text-zinc-500 h-4 w-4"></ng-icon>
+                                <ng-icon name="lucideKey" class="absolute left-3 top-3 text-muted-foreground h-4 w-4"></ng-icon>
                                 <input hlmInput type="password" formControlName="linkedInToken"
-                                    class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11 w-full"
+                                    class="pl-10 bg-muted border-border text-foreground focus:border-primary/50 rounded-xl h-11 w-full"
                                     placeholder="Bearer eyJhbGci..." />
                             </div>
                         </div>
 
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-bold text-zinc-400">OpenAI Key (Personal)</label>
+                            <label hlmLabel class="text-xs font-bold text-muted-foreground">OpenAI Key (Personal)</label>
                             <div class="relative">
-                                <ng-icon name="lucideKey" class="absolute left-3 top-3 text-zinc-500 h-4 w-4"></ng-icon>
+                                <ng-icon name="lucideKey" class="absolute left-3 top-3 text-muted-foreground h-4 w-4"></ng-icon>
                                 <input hlmInput type="password" formControlName="openAiKey"
-                                    class="pl-10 bg-zinc-900/50 border-zinc-800 text-zinc-200 focus:border-zinc-700 rounded-xl h-11 w-full"
+                                    class="pl-10 bg-muted border-border text-foreground focus:border-primary/50 rounded-xl h-11 w-full"
                                     placeholder="sk-..." />
                             </div>
                         </div>
@@ -109,9 +109,9 @@ import { UserProfile } from '../../models/profile.model';
         </div>
 
         <!-- Footer -->
-        <div class="p-6 border-t border-zinc-900 bg-zinc-950/50 backdrop-blur-sm">
+        <div class="p-6 border-t border-border bg-background/50 backdrop-blur-sm">
             <button hlmBtn size="lg" (click)="save()" [disabled]="isLoading()"
-                class="w-full h-12 rounded-xl bg-zinc-100 text-zinc-950 hover:bg-zinc-200 font-bold uppercase tracking-widest text-xs transition-all border-0">
+                class="w-full h-12 rounded-xl bg-foreground text-background hover:bg-foreground/90 font-bold uppercase tracking-widest text-xs transition-all border-0">
                 @if(isLoading()) {
                     <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4"></ng-icon>
                     Syncing...

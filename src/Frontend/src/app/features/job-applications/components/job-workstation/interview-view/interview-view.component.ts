@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
     lucideMic,
     lucideKeyboard,
@@ -23,7 +23,7 @@ interface Message {
 @Component({
     selector: 'app-interview-view',
     standalone: true,
-    imports: [CommonModule, NgIcon, FormsModule],
+    imports: [CommonModule, NgIconComponent, FormsModule],
     providers: [
         provideIcons({
             lucideMic,

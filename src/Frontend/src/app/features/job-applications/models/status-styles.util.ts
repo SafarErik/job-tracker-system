@@ -24,52 +24,52 @@ export interface StatusStyle {
  */
 export const STATUS_STYLES: Record<JobApplicationStatus, StatusStyle> = {
     [JobApplicationStatus.Applied]: {
-        badge: 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 border-zinc-500/30',
+        badge: 'bg-muted text-muted-foreground border-border',
         label: 'Applied',
-        columnBorder: 'border-zinc-500/50',
-        columnText: 'text-zinc-600 dark:text-zinc-400',
+        columnBorder: 'border-border/50',
+        columnText: 'text-muted-foreground',
     },
     [JobApplicationStatus.PhoneScreen]: {
-        badge: 'bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/30',
+        badge: 'bg-info/10 text-info border-info/30',
         label: 'Phone Screen',
-        columnBorder: 'border-blue-500/50',
-        columnText: 'text-blue-600 dark:text-blue-400',
+        columnBorder: 'border-info/50',
+        columnText: 'text-info',
     },
     [JobApplicationStatus.TechnicalTask]: {
-        badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/30',
+        badge: 'bg-warning/10 text-warning border-warning/30',
         label: 'Technical Task',
-        columnBorder: 'border-amber-500/50',
-        columnText: 'text-amber-600 dark:text-amber-400',
+        columnBorder: 'border-warning/50',
+        columnText: 'text-warning',
     },
     [JobApplicationStatus.Interviewing]: {
-        badge: 'bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/30',
+        badge: 'bg-primary/10 text-primary border-primary/30',
         label: 'Interviewing',
-        columnBorder: 'border-violet-500/50',
-        columnText: 'text-violet-600 dark:text-violet-400',
+        columnBorder: 'border-primary/50',
+        columnText: 'text-primary',
     },
     [JobApplicationStatus.Offer]: {
-        badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/30',
+        badge: 'bg-success/10 text-success border-success/30',
         label: 'Offer Received',
-        columnBorder: 'border-emerald-500/50',
-        columnText: 'text-emerald-600 dark:text-emerald-400',
+        columnBorder: 'border-success/50',
+        columnText: 'text-success',
     },
     [JobApplicationStatus.Accepted]: {
-        badge: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/30',
+        badge: 'bg-primary/20 text-primary border-primary/40',
         label: 'Accepted',
-        columnBorder: 'border-cyan-500/50',
-        columnText: 'text-cyan-600 dark:text-cyan-400',
+        columnBorder: 'border-primary/60',
+        columnText: 'text-primary',
     },
     [JobApplicationStatus.Rejected]: {
-        badge: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 opacity-80',
+        badge: 'bg-destructive/10 text-destructive border-destructive/20 opacity-80',
         label: 'Rejected',
-        columnBorder: 'border-rose-500/40',
-        columnText: 'text-rose-600 dark:text-rose-400',
+        columnBorder: 'border-destructive/40',
+        columnText: 'text-destructive',
     },
     [JobApplicationStatus.Ghosted]: {
-        badge: 'bg-zinc-500/10 text-zinc-500 dark:text-zinc-400 border-zinc-500/20 opacity-70',
+        badge: 'bg-muted/50 text-muted-foreground/60 border-border/20 opacity-70',
         label: 'Ghosted',
-        columnBorder: 'border-zinc-500/40',
-        columnText: 'text-zinc-500 dark:text-zinc-400',
+        columnBorder: 'border-border/40',
+        columnText: 'text-muted-foreground',
     },
 };
 
@@ -154,7 +154,7 @@ export function getPriorityBadgeClasses(priority: JobPriority | undefined): stri
 
     switch (priority) {
         case JobPriority.High:
-            return `${base} text-violet-600 dark:text-violet-400 bg-violet-500/10 border-violet-500/20`;
+            return `${base} text-primary bg-primary/10 border-primary/20`;
         case JobPriority.Medium:
             return `${base} text-foreground/80 bg-muted border-border`;
         case JobPriority.Low:

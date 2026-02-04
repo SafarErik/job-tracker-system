@@ -16,7 +16,8 @@ import {
   lucideGlobe,
   lucideTrash2,
   lucideRefreshCw,
-  lucideChevronRight
+  lucideChevronRight,
+  lucideSettings
 } from '@ng-icons/lucide';
 
 @Component({
@@ -41,7 +42,8 @@ import {
       lucideGlobe,
       lucideTrash2,
       lucideRefreshCw,
-      lucideChevronRight
+      lucideChevronRight,
+      lucideSettings
     })
   ],
   template: `
@@ -117,8 +119,10 @@ import {
             <ng-icon name="lucideTrash2" class="h-4 w-4"></ng-icon>
           </button>
 
-          <button class="h-10 w-10 rounded-xl border border-border bg-card/30 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all shadow-lg active:scale-95">
-            <ng-icon name="lucideExternalLink" class="h-4 w-4"></ng-icon>
+          <button (click)="openSettings.emit()" hlmBtn variant="ghost" size="icon"
+            class="h-10 w-10 rounded-xl border border-border bg-card/30 text-muted-foreground hover:text-foreground transition-all shadow-lg active:scale-95"
+            title="Asset Settings">
+            <ng-icon name="lucideSettings" class="h-4 w-4"></ng-icon>
           </button>
         </div>
       </div>
@@ -152,6 +156,7 @@ export class CompanyHeaderComponent {
   updatePriority = output<string>();
   updateIndustry = output<string>();
   deleteCompany = output<void>();
+  openSettings = output<void>();
 
   // Local state for UI
   logoFailed = signal(false);

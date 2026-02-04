@@ -55,7 +55,7 @@ import {
     styleUrls: ['./landing-page.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     host: {
-        class: 'block w-full min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500/30',
+        class: 'block w-full min-h-screen bg-background text-foreground selection:bg-primary/30',
     },
 })
 export class LandingPageComponent {

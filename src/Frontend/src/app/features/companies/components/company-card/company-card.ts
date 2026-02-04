@@ -10,6 +10,7 @@ import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
 import { ProfileStore } from '../../../../features/profile/services/profile.store';
+import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 
 @Component({
   selector: 'app-company-card',
@@ -21,6 +22,7 @@ import { ProfileStore } from '../../../../features/profile/services/profile.stor
     HlmCardHeader,
     HlmCardContent,
     HlmCardFooter,
+    LogoPlaceholderComponent,
   ],
   providers: [provideIcons({ lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle })],
   templateUrl: './company-card.html',

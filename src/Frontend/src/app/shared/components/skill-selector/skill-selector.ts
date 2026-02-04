@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, inject, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, OnInit, signal, inject, computed, input, output, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SkillService } from '../../../features/skills/services/skill.service';
@@ -134,6 +134,7 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
 export class SkillSelectorComponent implements OnInit {
   private readonly skillService = inject(SkillService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Inputs
   selectedSkills = input<string[]>([]);
@@ -173,10 +174,12 @@ export class SkillSelectorComponent implements OnInit {
   }
 
   loadSkills(): void {
-    this.skillService.getSkills().subscribe({
-      next: (skills) => this.availableSkills.set(skills),
-      error: (err) => console.error('Failed to load skills:', err)
-    });
+    this.skillService.getSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => this.availableSkills.set(skills),
+        error: (err) => console.error('Failed to load skills:', err)
+      });
   }
 
   addSkill(name: string): void {
@@ -201,16 +204,18 @@ export class SkillSelectorComponent implements OnInit {
       return;
     }
 
-    this.skillService.createSkill({ name }).subscribe({
-      next: (newSkill) => {
-        this.availableSkills.update(skills => [...skills, newSkill]);
-        this.addSkill(newSkill.name);
-      },
-      error: () => {
-        this.notificationService.error('Failed to create new skill', 'Error');
-        console.error('Failed to create skill:', name);
-      }
-    });
+    this.skillService.createSkill({ name })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newSkill) => {
+          this.availableSkills.update(skills => [...skills, newSkill]);
+          this.addSkill(newSkill.name);
+        },
+        error: () => {
+          this.notificationService.error('Failed to create new skill', 'Error');
+          console.error('Failed to create skill:', name);
+        }
+      });
   }
 
   removeSkill(skill: string): void {

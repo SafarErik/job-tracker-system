@@ -197,42 +197,50 @@ export class ProfileComponent implements OnInit {
 
   loadProfile(): void {
     this.isLoading.set(true);
-    this.profileService.getProfile().subscribe({
-      next: (profile) => {
-        this.profile.set(profile);
-        this.populateForm(profile);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load profile');
-        this.isLoading.set(false);
-        console.error(err);
-      },
-    });
+    this.profileService.getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.populateForm(profile);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load profile');
+          this.isLoading.set(false);
+          console.error(err);
+        },
+      });
   }
 
   private loadStats(): void {
-    this.profileService.getProfileStats().subscribe({
-      next: (stats) => this.stats.set(stats),
-      error: (err) => console.error('Failed to load stats:', err),
-    });
+    this.profileService.getProfileStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (stats) => this.stats.set(stats),
+        error: (err) => console.error('Failed to load stats:', err),
+      });
   }
 
   private loadSkills(): void {
-    this.profileService.getUserSkills().subscribe({
-      next: (skills) => {
-        this.userSkills.set(skills);
-        this.profileStore.updateSkills(skills); // Sync with global store
-      },
-      error: (err) => console.error('Failed to load skills:', err),
-    });
+    this.profileService.getUserSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => {
+          this.userSkills.set(skills);
+          this.profileStore.updateSkills(skills); // Sync with global store
+        },
+        error: (err) => console.error('Failed to load skills:', err),
+      });
   }
 
   private loadAvailableSkills(): void {
-    this.skillService.getSkills().subscribe({
-      next: (skills) => this.availableSkills.set(skills),
-      error: (err) => console.error('Failed to load available skills:', err),
-    });
+    this.skillService.getSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => this.availableSkills.set(skills),
+        error: (err) => console.error('Failed to load available skills:', err),
+      });
   }
 
   private loadAISuggestions(): void {

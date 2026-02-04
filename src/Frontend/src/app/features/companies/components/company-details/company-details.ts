@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy, inject, effect, computed, untracked } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy, inject, effect, computed, untracked, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
@@ -10,6 +10,7 @@ import { BreadcrumbService } from '../../../../core/services/breadcrumb.service'
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings, lucideCalendarPlus } from '@ng-icons/lucide';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Dumb Components
 import { CompanyHeaderComponent } from './company-header/company-header';
@@ -47,6 +48,7 @@ export class CompanyDetailsComponent implements OnInit {
   private readonly intelligenceService = inject(CompanyIntelligenceService);
   private readonly notificationService = inject(NotificationService);
   private readonly breadcrumbService = inject(BreadcrumbService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Read state from service
   company = this.companyService.activeCompany;
@@ -176,7 +178,7 @@ export class CompanyDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = params.get('id');
       if (id) {
         this.companyService.loadCompanyDetails(id);
@@ -191,34 +193,38 @@ export class CompanyDetailsComponent implements OnInit {
     if (!current) return;
 
     this.briefingLoading.set(true);
-    this.intelligenceService.generateIntelligenceBriefing(current.name).subscribe({
-      next: (briefing) => {
-        this.intelligenceBriefing.set(briefing);
-        this.briefingLoading.set(false);
-        // Refresh news as well as requested in the prompt
-        this.loadCompanyNews(current.name);
-      },
-      error: () => this.briefingLoading.set(false)
-    });
+    this.intelligenceService.generateIntelligenceBriefing(current.name)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (briefing) => {
+          this.intelligenceBriefing.set(briefing);
+          this.briefingLoading.set(false);
+          // Refresh news as well as requested in the prompt
+          this.loadCompanyNews(current.name);
+        },
+        error: () => this.briefingLoading.set(false)
+      });
   }
 
   private latestNewsRequestId = 0;
   private loadCompanyNews(name: string): void {
     const requestId = ++this.latestNewsRequestId;
     this.newsLoading.set(true);
-    this.intelligenceService.getCompanyNews(name, 3).subscribe({
-      next: (news) => {
-        if (requestId === this.latestNewsRequestId) {
-          this.companyNews.set(news);
-          this.newsLoading.set(false);
+    this.intelligenceService.getCompanyNews(name, 3)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (news) => {
+          if (requestId === this.latestNewsRequestId) {
+            this.companyNews.set(news);
+            this.newsLoading.set(false);
+          }
+        },
+        error: () => {
+          if (requestId === this.latestNewsRequestId) {
+            this.newsLoading.set(false);
+          }
         }
-      },
-      error: () => {
-        if (requestId === this.latestNewsRequestId) {
-          this.newsLoading.set(false);
-        }
-      }
-    });
+      });
   }
 
   // ==========================================

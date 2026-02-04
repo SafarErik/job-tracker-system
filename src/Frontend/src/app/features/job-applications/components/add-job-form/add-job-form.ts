@@ -5,6 +5,7 @@ import {
     effect,
     ChangeDetectionStrategy,
     inject,
+    DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,6 +16,7 @@ import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { toast } from 'ngx-sonner';
 import { CompanyService } from '../../../companies/services/company.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Models
 import { JobApplicationStatus } from '../../models/application-status.enum';
@@ -53,6 +55,7 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddJobFormComponent {
+    private destroyRef!: DestroyRef;
     form: FormGroup;
     isSubmitting = signal(false);
     isLoadingData = signal(false);
@@ -130,6 +133,9 @@ export class AddJobFormComponent {
         private notificationService: NotificationService,
         private router: Router
     ) {
+        const destroyRef = inject(DestroyRef);
+        this.destroyRef = destroyRef;
+
         this.form = this.fb.group({
             companyName: ['', [Validators.required]],
             companyId: [null],
@@ -165,16 +171,20 @@ export class AddJobFormComponent {
         this.isLoadingData.set(true);
 
         // Load Companies
-        this.companyService.getCompanies().subscribe(comps => {
-            this.companies.set(comps);
-        });
+        this.companyService.getCompanies()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(comps => {
+                this.companies.set(comps);
+            });
 
         // Load Applications to derive recent positions
-        this.applicationService.getApplications().subscribe(apps => {
-            const uniquePositions = [...new Set(apps.map(a => a.position))].filter(Boolean);
-            this.recentPositions.set(uniquePositions);
-            this.isLoadingData.set(false);
-        });
+        this.applicationService.getApplications()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(apps => {
+                const uniquePositions = [...new Set(apps.map(a => a.position))].filter(Boolean);
+                this.recentPositions.set(uniquePositions);
+                this.isLoadingData.set(false);
+            });
     }
 
     // --- Company Autocomplete Logic ---

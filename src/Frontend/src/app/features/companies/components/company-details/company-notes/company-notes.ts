@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, signal, computed, effect } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, signal, computed, effect, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
@@ -237,6 +237,9 @@ export interface IntelligenceBriefing {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyNotesComponent {
+  private readonly destroyRef = inject(DestroyRef);
+  private activeIntervals: ReturnType<typeof setInterval>[] = [];
+
   mode = input<'compact' | 'full'>('full');
   notes = input('');
   briefing = input<IntelligenceBriefing | null>(null);
@@ -266,6 +269,9 @@ export class CompanyNotesComponent {
   // Listen for Escape key to close expansion
   // Note: Using window binding since focus might be anywhere
   constructor() {
+    // Clean up intervals when component is destroyed
+    this.destroyRef.onDestroy(() => this.clearAllIntervals());
+
     effect((onCleanup) => {
       const expanded = this.isBriefingExpanded();
       if (expanded) {
@@ -293,6 +299,9 @@ export class CompanyNotesComponent {
   }
 
   async runTypewriter(b: IntelligenceBriefing): Promise<void> {
+    // Clear any existing intervals to prevent memory leak
+    this.clearAllIntervals();
+
     this.isScanning.set(true);
     this.displayedMissionContext.set('');
     this.displayedStrategicFit.set([]);
@@ -332,10 +341,22 @@ export class CompanyNotesComponent {
           }
         } else {
           clearInterval(interval);
+          this.removeInterval(interval);
           resolve();
         }
       }, speed);
+      this.activeIntervals.push(interval);
     });
+  }
+
+  private clearAllIntervals(): void {
+    this.activeIntervals.forEach(id => clearInterval(id));
+    this.activeIntervals = [];
+  }
+
+  private removeInterval(interval: ReturnType<typeof setInterval>): void {
+    const idx = this.activeIntervals.indexOf(interval);
+    if (idx > -1) this.activeIntervals.splice(idx, 1);
   }
 
   onNotesChange(value: string): void {

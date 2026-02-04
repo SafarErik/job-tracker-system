@@ -365,7 +365,7 @@
   <!-- Command Bar Overlay (Mockup) -->
   @if (isCommandBarOpen()) {
   <div (click)="closeCommandBar()"
-    class="fixed inset-0 z-100 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300">
+    class="fixed inset-0 z-100 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300">
     <div (click)="$event.stopPropagation()"
       class="w-full max-w-2xl bg-popover border border-border rounded-3xl shadow-2xl overflow-hidden scale-in duration-300">
       <div class="p-6 flex items-center gap-4 border-b border-border">

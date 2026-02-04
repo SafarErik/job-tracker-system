@@ -161,7 +161,7 @@ export class CompanyHeaderComponent {
 
   // Constants
   readonly priorityOptions = [
-    { value: 'Tier1', label: 'Dream Target', color: 'text-violet-400', bg: 'bg-violet-400/10', border: 'border-violet-400/20' },
+    { value: 'Tier1', label: 'Dream Target', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
     { value: 'Tier2', label: 'High Interest', color: 'text-info', bg: 'bg-info/10', border: 'border-info/20' },
     { value: 'Tier3', label: 'Opportunistic', color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border/20' }
   ];
@@ -197,10 +197,10 @@ export class CompanyHeaderComponent {
 
   getPriorityColorClass(priority: string): string {
     const opt = this.priorityOptions.find(o => o.value === priority);
-    if (!opt) return 'bg-zinc-800';
-    if (priority === 'Tier1') return 'bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.4)]';
+    if (!opt) return 'bg-muted';
+    if (priority === 'Tier1') return 'bg-primary shadow-[0_0_8px_rgba(var(--primary),0.4)]';
     if (priority === 'Tier2') return 'bg-info shadow-[0_0_8px_rgba(var(--info),0.4)]';
-    return 'bg-zinc-500';
+    return 'bg-muted-foreground';
   }
 
   currentPriorityStyle(): string {

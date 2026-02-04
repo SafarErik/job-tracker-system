@@ -154,7 +154,7 @@ export class InterviewTacticsComponent implements OnDestroy {
         '"I love debugging race conditions in distributed systems."'
       ],
       cvAlignment: 'Implemented K8s HPA at StartupX',
-      colorClass: 'bg-violet-500/10 border-violet-500/20 text-violet-400'
+      colorClass: 'bg-primary/10 border-primary/20 text-primary'
     },
     {
       id: 'query',

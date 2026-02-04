@@ -54,16 +54,22 @@ export class JobSettingsSheetComponent {
     form: FormGroup = this.fb.group({
         companyName: [{ value: '', disabled: true }],
         position: ['', Validators.required],
+        department: [''],
         jobUrl: [''],
         status: [null, Validators.required],
         priority: [null, Validators.required],
         salaryMin: [''],
+        salaryMax: [''],
         currency: ['USD'],
         jobType: [null, Validators.required],
         location: [''],
         workplaceType: ['Remote'],
         notes: ['']
     });
+
+    // Expose Enums to Template
+    JobApplicationStatus = JobApplicationStatus;
+    JobPriority = JobPriority;
 
     statusOptions = [
         { value: JobApplicationStatus.Applied, label: getStatusStyle(JobApplicationStatus.Applied).label },
@@ -103,10 +109,12 @@ export class JobSettingsSheetComponent {
                 this.form.patchValue({
                     companyName: app.companyName,
                     position: app.position,
+                    department: app.department || '',
                     jobUrl: app.jobUrl,
                     status: app.status,
                     priority: app.priority,
                     salaryMin: app.salaryMin,
+                    salaryMax: app.salaryMax,
                     jobType: app.jobType,
                     location: app.location || '',
                     workplaceType: app.workplaceType || 'Remote',
@@ -122,10 +130,12 @@ export class JobSettingsSheetComponent {
             if (app) {
                 const changes = {
                     position: this.form.get('position')?.value,
+                    department: this.form.get('department')?.value,
                     jobUrl: this.form.get('jobUrl')?.value,
                     status: this.form.get('status')?.value,
                     priority: this.form.get('priority')?.value,
                     salaryMin: this.form.get('salaryMin')?.value === '' || this.form.get('salaryMin')?.value == null ? undefined : Number(this.form.get('salaryMin')?.value),
+                    salaryMax: this.form.get('salaryMax')?.value === '' || this.form.get('salaryMax')?.value == null ? undefined : Number(this.form.get('salaryMax')?.value),
                     currency: this.form.get('currency')?.value,
                     jobType: this.form.get('jobType')?.value,
                     location: this.form.get('location')?.value,

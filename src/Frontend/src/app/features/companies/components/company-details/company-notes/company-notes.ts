@@ -158,48 +158,48 @@ export interface IntelligenceBriefing {
     @if (isBriefingExpanded()) {
     <div class="fixed inset-0 z-50 backdrop-blur-xl bg-black/60 flex items-center justify-center p-8 animate-in fade-in duration-300" 
          (click)="toggleExpansion()">
-       <div class="w-full max-w-3xl max-h-[85vh] bg-zinc-900 border border-zinc-800 shadow-2xl rounded-3xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
+       <div class="w-full max-w-3xl max-h-[85vh] bg-card border border-border shadow-2xl rounded-3xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
             (click)="$event.stopPropagation()">
           
           <!-- Expanded Header -->
-          <div class="p-8 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/30">
+          <div class="p-8 border-b border-border flex items-center justify-between bg-muted/30">
              <div class="flex items-center gap-4">
-                <div class="h-12 w-12 rounded-2xl bg-zinc-950 border border-zinc-800 text-violet-400 flex items-center justify-center">
+                <div class="h-12 w-12 rounded-2xl bg-muted border border-border text-primary flex items-center justify-center">
                   <ng-icon name="lucideFileText" class="h-6 w-6"></ng-icon>
                 </div>
                 <div>
-                   <h2 class="text-3xl font-black font-serif text-zinc-100 tracking-tight">Intelligence Briefing</h2>
-                   <p class="text-xs font-bold text-violet-500/60 uppercase tracking-widest mt-1">Classification: Top Secret // Eyes Only</p>
+                   <h2 class="text-3xl font-black font-serif text-foreground tracking-tight">Intelligence Briefing</h2>
+                   <p class="text-xs font-bold text-primary/60 uppercase tracking-widest mt-1">Classification: Top Secret // Eyes Only</p>
                 </div>
              </div>
              
-             <button (click)="toggleExpansion()" class="h-10 w-10 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-500 transition-all flex items-center justify-center">
+             <button (click)="toggleExpansion()" class="h-10 w-10 rounded-xl bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all flex items-center justify-center">
                 <ng-icon name="lucideX" class="h-5 w-5"></ng-icon>
              </button>
           </div>
 
           <!-- Expanded Content -->
-          <div class="flex-1 overflow-y-auto custom-scrollbar p-10 space-y-10 bg-zinc-900/50 relative font-mono">
+          <div class="flex-1 overflow-y-auto custom-scrollbar p-10 space-y-10 bg-background relative font-mono">
             <!-- Background Watermark -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.04] select-none pointer-events-none -rotate-12 border-[6px] border-violet-500 p-8 text-6xl font-black text-violet-500 whitespace-nowrap z-0">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.04] select-none pointer-events-none -rotate-12 border-[6px] border-primary p-8 text-6xl font-black text-primary whitespace-nowrap z-0">
                TOP SECRET // INTEL Only
             </div>
 
              <!-- Mission -->
              <section class="relative z-10 space-y-4">
-                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-violet-400 border-l-4 border-violet-500 pl-4 py-1">Mission Context</h3>
-                <p class="text-lg leading-relaxed text-zinc-300 indent-0">
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-primary border-l-4 border-primary pl-4 py-1">Mission Context</h3>
+                <p class="text-lg leading-relaxed text-foreground indent-0">
                    {{ briefing()?.mission }}
                 </p>
              </section>
 
              <!-- Strategic Fit -->
              <section class="relative z-10 space-y-4">
-                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-400 border-l-4 border-emerald-500 pl-4 py-1">Strategic Alignment</h3>
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-success border-l-4 border-success pl-4 py-1">Strategic Alignment</h3>
                 <ul class="space-y-4">
                    @for (fit of briefing()?.fit; track $index) {
-                      <li class="flex gap-4 text-base text-zinc-300 bg-zinc-950/30 p-4 rounded-xl border border-zinc-800/50">
-                         <span class="text-emerald-500 font-bold">0{{ $index + 1 }}</span>
+                      <li class="flex gap-4 text-base text-foreground bg-muted/30 p-4 rounded-xl border border-border/50">
+                         <span class="text-success font-bold">0{{ $index + 1 }}</span>
                          <span>{{ fit }}</span>
                       </li>
                    }
@@ -208,10 +208,10 @@ export interface IntelligenceBriefing {
 
              <!-- Risks -->
              <section class="relative z-10 space-y-4">
-                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-amber-500 border-l-4 border-amber-500 pl-4 py-1">Risk Assessment</h3>
-                <div class="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex gap-4">
-                   <ng-icon name="lucideShieldAlert" class="text-amber-500 h-6 w-6 shrink-0 mt-1"></ng-icon>
-                   <p class="text-lg leading-relaxed text-zinc-300 italic">
+                <h3 class="text-sm font-black uppercase tracking-[0.2em] text-warning border-l-4 border-warning pl-4 py-1">Risk Assessment</h3>
+                <div class="p-6 rounded-2xl bg-warning/5 border border-warning/10 flex gap-4">
+                   <ng-icon name="lucideShieldAlert" class="text-warning h-6 w-6 shrink-0 mt-1"></ng-icon>
+                   <p class="text-lg leading-relaxed text-foreground italic">
                       {{ briefing()?.risks }}
                    </p>
                 </div>
@@ -219,7 +219,7 @@ export interface IntelligenceBriefing {
           </div>
 
           <!-- Expanded Footer -->
-          <div class="p-6 border-t border-zinc-800 bg-zinc-950/30 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">
+          <div class="p-6 border-t border-border bg-muted/30 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
              <span>Source: Global AI Grid v4.1 (Encrypted)</span>
              <span>Last Sync: {{ lastUpdated() || 'LIVE' }}</span>
           </div>

@@ -1,5 +1,5 @@
 <hlm-sidebar collapsible="icon" variant="sidebar"
-  class="h-full border-r border-border bg-sidebar transition-[width] duration-300 ease-in-out">
+  class="h-full border-r border-border bg-background transition-[width] duration-300 ease-in-out">
   <div hlmSidebarHeader
     class="h-16 flex items-center px-4 overflow-hidden whitespace-nowrap group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center transition-all duration-300">
     <!-- 
@@ -18,7 +18,7 @@
           When sidebar is collapsed (group-data-[collapsible=icon]), we want to effectively simulate 'iconOnly=true'.
           We can do this by hiding the text part with CSS.
        -->
-      <app-logo class="transition-all duration-300" [class.opacity-100]="true" [withGlow]="true">
+      <app-logo class="transition-all duration-300" [class.opacity-100]="true" [withGlow]="false">
       </app-logo>
     </div>
 
@@ -29,8 +29,8 @@
     -->
     <style>
       /* Scoped style for this component's template to enforce logo behavior in sidebar */
-      :host ::ng-deep hlm-sidebar[data-collapsible=icon] app-logo .flex-col,
-      :host ::ng-deep hlm-sidebar[data-collapsible=icon] app-logo .whitespace-nowrap {
+      :host ::ng-deep hlm-sidebar[data-collapsible='icon'] app-logo .flex-col,
+      :host ::ng-deep hlm-sidebar[data-collapsible='icon'] app-logo .whitespace-nowrap {
         width: 0 !important;
         opacity: 0 !important;
         overflow: hidden !important;
@@ -46,14 +46,15 @@
         Main Navigation
       </div>
       <div hlmSidebarGroupContent>
-        <ul hlmSidebarMenu class="px-2">
+        <ul hlmSidebarMenu class="px-2 group-data-[collapsible=icon]:px-0">
           @for (item of navItems; track item.label) {
           <li hlmSidebarMenuItem>
             <a hlmSidebarMenuButton [routerLink]="item.link"
               routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
-              [routerLinkActiveOptions]="{ exact: item.exact }" class="group rounded-lg mb-1">
+              [routerLinkActiveOptions]="{ exact: item.exact }"
+              class="group rounded-lg mb-1 justify-start group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:px-0">
               <ng-icon hlm [name]="item.icon" hlmClassName="w-5 h-5 group-hover:text-primary transition-colors" />
-              <span>{{ item.label }}</span>
+              <span class="group-data-[collapsible=icon]:hidden">{{ item.label }}</span>
             </a>
           </li>
           }
@@ -62,11 +63,14 @@
     </div>
   </div>
 
-  <div hlmSidebarFooter class="p-4 border-t border-sidebar-border">
-    <div class="flex items-center gap-3 w-full">
+  <div hlmSidebarFooter class="p-4 group-data-[collapsible=icon]:p-2! border-t border-sidebar-border overflow-hidden">
+    <div class="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center">
       <button [hlmDropdownMenuTrigger]="userMenu" hlmBtn variant="ghost"
-        class="flex items-center gap-3 p-2 h-auto w-full justify-start hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group">
-        <hlm-avatar hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border">
+        class="relative flex items-center gap-3 p-2 h-auto w-full justify-start group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-12 group-data-[collapsible=icon]:h-12 hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group">
+        <ng-icon hlm name="lucideChevronUp"
+          hlmClassName="hidden group-data-[collapsible=icon]:block absolute -top-2 text-sidebar-foreground/60" />
+        <hlm-avatar
+          hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:h-9">
           <span hlmAvatarFallback hlmClassName="bg-primary text-primary-foreground text-[10px]">JD</span>
         </hlm-avatar>
         <div class="flex-1 text-left group-data-[collapsible=icon]:hidden">
@@ -105,7 +109,6 @@
     </div>
 
     <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
-
 
     <button hlmDropdownMenuItem (click)="onLogout()"
       class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg">

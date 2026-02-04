@@ -24,7 +24,7 @@ import { ThemeService } from '../../../core/services/theme.service';
         <img src="assets/logo.png" 
              [style.width.px]="imgSize()" 
              [style.height.px]="imgSize()"
-             alt="Vantage Cursus Logo"
+             alt="Vantage Logo"
              class="relative z-10 object-contain drop-shadow-sm transition-all duration-300 scale-150"
              [class.grayscale]="mono()"
              [class.brightness-200]="mono() && isDark()"
@@ -43,9 +43,6 @@ import { ThemeService } from '../../../core/services/theme.service';
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
           <span class="font-[900] tracking-tight leading-none text-foreground font-sans">
             VANTAGE
-          </span>
-          <span class="font-[300] tracking-wide leading-none text-foreground font-sans uppercase">
-            CURSUS
           </span>
         </div>
       </div>

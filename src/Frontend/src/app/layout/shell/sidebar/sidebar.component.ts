@@ -56,8 +56,8 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'class': 'border-r border-sidebar-border bg-sidebar-background block h-full'
-  }
+    class: 'border-r border-sidebar-border bg-background block h-full relative z-20',
+  },
 })
 export class SidebarComponent {
   private themeService = inject(ThemeService);

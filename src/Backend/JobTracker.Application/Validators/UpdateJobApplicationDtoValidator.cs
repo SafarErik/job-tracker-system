@@ -49,10 +49,10 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
 
         RuleFor(x => x.DocumentId)
             .NotEqual(Guid.Empty).WithMessage("Invalid document ID")
-            .When(x => x.DocumentId.HasValue && x.DocumentId != Guid.Empty);
+            .When(x => x.DocumentId.HasValue);
 
         RuleFor(x => x.PrimaryContactId)
             .NotEqual(Guid.Empty).WithMessage("Invalid primary contact ID")
-            .When(x => x.PrimaryContactId.HasValue && x.PrimaryContactId != Guid.Empty);
+            .When(x => x.PrimaryContactId.HasValue);
     }
 }

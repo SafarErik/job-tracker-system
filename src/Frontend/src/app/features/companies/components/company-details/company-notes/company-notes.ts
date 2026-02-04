@@ -292,24 +292,26 @@ export class CompanyNotesComponent {
     });
   }
 
-  runTypewriter(b: IntelligenceBriefing): void {
+  async runTypewriter(b: IntelligenceBriefing): Promise<void> {
     this.isScanning.set(true);
     this.displayedMissionContext.set('');
     this.displayedStrategicFit.set([]);
     this.displayedRisksIntel.set('');
 
-    // Start typewriter sequence
-    this.typewriter('mission', b.mission).then(() => {
-      return this.typewriter('fit', b.fit[0], 0);
-    }).then(() => {
-      return this.typewriter('fit', b.fit[1], 1);
-    }).then(() => {
-      return this.typewriter('fit', b.fit[2], 2);
-    }).then(() => {
-      return this.typewriter('risks', b.risks);
-    }).then(() => {
-      this.isScanning.set(false);
-    });
+    // Safely iterate over mission context
+    await this.typewriter('mission', b.mission);
+
+    // Safely iterate over each fit point
+    if (b.fit && Array.isArray(b.fit)) {
+      for (let i = 0; i < b.fit.length; i++) {
+        await this.typewriter('fit', b.fit[i], i);
+      }
+    }
+
+    // Safely iterate over risks
+    await this.typewriter('risks', b.risks);
+
+    this.isScanning.set(false);
   }
 
   private typewriter(section: 'mission' | 'fit' | 'risks', text: string, index?: number): Promise<void> {

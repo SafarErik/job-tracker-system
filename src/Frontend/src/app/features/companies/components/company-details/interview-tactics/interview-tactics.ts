@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, lucideX, lucideChevronRight, lucideQuote, lucideFileText } from '@ng-icons/lucide';
@@ -122,10 +122,10 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class InterviewTacticsComponent {
+export class InterviewTacticsComponent implements OnDestroy {
   selectedTactic = signal<Tactic | null>(null);
   displayedReasoning = signal('');
-  private typeInterval: any;
+  private typeInterval: number | undefined;
 
   tactics: Tactic[] = [
     {
@@ -198,6 +198,11 @@ export class InterviewTacticsComponent {
     }, 25);
   }
 
+  ngOnDestroy(): void {
+    if (this.typeInterval) {
+      clearInterval(this.typeInterval);
+    }
+  }
 }
 
 interface Tactic {

@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSend, lucideHistory, lucideMicroscope, lucideBot } from '@ng-icons/lucide';
@@ -6,15 +6,15 @@ import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 
 @Component({
-    selector: 'app-ai-analyst-chat',
-    standalone: true,
-    imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
-    providers: [provideIcons({ lucideSend, lucideHistory, lucideMicroscope, lucideBot })],
-    template: `
+  selector: 'app-ai-analyst-chat',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
+  providers: [provideIcons({ lucideSend, lucideHistory, lucideMicroscope, lucideBot })],
+  template: `
     <div class="flex flex-col h-full bg-zinc-950/20 font-mono">
       <!-- Chat Messages -->
       <div class="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar">
-        @for (msg of messages; track $index) {
+        @for (msg of messages(); track $index) {
           <div class="flex gap-4" [class.flex-row-reverse]="msg.role === 'user'">
             <div class="h-8 w-8 rounded-lg border border-zinc-800 flex items-center justify-center shrink-0"
               [class.bg-violet-500/10]="msg.role === 'analyst'"
@@ -43,7 +43,7 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
       <!-- Input Area -->
       <div class="p-6 border-t border-zinc-800 bg-zinc-900/30">
         <div class="relative">
-          <input hlmInput [(ngModel)]="currentInput" (keyup.enter)="sendMessage()"
+          <input hlmInput [ngModel]="currentInput()" (ngModelChange)="currentInput.set($event)" (keyup.enter)="sendMessage()"
             placeholder="Ask anything about this asset..."
             class="w-full pl-6 pr-14 py-6 bg-zinc-950 border-zinc-800 rounded-2xl text-xs placeholder:text-zinc-600 focus:border-violet-500/30 transition-all" />
           <button (click)="sendMessage()"
@@ -58,39 +58,40 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     :host { display: block; height: 100%; }
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 999px; }
   `],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AiAnalystChatComponent {
-    companyName = input<string>('');
-    companyContext = input<string>('');
+  companyName = input<string>('');
+  companyContext = input<string>('');
 
 
-    messages = [
-        { role: 'analyst', content: 'Intelligence link established. I have analyzed the current market position and technical stack. How can I assist with your strategy?' }
-    ];
+  messages = signal([
+    { role: 'analyst', content: 'Intelligence link established. I have analyzed the current market position and technical stack. How can I assist with your strategy?' }
+  ]);
 
-    currentInput = '';
+  currentInput = signal('');
 
-    sendMessage(): void {
-        if (!this.currentInput.trim()) return;
+  sendMessage(): void {
+    const inputVal = this.currentInput().trim();
+    if (!inputVal) return;
 
-        const userMsg = this.currentInput;
-        this.messages.push({ role: 'user', content: userMsg });
-        this.currentInput = '';
+    const userMsg = inputVal;
+    this.messages.update(m => [...m, { role: 'user', content: userMsg }]);
+    this.currentInput.set('');
 
-        // Mock response
-        setTimeout(() => {
-            const context = this.companyContext() ? `Context: ${this.companyContext().slice(0, 50)}... ` : '';
-            this.messages.push({
-                role: 'analyst',
-                content: `Based on my latest scans of ${this.companyName() || 'this asset'} (${context}), I recommend focusing your technical pitch on distributed systems scalability. They are currently restructuring their infrastructure team.`
-            });
-        }, 1000);
-    }
+    // Mock response
+    setTimeout(() => {
+      const context = this.companyContext() ? `Context: ${this.companyContext().slice(0, 50)}... ` : '';
+      this.messages.update(m => [...m, {
+        role: 'analyst',
+        content: `Based on my latest scans of ${this.companyName() || 'this asset'} (${context}), I recommend focusing your technical pitch on distributed systems scalability. They are currently restructuring their infrastructure team.`
+      }]);
+    }, 1000);
+  }
 }

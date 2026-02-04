@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, signal, computed, linkedSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CompanyDetail } from '../../../models/company.model';
@@ -65,11 +65,11 @@ import {
       <!-- Main Identity Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-center gap-6">
-          <!-- Logo.dev Integration -->
+          <!-- Logo Display -->
           <div class="h-20 w-20 rounded-3xl bg-zinc-900/50 border border-zinc-800 flex items-center justify-center overflow-hidden shadow-2xl group relative">
-            <img [src]="logoDevUrl()" (error)="useFallbackLogo = true" *ngIf="!useFallbackLogo"
+            <img [src]="resolvedLogo()" (error)="useFallbackLogo.set(true)" *ngIf="!useFallbackLogo()"
               class="h-full w-full object-contain p-3 transition-transform group-hover:scale-110 duration-500" [alt]="company().name">
-            <div *ngIf="useFallbackLogo" class="text-3xl font-serif text-zinc-100 font-bold select-none">
+            <div *ngIf="useFallbackLogo()" class="text-3xl font-serif text-zinc-100 font-bold select-none">
               {{ company().name.charAt(0) }}
             </div>
           </div>
@@ -141,6 +141,12 @@ export class CompanyHeaderComponent {
   company = input.required<CompanyDetail>();
   logoUrl = input<string | null>(null);
 
+  // Logo Fallback Logic
+  useFallbackLogo = linkedSignal({
+    source: () => ({ company: this.company(), logoUrl: this.logoUrl() }),
+    computation: () => false
+  });
+
   goBack = output<void>();
   updateName = output<string>();
   updatePriority = output<string>();
@@ -170,12 +176,18 @@ export class CompanyHeaderComponent {
     return url.replace('https://', '').replace('http://', '');
   }
 
-  useFallbackLogo = false;
+  resolvedLogo = computed(() => {
+    // Priority 1: User-uploaded logoUrl
+    if (this.logoUrl()) return this.logoUrl()!;
 
-  logoDevUrl = computed(() => {
+    // Priority 2: Logo.dev domain-based URL
     const domain = this.company().website?.replace('https://', '').replace('http://', '').replace('www.', '').split('/')[0];
-    if (!domain) return '';
-    return `https://img.logo.dev/${domain}?token=pk_ST8P0_p7TQW5R7X5Xj_W7Q`; // I'll use a placeholder token or just the domain if allowed, but usually logo.dev needs a token. The user said "Logo.dev integration"
+    if (domain) {
+      // Token should follow security best practices (inject via config or proxy)
+      return `https://img.logo.dev/${domain}`;
+    }
+
+    return '';
   });
 
   getPriorityLabel(priority: string): string {

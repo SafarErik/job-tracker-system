@@ -60,22 +60,67 @@ public class JobApplicationService : IJobApplicationService
         return MapToDto(app);
     }
 
-    public Task<JobApplicationDto> CreateJobAsync(CreateJobApplicationDto dto, string userId)
+    public async Task<JobApplicationDto> CreateJobAsync(CreateJobApplicationDto dto, string userId)
     {
-        // Delegate to controller for now - this is a placeholder
-        throw new NotImplementedException("Creation is handled directly by the controller");
+        var application = new JobApplication
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            Position = dto.Position,
+            CompanyId = dto.CompanyId,
+            JobUrl = dto.JobUrl,
+            Description = dto.Description,
+            Status = dto.Status,
+            JobType = dto.JobType,
+            WorkplaceType = dto.WorkplaceType,
+            Priority = dto.Priority,
+            SalaryOffer = dto.SalaryOffer,
+            MatchScore = dto.MatchScore,
+            DocumentId = dto.DocumentId,
+            PrimaryContactId = dto.PrimaryContactId,
+            AppliedAt = DateTime.UtcNow
+        };
+
+        await _jobRepository.AddAsync(application);
+
+        // Fetch again to include navigation properties for the DTO
+        var created = await _jobRepository.GetByIdAsync(application.Id);
+        return MapToDto(created ?? application);
     }
 
-    public Task<bool> UpdateJobAsync(Guid id, UpdateJobApplicationDto dto, string userId)
+    public async Task<bool> UpdateJobAsync(Guid id, UpdateJobApplicationDto dto, string userId)
     {
-        // Delegate to controller for now - this is a placeholder
-        throw new NotImplementedException("Updates are handled directly by the controller");
+        var existing = await _jobRepository.GetByIdAsync(id);
+        if (existing == null || existing.UserId != userId)
+            return false;
+
+        if (dto.Position != null) existing.Position = dto.Position;
+        if (dto.CompanyId.HasValue) existing.CompanyId = dto.CompanyId.Value;
+        if (dto.JobUrl != null) existing.JobUrl = dto.JobUrl;
+        if (dto.Description != null) existing.Description = dto.Description;
+        if (dto.Status.HasValue) existing.Status = dto.Status.Value;
+        if (dto.JobType.HasValue) existing.JobType = dto.JobType.Value;
+        if (dto.WorkplaceType.HasValue) existing.WorkplaceType = dto.WorkplaceType.Value;
+        if (dto.Priority.HasValue) existing.Priority = dto.Priority.Value;
+        if (dto.SalaryOffer.HasValue) existing.SalaryOffer = dto.SalaryOffer.Value;
+        if (dto.MatchScore.HasValue) existing.MatchScore = dto.MatchScore.Value;
+        if (dto.DocumentId.HasValue) existing.DocumentId = dto.DocumentId.Value;
+        if (dto.PrimaryContactId.HasValue) existing.PrimaryContactId = dto.PrimaryContactId.Value;
+
+        existing.RowVersion = dto.RowVersion;
+
+        await _jobRepository.UpdateAsync(existing);
+        return true;
     }
 
-    public Task<bool> DeleteJobAsync(Guid id, string userId)
+    public async Task<bool> DeleteJobAsync(Guid id, string userId)
     {
-        // Delegate to controller for now - this is a placeholder
-        throw new NotImplementedException("Deletion is handled directly by the controller");
+        var existing = await _jobRepository.GetByIdAsync(id);
+        if (existing == null || existing.UserId != userId)
+            return false;
+
+        await _jobRepository.DeleteAsync(id);
+        return true;
     }
 
     public async Task<string> GenerateCoverLetterAsync(Guid jobId, string userId)

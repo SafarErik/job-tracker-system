@@ -5,12 +5,13 @@ export interface Document {
     contentType: string;
     uploadedAt: string;
     isMaster?: boolean;
-    // UI Metadata
+}
+
+export interface DocumentViewModel extends Document {
     companyName?: string;
     companyLogo?: string;
     compatibilityScore?: number;
     docType?: 'Resume' | 'Cover Letter';
-    // Linkage
     jobId?: string;
     jobTitle?: string;
 }

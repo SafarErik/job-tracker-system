@@ -17,6 +17,6 @@ export class CompanyStatsComponent {
    successRate = input.required<number>();
    techStack = input.required<string[]>();
 
-   techAdd = output<string>();
+   techAdd = output<void>();
    techRemove = output<string>();
 }

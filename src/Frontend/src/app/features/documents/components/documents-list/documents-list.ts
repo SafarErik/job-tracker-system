@@ -2,7 +2,7 @@ import { Component, OnInit, signal, inject, ViewChild, ElementRef, HostListener,
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentStore } from '../../services/document.store';
-import { Document } from '../../../../core/models/document.model';
+import { DocumentViewModel as Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { toast } from 'ngx-sonner';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';

@@ -43,26 +43,15 @@ export interface JobApplication {
 
 export interface CreateJobApplication {
     position: string;
-    companyId: string; // Renamed from companyName
-    department?: string;
-    referenceId?: string;
+    companyId: string;
     jobUrl?: string;
     description?: string;
     status: JobApplicationStatus;
-    documentId?: string | null;
-    jobType: JobType; // Required
-    workplaceType: WorkplaceType; // Required
-    priority: JobPriority; // Required
-    location?: string;
-    source?: string;
-    salaryMin?: number;
-    salaryMax?: number;
+    jobType: JobType;
+    workplaceType: WorkplaceType;
+    priority: JobPriority;
     salaryOffer?: number;
-    currency?: string;
-    salaryPeriod?: string;
-    nextFollowUpDate?: string;
-    matchScore: number; // Required
-    generatedCoverLetter?: string;
-    aiFeedback?: string;
+    matchScore: number;
+    documentId?: string | null;
     primaryContactId?: string;
 }

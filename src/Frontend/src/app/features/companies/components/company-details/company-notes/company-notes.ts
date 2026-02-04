@@ -23,6 +23,7 @@ export interface IntelligenceBriefing {
 export class CompanyNotesComponent {
   private readonly destroyRef = inject(DestroyRef);
   private activeIntervals: ReturnType<typeof setInterval>[] = [];
+  private previousActiveElement: HTMLElement | null = null;
 
   mode = input<'compact' | 'full'>('full');
   notes = input('');
@@ -59,15 +60,50 @@ export class CompanyNotesComponent {
     effect((onCleanup) => {
       const expanded = this.isBriefingExpanded();
       if (expanded) {
+        this.previousActiveElement = document.activeElement as HTMLElement;
         document.body.style.overflow = 'hidden';
-        const escapeHandler = (e: KeyboardEvent) => {
-          if (e.key === 'Escape') this.isBriefingExpanded.set(false);
+
+        // Focus Trap and Escape Handler
+        const handleKeydown = (e: KeyboardEvent) => {
+          if (e.key === 'Escape') {
+            this.toggleExpansion();
+            return;
+          }
+
+          if (e.key === 'Tab') {
+            const modal = document.querySelector('[role="dialog"]');
+            if (modal) {
+              const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+              const first = focusable[0] as HTMLElement;
+              const last = focusable[focusable.length - 1] as HTMLElement;
+
+              if (e.shiftKey) {
+                if (document.activeElement === first) {
+                  last.focus();
+                  e.preventDefault();
+                }
+              } else {
+                if (document.activeElement === last) {
+                  first.focus();
+                  e.preventDefault();
+                }
+              }
+            }
+          }
         };
-        window.addEventListener('keydown', escapeHandler);
+
+        window.addEventListener('keydown', handleKeydown);
+
+        // Move focus into modal
+        setTimeout(() => {
+          const closeBtn = document.querySelector('[aria-label="Close briefing"]');
+          (closeBtn as HTMLElement)?.focus();
+        }, 50);
 
         onCleanup(() => {
           document.body.style.overflow = 'auto';
-          window.removeEventListener('keydown', escapeHandler);
+          window.removeEventListener('keydown', handleKeydown);
+          this.previousActiveElement?.focus();
         });
       } else {
         document.body.style.overflow = 'auto';

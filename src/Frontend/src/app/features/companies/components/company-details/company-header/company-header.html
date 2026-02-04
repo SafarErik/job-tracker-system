@@ -50,7 +50,8 @@
                     </span>
                     <span class="h-1 w-1 rounded-full bg-border"></span>
                     @if (company().website; as website) {
-                    <a [href]="website" target="_blank" class="hover:text-primary transition-colors">
+                    <a [href]="website" target="_blank" rel="noopener noreferrer"
+                        class="hover:text-primary transition-colors">
                         {{ website.replace('https://', '').replace('http://', '').split('/')[0] }}
                     </a>
                     }

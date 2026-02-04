@@ -1,9 +1,5 @@
-export interface Document {
-  id: string;
-  originalFileName: string;
-  fileSize: number;
+import { DocumentViewModel as CoreDocumentViewModel } from '../../../core/models/document.model';
+
+export interface DocumentViewModel extends CoreDocumentViewModel {
   fileUrl: string;
-  contentType: string;
-  uploadedAt: string;
-  isMaster?: boolean;
 }

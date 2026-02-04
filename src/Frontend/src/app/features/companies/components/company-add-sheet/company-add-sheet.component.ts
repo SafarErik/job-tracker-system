@@ -172,7 +172,7 @@ export class CompanyAddSheetComponent {
         // Add contact if provided
         if (formVal.hrContactName) {
             payload.contacts?.push({
-                id: '0', // New contact
+                // id field omitted for new contact
                 name: formVal.hrContactName,
                 email: formVal.hrContactEmail || '',
                 linkedIn: formVal.hrContactLinkedIn || '',

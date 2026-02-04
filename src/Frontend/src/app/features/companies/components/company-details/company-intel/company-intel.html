@@ -72,18 +72,21 @@
 
     <!-- Intelligence Report Overlay -->
     @if (selectedItem(); as item) {
-    <div class="absolute inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true"
+        aria-labelledby="intel-report-title">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-background/60 backdrop-blur-xl animate-in fade-in duration-300"
             (click)="closeReport()"></div>
 
         <!-- Report Content -->
-        <div
-            class="relative w-full max-w-2xl max-h-full overflow-y-auto bg-card border border-border rounded-3xl shadow-2xl shadow-primary/10 animate-in zoom-in-95 duration-300 flex flex-col">
+        <div #reportModal
+            class="relative w-full max-w-2xl max-h-full overflow-y-auto bg-card border border-border rounded-3xl shadow-2xl shadow-primary/10 animate-in zoom-in-95 duration-300 flex flex-col"
+            tabindex="-1">
 
             <!-- Close Button -->
             <button (click)="closeReport()"
-                class="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-foreground bg-card/50 hover:bg-muted rounded-full transition-colors border border-border">
+                class="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-foreground bg-card/50 hover:bg-muted rounded-full transition-colors border border-border"
+                aria-label="Close report">
                 <ng-icon name="lucideX" class="w-4 h-4"></ng-icon>
             </button>
 
@@ -99,7 +102,8 @@
                     Synthetic Summary
                 </div>
 
-                <h2 class="text-2xl md:text-3xl font-serif font-bold text-white leading-tight mb-6">
+                <h2 id="intel-report-title"
+                    class="text-2xl md:text-3xl font-serif font-bold text-white leading-tight mb-6">
                     {{ item.title }}
                 </h2>
 

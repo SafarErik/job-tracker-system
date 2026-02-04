@@ -74,7 +74,7 @@ export class ContactListComponent {
     this.editForm.role.set(contact.role || '');
     this.editForm.email.set(contact.email || '');
     this.editForm.linkedIn.set(contact.linkedIn || '');
-    this.editingContactId.set(contact.id);
+    this.editingContactId.set(contact.id || null);
   }
 
   cancelEdit(): void {

@@ -1,6 +1,6 @@
 import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Document } from '../../../../core/models/document.model';
+import { DocumentViewModel as Document } from '../../../../core/models/document.model';
 import { DocumentService } from '../../services/document.service';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';

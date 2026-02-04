@@ -42,16 +42,16 @@
 
     <!-- Tactical Deep Dive Drawer -->
     @if (selectedTactic(); as tactic) {
-    <div class="absolute inset-0 z-50 flex justify-end">
+    <div class="absolute inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-labelledby="tactic-title">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-background/60 backdrop-blur-xl transition-opacity duration-300"
             (click)="closeDrawer()"></div>
 
         <!-- Drawer Content -->
-        <div
+        <div cdkTrapFocus cdkTrapFocusAutoCapture
             class="relative w-full h-full bg-popover border-l border-border shadow-2xl p-6 overflow-y-auto animate-in slide-in-from-right duration-300 flex flex-col">
             <!-- Close Button -->
-            <button (click)="closeDrawer()"
+            <button (click)="closeDrawer()" aria-label="Close details"
                 class="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted rounded-full transition-colors">
                 <ng-icon name="lucideX" class="w-5 h-5"></ng-icon>
             </button>
@@ -65,7 +65,7 @@
                     <span class="text-xs font-black uppercase tracking-widest text-muted-foreground">{{ tactic.type
                         }}</span>
                 </div>
-                <h3 class="text-xl font-bold text-foreground leading-tight">
+                <h3 id="tactic-title" class="text-xl font-bold text-foreground leading-tight">
                     {{ tactic.title }}
                 </h3>
             </div>

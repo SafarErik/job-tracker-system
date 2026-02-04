@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-violet-500/30">
+<div class="min-h-screen bg-background text-foreground selection:bg-primary/30">
   <div class="container mx-auto px-4 py-8 lg:px-8 space-y-8 pb-20">
 
 
@@ -6,7 +6,7 @@
     @if (isLoading()) {
     <div class="flex flex-col items-center justify-center py-32 space-y-4 animate-pulse">
       <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-violet-500"></ng-icon>
-      <p class="text-zinc-500 font-medium tracking-widest uppercase text-xs">Accessing Personnel Dossier...</p>
+      <p class="text-muted-foreground font-medium tracking-widest uppercase text-xs">Accessing Personnel Dossier...</p>
     </div>
     }
 
@@ -20,8 +20,7 @@
     @if (!isLoading() && !error() && profile()) {
 
     <!-- 1. HEADER: The Identity Engine -->
-    <div
-      class="relative overflow-hidden rounded-[2.5rem] border border-zinc-800 bg-zinc-900/40 backdrop-blur-xl shadow-2xl">
+    <div class="relative overflow-hidden rounded-[2.5rem] border border-border bg-card/40 backdrop-blur-xl shadow-2xl">
 
       <div class="relative p-8 md:p-12 flex flex-col md:flex-row items-center md:items-start gap-10">
 
@@ -32,7 +31,7 @@
           </div>
 
           <div
-            class="relative h-40 w-40 rounded-full border-4 border-zinc-950 ring-1 ring-white/10 overflow-hidden shadow-2xl bg-zinc-800">
+            class="relative h-40 w-40 rounded-full border-4 border-background ring-1 ring-white/10 overflow-hidden shadow-2xl bg-muted">
             @if (profile()!.profilePictureUrl) {
             <img [src]="profile()!.profilePictureUrl" alt="Profile" class="h-full w-full object-cover" />
             } @else {
@@ -44,16 +43,16 @@
 
             <!-- Upload Overlay -->
             <div
-              class="absolute inset-0 flex items-center justify-center bg-zinc-950/80 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
+              class="absolute inset-0 flex items-center justify-center bg-background/80 opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer"
               (click)="fileInput.click()">
-              <ng-icon name="lucideUserPen" class="text-white h-8 w-8"></ng-icon>
+              <ng-icon name="lucideUserPen" class="text-foreground h-8 w-8"></ng-icon>
             </div>
             <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" />
           </div>
 
           <!-- Upload Progress -->
           @if (isUploadingPicture()) {
-          <div class="absolute inset-0 flex items-center justify-center rounded-full bg-zinc-950/60 backdrop-blur-sm">
+          <div class="absolute inset-0 flex items-center justify-center rounded-full bg-background/60 backdrop-blur-sm">
             <ng-icon name="lucideLoader2" class="animate-spin h-8 w-8 text-violet-400"></ng-icon>
           </div>
           }
@@ -68,7 +67,7 @@
                 class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest bg-violet-500/20 text-violet-400 border border-violet-500/30">Verified
                 Operative</span>
               <button hlmBtn variant="ghost" size="icon" (click)="uiService.openProfileSettings()"
-                class="h-8 w-8 rounded-lg text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800">
+                class="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted">
                 <ng-icon name="lucideSettings" class="h-4 w-4"></ng-icon>
               </button>
             </div>
@@ -79,7 +78,8 @@
               <h1 (click)="startEditing('name')"
                 class="text-4xl md:text-5xl font-serif font-bold tracking-tight hover:text-violet-400 cursor-pointer transition-all group flex items-center gap-4">
                 {{ profile()!.firstName }} {{ profile()!.lastName }}
-                <ng-icon name="lucidePencil" class="opacity-0 group-hover:opacity-100 h-5 w-5 text-zinc-600"></ng-icon>
+                <ng-icon name="lucidePencil"
+                  class="opacity-0 group-hover:opacity-100 h-5 w-5 text-muted-foreground"></ng-icon>
                 @if (lastSavedField() === 'firstName' || lastSavedField() === 'lastName') {
                 <ng-icon @fadeIn name="lucideCheck" class="h-6 w-6 text-emerald-500"></ng-icon>
                 }
@@ -87,11 +87,11 @@
               } @else {
               <div @fadeScale class="flex gap-3 items-center w-full max-w-xl">
                 <input hlmInput formControlName="firstName"
-                  class="text-3xl md:text-4xl font-serif font-bold h-14 bg-zinc-950/50 border-zinc-800 text-zinc-100 focus:border-violet-500/50"
+                  class="text-3xl md:text-4xl font-serif font-bold h-14 bg-input/50 border-border text-foreground focus:border-violet-500/50"
                   placeholder="First" (blur)="saveField('firstName')" (keydown.enter)="saveField('firstName')"
                   autofocus>
                 <input hlmInput formControlName="lastName"
-                  class="text-3xl md:text-4xl font-serif font-bold h-14 bg-zinc-950/50 border-zinc-800 text-zinc-100 focus:border-violet-500/50"
+                  class="text-3xl md:text-4xl font-serif font-bold h-14 bg-input/50 border-border text-foreground focus:border-violet-500/50"
                   placeholder="Last" (blur)="saveField('lastName')" (keydown.enter)="saveField('lastName')">
               </div>
               }
@@ -102,10 +102,11 @@
           <div class="min-h-[32px]">
             @if (editingField() !== 'currentJobTitle') {
             <p (click)="startEditing('currentJobTitle')"
-              class="text-xl text-zinc-400 font-medium flex items-center justify-center md:justify-start gap-2 hover:text-zinc-200 cursor-pointer transition-colors group w-fit">
+              class="text-xl text-muted-foreground font-medium flex items-center justify-center md:justify-start gap-2 hover:text-foreground cursor-pointer transition-colors group w-fit">
               <ng-icon name="lucideBriefcase" class="h-5 w-5 text-violet-500 opacity-70"></ng-icon>
               {{ profile()!.currentJobTitle || 'Specialized Operative' }}
-              <ng-icon name="lucidePencil" class="opacity-0 group-hover:opacity-100 h-4 w-4 text-zinc-600"></ng-icon>
+              <ng-icon name="lucidePencil"
+                class="opacity-0 group-hover:opacity-100 h-4 w-4 text-muted-foreground"></ng-icon>
               @if (lastSavedField() === 'currentJobTitle') {
               <ng-icon @fadeIn name="lucideCheck" class="h-4 w-4 text-emerald-500"></ng-icon>
               }
@@ -113,7 +114,7 @@
             } @else {
             <div @fadeScale class="flex items-center gap-2 max-w-md">
               <input hlmInput formControlName="currentJobTitle"
-                class="h-10 w-full font-medium bg-zinc-950/50 border-zinc-800 text-zinc-200 focus:border-violet-500/50"
+                class="h-10 w-full font-medium bg-input/50 border-border text-foreground focus:border-violet-500/50"
                 placeholder="Job Title" (blur)="saveField('currentJobTitle')"
                 (keydown.enter)="saveField('currentJobTitle')" autofocus>
             </div>
@@ -122,21 +123,21 @@
 
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4">
             <div
-              class="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-sm text-zinc-400">
+              class="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-card border border-border text-sm text-muted-foreground">
               <ng-icon name="lucideMail" class="h-4 w-4"></ng-icon>
               {{ profile()!.email }}
             </div>
 
             <!-- Years Exp: Edit on Click -->
             <div
-              class="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-sm text-zinc-400 cursor-pointer hover:bg-zinc-800 hover:text-zinc-200 transition-all group"
+              class="flex items-center gap-2 px-4 py-1.5 rounded-xl bg-card border border-border text-sm text-muted-foreground cursor-pointer hover:bg-accent hover:text-foreground transition-all group"
               (click)="startEditing('yearsOfExperience')">
               <ng-icon name="lucideSparkles" class="h-4 w-4 text-violet-400"></ng-icon>
               @if (editingField() !== 'yearsOfExperience') {
               <span>{{ profile()!.yearsOfExperience || 0 }} Years Experience</span>
               } @else {
               <input hlmInput type="number" formControlName="yearsOfExperience"
-                class="h-5 w-12 text-center p-0 bg-transparent border-none focus:ring-0 text-zinc-100 font-bold"
+                class="h-5 w-12 text-center p-0 bg-transparent border-none focus:ring-0 text-foreground font-bold"
                 (blur)="saveField('yearsOfExperience')" (keydown.enter)="saveField('yearsOfExperience')" autofocus>
               }
             </div>
@@ -151,7 +152,8 @@
 
       <!-- Bio / Narrative (Large Card, 2x2) -->
       <div hlmCard
-        class="lg:col-span-2 lg:row-span-2 border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 transition-all group relative overflow-hidden flex flex-col">
+        class="lg:col-span-2 lg:row-span-2 border-border bg-card/40 hover:border-violet-500/30 transition-all group relative overflow-hidden flex flex-col">
+        >
         <div class="p-8 space-y-6 flex-1">
           <div class="flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -163,7 +165,7 @@
 
             <button hlmBtn variant="outline" size="sm" (click)="polishBio()"
               [disabled]="isPolishingBio() || !profile()!.bio"
-              class="rounded-xl border-zinc-800 bg-zinc-950/50 text-zinc-400 hover:text-violet-400 hover:border-violet-500/30 transition-all gap-2">
+              class="rounded-xl border-border bg-background/50 text-muted-foreground hover:text-violet-400 hover:border-violet-500/30 transition-all gap-2">
               @if (isPolishingBio()) {
               <ng-icon name="lucideLoader2" class="animate-spin h-3.5 w-3.5"></ng-icon>
               <span>Drafting...</span>
@@ -177,27 +179,28 @@
           <div class="relative flex-1">
             @if (editingField() !== 'bio') {
             <div (click)="startEditing('bio')"
-              class="cursor-pointer min-h-[250px] p-6 -m-4 rounded-2xl hover:bg-white/5 transition-all relative">
+              class="cursor-pointer min-h-[250px] p-6 -m-4 rounded-2xl hover:bg-accent/50 transition-all relative">
               @if (profile()!.bio) {
-              <p class="text-zinc-400 leading-relaxed text-lg whitespace-pre-wrap selection:bg-violet-500/50">{{
+              <p class="text-muted-foreground leading-relaxed text-lg whitespace-pre-wrap selection:bg-violet-500/50">{{
                 profile()!.bio }}</p>
               } @else {
-              <div class="flex flex-col items-center justify-center py-12 text-center text-zinc-600 italic gap-4">
+              <div
+                class="flex flex-col items-center justify-center py-12 text-center text-muted-foreground italic gap-4">
                 <ng-icon name="lucidePencil" class="h-10 w-10 opacity-20"></ng-icon>
                 Define your professional narrative...
               </div>
               }
               <div
-                class="absolute bottom-4 right-4 text-[10px] font-black uppercase tracking-widest text-zinc-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                class="absolute bottom-4 right-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                 Click to Edit
               </div>
             </div>
             } @else {
             <form [formGroup]="profileForm" @fadeScale class="h-full">
               <textarea hlmInput formControlName="bio"
-                class="w-full min-h-[300px] resize-none bg-zinc-950/50 border-zinc-800 text-zinc-100 text-lg leading-relaxed p-6 rounded-2xl focus:border-violet-500/50"
+                class="w-full min-h-[300px] resize-none bg-background/50 border-border text-foreground text-lg leading-relaxed p-6 rounded-2xl focus:border-violet-500/50"
                 placeholder="Tell your professional story..." (blur)="saveField('bio')" autofocus></textarea>
-              <p class="text-[10px] text-zinc-600 mt-3 text-right uppercase font-black tracking-widest">Saving
+              <p class="text-[10px] text-muted-foreground mt-3 text-right uppercase font-black tracking-widest">Saving
                 automatically on blur</p>
             </form>
             }
@@ -207,18 +210,18 @@
 
       <!-- Stats Grid (Right of Bio) -->
       <div hlmCard
-        class="border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between hover:border-zinc-700 transition-all relative overflow-hidden group">
+        class="border-border bg-card/40 p-6 flex flex-col justify-between hover:border-violet-500/30 transition-all relative overflow-hidden group">
         <!-- Success Gauge -->
         <div class="relative z-10">
-          <h3 class="text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-4">Tactical Success</h3>
+          <h3 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">Tactical Success</h3>
           <div class="flex items-end justify-between">
             <div>
               <div class="text-4xl font-serif font-bold text-violet-400">{{ stats()?.successRate || 0 }}%</div>
-              <p class="text-xs text-zinc-500 mt-1">Application ROI</p>
+              <p class="text-xs text-muted-foreground mt-1">Application ROI</p>
             </div>
             <div class="h-12 w-12 flex items-center justify-center">
               <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
-                <path class="text-zinc-800"
+                <path class="text-muted"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none"
                   stroke="currentColor" stroke-width="3" />
                 <path class="text-violet-500 transition-all duration-1000 ease-out"
@@ -236,13 +239,13 @@
       </div>
 
       <div hlmCard
-        class="border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between hover:border-zinc-700 transition-all">
+        class="border-border bg-card/40 p-6 flex flex-col justify-between hover:border-violet-500/30 transition-all">
         <div class="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
           <ng-icon name="lucideSparkles" class="h-4 w-4"></ng-icon>
         </div>
         <div>
-          <div class="text-3xl font-serif font-bold text-zinc-100">{{ stats()?.offersReceived || 0 }}</div>
-          <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Offers Secured</p>
+          <div class="text-3xl font-serif font-bold text-foreground">{{ stats()?.offersReceived || 0 }}</div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Offers Secured</p>
         </div>
       </div>
 
@@ -263,12 +266,12 @@
           <div class="grid md:grid-cols-2 gap-8">
             <div class="space-y-4">
               <div class="space-y-1">
-                <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Next Level Path</p>
-                <p class="text-lg font-serif font-bold text-zinc-100">{{ careerInsights()?.nextLevelPath || 'Strategic
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Next Level Path</p>
+                <p class="text-lg font-serif font-bold text-foreground">{{ careerInsights()?.nextLevelPath || 'Strategic
                   Leadership' }}</p>
               </div>
               <div class="space-y-1 relative">
-                <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Salary Benchmark</p>
+                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Salary Benchmark</p>
                 <div class="flex items-center gap-4">
                   <div class="text-lg font-mono font-bold text-emerald-400">{{ (careerInsights()?.salaryBenchmark || 0)
                     |
@@ -286,9 +289,9 @@
               </div>
             </div>
             <div class="space-y-4">
-              <div class="p-4 rounded-xl bg-zinc-950/50 border border-zinc-800 space-y-2">
+              <div class="p-4 rounded-xl bg-background/50 border border-border space-y-2">
                 <p class="text-[10px] font-black uppercase tracking-widest text-violet-400/70">Missing Key</p>
-                <p class="text-sm font-medium text-zinc-300">Deploy <span class="text-violet-400 font-bold">{{
+                <p class="text-sm font-medium text-muted-foreground">Deploy <span class="text-violet-400 font-bold">{{
                     careerInsights()?.missingKey || 'Unknown' }}</span> to increase match score globally.</p>
               </div>
             </div>
@@ -297,7 +300,7 @@
       </div>
 
       <!-- Skills Engine (Right Sidebar Style / Full Row on Mobile) -->
-      <div class="lg:col-span-4 hlmCard border-zinc-800 bg-zinc-900/40 overflow-hidden">
+      <div class="lg:col-span-4 hlmCard border-border bg-card/40 overflow-hidden">
         <div class="p-8 space-y-8">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-1">
@@ -307,34 +310,34 @@
                 </div>
                 The Arsenal
               </h2>
-              <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500">Resource Inventory • {{
+              <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Resource Inventory • {{
                 userSkills().length }} Total</p>
             </div>
 
             <!-- Skill Search -->
             <div class="w-full md:w-96 relative group">
               <ng-icon name="lucideSearch"
-                class="absolute left-3 top-3.5 h-4 w-4 text-zinc-500 group-focus-within:text-violet-500 transition-colors"></ng-icon>
+                class="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground group-focus-within:text-violet-500 transition-colors"></ng-icon>
               <input [formControl]="skillSearchControl" placeholder="Scan for new skills..."
-                class="w-full pl-10 h-11 bg-zinc-950/50 border border-zinc-800 rounded-xl text-zinc-200 placeholder:text-zinc-600 focus:border-violet-500/50 outline-none transition-all"
+                class="w-full pl-10 h-11 bg-input/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-violet-500/50 outline-none transition-all"
                 (keydown.enter)="onSkillInputEnter()" />
 
               <!-- Dropdown for Results -->
               @if (skillSearchTerm() && (filteredSkills.length > 0 || addableSkillName)) {
               <div
-                class="absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+                class="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
                 <div class="max-h-60 overflow-y-auto custom-scrollbar">
                   <div class="p-2 space-y-1">
                     @for (skill of filteredSkills.slice(0, 5); track skill.id) {
                     <button (click)="addSkill(skill)"
-                      class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 text-sm text-left transition-colors">
+                      class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted text-sm text-left transition-colors">
                       <ng-icon name="lucidePlus" class="h-4 w-4 text-violet-400"></ng-icon>
                       {{ skill.name }}
                     </button>
                     }
                     @if (addableSkillName) {
                     <button (click)="addCustomSkillFromInput()"
-                      class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-zinc-800 text-sm text-left transition-colors border-t border-zinc-800 mt-1">
+                      class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted text-sm text-left transition-colors border-t border-border mt-1">
                       <ng-icon name="lucidePlus" class="h-4 w-4 text-emerald-400"></ng-icon>
                       Add custom: "{{ addableSkillName }}"
                     </button>
@@ -363,9 +366,9 @@
                   [class.bg-emerald-500/10]="skill.category === 'DevOps'"
                   [class.border-emerald-500/30]="skill.category === 'DevOps'"
                   [class.text-emerald-300]="skill.category === 'DevOps'"
-                  [class.bg-zinc-800/50]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')"
-                  [class.border-zinc-700/50]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')"
-                  [class.text-zinc-400]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')">
+                  [class.bg-card/50]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')"
+                  [class.border-border/50]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')"
+                  [class.text-muted-foreground]="!['Frontend', 'Backend', 'DevOps'].includes(skill.category || '')">
 
                   <span class="relative z-10">{{ skill.name }}</span>
 
@@ -385,14 +388,16 @@
             <div class="space-y-4">
               <div class="flex items-center gap-2">
                 <ng-icon name="lucideSparkles" class="h-3.5 w-3.5 text-violet-400"></ng-icon>
-                <h4 class="text-[10px] font-black uppercase tracking-widest text-zinc-500">AI Recommendations</h4>
+                <h4 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">AI Recommendations
+                </h4>
               </div>
               <div class="flex flex-col gap-2">
                 @for (skill of suggestedSkills(); track skill.id) {
                 <button (click)="addSkill(skill)"
-                  class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/50 border border-zinc-800/50 hover:border-violet-500/30 transition-all group">
-                  <span class="text-sm text-zinc-500 group-hover:text-zinc-300">{{ skill.name }}</span>
-                  <ng-icon name="lucidePlus" class="h-3.5 w-3.5 text-zinc-700 group-hover:text-violet-400"></ng-icon>
+                  class="flex items-center justify-between p-3 rounded-xl bg-card border border-border hover:border-violet-500/30 transition-all group">
+                  <span class="text-sm text-muted-foreground group-hover:text-foreground">{{ skill.name }}</span>
+                  <ng-icon name="lucidePlus"
+                    class="h-3.5 w-3.5 text-muted-foreground group-hover:text-violet-400"></ng-icon>
                 </button>
                 }
               </div>

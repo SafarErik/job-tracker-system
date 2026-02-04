@@ -1,18 +1,25 @@
-import { Component, ChangeDetectionStrategy, signal, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, lucideX, lucideChevronRight, lucideQuote, lucideFileText } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-interview-tactics',
   standalone: true,
-  imports: [CommonModule, NgIcon],
+  imports: [CommonModule, NgIcon, A11yModule],
   providers: [provideIcons({ lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, lucideX, lucideChevronRight, lucideQuote, lucideFileText })],
   templateUrl: './interview-tactics.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
 export class InterviewTacticsComponent implements OnDestroy {
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.selectedTactic()) {
+      this.closeDrawer();
+    }
+  }
   selectedTactic = signal<Tactic | null>(null);
   displayedReasoning = signal('');
   private typeInterval: number | undefined;

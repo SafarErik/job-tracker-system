@@ -76,7 +76,7 @@
       <div class="flex flex-col gap-4 h-full">
         <!-- Expanded Metrics & Stack Component -->
         <app-company-stats class="flex-1" [totalApplications]="details.totalApplications" [successRate]="successRate()"
-          [techStack]="details.techStack || []" (techAdd)="handleAddTech($event)"
+          [techStack]="details.techStack || []" (techAdd)="handleAddTech('')"
           (techRemove)="handleRemoveTech($event)"></app-company-stats>
       </div>
 
@@ -217,7 +217,7 @@
                   @if (event.assets && event.assets.length > 0) {
                   <div class="flex flex-wrap gap-3 mt-4">
                     @for (asset of event.assets; track asset.label) {
-                    <a [href]="asset.url" target="_blank"
+                    <a [href]="asset.url" target="_blank" rel="noopener noreferrer"
                       class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border hover:border-primary/50 hover:bg-primary/5 transition-all text-xs font-medium text-muted-foreground hover:text-primary group/asset">
                       <ng-icon name="lucideFileText" class="w-3.5 h-3.5 group-hover/asset:text-primary"></ng-icon>
                       {{ asset.label }}

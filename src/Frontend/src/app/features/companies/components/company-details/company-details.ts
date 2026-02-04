@@ -76,10 +76,14 @@ export class CompanyDetailsComponent implements OnInit {
   // Derived state
   successRate = computed(() => {
     const details = this.company();
-    if (!details || details.totalApplications === 0) return 0;
-    const offers = details.applicationHistory.filter(
+    // Guard against missing/zero applications or undefined history
+    if (!details || !details.totalApplications || details.totalApplications === 0) return 0;
+
+    const history = details.applicationHistory || [];
+    const offers = history.filter(
       (app) => app.status === 'Offer' || app.status === 'Accepted',
     ).length;
+
     return Math.round((offers / details.totalApplications) * 100);
   });
 
@@ -326,6 +330,10 @@ export class CompanyDetailsComponent implements OnInit {
 
   // Tech Stack Actions
   handleAddTech(skill: string): void {
+    if (!skill) {
+      toast.info('Intelligence Collection', { description: 'Skill selection interface is offline. Update system via manual overrides.' });
+      return;
+    }
     const current = this.company();
     if (!current) return;
     const stack = current.techStack || [];

@@ -21,7 +21,16 @@ import {
     TrendingUp,
     Cpu,
     Github,
+    Shield,
+    Activity,
+    Users,
+    Twitter,
+    Linkedin,
+    Lock,
+    Sun,
+    Moon,
 } from 'lucide-angular';
+import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
     selector: 'app-landing-page',
@@ -48,6 +57,14 @@ import {
                 TrendingUp,
                 Cpu,
                 Github,
+                Shield,
+                Activity,
+                Users,
+                Twitter,
+                Linkedin,
+                Lock,
+                Sun,
+                Moon,
             }),
         },
     ],
@@ -60,6 +77,7 @@ import {
 })
 export class LandingPageComponent {
     private readonly authService = inject(AuthService);
+    readonly themeService = inject(ThemeService);
 
     readonly isAuthenticated = this.authService.isAuthenticated;
 
@@ -81,5 +99,13 @@ export class LandingPageComponent {
         TrendingUp,
         Cpu,
         Github,
+        Shield,
+        Activity,
+        Users,
+        Twitter,
+        Linkedin,
+        Lock,
+        Sun,
+        Moon,
     };
 }

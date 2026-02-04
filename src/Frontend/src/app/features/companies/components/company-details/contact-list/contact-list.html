@@ -1,7 +1,7 @@
 <div class="bg-card/50 rounded-3xl border border-border p-5 h-full flex flex-col">
     <div class="flex items-center justify-between mb-4 leading-none shrink-0">
         <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
-        <button hlmBtn variant="ghost" size="icon-xs"
+        <button hlmBtn variant="ghost" size="icon-xs" aria-label="Add contact"
             class="h-6 w-6 rounded-md border border-border text-muted-foreground hover:text-primary hover:border-primary/30 transition-all font-serif"
             (click)="startAddContact()" *ngIf="editingContactId() === null && !maxDisplay()">
             <ng-icon name="lucidePlus"></ng-icon>
@@ -32,13 +32,14 @@
                 <div class="flex items-center gap-2 shrink-0">
                     <!-- LinkedIn (Always Visible) -->
                     <button (click)="openLinkedIn(contact.linkedIn)"
+                        [attr.aria-label]="'Open LinkedIn for ' + contact.name"
                         class="h-8 w-8 rounded-lg border flex items-center justify-center transition-all shadow-sm"
                         [class]="contact.linkedIn ? 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20' : 'bg-muted border-border text-muted-foreground hover:text-foreground'">
                         <ng-icon name="lucideLinkedin" size="14"></ng-icon>
                     </button>
 
                     @if (contact.email) {
-                    <a [href]="'mailto:' + contact.email"
+                    <a [href]="'mailto:' + contact.email" [attr.aria-label]="'Email ' + contact.name"
                         class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all">
                         <ng-icon name="lucideExternalLink" size="14"></ng-icon>
                     </a>
@@ -48,11 +49,12 @@
 
                     <!-- Edit/Delete Group -->
                     <div class="flex items-center gap-1">
-                        <button (click)="startEditContact(contact)"
+                        <button (click)="startEditContact(contact)" [attr.aria-label]="'Edit contact ' + contact.name"
                             class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-all">
                             <ng-icon name="lucidePencil" size="14"></ng-icon>
                         </button>
-                        <button (click)="deleteContact.emit(contact.id)"
+                        <button (click)="contact.id && deleteContact.emit(contact.id)"
+                            [attr.aria-label]="'Delete contact ' + contact.name"
                             class="h-8 w-8 rounded-lg bg-muted border border-border flex items-center justify-center text-muted-foreground hover:text-destructive transition-all">
                             <ng-icon name="lucideTrash2" size="14"></ng-icon>
                         </button>

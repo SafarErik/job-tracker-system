@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Document } from '../../../core/models/document.model';
+import { DocumentViewModel as Document } from '../../../core/models/document.model';
 import { DocumentService } from './document.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { finalize, tap } from 'rxjs/operators';

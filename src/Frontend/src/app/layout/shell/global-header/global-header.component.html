@@ -51,7 +51,7 @@
   <hlm-dialog [state]="isOpen() ? 'open' : 'closed'" (closed)="isOpen.set(false)">
     <ng-template brnDialogContent>
       <hlm-dialog-content hlmCommandDialog
-        class="max-w-[90vw] md:max-w-2xl bg-popover/95 backdrop-blur-xl border-border p-0 overflow-hidden">
+        class="max-w-[90vw] md:max-w-2xl bg-popover/95 backdrop-blur-xl border border-border p-0 overflow-hidden shadow-2xl dark:shadow-primary/5">
         <hlm-command hlmClassName="bg-transparent border-none">
           <input hlmCommandSearchInput placeholder="Type a command or search..." class="h-12 border-b border-border" />
           <hlm-command-list hlmClassName="max-h-[300px] overflow-y-auto scrollbar-hide py-2 px-2">

@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-100 pb-20 font-sans selection:bg-violet-500/20 overflow-x-hidden">
+<div class="min-h-screen bg-background text-foreground pb-20 font-sans selection:bg-primary/20 overflow-x-hidden">
   <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-12">
 
     <!-- Header: Strategic Asset Registry -->
@@ -6,17 +6,17 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 leading-none">
         <div class="space-y-3">
           <!-- Breadcrumb -->
-          <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">
+          <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
             <span>Central Intelligence</span>
-            <span class="text-zinc-800">/</span>
-            <span class="text-violet-400/80">Asset Registry</span>
+            <span class="text-border">/</span>
+            <span class="text-primary/80">Asset Registry</span>
           </div>
 
-          <h1 class="text-4xl md:text-5xl font-serif text-zinc-100 tracking-tight">Companies Database</h1>
+          <h1 class="text-4xl md:text-5xl font-serif text-foreground tracking-tight">Companies Database</h1>
         </div>
 
         <button hlmBtn size="lg" (click)="addSheetComp.open()"
-          class="gap-3 rounded-2xl bg-linear-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-black uppercase tracking-widest px-8 h-14 shadow-[0_0_20px_-5px_rgba(139,92,246,0.5)] border-0 transition-all hover:scale-[1.02]">
+          class="gap-3 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-black uppercase tracking-widest px-8 h-14 shadow-lg dark:shadow-primary/20 border-0 transition-all hover:scale-[1.02]">
           <ng-icon name="lucidePlus" class="h-5 w-5"></ng-icon>
           Initialize Asset
         </button>
@@ -27,44 +27,44 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Total Network -->
       <div
-        class="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] p-8 flex items-center justify-between group hover:border-zinc-700 transition-all leading-none">
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-primary/30 transition-all leading-none">
         <div class="space-y-3">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Asset Network</p>
-          <h4 class="text-4xl font-serif text-zinc-100">{{ totalNetwork() }}</h4>
-          <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Identified Entities</p>
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Asset Network</p>
+          <h4 class="text-4xl font-serif text-foreground">{{ totalNetwork() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Identified Entities</p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-700 group-hover:text-violet-400 group-hover:border-violet-500/20 transition-all shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-primary group-hover:border-primary/20 transition-all shadow-sm">
           <ng-icon name="lucideBuilding2" class="h-8 w-8"></ng-icon>
         </div>
       </div>
 
       <!-- Active Pursuits -->
       <div
-        class="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] p-8 flex items-center justify-between group hover:border-zinc-700 transition-all leading-none relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 blur-3xl rounded-full"></div>
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-success/30 transition-all leading-none relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-success/5 blur-3xl rounded-full"></div>
         <div class="space-y-3 relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Active Pursuits</p>
-          <h4 class="text-4xl font-serif text-emerald-400">{{ activePursuits() }}</h4>
-          <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Ongoing Infiltrations</p>
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Active Pursuits</p>
+          <h4 class="text-4xl font-serif text-success">{{ activePursuits() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Ongoing Infiltrations</p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-700 group-hover:text-emerald-400 group-hover:border-emerald-500/20 transition-all shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-success group-hover:border-success/20 transition-all shadow-sm">
           <ng-icon name="lucideActivity" class="h-8 w-8"></ng-icon>
         </div>
       </div>
 
       <!-- Intelligence Yield -->
       <div
-        class="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] p-8 flex items-center justify-between group hover:border-zinc-700 transition-all leading-none relative overflow-hidden">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/5 blur-3xl rounded-full"></div>
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-info/30 transition-all leading-none relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-info/5 blur-3xl rounded-full"></div>
         <div class="space-y-3 relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Intelligence Yield</p>
-          <h4 class="text-4xl font-serif text-blue-400">{{ responseRate() }}</h4>
-          <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Sector Success rate</p>
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Intelligence Yield</p>
+          <h4 class="text-4xl font-serif text-info">{{ responseRate() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Sector Success rate</p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-700 group-hover:text-blue-400 group-hover:border-blue-500/20 transition-all shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-info group-hover:border-info/20 transition-all shadow-sm">
           <ng-icon name="lucideTrendingUp" class="h-8 w-8"></ng-icon>
         </div>
       </div>
@@ -75,28 +75,28 @@
       <div class="max-w-3xl">
         <div class="relative group">
           <div
-            class="absolute -inset-1 bg-linear-to-r from-violet-500/20 to-blue-500/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500">
+            class="absolute -inset-1 bg-linear-to-r from-primary/20 to-info/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500">
           </div>
 
           <div
-            class="relative flex items-center p-2 rounded-[2.5rem] border border-zinc-800 bg-zinc-900/60 backdrop-blur-xl transition-all duration-300 focus-within:border-zinc-700 focus-within:ring-1 focus-within:ring-zinc-800 shadow-2xl">
+            class="relative flex items-center p-2 rounded-[2.5rem] border border-border bg-card/60 backdrop-blur-xl transition-all duration-300 focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/20 shadow-xl">
             <!-- Search Icon -->
             <div
-              class="absolute left-6 flex items-center justify-center text-zinc-600 group-focus-within:text-violet-400 transition-colors">
+              class="absolute left-6 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
               <ng-icon name="lucideSearch" class="h-6 w-6"></ng-icon>
             </div>
 
             <!-- Input -->
             <input #searchInput type="text" [value]="searchTerm()" (input)="onSearchChange($event)"
               placeholder="Query Asset Registry (Name, Industry, Domain)..."
-              class="h-14 w-full rounded-2xl bg-transparent pl-16 pr-24 text-sm font-medium focus:outline-none text-zinc-100 placeholder:text-zinc-600 placeholder:font-mono placeholder:uppercase placeholder:tracking-widest"
+              class="h-14 w-full rounded-2xl bg-transparent pl-16 pr-24 text-sm font-medium focus:outline-none text-foreground placeholder:text-muted-foreground placeholder:font-mono placeholder:uppercase placeholder:tracking-widest"
               id="company-search">
 
             <!-- Terminal Hint -->
             <div class="absolute right-6 hidden md:flex items-center gap-2">
-              <span class="text-[9px] font-black text-zinc-700 uppercase tracking-widest">Shortcut:</span>
+              <span class="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest">Shortcut:</span>
               <kbd
-                class="flex h-7 px-2 items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-950 text-[10px] font-mono text-zinc-500 shadow-sm">
+                class="flex h-7 px-2 items-center gap-1 rounded-lg border border-border bg-muted text-[10px] font-mono text-muted-foreground shadow-sm">
                 <span>⌘</span>K
               </kbd>
             </div>
@@ -105,9 +105,10 @@
           @if (searchTerm()) {
           <div
             class="mt-4 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-2 duration-500">
-            <span class="text-zinc-500">Matches Found: <span class="text-zinc-100">{{ filteredCompanies().length
+            <span class="text-muted-foreground">Matches Found: <span class="text-foreground">{{
+                filteredCompanies().length
                 }}</span></span>
-            <button (click)="searchTerm.set('')" class="text-violet-500 hover:text-violet-400 transition-colors">Abort
+            <button (click)="searchTerm.set('')" class="text-primary hover:text-primary/80 transition-colors">Abort
               Query</button>
           </div>
           }
@@ -119,8 +120,8 @@
     <div class="space-y-12">
       <!-- Loading Registry -->
       @if (isLoading()) {
-      <div class="flex flex-col items-center justify-center py-32 gap-6 text-zinc-500">
-        <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-violet-500"></ng-icon>
+      <div class="flex flex-col items-center justify-center py-32 gap-6 text-muted-foreground">
+        <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-primary"></ng-icon>
         <p class="text-[11px] font-black uppercase tracking-[0.3em] animate-pulse">Establishing Secure Connection...</p>
       </div>
       }
@@ -137,9 +138,9 @@
       <div class="space-y-12">
         @if (filteredCompanies().length === 0) {
         <div
-          class="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed border-zinc-900 bg-zinc-900/10 text-zinc-500">
-          <ng-icon name="lucideAlertTriangle" class="h-12 w-12 mb-6 text-zinc-800"></ng-icon>
-          <h3 class="text-lg font-black uppercase tracking-widest text-zinc-700 mb-2">No Signal Detected</h3>
+          class="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed border-border bg-muted/10 text-muted-foreground">
+          <ng-icon name="lucideAlertTriangle" class="h-12 w-12 mb-6 text-muted-foreground/30"></ng-icon>
+          <h3 class="text-lg font-black uppercase tracking-widest text-muted-foreground/50 mb-2">No Signal Detected</h3>
           <p class="text-sm font-medium">
             @if (searchTerm()) {
             Zero matches for current query. Refine parameters.
@@ -157,11 +158,11 @@
         </div>
 
         <!-- Registry Footer -->
-        <div class="flex items-center justify-center py-10 border-t border-zinc-900">
+        <div class="flex items-center justify-center py-10 border-t border-border">
           <div
-            class="px-6 py-2 rounded-full bg-zinc-900/50 border border-zinc-800 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-            Catalogued Assets: <span class="text-zinc-100">{{ filteredCompanies().length }}</span> / Total Registry:
-            <span class="text-zinc-100">{{ companies().length }}</span>
+            class="px-6 py-2 rounded-full bg-card/50 border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            Catalogued Assets: <span class="text-foreground">{{ filteredCompanies().length }}</span> / Total Registry:
+            <span class="text-foreground">{{ companies().length }}</span>
           </div>
         </div>
         }

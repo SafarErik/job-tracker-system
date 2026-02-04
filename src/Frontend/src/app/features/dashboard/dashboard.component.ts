@@ -106,24 +106,24 @@ import {
 
         <!-- Market Pulse (Col-span-4) -->
         <div
-          class="md:col-span-4 rounded-3xl bg-slate-900/50 backdrop-blur-xl border border-white/5 p-8 flex flex-col justify-between group hover:border-emerald-500/30 transition-all"
+          class="md:col-span-4 rounded-3xl bg-card/50 backdrop-blur-xl border border-border p-8 flex flex-col justify-between group hover:border-primary/30 transition-all"
         >
           <div>
-            <div class="flex items-center gap-2 text-emerald-400 mb-6">
+            <div class="flex items-center gap-2 text-primary mb-6">
               <lucide-icon name="trending-up" class="w-5 h-5"></lucide-icon>
               <span class="text-sm font-medium uppercase tracking-wider">Market Pulse</span>
             </div>
-            <p class="text-sm text-slate-400 mb-2">Tech Market Update</p>
-            <h2 class="text-4xl font-bold text-white">UP 12%</h2>
-            <p class="text-xs text-emerald-400/80 mt-1 font-medium italic">
+            <p class="text-sm text-muted-foreground mb-2">Tech Market Update</p>
+            <h2 class="text-4xl font-bold text-foreground">UP 12%</h2>
+            <p class="text-xs text-primary/80 mt-1 font-medium italic">
               High hiring activity in AI/ML sectors.
             </p>
           </div>
 
-          <div class="pt-6 border-t border-white/5 mt-6">
-            <div class="flex items-center justify-between text-xs text-slate-500">
+          <div class="pt-6 border-t border-border mt-6">
+            <div class="flex items-center justify-between text-xs text-muted-foreground">
               <span>Last 30 days</span>
-              <span class="text-emerald-400">+4.2% today</span>
+              <span class="text-primary">+4.2% today</span>
             </div>
           </div>
         </div>

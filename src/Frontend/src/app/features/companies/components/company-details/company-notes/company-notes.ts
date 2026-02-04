@@ -18,37 +18,37 @@ export interface IntelligenceBriefing {
   providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX })],
   template: `
     <!-- Main Card View -->
-    <div class="rounded-3xl bg-zinc-900/60 backdrop-blur-md border border-zinc-800 p-8 flex flex-col h-full group hover:border-zinc-700 transition-all duration-500 shadow-none overflow-hidden relative font-mono text-zinc-300">
+    <div class="rounded-3xl bg-card/60 backdrop-blur-md border border-border p-8 flex flex-col h-full group hover:border-primary/30 transition-all duration-500 shadow-none overflow-hidden relative font-mono text-foreground">
       
       <!-- Top Secret Watermarks -->
-      <div class="absolute top-10 right-10 opacity-[0.03] select-none pointer-events-none -rotate-12 border-4 border-violet-500 p-4 text-4xl font-black text-violet-500">
+      <div class="absolute top-10 right-10 opacity-[0.03] select-none pointer-events-none -rotate-12 border-4 border-primary p-4 text-4xl font-black text-primary">
         TOP SECRET // INTEL Only
       </div>
-      <div class="absolute bottom-1/4 left-10 opacity-[0.02] select-none pointer-events-none -rotate-12 border-2 border-zinc-500 p-2 text-2xl font-black text-zinc-500">
+      <div class="absolute bottom-1/4 left-10 opacity-[0.02] select-none pointer-events-none -rotate-12 border-2 border-muted-foreground p-2 text-2xl font-black text-muted-foreground">
         EYES ONLY
       </div>
 
       <div class="flex items-center justify-between mb-10 relative z-10">
         <!-- Header Left -->
         <div class="flex items-center gap-3 cursor-pointer group/header" (click)="toggleExpansion()">
-          <div class="p-2.5 rounded-2xl bg-zinc-950 border border-zinc-800 text-violet-400 group-hover/header:border-violet-500/30 transition-colors">
+          <div class="p-2.5 rounded-2xl bg-muted border border-border text-primary group-hover/header:border-primary/30 transition-colors">
             <ng-icon name="lucideFileText" class="h-4 w-4"></ng-icon>
           </div>
           <div>
-            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-zinc-100 leading-none group-hover/header:text-violet-400 transition-colors">Intelligence Briefing</h3>
-            <p class="text-[9px] font-bold text-violet-500/60 uppercase tracking-widest mt-1">Classification: Confidential</p>
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-foreground leading-none group-hover/header:text-primary transition-colors">Intelligence Briefing</h3>
+            <p class="text-[9px] font-bold text-primary/60 uppercase tracking-widest mt-1">Classification: Confidential</p>
           </div>
         </div>
         
         <!-- Header Right -->
         <div class="flex items-center gap-3">
           <button (click)="handleRegeneration()" [disabled]="isScanning()"
-            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-950 border border-violet-500/20 text-violet-400 text-[10px] font-black uppercase tracking-widest hover:bg-violet-500/10 transition-all active:scale-95 group/wand disabled:opacity-50 disabled:cursor-not-allowed">
+            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest hover:bg-primary/10 transition-all active:scale-95 group/wand disabled:opacity-50 disabled:cursor-not-allowed">
             <ng-icon name="lucideWand2" class="h-3 w-3 group-hover/wand:rotate-12 transition-transform"></ng-icon>
             {{ isScanning() ? 'Scanning...' : 'Regenerate' }}
           </button>
           
-          <button (click)="toggleExpansion()" class="p-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-700 transition-all">
+          <button (click)="toggleExpansion()" class="p-2 rounded-xl bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
              <ng-icon name="lucideMaximize2" class="h-3.5 w-3.5"></ng-icon>
           </button>
         </div>
@@ -59,11 +59,11 @@ export interface IntelligenceBriefing {
         
         <!-- Section: MISSION CONTEXT -->
         <section class="space-y-3">
-          <div class="flex items-center gap-2 text-violet-400/80">
+          <div class="flex items-center gap-2 text-primary/80">
             <div class="h-1 w-4 bg-current"></div>
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em]">[ MISSION CONTEXT ]</h4>
           </div>
-          <p class="text-xs leading-relaxed text-zinc-400 indent-4">
+          <p class="text-xs leading-relaxed text-muted-foreground indent-4">
             {{ displayedMissionContext() }}
           </p>
         </section>
@@ -71,14 +71,14 @@ export interface IntelligenceBriefing {
         <!-- Section: STRATEGIC FIT -->
         @if (mode() === 'full') {
         <section class="space-y-3">
-          <div class="flex items-center gap-2 text-emerald-400/80">
+          <div class="flex items-center gap-2 text-success/80">
             <div class="h-1 w-4 bg-current"></div>
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em]">[ STRATEGIC FIT ]</h4>
           </div>
           <ul class="space-y-2">
             @for (point of displayedStrategicFit(); track $index; let i = $index) {
-            <li class="flex gap-3 text-xs text-zinc-400">
-              <span class="text-emerald-500/60 leading-none">0{{ i + 1 }}.</span>
+            <li class="flex gap-3 text-xs text-muted-foreground">
+              <span class="text-success/60 leading-none">0{{ i + 1 }}.</span>
               <span class="leading-relaxed">{{ point }}</span>
             </li>
             }
@@ -87,31 +87,31 @@ export interface IntelligenceBriefing {
 
         <!-- Section: RISKS & INTEL -->
         <section class="space-y-3">
-          <div class="flex items-center gap-2 text-amber-500/80">
+          <div class="flex items-center gap-2 text-warning/80">
             <div class="h-1 w-4 bg-current"></div>
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em]">[ RISKS & INTEL ]</h4>
           </div>
-          <div class="p-3 rounded-xl bg-amber-500/5 border border-amber-500/10 flex gap-3">
-            <ng-icon name="lucideShieldAlert" class="text-amber-500 h-4 w-4 shrink-0"></ng-icon>
-            <p class="text-xs leading-relaxed text-zinc-400 italic">
+          <div class="p-3 rounded-xl bg-warning/5 border border-warning/10 flex gap-3">
+            <ng-icon name="lucideShieldAlert" class="text-warning h-4 w-4 shrink-0"></ng-icon>
+            <p class="text-xs leading-relaxed text-muted-foreground italic">
               {{ displayedRisksIntel() }}
             </p>
           </div>
         </section>
         } @else {
          <!-- Compact Mode Summary -->
-          <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-zinc-800/50">
+          <div class="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-border/50">
              <div>
-                <h4 class="text-[9px] font-black uppercase tracking-widest text-emerald-500/80 mb-2">Strategic Fit</h4>
+                <h4 class="text-[9px] font-black uppercase tracking-widest text-success/80 mb-2">Strategic Fit</h4>
                 <div class="space-y-1">
                   @for (fit of displayedStrategicFit().slice(0, 2); track $index) {
-                     <p class="text-[10px] text-zinc-500 truncate pl-2 border-l border-zinc-800">{{ fit }}</p>
+                     <p class="text-[10px] text-muted-foreground truncate pl-2 border-l border-border">{{ fit }}</p>
                   }
                 </div>
              </div>
              <div>
-                <h4 class="text-[9px] font-black uppercase tracking-widest text-amber-500/80 mb-2">Risks Detected</h4>
-                 <p class="text-[10px] text-zinc-500 line-clamp-2 leading-relaxed">
+                <h4 class="text-[9px] font-black uppercase tracking-widest text-warning/80 mb-2">Risks Detected</h4>
+                 <p class="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">
                   {{ displayedRisksIntel() || 'No active risk vectors identified in initial scan.' }}
                 </p>
              </div>
@@ -120,25 +120,25 @@ export interface IntelligenceBriefing {
 
         <!-- Optional: Field Notes Extension -->
         @if (isEditingNotes()) {
-        <section class="mt-10 pt-10 border-t border-zinc-800 space-y-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <section class="mt-10 pt-10 border-t border-border space-y-3 animate-in fade-in slide-in-from-bottom-5 duration-300">
            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-zinc-500">
+              <div class="flex items-center gap-2 text-muted-foreground">
                 <div class="h-1 w-4 bg-current"></div>
                 <h4 class="text-[10px] font-black uppercase tracking-[0.2em]">[ FIELD NOTES ]</h4>
               </div>
-              <button (click)="isEditingNotes.set(false)" class="text-[9px] font-black uppercase text-violet-400 hover:text-violet-300">Minimize</button>
+              <button (click)="isEditingNotes.set(false)" class="text-[9px] font-black uppercase text-primary hover:text-primary/80">Minimize</button>
            </div>
            <textarea hlmInput [ngModel]="notes()" (ngModelChange)="onNotesChange($event)"
             placeholder="Recording field observations..."
-            class="w-full h-32 bg-zinc-950/50 border border-zinc-800 rounded-xl p-4 font-mono text-xs text-zinc-400 focus:border-violet-500/30 transition-all custom-scrollbar resize-none"></textarea>
+            class="w-full h-32 bg-muted/50 border border-border rounded-xl p-4 font-mono text-xs text-muted-foreground focus:border-primary/30 transition-all custom-scrollbar resize-none"></textarea>
         </section>
         }
       </div>
 
       <!-- Action Footer -->
-      <div class="mt-auto pt-6 border-t border-zinc-800 relative z-10 flex items-center justify-between">
+      <div class="mt-auto pt-6 border-t border-border relative z-10 flex items-center justify-between">
         <button (click)="isEditingNotes.set(!isEditingNotes())" 
-          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-zinc-100 hover:border-zinc-700 transition-all active:scale-95 text-[9px] font-black uppercase tracking-[0.2em]">
+          class="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all active:scale-95 text-[9px] font-black uppercase tracking-[0.2em]">
           <ng-icon [name]="isEditingNotes() ? 'lucideSave' : 'lucidePencil'" class="h-3 w-3"></ng-icon>
           {{ isEditingNotes() ? 'Save Field Notes' : 'Edit Technical Notes' }}
         </button>
@@ -148,8 +148,8 @@ export interface IntelligenceBriefing {
              <!-- We already have the button above, but per previous request it was pinned right. Let's keep it clean. -->
         </div>
 
-        <div class="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-600 flex items-center gap-2">
-          Source: <span class="text-violet-500/50">Global AI Grid v4.1</span>
+        <div class="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground/50 flex items-center gap-2">
+          Source: <span class="text-primary/50">Global AI Grid v4.1</span>
         </div>
       </div>
     </div>

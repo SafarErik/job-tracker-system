@@ -126,11 +126,11 @@ export class CompanyCardComponent {
 
     if (isMatched) {
       // Obsidian / Purple theme for matched skills
-      return 'bg-violet-500/10 text-violet-400 border-violet-500/20 hover:border-violet-500/40';
+      return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20 hover:border-violet-500/40';
     }
 
     // Default Blue theme for unmatched skills
-    return 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:border-blue-500/40';
+    return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 hover:border-blue-500/40';
   }
 
   /**

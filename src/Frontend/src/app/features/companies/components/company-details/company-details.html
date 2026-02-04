@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-100 pb-12 font-sans selection:bg-violet-500/20 overflow-x-hidden">
+<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
   <!-- Loading State -->
   @if (isLoading()) {
   <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
@@ -14,7 +14,7 @@
       <ng-icon name="lucideBuilding2" class="text-4xl text-destructive"></ng-icon>
     </div>
     <div class="space-y-2">
-      <h2 class="text-2xl font-black tracking-tight">Access Denied</h2>
+      <h2 class="text-2xl font-black tracking-tight text-foreground">Access Denied</h2>
       <p class="text-muted-foreground max-w-sm mx-auto">{{ error() }}</p>
     </div>
     <button hlmBtn variant="outline" (click)="goBack()" class="rounded-2xl">
@@ -35,22 +35,22 @@
 
     <!-- Sub-Navigation Bar -->
     <div
-      class="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between border-b border-zinc-800/50 pb-4 pt-2">
-      <div class="flex items-center gap-1 p-1 bg-zinc-900/50 rounded-2xl border border-zinc-800">
+      class="sticky top-0 z-20 bg-background/80 backdrop-blur-md flex items-center justify-between border-b border-border/50 pb-4 pt-2">
+      <div class="flex items-center gap-1 p-1 bg-card/50 rounded-2xl border border-border">
         <button (click)="activeTab.set('mission')"
-          [class]="activeTab() === 'mission' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          [class]="activeTab() === 'mission' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
           <ng-icon name="lucideLayoutDashboard" class="h-3.5 w-3.5"></ng-icon>
           Mission Control
         </button>
         <button (click)="activeTab.set('intel')"
-          [class]="activeTab() === 'intel' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          [class]="activeTab() === 'intel' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
           <ng-icon name="lucideMicroscope" class="h-3.5 w-3.5"></ng-icon>
           Intelligence Lab
         </button>
         <button (click)="activeTab.set('history')"
-          [class]="activeTab() === 'history' ? 'bg-zinc-800 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'"
+          [class]="activeTab() === 'history' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
           <ng-icon name="lucideHistory" class="h-3.5 w-3.5"></ng-icon>
           Engagement Log
@@ -58,12 +58,12 @@
       </div>
 
       <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2 px-4 py-2 bg-zinc-950 border border-zinc-900 rounded-xl">
-          <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">System Online</span>
+        <div class="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl">
+          <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Online</span>
         </div>
         <button
-          class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-all">
+          class="p-2.5 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
           <ng-icon name="lucideSettings" class="h-4 w-4"></ng-icon>
         </button>
       </div>
@@ -109,14 +109,13 @@
     <!-- View 2: Intelligence Lab (Deep Dive Split) -->
     <div class="grid grid-cols-1 lg:grid-cols-10 gap-6 h-[700px] animate-in slide-in-from-bottom-5 duration-500">
       <!-- Left (40%): AI Analyst Chat -->
-      <div class="lg:col-span-4 rounded-3xl bg-zinc-900/50 border border-zinc-800 flex flex-col overflow-hidden">
-        <div class="p-6 border-b border-zinc-800 flex items-center justify-between">
+      <div class="lg:col-span-4 rounded-3xl bg-card/50 border border-border flex flex-col overflow-hidden">
+        <div class="p-6 border-b border-border flex items-center justify-between">
           <div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-zinc-100">AI Analyst</h3>
-            <p class="text-[9px] text-zinc-500 uppercase mt-1">Specialized context: {{ details.name }}</p>
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-foreground">AI Analyst</h3>
+            <p class="text-[9px] text-muted-foreground uppercase mt-1">Specialized context: {{ details.name }}</p>
           </div>
-          <div
-            class="px-2 py-1 rounded bg-violet-500/10 border border-violet-500/20 text-[9px] font-black text-violet-400">
+          <div class="px-2 py-1 rounded bg-primary/10 border border-primary/20 text-[9px] font-black text-primary">
             CONTEXT_LOADED</div>
         </div>
         <div class="flex-1 overflow-hidden">
@@ -128,9 +127,9 @@
       <!-- Right (60%): News Reader -->
       <div class="lg:col-span-6 space-y-6 overflow-y-auto custom-scrollbar pr-2">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xs font-black uppercase tracking-[0.2em] text-zinc-500">Market Pulse Data</h3>
+          <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Market Pulse Data</h3>
           <button (click)="handleSummarizeNews()"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-black uppercase tracking-widest hover:bg-violet-500/20 transition-all">
+            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest hover:bg-primary/20 transition-all">
             <ng-icon name="lucideWand2" class="h-3 w-3"></ng-icon>
             Summarize All News
           </button>
@@ -144,49 +143,47 @@
     <!-- View 3: Engagement Log (Full-width Timeline) -->
     <!-- View 3: Engagement Log (Tactical Timeline) -->
     <div
-      class="animate-in slide-in-from-right-10 duration-500 min-h-[500px] rounded-3xl bg-zinc-900/30 border border-zinc-800/50 p-12 overflow-y-auto custom-scrollbar">
+      class="animate-in slide-in-from-right-10 duration-500 min-h-[500px] rounded-3xl bg-card/30 border border-border/50 p-12 overflow-y-auto custom-scrollbar">
       <div class="max-w-4xl mx-auto space-y-12">
 
         <!-- Header & Action -->
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center gap-4 flex-1">
-            <div class="h-px w-12 bg-zinc-800/50"></div>
-            <h2 class="text-xs font-black uppercase tracking-[0.4em] text-zinc-500">Tactical Timeline</h2>
-            <div class="h-px flex-1 bg-zinc-800/50"></div>
+            <div class="h-px w-12 bg-border/50"></div>
+            <h2 class="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground">Tactical Timeline</h2>
+            <div class="h-px flex-1 bg-border/50"></div>
           </div>
           <button hlmBtn variant="outline" (click)="addManualEvent()"
-            class="ml-4 gap-2 text-xs border-zinc-800 bg-zinc-950 hover:bg-zinc-900 hover:text-zinc-100 transition-all">
+            class="ml-4 gap-2 text-xs border-border bg-muted hover:bg-card hover:text-foreground transition-all">
             <ng-icon name="lucideCalendarPlus" class="h-3.5 w-3.5"></ng-icon>
             Add Manual Event
           </button>
         </div>
 
-        <div class="relative pl-8 border-l border-zinc-800 space-y-12 pb-12">
+        <div class="relative pl-8 border-l border-border space-y-12 pb-12">
 
           @for (event of tacticalEvents(); track event.id) {
           <div class="relative group">
             <!-- Timeline Dot -->
-            <div [class.bg-blue-500]="event.type === 'Interview'"
-              [class.shadow-[0_0_15px_rgba(59,130,246,0.5)]]="event.type === 'Interview'"
-              [class.bg-violet-500]="event.type === 'Networking'"
-              [class.shadow-[0_0_15px_rgba(139,92,246,0.5)]]="event.type === 'Networking'"
-              [class.bg-emerald-500]="event.type === 'Outcome' && event.status === 'Offer'"
-              [class.bg-rose-500]="event.type === 'Outcome' && event.status === 'Rejected'"
-              [class.bg-zinc-600]="event.type === 'Application'"
-              class="absolute left-[-41px] top-6 w-4 h-4 rounded-full border-4 border-zinc-950 transition-all z-10 group-hover:scale-125 group-hover:bg-violet-500! group-hover:border-violet-400 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.6)]">
+            <div [class.bg-info]="event.type === 'Interview'" [class.shadow-info/50]="event.type === 'Interview'"
+              [class.bg-primary]="event.type === 'Networking'" [class.shadow-primary/50]="event.type === 'Networking'"
+              [class.bg-success]="event.type === 'Outcome' && event.status === 'Offer'"
+              [class.bg-destructive]="event.type === 'Outcome' && event.status === 'Rejected'"
+              [class.bg-muted-foreground]="event.type === 'Application'"
+              class="absolute left-[-41px] top-6 w-4 h-4 rounded-full border-4 border-background transition-all z-10 group-hover:scale-125 group-hover:border-primary/40">
             </div>
 
             <!-- Bento Card -->
             <div
-              class="relative overflow-hidden rounded-2xl bg-zinc-900/40 border border-zinc-800 p-6 hover:bg-zinc-900/60 transition-all group-hover:border-zinc-700">
+              class="relative overflow-hidden rounded-2xl bg-card/40 border border-border p-6 hover:bg-card/60 transition-all group-hover:border-primary/30">
 
               <!-- Ghosting Overlay Effect -->
               @if (event.meta?.isGhosted) {
-              <div class="absolute inset-0 bg-amber-500/5 animate-pulse pointer-events-none"></div>
+              <div class="absolute inset-0 bg-warning/5 animate-pulse pointer-events-none"></div>
               <div class="absolute top-0 right-0 p-3">
                 <span
-                  class="inline-flex items-center px-2 py-1 rounded bg-amber-500/10 border border-amber-500/20 text-[9px] font-black uppercase text-amber-500 tracking-wider">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-2"></span>
+                  class="inline-flex items-center px-2 py-1 rounded bg-warning/10 border border-warning/20 text-[9px] font-black uppercase text-warning tracking-wider">
+                  <span class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse mr-2"></span>
                   Signal Lost
                 </span>
               </div>
@@ -194,12 +191,13 @@
 
               <div class="flex flex-col md:flex-row gap-6">
                 <!-- Left: Date & Type -->
-                <div class="md:w-32 shrink-0 flex flex-col justify-center border-r border-zinc-800/50 pr-6 mr-2">
-                  <span class="text-[10px] font-black uppercase tracking-widest text-zinc-500">{{ event.date | date:'MMM
+                <div class="md:w-32 shrink-0 flex flex-col justify-center border-r border-border/50 pr-6 mr-2">
+                  <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{{ event.date |
+                    date:'MMM
                     dd' }}</span>
-                  <span class="text-2xl font-black text-zinc-300">{{ event.date | date:'yyyy' }}</span>
+                  <span class="text-2xl font-black text-foreground">{{ event.date | date:'yyyy' }}</span>
                   <span
-                    class="mt-2 text-[10px] font-bold px-2 py-1 rounded w-fit bg-zinc-800 text-zinc-400 border border-zinc-700 uppercase">
+                    class="mt-2 text-[10px] font-bold px-2 py-1 rounded w-fit bg-muted text-muted-foreground border border-border uppercase">
                     {{ event.type }}
                   </span>
                 </div>
@@ -207,11 +205,12 @@
                 <!-- Right: Content -->
                 <div class="flex-1 space-y-4">
                   <div>
-                    <h4 class="text-lg font-bold text-zinc-100 tracking-tight">{{ event.title }}</h4>
-                    <p class="text-xs text-zinc-500 font-medium uppercase tracking-wide mt-0.5">{{ event.subtitle }}</p>
+                    <h4 class="text-lg font-bold text-foreground tracking-tight">{{ event.title }}</h4>
+                    <p class="text-xs text-muted-foreground font-medium uppercase tracking-wide mt-0.5">{{
+                      event.subtitle }}</p>
 
                     @if (event.description) {
-                    <p class="text-sm text-zinc-400 mt-3 leading-relaxed border-l-2 border-zinc-700 pl-3">
+                    <p class="text-sm text-muted-foreground mt-3 leading-relaxed border-l-2 border-border pl-3">
                       {{ event.description }}
                     </p>
                     }
@@ -222,8 +221,8 @@
                   <div class="flex flex-wrap gap-3 mt-4">
                     @for (asset of event.assets; track asset.label) {
                     <a [href]="asset.url" target="_blank"
-                      class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-800 hover:border-violet-500/50 hover:bg-violet-500/5 transition-all text-xs font-medium text-zinc-400 hover:text-violet-300 group/asset">
-                      <ng-icon name="lucideFileText" class="w-3.5 h-3.5 group-hover/asset:text-violet-400"></ng-icon>
+                      class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border hover:border-primary/50 hover:bg-primary/5 transition-all text-xs font-medium text-muted-foreground hover:text-primary group/asset">
+                      <ng-icon name="lucideFileText" class="w-3.5 h-3.5 group-hover/asset:text-primary"></ng-icon>
                       {{ asset.label }}
                     </a>
                     }
@@ -232,13 +231,13 @@
 
                   <!-- AI Tactical Retrospective -->
                   @if (event.meta?.aiInsight) {
-                  <div class="mt-4 p-4 rounded-xl bg-violet-500/5 border-l-2 border-violet-500/30">
+                  <div class="mt-4 p-4 rounded-xl bg-primary/5 border-l-2 border-primary/30">
                     <div class="flex items-center gap-2 mb-2">
-                      <ng-icon name="lucideMicroscope" class="text-violet-400 w-3.5 h-3.5"></ng-icon>
-                      <span class="text-[10px] font-black uppercase tracking-widest text-violet-400">Tactical
+                      <ng-icon name="lucideMicroscope" class="text-primary w-3.5 h-3.5"></ng-icon>
+                      <span class="text-[10px] font-black uppercase tracking-widest text-primary">Tactical
                         Retrospective</span>
                     </div>
-                    <p class="text-xs text-violet-200/80 italic leading-relaxed">
+                    <p class="text-xs text-primary/80 italic leading-relaxed">
                       "{{ event.meta!.aiInsight }}"
                     </p>
                   </div>
@@ -246,9 +245,9 @@
 
                   <!-- Actions (if application) -->
                   @if (event.type === 'Application') {
-                  <div class="flex justify-end mt-2 pt-4 border-t border-zinc-800/50">
+                  <div class="flex justify-end mt-2 pt-4 border-t border-border/50">
                     <button hlmBtn variant="ghost" (click)="viewApplication(event.id)"
-                      class="h-8 px-3 text-xs gap-2 text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800/50 rounded-lg transition-all">
+                      class="h-8 px-3 text-xs gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all">
                       View Full Dossier
                       <ng-icon name="lucideArrowLeft" class="h-3 w-3 rotate-180"></ng-icon>
                     </button>

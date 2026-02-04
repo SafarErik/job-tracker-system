@@ -19,57 +19,57 @@ export interface StatusStyle {
 }
 
 /**
- * Semantic Status Palette - "Gradient of Progress"
- * Uses "Tinted Glass" aesthetic: low opacity bg, solid text, medium opacity border.
+ * Semantic Status Palette - Theme-aware for both light and dark modes
+ * Uses "Tinted Glass" aesthetic with appropriate contrast for each mode.
  */
 export const STATUS_STYLES: Record<JobApplicationStatus, StatusStyle> = {
     [JobApplicationStatus.Applied]: {
-        badge: 'bg-zinc-500/10 text-zinc-300 border-zinc-500/30 shadow-[0_0_12px_-3px_rgba(161,161,170,0.3)]',
+        badge: 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-300 border-zinc-500/30',
         label: 'Applied',
         columnBorder: 'border-zinc-500/50',
-        columnText: 'text-zinc-400',
+        columnText: 'text-zinc-600 dark:text-zinc-400',
     },
     [JobApplicationStatus.PhoneScreen]: {
-        badge: 'bg-blue-500/10 text-blue-300 border-blue-500/30 shadow-[0_0_12px_-3px_rgba(59,130,246,0.3)]',
+        badge: 'bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/30',
         label: 'Phone Screen',
         columnBorder: 'border-blue-500/50',
-        columnText: 'text-blue-400',
+        columnText: 'text-blue-600 dark:text-blue-400',
     },
     [JobApplicationStatus.TechnicalTask]: {
-        badge: 'bg-amber-500/10 text-amber-300 border-amber-500/30 shadow-[0_0_12px_-3px_rgba(245,158,11,0.3)]',
+        badge: 'bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/30',
         label: 'Technical Task',
         columnBorder: 'border-amber-500/50',
-        columnText: 'text-amber-400',
+        columnText: 'text-amber-600 dark:text-amber-400',
     },
     [JobApplicationStatus.Interviewing]: {
-        badge: 'bg-violet-500/10 text-violet-300 border-violet-500/30 shadow-[0_0_12px_-3px_rgba(139,92,246,0.5)]', // Little stronger
+        badge: 'bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/30',
         label: 'Interviewing',
         columnBorder: 'border-violet-500/50',
-        columnText: 'text-violet-400',
+        columnText: 'text-violet-600 dark:text-violet-400',
     },
     [JobApplicationStatus.Offer]: {
-        badge: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 shadow-[0_0_12px_-3px_rgba(16,185,129,0.4)]',
+        badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/30',
         label: 'Offer Received',
         columnBorder: 'border-emerald-500/50',
-        columnText: 'text-emerald-400',
+        columnText: 'text-emerald-600 dark:text-emerald-400',
     },
     [JobApplicationStatus.Accepted]: {
-        badge: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30 shadow-[0_0_12px_-3px_rgba(6,182,212,0.4)]',
+        badge: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/30',
         label: 'Accepted',
         columnBorder: 'border-cyan-500/50',
-        columnText: 'text-cyan-400',
+        columnText: 'text-cyan-600 dark:text-cyan-400',
     },
     [JobApplicationStatus.Rejected]: {
-        badge: 'bg-rose-500/5 text-rose-400 border-rose-500/20 opacity-80', // Less glow, more "dead"
+        badge: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20 opacity-80',
         label: 'Rejected',
         columnBorder: 'border-rose-500/40',
-        columnText: 'text-rose-400',
+        columnText: 'text-rose-600 dark:text-rose-400',
     },
     [JobApplicationStatus.Ghosted]: {
-        badge: 'bg-zinc-500/5 text-zinc-400 border-zinc-500/20 opacity-70', // Ghostly
+        badge: 'bg-zinc-500/10 text-zinc-500 dark:text-zinc-400 border-zinc-500/20 opacity-70',
         label: 'Ghosted',
         columnBorder: 'border-zinc-500/40',
-        columnText: 'text-zinc-400',
+        columnText: 'text-zinc-500 dark:text-zinc-400',
     },
 };
 
@@ -150,16 +150,17 @@ export function isInboxStatus(status: JobApplicationStatus): boolean {
 export function getPriorityBadgeClasses(priority: JobPriority | undefined): string {
     const base = 'px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all duration-300 border';
 
-    if (priority === undefined) return `${base} bg-zinc-800 text-zinc-400 border-zinc-700`;
+    if (priority === undefined) return `${base} bg-muted text-muted-foreground border-border`;
 
     switch (priority) {
         case JobPriority.High:
-            return `${base} text-violet-400 bg-violet-400/10 border-violet-400/20 shadow-[0_0_12px_-3px_rgba(167,139,250,0.3)]`;
+            return `${base} text-violet-600 dark:text-violet-400 bg-violet-500/10 border-violet-500/20`;
         case JobPriority.Medium:
-            return `${base} text-zinc-300 bg-zinc-800 border-zinc-700`;
+            return `${base} text-foreground/80 bg-muted border-border`;
         case JobPriority.Low:
-            return `${base} text-zinc-500 bg-zinc-900/50 border-zinc-800/50`;
+            return `${base} text-muted-foreground bg-muted/50 border-border/50`;
         default:
-            return `${base} bg-zinc-800 text-zinc-400 border-zinc-700`;
+            return `${base} bg-muted text-muted-foreground border-border`;
     }
 }
+

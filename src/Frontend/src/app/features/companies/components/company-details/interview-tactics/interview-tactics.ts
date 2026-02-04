@@ -9,7 +9,7 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
   imports: [CommonModule, NgIcon],
   providers: [provideIcons({ lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, lucideX, lucideChevronRight, lucideQuote, lucideFileText })],
   template: `
-    <div class="rounded-3xl bg-zinc-900/40 border border-zinc-800 p-5 flex flex-col relative overflow-hidden h-full">
+    <div class="rounded-3xl bg-card/40 border border-border p-5 flex flex-col relative overflow-hidden h-full">
       <!-- Background Glow -->
       <div class="absolute top-0 right-0 p-4 opacity-5 rotate-12 scale-150 pointer-events-none">
         <ng-icon name="lucideSparkles" class="w-32 h-32 text-primary"></ng-icon>
@@ -26,7 +26,7 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
           @for (tactic of tactics; track tactic.id) {
             <button 
               (click)="openDrawer(tactic)"
-              class="flex items-start gap-4 p-3 rounded-2xl transition-all duration-300 group hover:bg-zinc-800/50 border border-transparent hover:border-zinc-700/50 text-left w-full relative">
+              class="flex items-start gap-4 p-3 rounded-2xl transition-all duration-300 group hover:bg-muted/50 border border-transparent hover:border-border text-left w-full relative">
               
               <!-- Icon Box -->
               <div [class]="'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 ' + tactic.colorClass">
@@ -36,10 +36,10 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
               <!-- Content -->
               <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between mb-1">
-                  <p class="text-[10px] font-black uppercase tracking-widest text-zinc-500">{{ tactic.type }}</p>
-                  <ng-icon name="lucideChevronRight" class="w-4 h-4 text-zinc-600 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></ng-icon>
+                  <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{{ tactic.type }}</p>
+                  <ng-icon name="lucideChevronRight" class="w-4 h-4 text-muted-foreground/40 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300"></ng-icon>
                 </div>
-                <p [class]="'text-sm leading-snug line-clamp-2 ' + (tactic.id === 'query' ? 'font-serif italic text-zinc-300' : 'font-medium text-zinc-200')">
+                <p [class]="'text-sm leading-snug line-clamp-2 ' + (tactic.id === 'query' ? 'font-serif italic text-foreground/80' : 'font-medium text-foreground/90')">
                   {{ tactic.title }}
                 </p>
               </div>
@@ -52,12 +52,12 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
       @if (selectedTactic(); as tactic) {
         <div class="absolute inset-0 z-50 flex justify-end">
           <!-- Backdrop -->
-          <div class="absolute inset-0 bg-zinc-950/60 backdrop-blur-xl transition-opacity duration-300" (click)="closeDrawer()"></div>
+          <div class="absolute inset-0 bg-background/60 backdrop-blur-xl transition-opacity duration-300" (click)="closeDrawer()"></div>
           
           <!-- Drawer Content -->
-          <div class="relative w-full h-full bg-zinc-950 border-l border-zinc-800 shadow-2xl shadow-black p-6 overflow-y-auto animate-in slide-in-from-right duration-300 flex flex-col">
+          <div class="relative w-full h-full bg-popover border-l border-border shadow-2xl p-6 overflow-y-auto animate-in slide-in-from-right duration-300 flex flex-col">
              <!-- Close Button -->
-             <button (click)="closeDrawer()" class="absolute top-4 right-4 p-2 text-zinc-400 hover:text-white bg-zinc-900/50 hover:bg-zinc-800 rounded-full transition-colors">
+             <button (click)="closeDrawer()" class="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted rounded-full transition-colors">
                <ng-icon name="lucideX" class="w-5 h-5"></ng-icon>
              </button>
 
@@ -67,9 +67,9 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
                  <div [class]="'p-2 rounded-lg ' + tactic.colorClass">
                    <ng-icon [name]="tactic.icon" class="w-5 h-5"></ng-icon>
                  </div>
-                 <span class="text-xs font-black uppercase tracking-widest text-zinc-500">{{ tactic.type }}</span>
+                 <span class="text-xs font-black uppercase tracking-widest text-muted-foreground">{{ tactic.type }}</span>
                </div>
-               <h3 class="text-xl font-bold text-white leading-tight">
+               <h3 class="text-xl font-bold text-foreground leading-tight">
                  {{ tactic.title }}
                </h3>
              </div>
@@ -78,22 +78,22 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
              <div class="space-y-6">
                <!-- The Reasoning -->
                <div class="space-y-2">
-                 <h4 class="text-sm font-bold text-violet-400 uppercase tracking-wide">The Reasoning</h4>
-                 <div class="text-sm text-zinc-400 leading-relaxed bg-zinc-900/50 p-4 rounded-xl border border-zinc-800/50 min-h-[80px]">
-                   <span class="text-zinc-200">{{ displayedReasoning() }}</span><span class="animate-pulse text-violet-500">|</span>
+                 <h4 class="text-sm font-bold text-primary uppercase tracking-wide">The Reasoning</h4>
+                 <div class="text-sm text-muted-foreground leading-relaxed bg-card/50 p-4 rounded-xl border border-border/50 min-h-[80px]">
+                   <span class="text-foreground">{{ displayedReasoning() }}</span><span class="animate-pulse text-primary">|</span>
                  </div>
                </div>
 
                <!-- Actionable Phrases -->
                <div class="space-y-2">
-                 <h4 class="text-sm font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-2">
+                 <h4 class="text-sm font-bold text-success uppercase tracking-wide flex items-center gap-2">
                    <ng-icon name="lucideQuote" class="w-4 h-4"></ng-icon>
                    Actionable Phrases
                  </h4>
                  <div class="flex flex-col gap-2">
                    @for (phrase of tactic.phrases; track $index) {
-                     <div class="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10 hover:bg-emerald-500/10 transition-colors cursor-copy group/phrase relative">
-                       <p class="text-sm text-emerald-100 font-serif italic">
+                     <div class="p-4 rounded-xl bg-success/5 border border-success/10 hover:bg-success/10 transition-colors cursor-copy group/phrase relative">
+                       <p class="text-sm text-success font-serif italic">
                          {{ phrase }}
                        </p>
                      </div>
@@ -103,13 +103,13 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
 
                <!-- CV Alignment -->
                <div class="space-y-2">
-                  <h4 class="text-sm font-bold text-blue-400 uppercase tracking-wide flex items-center gap-2">
+                  <h4 class="text-sm font-bold text-info uppercase tracking-wide flex items-center gap-2">
                     <ng-icon name="lucideFileText" class="w-4 h-4"></ng-icon>
                     CV Alignment
                   </h4>
-                  <div class="p-3 rounded-lg bg-blue-500/5 border border-blue-500/10 flex items-center gap-3">
-                    <div class="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                    <p class="text-sm text-blue-200 font-medium">{{ tactic.cvAlignment }}</p>
+                  <div class="p-3 rounded-lg bg-info/5 border border-info/10 flex items-center gap-3">
+                    <div class="w-1.5 h-1.5 rounded-full bg-info"></div>
+                    <p class="text-sm text-info font-medium">{{ tactic.cvAlignment }}</p>
                   </div>
                </div>
              </div>
@@ -140,7 +140,7 @@ export class InterviewTacticsComponent implements OnDestroy {
         '"My values align heavily with the mission statement on page 4..."'
       ],
       cvAlignment: 'Volunteer work at GreenTech NGO (2021)',
-      colorClass: 'bg-zinc-950 border-zinc-800'
+      colorClass: 'bg-muted border-border'
     },
     {
       id: 'tech',
@@ -168,7 +168,7 @@ export class InterviewTacticsComponent implements OnDestroy {
         '"Do you have dedicated cooldown sprints?"'
       ],
       cvAlignment: 'Refactored Legacy Auth System (2023)',
-      colorClass: 'bg-zinc-900 border-zinc-800'
+      colorClass: 'bg-muted border-border'
     }
   ];
 

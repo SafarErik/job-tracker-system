@@ -1,32 +1,32 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-['Inter']">
+<div class="min-h-screen bg-background text-foreground flex flex-col font-['Inter']">
   <!-- Top Bar -->
-  <header class="h-16 border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50 px-6 flex items-center justify-between">
+  <header class="h-16 border-b border-border bg-background sticky top-0 z-50 px-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
       <button (click)="goBack()"
-        class="p-2 hover:bg-zinc-900 rounded-lg transition-colors text-zinc-400 hover:text-zinc-100"
+        class="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
         aria-label="Go back" title="Go back">
         <ng-icon name="lucideArrowLeft" class="text-xl" aria-hidden="true"></ng-icon>
       </button>
       <div class="flex flex-col">
-        <div class="flex items-center gap-2 text-xs text-zinc-500 uppercase tracking-widest font-semibold">
+        <div class="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest font-semibold">
           <span>Applications</span>
-          <ng-icon name="lucideChevronRight" class="text-zinc-600"></ng-icon>
-          <span class="text-zinc-400">{{ store.selectedApplication()?.companyName }}</span>
+          <ng-icon name="lucideChevronRight" class="text-border"></ng-icon>
+          <span class="text-muted-foreground">{{ store.selectedApplication()?.companyName }}</span>
         </div>
-        <h1 class="text-sm font-medium text-zinc-200">{{ store.selectedApplication()?.position }}</h1>
+        <h1 class="text-sm font-medium text-foreground">{{ store.selectedApplication()?.position }}</h1>
       </div>
     </div>
 
     <!-- Command Bar Trigger (Mockup) -->
     <div class="absolute left-1/2 -translate-x-1/2 w-full max-w-md hidden md:block">
       <button (click)="toggleCommandBar()"
-        class="w-full h-10 px-4 flex items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-md hover:border-zinc-700 transition-all group">
-        <div class="flex items-center gap-3 text-zinc-500 group-hover:text-zinc-400 transition-colors">
+        class="w-full h-10 px-4 flex items-center justify-between rounded-xl border border-border bg-card/50 backdrop-blur-md hover:border-primary/30 transition-all group">
+        <div class="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
           <ng-icon name="lucideSearch" class="text-lg"></ng-icon>
           <span class="text-sm font-light">Ask AI or search...</span>
         </div>
         <div
-          class="flex items-center gap-1.5 bg-zinc-800 px-2 py-0.5 rounded border border-zinc-700 text-[10px] font-mono text-zinc-500">
+          class="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded border border-border text-[10px] font-mono text-muted-foreground">
           <ng-icon name="lucideCommand" class="text-xs"></ng-icon>
           <span>K</span>
         </div>
@@ -42,27 +42,28 @@
       </button>
 
       <ng-template #statusMenu>
-        <div hlmDropdownMenu class="w-48 bg-zinc-900 border-zinc-800 shadow-2xl p-1 rounded-xl">
-          <div hlmDropdownMenuLabel class="px-2 py-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+        <div hlmDropdownMenu class="w-48 bg-popover border-border shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel
+            class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
             Update Status</div>
-          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Applied)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Applied</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Applied</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.PhoneScreen)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Phone Screen</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Phone Screen</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.TechnicalTask)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Technical Task</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Technical Task</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Interviewing)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Interviewing</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Interviewing</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Offer)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-300">Offer Received</button>
-          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Offer Received</button>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Accepted)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-emerald-400">Accepted</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-success">Accepted</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Rejected)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-red-400">Rejected</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive">Rejected</button>
           <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Ghosted)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-500">Ghosted</button>
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground">Ghosted</button>
         </div>
       </ng-template>
 
@@ -75,42 +76,43 @@
       </button>
 
       <ng-template #priorityMenu>
-        <div hlmDropdownMenu class="w-40 bg-zinc-900 border-zinc-800 shadow-2xl p-1 rounded-xl">
-          <div hlmDropdownMenuLabel class="px-2 py-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+        <div hlmDropdownMenu class="w-40 bg-popover border-border shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel
+            class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
             Set Priority</div>
-          <div hlmDropdownMenuSeparator class="bg-zinc-800 my-1"></div>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
           <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Low)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-zinc-500 flex items-center">
-            <div class="w-2 h-2 rounded-full bg-zinc-600 mr-2"></div> Low
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground flex items-center">
+            <div class="w-2 h-2 rounded-full bg-muted-foreground mr-2"></div> Low
           </button>
           <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Medium)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-blue-400 flex items-center">
-            <div class="w-2 h-2 rounded-full bg-blue-500 mr-2"></div> Medium
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-info flex items-center">
+            <div class="w-2 h-2 rounded-full bg-info mr-2"></div> Medium
           </button>
           <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.High)"
-            class="text-xs py-2 px-3 rounded-lg focus:bg-zinc-800 text-red-400 flex items-center">
-            <div class="w-2 h-2 rounded-full bg-red-500 mr-2"></div> High
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive flex items-center">
+            <div class="w-2 h-2 rounded-full bg-destructive mr-2"></div> High
           </button>
         </div>
       </ng-template>
 
-      <div class="w-px h-6 bg-zinc-800 mx-1"></div>
+      <div class="w-px h-6 bg-border mx-1"></div>
 
       <!-- Action Buttons -->
       <button (click)="uiState.openJobSettings()"
-        class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-zinc-300 transition-colors tooltip"
+        class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-foreground transition-colors tooltip"
         aria-label="Edit Application Metadata" title="Edit Application Metadata">
         <ng-icon name="lucideSettings" class="text-sm"></ng-icon>
       </button>
 
       <button (click)="deleteApplication()"
-        class="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-500 hover:text-red-400 transition-colors tooltip"
+        class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-destructive transition-colors tooltip"
         aria-label="Delete Application" title="Delete Application">
         <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
       </button>
 
-      <button (click)="onAddWorkstationItem()" class="p-2 hover:bg-zinc-900 rounded-lg text-zinc-400 transition-colors"
-        aria-label="Add item">
+      <button (click)="onAddWorkstationItem()"
+        class="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors" aria-label="Add item">
         <ng-icon name="lucidePlus" class="text-xl" aria-hidden="true"></ng-icon>
       </button>
     </div>
@@ -118,11 +120,12 @@
 
   <!-- Phase Navigation -->
   <div class="p-6 flex justify-center">
-    <div class="p-1.5 bg-zinc-900/80 backdrop-blur-md border border-zinc-800 rounded-2xl flex gap-1 shadow-2xl">
+    <div class="p-1.5 bg-card/80 backdrop-blur-md border border-border rounded-2xl flex gap-1 shadow-xl">
       @for (phase of phases; track phase.id) {
-      <button (click)="setPhase(phase.id)" [class.bg-zinc-100]="currentPhase() === phase.id"
-        [class.text-zinc-950]="currentPhase() === phase.id" [class.text-zinc-400]="currentPhase() !== phase.id"
-        [class.hover:text-zinc-100]="currentPhase() !== phase.id"
+      <button (click)="setPhase(phase.id)" [class.bg-foreground]="currentPhase() === phase.id"
+        [class.text-background]="currentPhase() === phase.id"
+        [class.text-muted-foreground]="currentPhase() !== phase.id"
+        [class.hover:text-foreground]="currentPhase() !== phase.id"
         class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2">
         <ng-icon [name]="phase.icon" class="text-lg"></ng-icon>
         {{ phase.label }}
@@ -140,34 +143,33 @@
         class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-220px)] animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         <!-- Left Column: Job Context (Scrollable) -->
-        <div
-          class="flex flex-col min-h-0 bg-zinc-900/30 border border-zinc-800/50 rounded-3xl overflow-hidden group/context">
-          <div class="px-6 py-4 border-b border-zinc-800/50 bg-zinc-900/20 flex items-center justify-between">
-            <h3 class="text-xs font-serif font-bold text-zinc-500 uppercase tracking-widest">Job Context</h3>
+        <div class="flex flex-col min-h-0 bg-card/30 border border-border/50 rounded-3xl overflow-hidden group/context">
+          <div class="px-6 py-4 border-b border-border/50 bg-card/20 flex items-center justify-between">
+            <h3 class="text-xs font-serif font-bold text-muted-foreground uppercase tracking-widest">Job Context</h3>
             @if (highlightedDescription()) {
             <button (click)="startManualPaste()"
-              class="text-[10px] text-zinc-500 hover:text-zinc-300 transition-colors uppercase font-bold tracking-tighter">Edit
+              class="text-[10px] text-muted-foreground hover:text-foreground transition-colors uppercase font-bold tracking-tighter">Edit
               Description</button>
             }
           </div>
 
-          <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 flex flex-col min-h-0">
+          <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-border flex flex-col min-h-0">
             @if (isPastingManually()) {
             <div class="flex-1 flex flex-col p-6 gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
               <div
-                class="flex-1 bg-zinc-950 border border-zinc-800 rounded-3xl p-4 overflow-hidden focus-within:ring-2 focus-within:ring-violet-500/20 focus-within:border-violet-500/50 transition-all flex flex-col">
+                class="flex-1 bg-muted border border-border rounded-3xl p-4 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all flex flex-col">
                 <textarea [(ngModel)]="manualPasteText"
                   placeholder="Paste the full job description here... (requirements, responsibilities, etc.)"
-                  class="flex-1 w-full bg-transparent border-none outline-none text-sm font-mono text-zinc-300 resize-none scrollbar-thin scrollbar-thumb-zinc-800"></textarea>
+                  class="flex-1 w-full bg-transparent border-none outline-none text-sm font-mono text-foreground resize-none scrollbar-thin scrollbar-thumb-border"></textarea>
               </div>
 
               <div class="flex items-center justify-end gap-3">
                 <button (click)="cancelManualPaste()" hlmBtn variant="ghost"
-                  class="text-xs font-bold uppercase tracking-widest text-zinc-500 px-6">
+                  class="text-xs font-bold uppercase tracking-widest text-muted-foreground px-6">
                   Cancel
                 </button>
                 <button (click)="saveManualPaste()" [disabled]="!manualPasteText().trim()" hlmBtn
-                  class="bg-linear-to-r from-violet-600 to-indigo-600 text-white text-xs font-bold uppercase tracking-widest px-8 rounded-xl shadow-lg shadow-violet-500/20">
+                  class="bg-linear-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold uppercase tracking-widest px-8 rounded-xl shadow-lg">
                   Save Changes
                 </button>
               </div>
@@ -176,14 +178,14 @@
             <div class="flex min-h-full">
               <!-- Line Numbers -->
               <div
-                class="w-12 py-6 bg-zinc-950/20 border-r border-zinc-800/50 flex flex-col items-center select-none shrink-0">
+                class="w-12 py-6 bg-muted/20 border-r border-border/50 flex flex-col items-center select-none shrink-0">
                 @for (num of lineNumbers(); track num) {
-                <span class="text-[10px] font-mono text-zinc-600 leading-relaxed block h-5">{{ num }}</span>
+                <span class="text-[10px] font-mono text-muted-foreground/50 leading-relaxed block h-5">{{ num }}</span>
                 }
               </div>
               <!-- Content -->
               <div
-                class="flex-1 p-6 font-mono text-sm text-zinc-300/90 leading-relaxed whitespace-pre-wrap select-text selection:bg-violet-500/30"
+                class="flex-1 p-6 font-mono text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap select-text selection:bg-primary/30"
                 [innerHTML]="highlightedDescription()">
               </div>
             </div>
@@ -192,38 +194,38 @@
             <div
               class="h-full flex-col flex items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-700">
               <div
-                class="w-20 h-20 rounded-3xl bg-zinc-900 flex items-center justify-center mb-6 shadow-inner border border-zinc-800">
-                <ng-icon name="lucideFileText" class="text-4xl text-zinc-800"></ng-icon>
+                class="w-20 h-20 rounded-3xl bg-muted flex items-center justify-center mb-6 shadow-inner border border-border">
+                <ng-icon name="lucideFileText" class="text-4xl text-muted-foreground/30"></ng-icon>
               </div>
-              <h4 class="text-lg font-sans font-bold text-zinc-200 mb-2">No Job Description Detected</h4>
-              <p class="text-xs text-zinc-500 max-w-xs mb-8 leading-relaxed">
+              <h4 class="text-lg font-sans font-bold text-foreground mb-2">No Job Description Detected</h4>
+              <p class="text-xs text-muted-foreground max-w-xs mb-8 leading-relaxed">
                 Analyze the specific role requirements to unlock tailored strategy and gap analysis.
               </p>
 
               <div class="w-full max-w-sm space-y-4">
                 <div class="relative group">
                   <ng-icon name="lucideLink"
-                    class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-focus-within:text-violet-500 transition-colors"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors"
                     aria-hidden="true"></ng-icon>
                   <label for="job-url-input" class="sr-only">Job URL</label>
                   <input id="job-url-input" type="text" placeholder="Paste Job URL..."
-                    class="w-full h-12 pl-11 pr-4 bg-zinc-950 border border-zinc-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50 transition-all placeholder:text-zinc-700">
+                    class="w-full h-12 pl-11 pr-4 bg-muted border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground">
                 </div>
 
                 <button
-                  class="w-full h-12 rounded-2xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2 group/btn">
+                  class="w-full h-12 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold text-sm shadow-lg transition-all flex items-center justify-center gap-2 group/btn">
                   <ng-icon name="lucideSparkles" class="text-lg group-hover:rotate-12 transition-transform"></ng-icon>
                   Magic Auto-Fill
                 </button>
 
                 <div class="flex items-center gap-4 py-2">
-                  <div class="h-px flex-1 bg-zinc-800/50"></div>
-                  <span class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">or</span>
-                  <div class="h-px flex-1 bg-zinc-800/50"></div>
+                  <div class="h-px flex-1 bg-border/50"></div>
+                  <span class="text-[10px] text-muted-foreground/50 font-bold uppercase tracking-widest">or</span>
+                  <div class="h-px flex-1 bg-border/50"></div>
                 </div>
 
                 <button (click)="startManualPaste()"
-                  class="w-full py-2 text-xs font-sans font-bold text-zinc-400 hover:text-zinc-200 transition-colors uppercase tracking-widest">
+                  class="w-full py-2 text-xs font-sans font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest">
                   Paste Text Manually
                 </button>
               </div>
@@ -236,52 +238,51 @@
         <div class="flex flex-col gap-6 overflow-y-auto pr-2 scrollbar-none">
 
           <!-- Compact Mission Intel -->
-          <div class="p-5 rounded-3xl bg-zinc-900/50 border border-zinc-800 shrink-0">
+          <div class="p-5 rounded-3xl bg-card/50 border border-border shrink-0">
             <h3
-              class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
-              <ng-icon name="lucideTarget" class="text-violet-500"></ng-icon>
+              class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
+              <ng-icon name="lucideTarget" class="text-primary"></ng-icon>
               Mission Intel
             </h3>
             <div class="grid grid-cols-3 gap-6">
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Priority</p>
+                <p class="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-2">Priority</p>
                 <div [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)" class="inline-block">
                   {{ store.selectedApplication()?.priority | jobPriority }}
                 </div>
               </div>
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Match Score</p>
+                <p class="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-2">Match Score</p>
                 <div class="flex items-baseline gap-1">
                   @if (service.isProcessing()) {
-                  <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
+                  <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
                   } @else {
-                  <span class="text-xl font-bold"
-                    [class.text-emerald-400]="(service.currentJob()?.matchScore ?? 0) >= 70"
-                    [class.text-amber-400]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
-                    [class.text-red-400]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
-                    [class.text-zinc-500]="(service.currentJob()?.matchScore ?? 0) === 0">
+                  <span class="text-xl font-bold" [class.text-success]="(service.currentJob()?.matchScore ?? 0) >= 70"
+                    [class.text-warning]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
+                    [class.text-destructive]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
+                    [class.text-muted-foreground]="(service.currentJob()?.matchScore ?? 0) === 0">
                     {{ service.currentJob()?.matchScore ?? 0 }}
                   </span>
                   <span class="text-xs font-medium"
-                    [class.text-emerald-500/60]="(service.currentJob()?.matchScore ?? 0) >= 70"
-                    [class.text-amber-500/60]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
-                    [class.text-red-500/60]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
-                    [class.text-zinc-600]="(service.currentJob()?.matchScore ?? 0) === 0">%</span>
+                    [class.text-success/60]="(service.currentJob()?.matchScore ?? 0) >= 70"
+                    [class.text-warning/60]="(service.currentJob()?.matchScore ?? 0) >= 40 && (service.currentJob()?.matchScore ?? 0) < 70"
+                    [class.text-destructive/60]="(service.currentJob()?.matchScore ?? 0) > 0 && (service.currentJob()?.matchScore ?? 0) < 40"
+                    [class.text-muted-foreground]="(service.currentJob()?.matchScore ?? 0) === 0">%</span>
                   }
                 </div>
               </div>
               <div class="p-3">
-                <p class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mb-2">Type</p>
+                <p class="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-2">Type</p>
                 <div
-                  class="bg-zinc-900 border border-zinc-800 text-zinc-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">
+                  class="bg-muted border border-border text-muted-foreground px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider inline-block">
                   {{ store.selectedApplication()?.jobType | jobType }}
                 </div>
               </div>
             </div>
             <!-- Analyze Button -->
-            <div class="mt-4 pt-4 border-t border-zinc-800">
+            <div class="mt-4 pt-4 border-t border-border">
               <button (click)="triggerAnalysis()" [disabled]="service.isProcessing()"
-                class="w-full py-3 rounded-xl bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:from-zinc-700 disabled:to-zinc-700 disabled:cursor-not-allowed text-white font-bold text-xs shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2">
+                class="w-full py-3 rounded-xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 disabled:from-muted disabled:to-muted disabled:cursor-not-allowed text-primary-foreground font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2">
                 @if (service.isProcessing()) {
                 <ng-icon name="lucideLoader2" class="text-lg animate-spin"></ng-icon>
                 Analyzing...
@@ -294,33 +295,33 @@
           </div>
 
           <!-- Gap Analysis -->
-          <div class="p-6 rounded-[32px] bg-zinc-900/50 border border-zinc-800 flex-1 min-h-0">
+          <div class="p-6 rounded-[32px] bg-card/50 border border-border flex-1 min-h-0">
             <h3
-              class="text-sm font-serif font-bold uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
-              <ng-icon name="lucideBrain" class="text-violet-500"></ng-icon>
+              class="text-sm font-serif font-bold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucideBrain" class="text-primary"></ng-icon>
               Gap Analysis
             </h3>
 
             <div class="space-y-4">
               @for (item of gapAnalysis(); track item.name) {
               <div class="p-4 rounded-2xl border transition-all"
-                [class]="item.matched ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-destructive/5 border-destructive/20'">
+                [class]="item.matched ? 'bg-success/5 border-success/20' : 'bg-destructive/5 border-destructive/20'">
 
                 <div class="flex items-start gap-3">
                   <div class="mt-0.5">
                     @if (item.matched) {
-                    <ng-icon name="lucideCheckCircle2" class="text-emerald-500 text-lg"></ng-icon>
+                    <ng-icon name="lucideCheckCircle2" class="text-success text-lg"></ng-icon>
                     } @else {
                     <ng-icon name="lucideAlertCircle" class="text-destructive text-lg"></ng-icon>
                     }
                   </div>
                   <div class="flex-1">
-                    <h4 class="text-sm font-bold" [class.text-emerald-400]="item.matched"
+                    <h4 class="text-sm font-bold" [class.text-success]="item.matched"
                       [class.text-destructive]="!item.matched">
                       {{ item.name }}
                     </h4>
                     @if (!item.matched) {
-                    <p class="text-xs text-zinc-500 mt-1 leading-tight">{{ item.suggestion }}</p>
+                    <p class="text-xs text-muted-foreground mt-1 leading-tight">{{ item.suggestion }}</p>
                     }
                   </div>
                 </div>
@@ -329,18 +330,19 @@
             </div>
 
             <!-- AI Feedback / Position Strategy -->
-            <div class="mt-8 pt-6 border-t border-zinc-800">
+            <div class="mt-8 pt-6 border-t border-border">
               <div class="flex items-center gap-2 mb-4">
-                <ng-icon name="lucideSparkles" class="text-violet-500"></ng-icon>
-                <h4 class="text-xs font-serif font-bold uppercase tracking-widest text-zinc-400">AI Insights</h4>
+                <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+                <h4 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">AI Insights
+                </h4>
               </div>
               @if (service.currentJob()?.aiFeedback) {
               <div
-                class="text-xs text-zinc-400 leading-relaxed whitespace-pre-wrap bg-zinc-950/50 p-4 rounded-xl border border-zinc-800">
+                class="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap bg-muted/50 p-4 rounded-xl border border-border">
                 {{ service.currentJob()?.aiFeedback }}
               </div>
               } @else {
-              <p class="text-xs text-zinc-500 leading-relaxed italic">
+              <p class="text-xs text-muted-foreground leading-relaxed italic">
                 Click "Analyze with AI" above to generate personalized insights for this position.
               </p>
               }
@@ -365,48 +367,51 @@
   <div (click)="closeCommandBar()"
     class="fixed inset-0 z-100 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300">
     <div (click)="$event.stopPropagation()"
-      class="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden scale-in duration-300">
-      <div class="p-6 flex items-center gap-4 border-b border-zinc-800">
-        <ng-icon name="lucideSearch" class="text-2xl text-violet-500" aria-hidden="true"></ng-icon>
+      class="w-full max-w-2xl bg-popover border border-border rounded-3xl shadow-2xl overflow-hidden scale-in duration-300">
+      <div class="p-6 flex items-center gap-4 border-b border-border">
+        <ng-icon name="lucideSearch" class="text-2xl text-primary" aria-hidden="true"></ng-icon>
         <label for="command-bar-input" class="sr-only">Search or ask AI</label>
         <input id="command-bar-input" autofocus type="text" placeholder="Ask AI anything about this application..."
-          class="flex-1 bg-transparent border-none outline-none text-zinc-100 text-lg placeholder:text-zinc-600">
-        <button (click)="toggleCommandBar()" class="p-2 hover:bg-zinc-800 rounded-lg text-zinc-500"
+          class="flex-1 bg-transparent border-none outline-none text-foreground text-lg placeholder:text-muted-foreground">
+        <button (click)="toggleCommandBar()" class="p-2 hover:bg-muted rounded-lg text-muted-foreground"
           aria-label="Close command bar">
           <ng-icon name="lucideChevronRight" class="rotate-90" aria-hidden="true"></ng-icon>
         </button>
       </div>
       <div class="p-4">
-        <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-zinc-600">Quick Actions</p>
+        <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">Quick Actions</p>
         <div class="mt-2 space-y-1">
           <button (click)="triggerAnalysis(); toggleCommandBar()" [disabled]="service.isProcessing()"
-            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group disabled:opacity-50">
+            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50">
             @if (service.isProcessing()) {
-            <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
+            <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
             } @else {
-            <ng-icon name="lucideBrain" class="text-xl text-zinc-500 group-hover:text-violet-400"></ng-icon>
+            <ng-icon name="lucideBrain" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
             }
-            <span class="text-zinc-300">Analyze Job Description</span>
+            <span class="text-foreground">Analyze Job Description</span>
           </button>
           <button (click)="generateAssets(); toggleCommandBar()" [disabled]="service.isProcessing()"
-            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group disabled:opacity-50">
+            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50">
             @if (service.isProcessing()) {
-            <ng-icon name="lucideLoader2" class="text-xl text-violet-400 animate-spin"></ng-icon>
+            <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
             } @else {
-            <ng-icon name="lucideSparkles" class="text-xl text-zinc-500 group-hover:text-violet-400"></ng-icon>
+            <ng-icon name="lucideSparkles" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
             }
-            <span class="text-zinc-300">Generate Cover Letter</span>
+            <span class="text-foreground">Generate Cover Letter</span>
           </button>
-          <button class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors group">
-            <ng-icon name="lucideMic2" class="text-xl text-zinc-500 group-hover:text-violet-400"></ng-icon>
-            <span class="text-zinc-300">Prepare for Interview</span>
+          <button class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group">
+            <ng-icon name="lucideMic2" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
+            <span class="text-foreground">Prepare for Interview</span>
           </button>
         </div>
       </div>
-      <div class="bg-zinc-950 p-4 border-t border-zinc-800 flex justify-between items-center text-[10px] text-zinc-600">
+      <div
+        class="bg-muted p-4 border-t border-border flex justify-between items-center text-[10px] text-muted-foreground">
         <div class="flex gap-4">
-          <span class="flex items-center gap-1"><span class="bg-zinc-800 px-1 rounded">↑↓</span> Navigate</span>
-          <span class="flex items-center gap-1"><span class="bg-zinc-800 px-1 rounded">↵</span> Select</span>
+          <span class="flex items-center gap-1"><span class="bg-card px-1 rounded border border-border">↑↓</span>
+            Navigate</span>
+          <span class="flex items-center gap-1"><span class="bg-card px-1 rounded border border-border">↵</span>
+            Select</span>
         </div>
         <span>Deep Mode Alpha v2.0</span>
       </div>

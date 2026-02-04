@@ -79,9 +79,9 @@ export class CompanyAddSheetComponent {
 
     // Priority Options
     readonly priorities: { value: 'Tier1' | 'Tier2' | 'Tier3'; label: string; color: string }[] = [
-        { value: 'Tier1', label: 'High', color: 'bg-violet-500 text-white border-violet-600' },
-        { value: 'Tier2', label: 'Mid', color: 'bg-zinc-800 text-zinc-300 border-zinc-700' },
-        { value: 'Tier3', label: 'Low', color: 'bg-zinc-900 text-zinc-500 border-zinc-800' }
+        { value: 'Tier1', label: 'High', color: 'bg-primary text-primary-foreground border-primary' },
+        { value: 'Tier2', label: 'Mid', color: 'bg-muted text-foreground border-border' },
+        { value: 'Tier3', label: 'Low', color: 'bg-muted/50 text-muted-foreground border-border' }
     ];
 
     // Industry Options from service

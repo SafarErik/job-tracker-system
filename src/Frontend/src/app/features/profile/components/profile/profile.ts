@@ -51,6 +51,8 @@ import {
 
 // Shared
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+import { ProfileSettingsSheetComponent } from '../profile-settings-sheet/profile-settings-sheet.component';
+
 @Component({
   selector: 'app-profile',
   imports: [
@@ -65,7 +67,8 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
     ...HlmCommandImports,
     ...BrnCommandImports,
     NgIcon,
-    ErrorStateComponent
+    ErrorStateComponent,
+    ProfileSettingsSheetComponent
   ],
   providers: [
     provideIcons({
@@ -127,8 +130,13 @@ export class ProfileComponent implements OnInit {
   editingField = signal<string | null>(null);
   isUploadingPicture = signal(false);
   isAddingSkill = signal(false);
+  isPolishingBio = signal(false);
   skillSearchTerm = signal('');
   lastSavedField = signal<string | null>(null);
+
+  // AI Signals from Store
+  suggestedSkills = this.profileStore.suggestedSkills;
+  careerInsights = this.profileStore.careerInsights;
 
   // Top suggested skills not yet added
   topSkills = computed(() => {
@@ -178,6 +186,7 @@ export class ProfileComponent implements OnInit {
     this.loadStats();
     this.loadSkills();
     this.loadAvailableSkills();
+    this.loadAISuggestions();
 
     this.skillSearchControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -224,6 +233,27 @@ export class ProfileComponent implements OnInit {
       next: (skills) => this.availableSkills.set(skills),
       error: (err) => console.error('Failed to load available skills:', err),
     });
+  }
+
+  private loadAISuggestions(): void {
+    // Mocking for now as backend might not have this
+    this.profileStore.setSuggestedSkills([
+      { id: 9991, name: 'Cloud Architecture', category: 'DevOps' },
+      { id: 9992, name: 'Kubernetes', category: 'DevOps' },
+      { id: 9993, name: 'Rust', category: 'Backend' }
+    ]);
+
+    this.profileStore.setCareerInsights({
+      nextLevelPath: 'Lead Engineer roles',
+      salaryBenchmark: 145000,
+      missingKey: 'Cloud Architecture'
+    });
+
+    // In a real scenario:
+    /*
+    this.profileService.getSuggestedSkills().subscribe(skills => this.profileStore.setSuggestedSkills(skills));
+    this.profileService.getCareerInsights().subscribe(insights => this.profileStore.setCareerInsights(insights));
+    */
   }
 
   private populateForm(profile: UserProfile): void {
@@ -477,6 +507,28 @@ export class ProfileComponent implements OnInit {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+    });
+  }
+
+  polishBio(): void {
+    const currentBio = this.profileForm.get('bio')?.value;
+    if (!currentBio) return;
+
+    this.isPolishingBio.set(true);
+
+    this.profileService.polishBio(currentBio).subscribe({
+      next: (res) => {
+        this.profileForm.patchValue({ bio: res.polishedBio });
+        this.saveField('bio');
+        this.isPolishingBio.set(false);
+        toast.success('AI Polish Complete', { description: 'Your narrative has been optimized for impact.' });
+      },
+      error: (err) => {
+        this.isPolishingBio.set(false);
+        // Fallback or error message
+        toast.error('AI Polish Failed', { description: 'System currently unavailable. Try again later.' });
+        console.error(err);
+      }
     });
   }
 }

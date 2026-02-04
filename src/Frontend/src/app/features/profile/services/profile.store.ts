@@ -13,12 +13,16 @@ export class ProfileStore {
     // State Signals
     private readonly _profile = signal<UserProfile | null>(null);
     private readonly _userSkills = signal<UserSkill[]>([]);
+    private readonly _suggestedSkills = signal<UserSkill[]>([]);
+    private readonly _careerInsights = signal<any | null>(null);
     private readonly _isLoading = signal<boolean>(false);
     private readonly _error = signal<string | null>(null);
 
     // Public Read-only Signals
     readonly profile = this._profile.asReadonly();
     readonly userSkills = this._userSkills.asReadonly();
+    readonly suggestedSkills = this._suggestedSkills.asReadonly();
+    readonly careerInsights = this._careerInsights.asReadonly();
     readonly isLoading = this._isLoading.asReadonly();
     readonly error = this._error.asReadonly();
 
@@ -70,5 +74,13 @@ export class ProfileStore {
      */
     updateSkills(skills: UserSkill[]) {
         this._userSkills.set(skills);
+    }
+
+    setSuggestedSkills(skills: UserSkill[]) {
+        this._suggestedSkills.set(skills);
+    }
+
+    setCareerInsights(insights: any) {
+        this._careerInsights.set(insights);
     }
 }

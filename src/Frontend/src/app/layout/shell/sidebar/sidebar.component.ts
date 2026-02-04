@@ -15,6 +15,7 @@ import {
   lucideChevronUp,
   lucideSun,
   lucideMoon,
+  lucidePieChart,
 } from '@ng-icons/lucide';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
@@ -51,6 +52,7 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
       lucideChevronUp,
       lucideSun,
       lucideMoon,
+      lucidePieChart,
     }),
   ],
   templateUrl: './sidebar.component.html',
@@ -72,6 +74,7 @@ export class SidebarComponent {
     { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
     { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
     { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
+    { label: 'Intelligence', icon: 'lucidePieChart', link: '/statistics', exact: false },
     { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];
 

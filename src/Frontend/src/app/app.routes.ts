@@ -143,6 +143,14 @@ export const routes: Routes = [
         data: { breadcrumb: 'Profile' }
       },
 
+      // Statistics & Intelligence
+      {
+        path: 'statistics',
+        loadChildren: () => import('./features/statistics/statistics.routes').then(m => m.STATISTICS_ROUTES),
+        title: 'Intelligence Analytics - VantageCursus',
+        data: { breadcrumb: 'Intelligence' }
+      },
+
       // Compatibility Redirects
       {
         path: 'company/:id',

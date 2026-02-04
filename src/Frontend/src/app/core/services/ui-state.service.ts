@@ -6,6 +6,7 @@ import { Injectable, signal } from '@angular/core';
 export class UiStateService {
     readonly isAddAppSheetOpen = signal(false);
     readonly isJobSettingsOpen = signal(false);
+    readonly isProfileSettingsOpen = signal(false);
 
     openAddAppSheet() {
         this.isAddAppSheetOpen.set(true);
@@ -21,5 +22,13 @@ export class UiStateService {
 
     closeJobSettings() {
         this.isJobSettingsOpen.set(false);
+    }
+
+    openProfileSettings() {
+        this.isProfileSettingsOpen.set(true);
+    }
+
+    closeProfileSettings() {
+        this.isProfileSettingsOpen.set(false);
     }
 }

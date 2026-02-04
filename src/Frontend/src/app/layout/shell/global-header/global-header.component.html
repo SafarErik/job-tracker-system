@@ -87,7 +87,7 @@
                 <span>Mail</span>
                 <hlm-command-shortcut>⌘B</hlm-command-shortcut>
               </button>
-              <button hlmCommandItem value="settings">
+              <button hlmCommandItem value="settings" (click)="uiService.openProfileSettings(); isOpen.set(false)">
                 <ng-icon hlm name="lucideSettings" hlmCommandIcon />
                 <span>Settings</span>
                 <hlm-command-shortcut>⌘S</hlm-command-shortcut>

@@ -51,7 +51,7 @@ import {
 
 // Shared
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
-import { ProfileSettingsSheetComponent } from '../profile-settings-sheet/profile-settings-sheet.component';
+import { UiStateService } from '../../../../core/services/ui-state.service';
 
 @Component({
   selector: 'app-profile',
@@ -67,8 +67,7 @@ import { ProfileSettingsSheetComponent } from '../profile-settings-sheet/profile
     ...HlmCommandImports,
     ...BrnCommandImports,
     NgIcon,
-    ErrorStateComponent,
-    ProfileSettingsSheetComponent
+    ErrorStateComponent
   ],
   providers: [
     provideIcons({
@@ -117,6 +116,7 @@ export class ProfileComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
+  public uiService = inject(UiStateService);
 
   // State
   profile = signal<UserProfile | null>(null);

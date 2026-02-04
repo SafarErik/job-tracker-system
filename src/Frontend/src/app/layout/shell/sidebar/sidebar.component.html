@@ -69,7 +69,7 @@
         <span>Profile</span>
         <span hlmDropdownMenuShortcut>⌘P</span>
       </button>
-      <button hlmDropdownMenuItem routerLink="/settings" hlmClassName="rounded-lg">
+      <button hlmDropdownMenuItem (click)="uiService.openProfileSettings()" hlmClassName="rounded-lg">
         <ng-icon hlm name="lucideSettings" hlmDropdownMenuIcon />
         <span>Settings</span>
         <span hlmDropdownMenuShortcut>⌘S</span>

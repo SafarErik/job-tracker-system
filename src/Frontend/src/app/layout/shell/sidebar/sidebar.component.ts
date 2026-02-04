@@ -20,7 +20,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
-import { ThemeService } from '../../../core/services';
+import { ThemeService, UiStateService } from '../../../core/services';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
@@ -60,6 +60,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class SidebarComponent {
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  public uiService = inject(UiStateService);
 
   onLogout() {
     this.authService.logout();

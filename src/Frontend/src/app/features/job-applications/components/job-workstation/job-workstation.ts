@@ -1,6 +1,7 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   signal,
   computed,
   ChangeDetectionStrategy,
@@ -85,7 +86,6 @@ interface GapAnalysisItem {
 
 @Component({
   selector: 'app-job-workstation',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -149,7 +149,7 @@ interface GapAnalysisItem {
   templateUrl: './job-workstation.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JobWorkstationComponent implements OnInit {
+export class JobWorkstationComponent implements OnInit, OnDestroy {
   public readonly route = inject(ActivatedRoute);
   public readonly uiState = inject(UiStateService);
   private readonly router = inject(Router);
@@ -310,6 +310,11 @@ export class JobWorkstationComponent implements OnInit {
     if (id) {
       this.store.selectApplication(id);
     }
+  }
+
+  ngOnDestroy(): void {
+    // Clear current application state to free memory (especially large AI responses)
+    this.store.clearCurrentApplication();
   }
 
   // Helpers

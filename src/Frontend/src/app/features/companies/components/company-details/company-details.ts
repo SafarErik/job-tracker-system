@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ChangeDetectionStrategy, inject, effect, computed, untracked, DestroyRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, inject, effect, computed, untracked, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
@@ -23,7 +23,6 @@ import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
 
 @Component({
   selector: 'app-company-details',
-  standalone: true,
   imports: [
     CommonModule,
     NgIcon,
@@ -41,7 +40,7 @@ import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
   styleUrl: './company-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CompanyDetailsComponent implements OnInit {
+export class CompanyDetailsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
@@ -195,6 +194,16 @@ export class CompanyDetailsComponent implements OnInit {
         this.router.navigate(['/companies']);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    // Clear active company state to free memory when leaving detail view
+    this.companyService.clearActiveCompany();
+    // Clear any pending notes timer
+    if (this.notesTimer) {
+      clearTimeout(this.notesTimer);
+      this.notesTimer = null;
+    }
   }
 
   handleRegenerateBriefing(): void {

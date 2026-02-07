@@ -152,4 +152,13 @@ export class CompanyService {
   getCompanyByIdSync(id: string): Company | undefined {
     return this.companies().find(c => c.id === id);
   }
+
+  /**
+   * Clear active company state when navigating away from company detail view.
+   * Prevents stale data and reduces memory footprint.
+   */
+  clearActiveCompany(): void {
+    this._activeCompany.set(null);
+    this._error.set(null);
+  }
 }

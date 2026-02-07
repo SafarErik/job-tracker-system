@@ -303,15 +303,15 @@ export class JobApplicationStore {
           apps.map((app) =>
             app.id === id
               ? {
-                  ...app,
-                  matchScore: res.matchScore,
-                  aiGoodPoints: res.goodPoints,
-                  aiGaps: res.gaps,
-                  aiAdvice: res.advice,
-                  aiFeedback: res.aiFeedback,
-                  generatedCoverLetter: res.tailoredCoverLetter,
-                  tailoredResume: res.tailoredResume,
-                }
+                ...app,
+                matchScore: res.matchScore,
+                aiGoodPoints: res.goodPoints,
+                aiGaps: res.gaps,
+                aiAdvice: res.advice,
+                aiFeedback: res.aiFeedback,
+                generatedCoverLetter: res.tailoredCoverLetter,
+                tailoredResume: res.tailoredResume,
+              }
               : app,
           ),
         );
@@ -354,5 +354,16 @@ export class JobApplicationStore {
     this._filterSearch.set('');
     this._filterStatus.set('all');
     this._filterCompanyId.set('all');
+  }
+
+  /**
+   * Clear current application state when navigating away from detail view.
+   * Prevents stale data and reduces memory by releasing large AI response objects.
+   */
+  clearCurrentApplication(): void {
+    this._selectedApplicationId.set(null);
+    this._currentJob.set(null);
+    this._tailoredResume.set(null);
+    this._error.set(null);
   }
 }

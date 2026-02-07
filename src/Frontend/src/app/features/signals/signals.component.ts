@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProfileStore } from '../profile/services/profile.store';
 import { IntelligenceService, GlobalSignal, CareerOpportunity } from '../../core/services/intelligence.service';
 import { ApplicationService } from '../job-applications/services/application.service';
@@ -31,7 +32,6 @@ import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
 
 @Component({
     selector: 'app-signals',
-    standalone: true,
     imports: [
         CommonModule,
         FormsModule,
@@ -62,7 +62,8 @@ import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignalsComponent {
+export class SignalsComponent implements OnInit, OnDestroy {
+    private readonly destroyRef = inject(DestroyRef);
     private readonly profileStore = inject(ProfileStore);
     private readonly intelligenceService = inject(IntelligenceService);
     private readonly jobApplicationService = inject(ApplicationService);
@@ -108,20 +109,33 @@ export class SignalsComponent {
         );
     });
 
-    constructor() {
+    // Lifecycle
+    ngOnInit(): void {
         console.log('SignalsComponent: Initializing...');
-        // Load signals and opportunities
-        effect(() => {
-            console.log('SignalsComponent: Effect triggered');
-            const skills = this.userSkills().map(s => s.name);
-            const jobTitle = this.profile()?.currentJobTitle || '';
+        this.loadData();
+    }
 
-            console.log('SignalsComponent: Loading signals for', { skills, jobTitle });
+    ngOnDestroy(): void {
+        if (this.typeInterval) {
+            clearInterval(this.typeInterval);
+            this.typeInterval = null;
+        }
+    }
 
-            this.isLoading.set(true);
+    /**
+     * Load signals and career opportunities with proper subscription cleanup
+     */
+    private loadData(): void {
+        const skills = this.userSkills().map(s => s.name);
+        const jobTitle = this.profile()?.currentJobTitle || '';
 
-            // ForkJoin or consistent loading? independent for now
-            this.intelligenceService.getGlobalSignals(skills, jobTitle).subscribe({
+        console.log('SignalsComponent: Loading signals for', { skills, jobTitle });
+        this.isLoading.set(true);
+
+        // Load signals with cleanup
+        this.intelligenceService.getGlobalSignals(skills, jobTitle)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
                 next: (data) => {
                     console.log('SignalsComponent: Signals loaded', data);
                     this.signals.set(data);
@@ -133,7 +147,10 @@ export class SignalsComponent {
                 }
             });
 
-            this.intelligenceService.getCareerOpportunities().subscribe({
+        // Load opportunities with cleanup  
+        this.intelligenceService.getCareerOpportunities()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
                 next: (data) => {
                     console.log('SignalsComponent: Opportunities loaded', data);
                     this.opportunities.set(data);
@@ -141,8 +158,6 @@ export class SignalsComponent {
                 },
                 error: (err) => console.error('Failed to fetch opportunities', err)
             });
-
-        }, { allowSignalWrites: true });
     }
 
     setActiveTab(tab: 'intelligence' | 'careers') {
@@ -191,13 +206,15 @@ export class SignalsComponent {
             description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`
         };
 
-        this.jobApplicationService.createApplication(newApp).subscribe({
-            next: () => {
-                // Show toast or feedback?
-                alert(`Target Acquired: ${opp.roleTitle}`);
-            },
-            error: (err) => alert('Failed to acquire target')
-        });
+        this.jobApplicationService.createApplication(newApp)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: () => {
+                    // Show toast or feedback?
+                    alert(`Target Acquired: ${opp.roleTitle}`);
+                },
+                error: () => alert('Failed to acquire target')
+            });
     }
 
     // Chat Actions

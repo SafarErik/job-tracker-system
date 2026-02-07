@@ -98,4 +98,9 @@ export class DashboardComponent {
     { label: 'Task' },
     { label: 'Offer' }
   ];
+
+  handleLogoError(event: Event, app: any) {
+    const img = event.target as HTMLImageElement;
+    img.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(app.company);
+  }
 }

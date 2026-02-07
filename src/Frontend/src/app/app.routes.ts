@@ -151,6 +151,15 @@ export const routes: Routes = [
         data: { breadcrumb: 'Intelligence' }
       },
 
+      // Global Signals
+      {
+        path: 'signals',
+        loadComponent: () =>
+          import('./features/signals').then((m) => m.SignalsComponent),
+        title: 'Global Feed - VantageCursus',
+        data: { breadcrumb: 'Global Signals' }
+      },
+
       // Compatibility Redirects
       {
         path: 'company/:id',

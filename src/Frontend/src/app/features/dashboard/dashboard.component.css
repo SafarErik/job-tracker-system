@@ -4,7 +4,7 @@
 
 /* Operational Status Glow */
 .status-glow {
-    box-shadow: 0 0 10px hsla(var(--success-foreground, 142 70% 45%), 0.4);
+    box-shadow: 0 0 10px hsl(var(--success-foreground, 142 70% 45%) / 0.4);
     animation: status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -37,12 +37,12 @@
 
 /* Subtle Glow for AI Action */
 .ai-glow-button {
-    box-shadow: 0 8px 30px hsla(var(--primary), 0.15);
+    box-shadow: 0 8px 30px hsl(var(--primary) / 0.15);
     transition: all 0.3s ease;
 }
 
 .ai-glow-button:hover {
-    box-shadow: 0 12px 40px hsla(var(--primary), 0.25);
+    box-shadow: 0 12px 40px hsl(var(--primary) / 0.25);
     transform: translateY(-1px);
 }
 

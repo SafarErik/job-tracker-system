@@ -210,8 +210,6 @@ export class CompanyDetailsComponent implements OnInit {
           if (requestId === this.latestBriefingRequestId) {
             this.intelligenceBriefing.set(briefing);
             this.briefingLoading.set(false);
-            // Refresh news as well as requested in the prompt
-            this.loadCompanyNews(current.name);
           }
         },
         error: () => {
@@ -290,6 +288,7 @@ export class CompanyDetailsComponent implements OnInit {
     const current = this.company();
     if (current) {
       this.companyService.updateCompany(current.id, { name }).subscribe({
+        next: () => toast.success('Success', { description: 'Name updated' }),
         error: () => toast.error('Error', { description: 'Failed to update name' })
       });
     }

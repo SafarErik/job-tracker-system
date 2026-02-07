@@ -5,7 +5,7 @@
         <div
             class="relative flex items-center gap-3 px-4 py-3 bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-xl">
             <lucide-icon name="command" class="w-5 h-5 text-primary"></lucide-icon>
-            <input type="text" placeholder="Search systems or ask AI... (Cmd+K)"
+            <input type="text" placeholder="Search systems or ask AI... (Cmd+K)" aria-label="Search systems or ask AI"
                 class="flex-1 bg-transparent border-none outline-none text-foreground placeholder-muted-foreground text-sm" />
             <div
                 class="flex items-center gap-1 px-2 py-1 rounded bg-muted border border-border text-[10px] text-muted-foreground font-mono">
@@ -133,7 +133,7 @@
                         <div class="relative">
                             <img [src]="'https://logo.dev/' + app.domain + '?token=demo'" [alt]="app.company"
                                 class="w-10 h-10 rounded-full border border-border shadow-sm bg-white"
-                                onerror="this.src='https://ui-avatars.com/api/?name=' + this.alt">
+                                (error)="handleLogoError($event, app)">
                             <div
                                 class="absolute -bottom-1 -right-1 w-4 h-4 bg-card rounded-full border border-border flex items-center justify-center">
                                 <lucide-icon name="shield-check" class="w-2.5 h-2.5 text-primary"></lucide-icon>
@@ -147,7 +147,8 @@
                             <div class="flex gap-1 mt-1">
                                 @for (step of pipelineSteps; track step.label; let i = $index) {
                                 <div class="h-1 w-5 rounded-full"
-                                    [class]="i < app.pipelineStep ? 'bg-primary' : 'bg-muted'"></div>
+                                    [ngClass]="{ 'bg-primary': i < app.pipelineStep, 'bg-muted': i >= app.pipelineStep }">
+                                </div>
                                 }
                             </div>
                         </div>

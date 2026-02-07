@@ -1,0 +1,86 @@
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.font-serif {
+    font-family: 'Playfair Display', 'Georgia', serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.mask-fade-right {
+    mask-image: linear-gradient(to right, black 80%, transparent 100%);
+}
+
+/* Bento Grid Specifics */
+.masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-auto-rows: 200px;
+    gap: 1.5rem;
+}
+
+/* Custom Impact Colors */
+.text-rose-500 {
+    color: #f43f5e;
+}
+
+.text-orange-500 {
+    color: #f97316;
+}
+
+.text-amber-500 {
+    color: #f59e0b;
+}
+
+/* Dashboard Card Glassmorphism */
+.bg-zinc-900\/40 {
+    background-color: rgba(24, 24, 27, 0.4);
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+/* Scan Animation Overlay */
+@keyframes scanning {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--primary), transparent);
+    box-shadow: 0 0 15px var(--primary);
+    animation: scanning 3s infinite linear;
+}
+
+/* Ensure images in source dock are crisp */
+.source-dock img {
+    image-rendering: -webkit-optimize-contrast;
+}

@@ -307,7 +307,8 @@
             </div>
 
             <app-company-stats [totalApplications]="-1" [successRate]="-1" [techStack]="details.techStack || []"
-              (techAdd)="handleAddTech('')" (techRemove)="handleRemoveTech($event)"></app-company-stats>
+              [compact]="true" (techAdd)="handleAddTech('')"
+              (techRemove)="handleRemoveTech($event)"></app-company-stats>
           </div>
         </div>
 
@@ -330,7 +331,7 @@
             <div class="p-6 rounded-2xl bg-muted/30 border border-zinc-200 dark:border-zinc-800">
               <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Primary
                 Domain</span>
-              <a [href]="details.website" target="_blank"
+              <a [href]="details.website" target="_blank" rel="noopener noreferrer"
                 class="text-base font-bold text-primary hover:underline block truncate">{{ details.website || 'N/A'
                 }}</a>
             </div>

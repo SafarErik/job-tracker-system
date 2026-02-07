@@ -35,10 +35,10 @@
 
                 <div class="flex items-center gap-2 shrink-0">
                     <!-- LinkedIn (Always Visible) -->
-                    <button (click)="openLinkedIn(contact.linkedIn)"
-                        [attr.aria-label]="'Open LinkedIn for ' + contact.name"
+                    <button (click)="contact.linkedIn && openLinkedIn(contact.linkedIn)" [disabled]="!contact.linkedIn"
+                        [attr.aria-label]="contact.linkedIn ? 'Open LinkedIn for ' + contact.name : 'No LinkedIn profile'"
                         class="h-8 w-8 rounded-lg border flex items-center justify-center transition-all shadow-sm"
-                        [class]="contact.linkedIn ? 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20' : 'bg-muted border-border text-muted-foreground hover:text-foreground'">
+                        [class]="contact.linkedIn ? 'bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 cursor-pointer' : 'bg-muted border-border text-muted-foreground opacity-50 cursor-not-allowed'">
                         <ng-icon name="lucideLinkedin" size="14"></ng-icon>
                     </button>
 
@@ -70,35 +70,39 @@
             <div class="p-6 space-y-4 duration-300">
                 <div class="grid grid-cols-2 gap-3 font-sans">
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Member
+                        <label [for]="'name-' + contact.id"
+                            class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Member
                             Name</label>
-                        <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                            [ngModel]="editForm.name()" (ngModelChange)="editForm.name.set($event)"
-                            placeholder="e.g. Sarah Connor" autofocus />
+                        <input [id]="'name-' + contact.id" hlmInput size="sm"
+                            class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.name()"
+                            (ngModelChange)="editForm.name.set($event)" placeholder="e.g. Sarah Connor" autofocus />
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
+                        <label [for]="'role-' + contact.id"
+                            class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
                             Role</label>
-                        <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                            [ngModel]="editForm.role()" (ngModelChange)="editForm.role.set($event)"
-                            placeholder="e.g. Lead Technical Recruiter" />
+                        <input [id]="'role-' + contact.id" hlmInput size="sm"
+                            class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.role()"
+                            (ngModelChange)="editForm.role.set($event)" placeholder="e.g. Lead Technical Recruiter" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 font-sans">
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
+                        <label [for]="'linkedin-' + contact.id"
+                            class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
                             (LinkedIn)</label>
-                        <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                            [ngModel]="editForm.linkedIn()" (ngModelChange)="editForm.linkedIn.set($event)"
-                            placeholder="LinkedIn URL" />
+                        <input [id]="'linkedin-' + contact.id" hlmInput size="sm"
+                            class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.linkedIn()"
+                            (ngModelChange)="editForm.linkedIn.set($event)" placeholder="LinkedIn URL" />
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
+                        <label [for]="'email-' + contact.id"
+                            class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
                             (Email)</label>
-                        <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                            [ngModel]="editForm.email()" (ngModelChange)="editForm.email.set($event)"
-                            placeholder="Email Address" />
+                        <input [id]="'email-' + contact.id" hlmInput size="sm"
+                            class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.email()"
+                            (ngModelChange)="editForm.email.set($event)" placeholder="Email Address" />
                     </div>
                 </div>
 
@@ -124,33 +128,37 @@
             class="bg-card border-2 border-dashed border-primary/30 rounded-[1.5rem] p-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
             <div class="grid grid-cols-2 gap-3 font-sans">
                 <div class="space-y-1.5">
-                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Member
+                    <label for="new-contact-name"
+                        class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">New Member
                         Name</label>
-                    <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
+                    <input id="new-contact-name" hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
                         [ngModel]="editForm.name()" (ngModelChange)="editForm.name.set($event)" placeholder="Name"
                         autofocus />
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
+                    <label for="new-contact-role"
+                        class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Rank /
                         Role</label>
-                    <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
+                    <input id="new-contact-role" hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
                         [ngModel]="editForm.role()" (ngModelChange)="editForm.role.set($event)" placeholder="Role" />
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3 font-sans">
                 <div class="space-y-1.5">
-                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
+                    <label for="new-contact-linkedin"
+                        class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Signal
                         (LinkedIn)</label>
-                    <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                        [ngModel]="editForm.linkedIn()" (ngModelChange)="editForm.linkedIn.set($event)"
-                        placeholder="LinkedIn URL" />
+                    <input id="new-contact-linkedin" hlmInput size="sm"
+                        class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.linkedIn()"
+                        (ngModelChange)="editForm.linkedIn.set($event)" placeholder="LinkedIn URL" />
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
+                    <label for="new-contact-email"
+                        class="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">Comms
                         (Email)</label>
-                    <input hlmInput size="sm" class="h-9 w-full rounded-xl bg-muted border-border"
-                        [ngModel]="editForm.email()" (ngModelChange)="editForm.email.set($event)"
-                        placeholder="Email Address" />
+                    <input id="new-contact-email" hlmInput size="sm"
+                        class="h-9 w-full rounded-xl bg-muted border-border" [ngModel]="editForm.email()"
+                        (ngModelChange)="editForm.email.set($event)" placeholder="Email Address" />
                 </div>
             </div>
             <div class="flex items-center justify-end gap-2 pt-2">

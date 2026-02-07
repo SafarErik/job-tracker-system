@@ -10,7 +10,11 @@ import {
     lucideHistory,
     lucideCheck,
     lucideMail,
-    lucideLoader2
+    lucideLoader2,
+    lucideChevronRight,
+    lucideChevronLeft,
+    lucideWand2,
+    lucideInfo
 } from '@ng-icons/lucide';
 import { JobApplicationStore } from '../../../services/job-application.store';
 import { DocumentStore } from '../../../../documents/services/document.store';
@@ -30,7 +34,11 @@ import { NotificationService } from '../../../../../core/services/notification.s
             lucideHistory,
             lucideCheck,
             lucideMail,
-            lucideLoader2
+            lucideLoader2,
+            lucideChevronRight,
+            lucideChevronLeft,
+            lucideWand2,
+            lucideInfo
         })
     ],
     templateUrl: './assets-view.component.html',
@@ -42,6 +50,14 @@ export class AssetsViewComponent {
     private readonly notificationService = inject(NotificationService);
 
     mode = signal<'resume' | 'cover-letter'>('resume');
+    isSidebarOpen = signal(false);
+    selectedSuggestion = signal<string | null>(null);
+
+    suggestions = signal([
+        { id: '1', title: 'Action-Oriented Verbs', content: 'Replace "Responsible for" with "Spearheaded" or "Architected" to show leadership.' },
+        { id: '2', title: 'Metric Quantification', content: 'Add specific percentages (e.g., "Increased performance by 40%").' },
+        { id: '3', title: 'Keyword Alignment', content: 'The job asks for "Distributed Systems". Explicitly mention your Kafka experience here.' }
+    ]);
 
     setMode(m: 'resume' | 'cover-letter') {
         this.mode.set(m);
@@ -83,5 +99,14 @@ export class AssetsViewComponent {
         globalThis.URL.revokeObjectURL(url);
 
         this.notificationService.info('Downloading as .txt (PDF generation coming soon)', 'Download');
+    }
+
+    toggleSidebar() {
+        this.isSidebarOpen.update(v => !v);
+    }
+
+    selectSuggestion(suggestion: any) {
+        this.selectedSuggestion.set(suggestion.content);
+        this.notificationService.info(`Applied: ${suggestion.title}`, 'AI Polish');
     }
 }

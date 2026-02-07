@@ -163,27 +163,53 @@ export class JobWorkstationComponent implements OnInit {
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
   manualPasteText = signal('');
+  isFocusMode = signal(false);
+
+  // Context-aware Commands
+  commands = computed(() => {
+    const phase = this.currentPhase();
+    if (phase === 'strategy') {
+      return [
+        { id: 'analyze', label: 'Refresh AI Scan', icon: 'lucideRotateCw', action: () => this.triggerAnalysis() },
+        {
+          id: 'simulate', label: 'Simulate Top Gap', icon: 'lucideZap', action: () => {
+            const firstGap = this.gapAnalysis().find(g => !g.matched);
+            if (firstGap) this.simulateImprovement(firstGap.name);
+          }
+        }
+      ];
+    } else if (phase === 'assets') {
+      return [
+        { id: 'tailor', label: 'Forge Document', icon: 'lucideSparkles', action: () => this.generateAssets() }
+      ];
+    } else {
+      return [
+        { id: 'focus', label: 'Combat Focus', icon: 'lucideMaximize2', action: () => this.toggleFocusMode() }
+      ];
+    }
+  });
+
+  simulatedScore = signal<number | null>(null);
 
   // Computed: Highlighted Job Description
   highlightedDescription = computed<string | null>(() => {
     const desc = this.store.selectedApplication()?.description;
     if (!desc) return null;
 
-    const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems'];
+    const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems', 'Architecture', 'UI/UX'];
 
-    // Escape HTML to prevent XSS before adding our own spans
-    let escaped = desc
+    // Escape HTML
+    let html = desc
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-
-    let html = escaped.replaceAll('\n', '<br>');
+      .replaceAll("'", '&#039;')
+      .replaceAll('\n', '<br>');
 
     keywords.forEach(kw => {
       const regex = new RegExp(`(${kw})`, 'gi');
-      html = html.replace(regex, '<span class="bg-primary/20 text-primary px-1 rounded">$1</span>');
+      html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
     });
 
     return html;
@@ -233,6 +259,23 @@ export class JobWorkstationComponent implements OnInit {
     { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
   ];
 
+  simulateImprovement(skill: string): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      const currentScore = app.matchScore || 0;
+      const newScore = Math.min(100, currentScore + 8);
+      this.simulatedScore.set(newScore);
+      this.notificationService.info(`Simulating ${skill}... Match Score would increase to ${newScore}%`, 'Simulation Active');
+
+      // Auto-reset after some time
+      setTimeout(() => this.simulatedScore.set(null), 5000);
+    }
+  }
+
+  toggleFocusMode(): void {
+    this.isFocusMode.update(v => !v);
+  }
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id') ||
       this.route.parent?.snapshot.paramMap.get('id');
@@ -258,7 +301,7 @@ export class JobWorkstationComponent implements OnInit {
   }
 
   toggleCommandBar(): void {
-    this.isCommandBarOpen.update(v => !v);
+    this.isCommandBarOpen.update((v: boolean) => !v);
   }
 
   closeCommandBar(): void {

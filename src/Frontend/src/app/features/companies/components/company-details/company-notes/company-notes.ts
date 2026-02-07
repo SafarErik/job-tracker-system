@@ -56,6 +56,7 @@ export class CompanyNotesComponent {
       const expanded = this.isBriefingExpanded();
       if (expanded) {
         this.previousActiveElement = document.activeElement as HTMLElement;
+        const originalOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
 
         // Focus Trap and Escape Handler
@@ -96,12 +97,10 @@ export class CompanyNotesComponent {
         }, 50);
 
         onCleanup(() => {
-          document.body.style.overflow = 'auto';
+          document.body.style.overflow = originalOverflow;
           window.removeEventListener('keydown', handleKeydown);
           this.previousActiveElement?.focus();
         });
-      } else {
-        document.body.style.overflow = 'auto';
       }
     });
 

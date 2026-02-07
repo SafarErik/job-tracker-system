@@ -32,4 +32,5 @@ jobs:
 
     - name: Apply Migrations
       run: |
+        chmod +x ./efbundle
         ./efbundle --connection "${{ secrets.DATABASE_URL }}"

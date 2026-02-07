@@ -106,15 +106,14 @@ export class ContactListComponent {
     this.editingContactId.set(null);
   }
 
-  getSeniorityBorder(role: string | undefined | null): string {
+  isSenior(role: string | undefined | null): boolean {
     const r = (role || '').toLowerCase();
-    if (r.includes('director') || r.includes('head') || r.includes('lead') || r.includes('v-p') || r.includes('vp') || r.includes('cto') || r.includes('ceo')) {
-      return 'border-primary/50 shadow-[0_0_10px_rgba(var(--primary),0.2)] bg-primary/5';
-    }
-    if (r.includes('recruit') || r.includes('talent') || r.includes('hr') || r.includes('people')) {
-      return 'border-info/50 shadow-[0_0_10px_rgba(var(--info),0.2)] bg-info/5';
-    }
-    return 'border-border';
+    return r.includes('director') || r.includes('head') || r.includes('lead') || r.includes('v-p') || r.includes('vp') || r.includes('cto') || r.includes('ceo');
+  }
+
+  isTalent(role: string | undefined | null): boolean {
+    const r = (role || '').toLowerCase();
+    return r.includes('recruit') || r.includes('talent') || r.includes('hr') || r.includes('people');
   }
 
   openLinkedIn(url: string | undefined | null): void {

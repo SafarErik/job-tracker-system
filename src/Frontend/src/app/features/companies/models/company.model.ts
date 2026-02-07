@@ -68,6 +68,13 @@ export interface CompanyDetail {
   // Intelligence fields (mock data for now)
   contacts?: CompanyContact[];
   notes?: string;
+  compatibility?: CompatibilityIndex;
+}
+
+export interface CompatibilityIndex {
+  score: number;
+  pros: string[];
+  cons: string[];
 }
 
 import type { CompanyContact } from '../../../core/models/company-contact.model';

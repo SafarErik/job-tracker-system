@@ -9,7 +9,7 @@ import { CompanyNews, CompanyContact, IntelligenceBriefing, TacticalEvent, Event
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings, lucideCalendarPlus } from '@ng-icons/lucide';
+import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideSearch, lucideGlobe, lucideSettings, lucideCalendarPlus, lucideBriefcase, lucideUsers, lucideCpu, lucideTrendingUp, lucideShieldCheck, lucideZap, lucideAlertTriangle, lucideChevronRight, lucideActivity } from '@ng-icons/lucide';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Dumb Components
@@ -36,7 +36,7 @@ import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
     InterviewTacticsComponent,
     AiAnalystChatComponent
   ],
-  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideMicroscope, lucideHistory, lucideSettings, lucideCalendarPlus })],
+  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideSearch, lucideGlobe, lucideSettings, lucideCalendarPlus, lucideBriefcase, lucideUsers, lucideCpu, lucideTrendingUp, lucideShieldCheck, lucideZap, lucideAlertTriangle, lucideChevronRight, lucideActivity })],
   templateUrl: './company-details.html',
   styleUrl: './company-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,7 +68,7 @@ export class CompanyDetailsComponent implements OnInit {
   manualEvents = signal<TacticalEvent[]>([]); // For manual adds in this session
 
   // Tab Navigation State
-  activeTab = signal<'mission' | 'intel' | 'history'>('mission');
+  activeTab = signal<'overview' | 'intelligence' | 'marketPulse' | 'ecosystem'>('overview');
 
   // Local state for Notes (to handle debouncing without glitching)
   companyNotes = signal('');
@@ -107,42 +107,46 @@ export class CompanyDetailsComponent implements OnInit {
     return domain ? `https://logo.clearbit.com/${domain}` : null;
   });
 
-  tacticalEvents = computed(() => {
+  activeApplications = computed(() => {
     const details = this.company();
-    if (!details) return [];
-
-    const history = details.applicationHistory || [];
-    const mappedEvents: TacticalEvent[] = history.map(app => {
-      const date = new Date(app.appliedAt);
-      const isTerminal = ['Rejected', 'Offer', 'Ghosted'].includes(app.status);
-      const isGhosted = app.status === 'Applied' && (Date.now() - date.getTime() > 14 * 24 * 60 * 60 * 1000);
-
-      // Mock assets for 'Application' type
-      const assets: EventAsset[] = [
-        { type: 'resume', label: 'Resume v2.1', url: '#' },
-        { type: 'cover_letter', label: 'Cover Letter', url: '#' }
-      ];
-
-      return {
-        id: app.id,
-        type: 'Application',
-        date: app.appliedAt,
-        title: app.position,
-        subtitle: `Application Entry #${app.id.slice(0, 8)}`,
-        status: app.status,
-        assets: assets,
-        meta: {
-          isTerminal,
-          isGhosted,
-          aiInsight: isTerminal ? this.getMockAiInsight(app.status) : undefined
-        }
-      } as TacticalEvent;
-    });
-
-    // Merge with manual events and sort
-    return [...mappedEvents, ...this.manualEvents()]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return details?.applicationHistory || [];
   });
+
+  primaryContacts = computed(() => {
+    const details = this.company();
+    return (details?.contacts || []).slice(0, 3);
+  });
+
+  dossierSnippet = computed(() => {
+    const briefing = this.intelligenceBriefing();
+    if (!briefing || !briefing.mission) return null;
+
+    // Split by newlines and take the first paragraph
+    const paragraphs = briefing.mission.split('\n').filter(p => p.trim().length > 0);
+    return paragraphs[0] || null;
+  });
+
+  compatibilityIndex = computed(() => {
+    const details = this.company();
+    if (!details) return null;
+
+    // Simulated intelligence logic
+    const score = details.priority === 'Tier1' ? 94 : details.priority === 'Tier2' ? 78 : 62;
+
+    return {
+      score,
+      pros: [
+        'Strong overlap with core technical stack',
+        'Company culture favors individual contributor growth'
+      ],
+      cons: [
+        'Geographic distance might require hybrid negotiation',
+        'Recent leadership transition could shift project focus'
+      ]
+    };
+  });
+
+  // Engagement Log moved to Application Timeline
 
   private getMockAiInsight(status: string): string {
     switch (status) {
@@ -219,7 +223,7 @@ export class CompanyDetailsComponent implements OnInit {
   }
 
   private latestNewsRequestId = 0;
-  private loadCompanyNews(name: string): void {
+  loadCompanyNews(name: string): void {
     const requestId = ++this.latestNewsRequestId;
     this.newsLoading.set(true);
     this.intelligenceService.getCompanyNews(name, 3)
@@ -244,7 +248,7 @@ export class CompanyDetailsComponent implements OnInit {
   // ==========================================
 
   // Tab Actions
-  setTab(tab: 'mission' | 'intel' | 'history'): void {
+  setTab(tab: 'overview' | 'intelligence' | 'marketPulse' | 'ecosystem'): void {
     this.activeTab.set(tab);
   }
 

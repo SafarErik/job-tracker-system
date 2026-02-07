@@ -1,4 +1,4 @@
-<div class="bg-card/50 rounded-3xl border border-border p-5 h-full flex flex-col">
+<div class="h-full flex flex-col">
     <div class="flex items-center justify-between mb-4 leading-none shrink-0">
         <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Personnel Hierarchy</h3>
         <button hlmBtn variant="ghost" size="icon-xs" aria-label="Add contact"
@@ -11,15 +11,19 @@
     <div class="space-y-2 flex-1 overflow-y-auto custom-scrollbar">
         <!-- Contact List -->
         @for (contact of displayedContacts(); track contact.id) {
-        <div class="bg-muted/30 border border-border rounded-xl overflow-hidden group hover:border-primary/30 transition-all font-sans"
+        <div class="bg-muted border border-border rounded-xl overflow-hidden group hover:border-primary/30 transition-all font-sans"
             [class.bg-card]="editingContactId() === contact.id"
             [class.border-primary/30]="editingContactId() === contact.id">
 
             @if (editingContactId() !== contact.id) {
             <div class="p-3 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="h-8 w-8 rounded-lg bg-muted border flex items-center justify-center text-foreground font-serif text-sm shrink-0 transition-colors"
-                        [class]="getSeniorityBorder(contact.role)">
+                    <div class="h-8 w-8 rounded-lg bg-muted border flex items-center justify-center text-foreground font-serif text-sm shrink-0 transition-all"
+                        [class.border-primary/50]="isSenior(contact.role)"
+                        [class.shadow-[0_0_10px_hsl(var(--primary)/0.2)]]="isSenior(contact.role)"
+                        [class.bg-primary/5]="isSenior(contact.role)" [class.border-info/50]="isTalent(contact.role)"
+                        [class.shadow-[0_0_10px_hsl(var(--info)/0.2)]]="isTalent(contact.role)"
+                        [class.bg-info/5]="isTalent(contact.role)">
                         {{ contact.name.charAt(0) }}
                     </div>
                     <div class="min-w-0">

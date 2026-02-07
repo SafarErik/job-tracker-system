@@ -16,6 +16,9 @@ import {
   Clock,
   ExternalLink,
   ShieldCheck,
+  FileWarning,
+  Timer,
+  Rocket,
 } from 'lucide-angular';
 
 @Component({
@@ -39,6 +42,9 @@ import {
         Clock,
         ExternalLink,
         ShieldCheck,
+        FileWarning,
+        Timer,
+        Rocket,
       }),
     },
   ],
@@ -68,7 +74,7 @@ export class DashboardComponent {
       domain: 'stripe.com',
       logo: 'S',
       status: 'In Review',
-      statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+      statusColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
       matchScore: 88,
       pipelineStep: 2, // Screen/Review
     },
@@ -79,7 +85,7 @@ export class DashboardComponent {
       domain: 'vercel.com',
       logo: 'V',
       status: 'Applied',
-      statusColor: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+      statusColor: 'bg-muted text-muted-foreground border-border',
       matchScore: 75,
       pipelineStep: 1, // Applied
     },

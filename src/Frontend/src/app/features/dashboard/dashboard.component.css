@@ -4,7 +4,7 @@
 
 /* Operational Status Glow */
 .status-glow {
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 10px hsla(var(--success-foreground, 142 70% 45%), 0.4);
     animation: status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
@@ -24,30 +24,30 @@
 
 /* Card Accents */
 .card-accent-violet {
-    border-left: 2px solid #8b5cf6;
+    border-left: 2px solid hsl(var(--primary));
 }
 
 .card-accent-emerald {
-    border-left: 2px solid #10b981;
+    border-left: 2px solid hsl(var(--success, 142 70% 45%));
 }
 
 .card-accent-blue {
-    border-left: 2px solid #3b82f6;
+    border-left: 2px solid hsl(var(--info, 217 91% 60%));
 }
 
 /* Subtle Glow for AI Action */
 .ai-glow-button {
-    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+    box-shadow: 0 8px 30px hsla(var(--primary), 0.15);
     transition: all 0.3s ease;
 }
 
 .ai-glow-button:hover {
-    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25);
+    box-shadow: 0 12px 40px hsla(var(--primary), 0.25);
     transform: translateY(-1px);
 }
 
 /* Glass Card Polish */
 .command-card {
-    background: white;
-    box-shadow: 0_8px_30px_rgb(0, 0, 0, 0.04);
+    background: hsl(var(--card));
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }

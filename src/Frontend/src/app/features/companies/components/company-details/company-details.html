@@ -35,26 +35,33 @@
       (openSettings)="handleOpenSettings()"></app-company-header>
 
     <!-- Sub-Navigation Bar -->
+    <!-- Sub-Navigation Bar -->
     <div
       class="sticky top-0 z-20 bg-background/80 backdrop-blur-md flex items-center justify-between border-b border-border/50 pb-4 pt-2">
       <div class="flex items-center gap-1 p-1 bg-card/50 rounded-2xl border border-border">
-        <button (click)="activeTab.set('mission')"
-          [class]="activeTab() === 'mission' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
+        <button (click)="activeTab.set('overview')"
+          [class]="activeTab() === 'overview' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
           <ng-icon name="lucideLayoutDashboard" class="h-3.5 w-3.5"></ng-icon>
-          Mission Control
+          Overview
         </button>
-        <button (click)="activeTab.set('intel')"
-          [class]="activeTab() === 'intel' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
+        <button (click)="activeTab.set('intelligence')"
+          [class]="activeTab() === 'intelligence' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
-          <ng-icon name="lucideMicroscope" class="h-3.5 w-3.5"></ng-icon>
-          Intelligence Lab
+          <ng-icon name="lucideSearch" class="h-3.5 w-3.5"></ng-icon>
+          Intelligence
         </button>
-        <button (click)="activeTab.set('history')"
-          [class]="activeTab() === 'history' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
+        <button (click)="activeTab.set('marketPulse')"
+          [class]="activeTab() === 'marketPulse' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
           class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
-          <ng-icon name="lucideHistory" class="h-3.5 w-3.5"></ng-icon>
-          Engagement Log
+          <ng-icon name="lucideActivity" class="h-3.5 w-3.5"></ng-icon>
+          Market Pulse
+        </button>
+        <button (click)="activeTab.set('ecosystem')"
+          [class]="activeTab() === 'ecosystem' ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground'"
+          class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all">
+          <ng-icon name="lucideGlobe" class="h-3.5 w-3.5"></ng-icon>
+          Ecosystem
         </button>
       </div>
 
@@ -68,193 +75,308 @@
 
     <!-- View Layer -->
     @switch (activeTab()) {
-    @case ('mission') {
-    <!-- View 1: Mission Control (High-Density Bento Grid 3 Column) -->
-    <div
-      class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-220px)] min-h-[600px] animate-in fade-in duration-500">
-      <!-- Left Column: Metrics & Stack -->
-      <div class="flex flex-col gap-4 h-full">
-        <!-- Expanded Metrics & Stack Component -->
-        <app-company-stats class="flex-1" [totalApplications]="details.totalApplications" [successRate]="successRate()"
-          [techStack]="details.techStack || []" (techAdd)="handleAddTech('')"
-          (techRemove)="handleRemoveTech($event)"></app-company-stats>
-      </div>
+    @case ('overview') {
+    <!-- View 1: Overview (Executive Dashboard) -->
+    <div class="space-y-12 animate-in fade-in duration-500 pb-20">
 
-      <!-- Center Column: Briefing Summary (Spans full height) -->
-      <div class="h-full">
-        <app-company-notes class="h-full block" [mode]="'compact'" [notes]="companyNotes()"
-          [briefing]="intelligenceBriefing()" [lastUpdated]="formatDate(details.updatedAt)"
-          (notesChange)="handleNotesChange($event)" (regenerate)="handleRegenerateBriefing()">
-        </app-company-notes>
-      </div>
-
-      <!-- Right Column: Edge & Personnel -->
-      <div class="flex flex-col gap-4 h-full">
-        <div class="flex-1">
-          <app-interview-tactics class="h-full block"></app-interview-tactics>
+      <!-- TOP ROW: ROI & Compatibility (2 Columns) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- [LEFT]: Operational ROI -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-primary/10 text-primary">
+              <ng-icon name="lucideTrendingUp" class="h-5 w-5"></ng-icon>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">Operational ROI</h3>
+          </div>
+          <div class="p-6 rounded-3xl bg-card border-border">
+            <app-company-stats [totalApplications]="details.totalApplications" [successRate]="successRate()"
+              [techStack]="[]" [compact]="true"></app-company-stats>
+          </div>
         </div>
-        <div class="flex-1 min-h-[250px]">
-          <!-- Limit contacts to 4? or let it scroll internally -->
-          <app-contact-list class="h-full block" [contacts]="(details.contacts || [])" [maxDisplay]="4"
-            (save)="handleSaveContact($event)" (deleteContact)="handleDeleteContact($event)"></app-contact-list>
+
+        <!-- [RIGHT]: Compatibility Index -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-primary/10 text-primary">
+              <ng-icon name="lucideShieldCheck" class="h-5 w-5"></ng-icon>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">Compatibility Index</h3>
+          </div>
+          @if (compatibilityIndex(); as index) {
+          <div class="p-6 rounded-3xl bg-card border-border flex items-center gap-8 group">
+            <div class="relative w-32 h-32 shrink-0">
+              <svg class="w-full h-full -rotate-90">
+                <circle cx="64" cy="64" r="58" stroke="currentColor" stroke-width="8" fill="transparent"
+                  class="text-muted/30" />
+                <circle cx="64" cy="64" r="58" stroke="currentColor" stroke-width="8" fill="transparent"
+                  class="text-primary transition-all duration-1000 ease-out" [attr.stroke-dasharray]="364.4"
+                  [attr.stroke-dashoffset]="364.4 - (364.4 * index.score / 100)" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-3xl font-black font-serif text-foreground">{{ index.score }}%</span>
+                <span class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Synergy</span>
+              </div>
+            </div>
+            <div class="flex-1 space-y-4">
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideZap" class="h-3 w-3 text-success"></ng-icon>
+                  <p class="text-[11px] font-bold text-foreground">Strategic Alignment</p>
+                </div>
+                <ul class="space-y-1 pl-5">
+                  @for (pro of index.pros; track pro) {
+                  <li class="text-[10px] text-muted-foreground list-disc">{{ pro }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <ng-icon name="lucideAlertTriangle" class="h-3 w-3 text-warning"></ng-icon>
+                  <p class="text-[11px] font-bold text-foreground">Operational Risks</p>
+                </div>
+                <ul class="space-y-1 pl-5">
+                  @for (con of index.cons; track con) {
+                  <li class="text-[10px] text-muted-foreground list-disc">{{ con }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- MIDDLE ROW: Active Missions (Full Width) -->
+      <section class="space-y-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-primary/10 text-primary">
+              <ng-icon name="lucideBriefcase" class="h-5 w-5"></ng-icon>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">Active Missions</h3>
+          </div>
+          <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{{
+            activeApplications().length }} Deployment Active</span>
+        </div>
+
+        <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+          @for (app of activeApplications(); track app.id) {
+          <button (click)="viewApplication(app.id)"
+            class="shrink-0 w-80 group p-6 rounded-3xl bg-card border-border hover:border-primary/50 transition-all text-left relative overflow-hidden">
+            <div
+              class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all">
+            </div>
+
+            <div class="relative z-10 space-y-4">
+              <div class="flex items-center justify-between">
+                <span [class]="'px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ' + 
+                    (app.status === 'Offer' ? 'bg-success/10 border-success/20 text-success' : 
+                     app.status === 'Rejected' ? 'bg-destructive/10 border-destructive/20 text-destructive' : 
+                     'bg-primary/10 border-primary/20 text-primary')">
+                  {{ app.status }}
+                </span>
+                <ng-icon name="lucideArrowLeft"
+                  class="h-4 w-4 rotate-180 text-muted-foreground group-hover:text-primary transition-all"></ng-icon>
+              </div>
+              <div>
+                <h4 class="text-base font-black text-foreground group-hover:text-primary transition-colors">{{
+                  app.position }}</h4>
+                <p class="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-bold">Initiated: {{
+                  app.appliedAt | date:'MMM yyyy' }}</p>
+              </div>
+            </div>
+          </button>
+          } @empty {
+          <div
+            class="w-full flex flex-col items-center justify-center py-12 rounded-3xl bg-card/30 border border-dashed border-border text-muted-foreground">
+            <p class="text-xs font-medium italic">No active deployments identified.</p>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- BOTTOM ROW: Personnel & Intelligence Snapshot (50/50 Split) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- [LEFT]: Personnel Radar -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-primary/10 text-primary">
+              <ng-icon name="lucideUsers" class="h-5 w-5"></ng-icon>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">Personnel Radar</h3>
+          </div>
+          <div class="bg-card border-border rounded-3xl p-6">
+            <app-contact-list [contacts]="primaryContacts()" [maxDisplay]="3" (save)="handleSaveContact($event)"
+              (deleteContact)="handleDeleteContact($event)"></app-contact-list>
+          </div>
+        </div>
+
+        <!-- [RIGHT]: Intelligence Snapshot -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-primary/10 text-primary">
+              <ng-icon name="lucideSearch" class="h-5 w-5"></ng-icon>
+            </div>
+            <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">Intelligence Snapshot
+            </h3>
+          </div>
+          <div
+            class="p-8 rounded-3xl bg-card border-border relative overflow-hidden group min-h-[220px] flex flex-col justify-between">
+            <div class="relative z-10">
+              <div class="flex items-center justify-between mb-4">
+                <span
+                  class="px-2 py-0.5 rounded bg-primary/10 text-[8px] font-black text-primary uppercase tracking-widest">Active
+                  Intel</span>
+                <span class="text-[9px] font-bold text-muted-foreground">Level 4 Clearance</span>
+              </div>
+              @if (dossierSnippet()) {
+              <p
+                class="text-sm text-foreground leading-relaxed italic opacity-80 border-l-2 border-primary/30 pl-4 py-1">
+                "{{ dossierSnippet() }}"
+              </p>
+              } @else {
+              <p class="text-xs italic text-muted-foreground py-4">Intelligence collective offline. Run AI scan to
+                initiate briefing.</p>
+              }
+            </div>
+            <div class="mt-6 flex justify-end relative z-10">
+              <button (click)="activeTab.set('intelligence')"
+                class="px-6 py-2.5 rounded-xl bg-primary/5 border border-primary/20 text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:bg-primary/20 hover:scale-[1.02] transition-all flex items-center gap-2">
+                Read Full Dossier
+                <ng-icon name="lucideChevronRight" class="h-3 w-3"></ng-icon>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     }
 
-    @case ('intel') {
-    <!-- View 2: Intelligence Lab (Deep Dive Split) -->
-    <div class="grid grid-cols-1 lg:grid-cols-10 gap-6 h-[700px] animate-in slide-in-from-bottom-5 duration-500">
-      <!-- Left (40%): AI Analyst Chat -->
-      <div class="lg:col-span-4 rounded-3xl bg-card/50 border border-border flex flex-col overflow-hidden">
-        <div class="p-6 border-b border-border flex items-center justify-between">
+    @case ('intelligence') {
+    <!-- View 2: Intelligence (Deep Research) -->
+    <div class="grid grid-cols-1 lg:grid-cols-10 gap-8 animate-in slide-in-from-bottom-5 duration-500 pb-20">
+      <!-- Left (60%): Briefing -->
+      <div class="lg:col-span-6 space-y-8">
+        <app-company-notes [mode]="'full'" [notes]="companyNotes()" [briefing]="intelligenceBriefing()"
+          [lastUpdated]="formatDate(details.updatedAt)" (notesChange)="handleNotesChange($event)"
+          (regenerate)="handleRegenerateBriefing()">
+        </app-company-notes>
+      </div>
+
+      <!-- Right (40%): AI Analyst Chat -->
+      <div class="lg:col-span-4 rounded-3xl bg-card border-border flex flex-col h-[750px] sticky top-20 shadow-2xl">
+        <div class="p-6 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
           <div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-foreground">AI Analyst</h3>
-            <p class="text-[9px] text-muted-foreground uppercase mt-1">Specialized context: {{ details.name }}</p>
+            <h3 class="text-xs font-black uppercase tracking-[0.25em] text-foreground font-serif">AI Analyst</h3>
+            <p class="text-[9px] text-muted-foreground uppercase mt-1 font-bold">Target: {{ details.name }}</p>
           </div>
-          <div class="px-2 py-1 rounded bg-primary/10 border border-primary/20 text-[9px] font-black text-primary">
-            CONTEXT_LOADED</div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+            <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Synapse Active</span>
+          </div>
         </div>
         <div class="flex-1 overflow-hidden">
           <app-ai-analyst-chat [companyName]="details.name"
             [companyContext]="intelligenceBriefing()?.mission || ''"></app-ai-analyst-chat>
         </div>
       </div>
+    </div>
+    }
 
-      <!-- Right (60%): News Reader -->
-      <div class="lg:col-span-6 space-y-6 overflow-y-auto custom-scrollbar pr-2">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Market Pulse Data</h3>
-          <button (click)="handleSummarizeNews()"
-            class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest hover:bg-primary/20 transition-all">
-            <ng-icon name="lucideWand2" class="h-3 w-3"></ng-icon>
-            Summarize All News
-          </button>
+    @case ('ecosystem') {
+    <!-- View 3: Ecosystem (Technical Deep Dive) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-bottom-5 duration-500 pb-20">
+      <!-- Left & Center: Tech Stack -->
+      <div class="lg:col-span-2 space-y-8">
+        <div class="p-10 rounded-3xl bg-card border-border relative overflow-hidden group">
+          <div
+            class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-all duration-700">
+          </div>
+
+          <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-10">
+              <div class="p-4 rounded-2xl bg-primary/10 text-primary">
+                <ng-icon name="lucideCpu" class="h-7 w-7"></ng-icon>
+              </div>
+              <div>
+                <h3 class="text-xl font-black tracking-tight text-foreground font-serif">Operational Tech Stack</h3>
+                <p class="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Intelligence Index 8.4
+                </p>
+              </div>
+            </div>
+
+            <app-company-stats [totalApplications]="-1" [successRate]="-1" [techStack]="details.techStack || []"
+              (techAdd)="handleAddTech('')" (techRemove)="handleRemoveTech($event)"></app-company-stats>
+          </div>
         </div>
-        <app-company-intel [news]="companyNews()" [loading]="newsLoading()"></app-company-intel>
+
+        <div class="p-10 rounded-3xl bg-card border-border">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="p-4 rounded-2xl bg-secondary/10 text-secondary">
+              <ng-icon name="lucideBuilding2" class="h-7 w-7"></ng-icon>
+            </div>
+            <div>
+              <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">HQ Operational Hub
+              </h3>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 rounded-2xl bg-muted/30 border border-zinc-200 dark:border-zinc-800">
+              <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Industry
+                Sector</span>
+              <span class="text-base font-bold text-foreground">{{ details.industry || 'Classified' }}</span>
+            </div>
+            <div class="p-6 rounded-2xl bg-muted/30 border border-zinc-200 dark:border-zinc-800">
+              <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Primary
+                Domain</span>
+              <a [href]="details.website" target="_blank"
+                class="text-base font-bold text-primary hover:underline block truncate">{{ details.website || 'N/A'
+                }}</a>
+            </div>
+            <div class="p-6 rounded-2xl bg-muted/30 border border-zinc-200 dark:border-zinc-800 md:col-span-2">
+              <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2">Registered
+                Address</span>
+              <span class="text-base font-bold text-foreground">{{ details.address || 'Confidential Headquarters'
+                }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Strategies -->
+      <div class="space-y-6">
+        <app-interview-tactics class="h-full block"></app-interview-tactics>
       </div>
     </div>
     }
 
-    @case ('history') {
-    <!-- View 3: Engagement Log (Full-width Timeline) -->
-    <!-- View 3: Engagement Log (Tactical Timeline) -->
-    <div
-      class="animate-in slide-in-from-right-10 duration-500 min-h-[500px] rounded-3xl bg-card/30 border border-border/50 p-12 overflow-y-auto custom-scrollbar">
-      <div class="max-w-4xl mx-auto space-y-12">
-
-        <!-- Header & Action -->
-        <div class="flex items-center justify-between mb-8">
-          <div class="flex items-center gap-4 flex-1">
-            <div class="h-px w-12 bg-border/50"></div>
-            <h2 class="text-xs font-black uppercase tracking-[0.4em] text-muted-foreground">Tactical Timeline</h2>
-            <div class="h-px flex-1 bg-border/50"></div>
+    @case ('marketPulse') {
+    <!-- View 3: Market Pulse (Signals & News) -->
+    <div class="animate-in slide-in-from-bottom-5 duration-500 pb-20">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-4">
+          <div class="p-4 rounded-3xl bg-primary/10 text-primary">
+            <ng-icon name="lucideActivity" class="h-8 w-8"></ng-icon>
           </div>
-          <button hlmBtn variant="outline" (click)="addManualEvent()"
-            class="ml-4 gap-2 text-xs border-border bg-muted hover:bg-card hover:text-foreground transition-all">
-            <ng-icon name="lucideCalendarPlus" class="h-3.5 w-3.5"></ng-icon>
-            Add Manual Event
-          </button>
+          <div>
+            <h2 class="text-3xl font-black tracking-tight text-foreground font-serif">
+              Market Pulse</h2>
+            <p class="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">Real-time Signals &
+              Sentiment Analysis</p>
+          </div>
         </div>
+        <button hlmBtn variant="outline" (click)="loadCompanyNews(details.name)" class="rounded-2xl"
+          [disabled]="newsLoading()">
+          <ng-icon name="lucideLoader2" class="mr-2" [class.animate-spin]="newsLoading()"></ng-icon>
+          Refresh Signals
+        </button>
+      </div>
 
-        <div class="relative pl-8 border-l border-border space-y-12 pb-12">
-
-          @for (event of tacticalEvents(); track event.id) {
-          <div class="relative group">
-            <!-- Timeline Dot -->
-            <div [class.bg-info]="event.type === 'Interview'" [class.shadow-info/50]="event.type === 'Interview'"
-              [class.bg-primary]="event.type === 'Networking'" [class.shadow-primary/50]="event.type === 'Networking'"
-              [class.bg-success]="event.type === 'Outcome' && event.status === 'Offer'"
-              [class.bg-destructive]="event.type === 'Outcome' && event.status === 'Rejected'"
-              [class.bg-muted-foreground]="event.type === 'Application'"
-              class="absolute left-[-41px] top-6 w-4 h-4 rounded-full border-4 border-background transition-all z-10 group-hover:scale-125 group-hover:border-primary/40">
-            </div>
-
-            <!-- Bento Card -->
-            <div
-              class="relative overflow-hidden rounded-2xl bg-card/40 border border-border p-6 hover:bg-card/60 transition-all group-hover:border-primary/30">
-
-              <!-- Ghosting Overlay Effect -->
-              @if (event.meta?.isGhosted) {
-              <div class="absolute inset-0 bg-warning/5 animate-pulse pointer-events-none"></div>
-              <div class="absolute top-0 right-0 p-3">
-                <span
-                  class="inline-flex items-center px-2 py-1 rounded bg-warning/10 border border-warning/20 text-[9px] font-black uppercase text-warning tracking-wider">
-                  <span class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse mr-2"></span>
-                  Signal Lost
-                </span>
-              </div>
-              }
-
-              <div class="flex flex-col md:flex-row gap-6">
-                <!-- Left: Date & Type -->
-                <div class="md:w-32 shrink-0 flex flex-col justify-center border-r border-border/50 pr-6 mr-2">
-                  <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{{ event.date |
-                    date:'MMM
-                    dd' }}</span>
-                  <span class="text-2xl font-black text-foreground">{{ event.date | date:'yyyy' }}</span>
-                  <span
-                    class="mt-2 text-[10px] font-bold px-2 py-1 rounded w-fit bg-muted text-muted-foreground border border-border uppercase">
-                    {{ event.type }}
-                  </span>
-                </div>
-
-                <!-- Right: Content -->
-                <div class="flex-1 space-y-4">
-                  <div>
-                    <h4 class="text-lg font-bold text-foreground tracking-tight">{{ event.title }}</h4>
-                    <p class="text-xs text-muted-foreground font-medium uppercase tracking-wide mt-0.5">{{
-                      event.subtitle }}</p>
-
-                    @if (event.description) {
-                    <p class="text-sm text-muted-foreground mt-3 leading-relaxed border-l-2 border-border pl-3">
-                      {{ event.description }}
-                    </p>
-                    }
-                  </div>
-
-                  <!-- Resources Snapshot -->
-                  @if (event.assets && event.assets.length > 0) {
-                  <div class="flex flex-wrap gap-3 mt-4">
-                    @for (asset of event.assets; track asset.label) {
-                    <a [href]="asset.url" target="_blank" rel="noopener noreferrer"
-                      class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted border border-border hover:border-primary/50 hover:bg-primary/5 transition-all text-xs font-medium text-muted-foreground hover:text-primary group/asset">
-                      <ng-icon name="lucideFileText" class="w-3.5 h-3.5 group-hover/asset:text-primary"></ng-icon>
-                      {{ asset.label }}
-                    </a>
-                    }
-                  </div>
-                  }
-
-                  <!-- AI Tactical Retrospective -->
-                  @if (event.meta?.aiInsight) {
-                  <div class="mt-4 p-4 rounded-xl bg-primary/5 border-l-2 border-primary/30">
-                    <div class="flex items-center gap-2 mb-2">
-                      <ng-icon name="lucideMicroscope" class="text-primary w-3.5 h-3.5"></ng-icon>
-                      <span class="text-[10px] font-black uppercase tracking-widest text-primary">Tactical
-                        Retrospective</span>
-                    </div>
-                    <p class="text-xs text-primary/80 italic leading-relaxed">
-                      "{{ event.meta!.aiInsight }}"
-                    </p>
-                  </div>
-                  }
-
-                  <!-- Actions (if application) -->
-                  @if (event.type === 'Application') {
-                  <div class="flex justify-end mt-2 pt-4 border-t border-border/50">
-                    <button hlmBtn variant="ghost" (click)="viewApplication(event.id)"
-                      class="h-8 px-3 text-xs gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all">
-                      View Full Dossier
-                      <ng-icon name="lucideArrowLeft" class="h-3 w-3 rotate-180"></ng-icon>
-                    </button>
-                  </div>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-          }
+      <div class="grid grid-cols-1 gap-8">
+        <div class="p-8 rounded-3xl bg-card border-border">
+          <app-company-intel [news]="companyNews()" [loading]="newsLoading()"
+            (summarize)="handleSummarizeNews()"></app-company-intel>
         </div>
       </div>
     </div>

@@ -8,11 +8,11 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
-import { JobApplication } from '../../models/job-application.model';
-import { JobApplicationStatus } from '../../models/application-status.enum';
-import { JobPriority } from '../../models/job-priority.enum';
-import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
-import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../models/status-styles.util';
+import { JobApplication } from '../../../models/job-application.model';
+import { JobApplicationStatus } from '../../../models/application-status.enum';
+import { JobPriority } from '../../../models/job-priority.enum';
+import { LogoPlaceholderComponent } from '../../../../../shared/components/logo-placeholder/logo-placeholder.component';
+import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
 

@@ -1,8 +1,8 @@
 import { Component, input, output, ChangeDetectionStrategy, inject, viewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobApplication } from '../../models/job-application.model';
-import { JobApplicationStatus } from '../../models/application-status.enum';
-import { JobCardComponent } from '../job-card/application-card.component';
+import { JobApplication } from '../../../models/job-application.model';
+import { JobApplicationStatus } from '../../../models/application-status.enum';
+import { JobCardComponent } from '../../job-card/application-card.component';
 import { Router } from '@angular/router';
 import autoAnimate from '@formkit/auto-animate';
 

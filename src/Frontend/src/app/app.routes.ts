@@ -60,7 +60,7 @@ export const routes: Routes = [
       {
         path: 'applications',
         loadComponent: () =>
-          import('./features/job-applications/components/job-list/applications.component').then((m) => m.ApplicationsComponent),
+          import('./features/job-applications/components/job-list/applications/applications.component').then((m) => m.ApplicationsComponent),
         title: 'Applications - VantageCursus',
         data: { breadcrumb: 'Applications' }
       },

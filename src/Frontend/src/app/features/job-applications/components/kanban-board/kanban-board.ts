@@ -13,7 +13,7 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Components
-import { ApplicationKanbanCardComponent } from './application-kanban-card.component';
+import { ApplicationKanbanCardComponent } from './application-kanban-card/application-kanban-card.component';
 
 /**
  * Bucket Column Configuration (4 Columns)

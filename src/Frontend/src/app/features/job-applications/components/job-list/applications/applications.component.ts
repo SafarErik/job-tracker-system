@@ -1,25 +1,25 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { UiStateService } from '../../../../core/services';
+import { UiStateService } from '../../../../../core/services';
 
 // Services
-import { JobApplicationStore } from '../../services/job-application.store';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { AuthService } from '../../../../core/auth/auth.service';
+import { JobApplicationStore } from '../../../services/job-application.store';
+import { NotificationService } from '../../../../../core/services/notification.service';
+import { AuthService } from '../../../../../core/auth/auth.service';
 
 // Models
-import { JobApplication } from '../../models/job-application.model';
-import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobApplication } from '../../../models/job-application.model';
+import { JobApplicationStatus } from '../../../models/application-status.enum';
 
 // Components
-import { ApplicationKanbanComponent } from '../kanban-board/kanban-board';
-import { ApplicationGridComponent } from './application-grid.component';
-import { ApplicationListComponent } from './application-list.component';
-import { ApplicationStatbarComponent } from '../application-statbar/application-statbar.component';
-import { CalendarViewComponent } from '../calendar-view/calendar-view';
-import { DashboardMetricsComponent } from '../../../../shared/components/dashboard-metrics/dashboard-metrics';
-import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+import { ApplicationKanbanComponent } from '../../kanban-board/kanban-board';
+import { ApplicationGridComponent } from '../application-grid/application-grid.component';
+import { ApplicationListComponent } from '../application-list/application-list.component';
+import { ApplicationStatbarComponent } from '../../application-statbar/application-statbar.component';
+import { CalendarViewComponent } from '../../calendar-view/calendar-view';
+import { DashboardMetricsComponent } from '../../../../../shared/components/dashboard-metrics/dashboard-metrics';
+import { ErrorStateComponent } from '../../../../../shared/components/error-state/error-state.component';
 
 // Spartan UI
 import { HlmInputImports } from '@spartan-ng/helm/input';

@@ -1,10 +1,10 @@
 import { Component, input, output, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobApplication } from '../../models/job-application.model';
-import { JobApplicationStatus } from '../../models/application-status.enum';
-import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
-import { getStatusStyle, getStatusStyles } from '../../models/status-styles.util';
-import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
+import { JobApplication } from '../../../models/job-application.model';
+import { JobApplicationStatus } from '../../../models/application-status.enum';
+import { SalaryFormatterPipe } from '../../../pipes/salary-formatter.pipe';
+import { getStatusStyle, getStatusStyles } from '../../../models/status-styles.util';
+import { LogoPlaceholderComponent } from '../../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideArchive, lucideMoreHorizontal, lucideArrowRight, lucideZap, lucideTimer, lucideCircle, lucideSparkles, lucideSend, lucideCheckCircle2, lucideClock, lucideExternalLink } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@spartan-ng/helm/button';

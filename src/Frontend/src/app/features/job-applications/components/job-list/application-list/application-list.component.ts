@@ -1,10 +1,10 @@
 import { Component, input, output, ChangeDetectionStrategy, inject, computed, viewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobApplication } from '../../models/job-application.model';
+import { JobApplication } from '../../../models/job-application.model';
 import { Router } from '@angular/router';
-import { JobApplicationStatus } from '../../models/application-status.enum';
+import { JobApplicationStatus } from '../../../models/application-status.enum';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { ApplicationRowComponent } from './application-row.component';
+import { ApplicationRowComponent } from '../application-row/application-row.component';
 import autoAnimate from '@formkit/auto-animate';
 
 @Component({

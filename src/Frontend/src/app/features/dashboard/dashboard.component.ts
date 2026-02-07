@@ -12,6 +12,10 @@ import {
   Sparkles,
   Command,
   Briefcase,
+  Zap,
+  Clock,
+  ExternalLink,
+  ShieldCheck,
 } from 'lucide-angular';
 
 @Component({
@@ -31,6 +35,10 @@ import {
         Sparkles,
         AlertCircle,
         CheckCircle,
+        Zap,
+        Clock,
+        ExternalLink,
+        ShieldCheck,
       }),
     },
   ],
@@ -39,30 +47,49 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
+  userName = signal('John');
+
   activeApplications = signal([
     {
       id: 1,
       company: 'Google',
       role: 'Senior Frontend Engineer',
+      domain: 'google.com',
       logo: 'G',
       status: 'Interview',
-      statusColor: 'bg-primary/20 text-primary',
+      statusColor: 'bg-primary/10 text-primary border-primary/20',
+      matchScore: 92,
+      pipelineStep: 3, // Interview
     },
     {
       id: 2,
       company: 'Stripe',
       role: 'Product Engineer',
+      domain: 'stripe.com',
       logo: 'S',
       status: 'In Review',
-      statusColor: 'bg-success/20 text-success',
+      statusColor: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+      matchScore: 88,
+      pipelineStep: 2, // Screen/Review
     },
     {
       id: 3,
       company: 'Vercel',
       role: 'Staff DX Engineer',
+      domain: 'vercel.com',
       logo: 'V',
       status: 'Applied',
-      statusColor: 'bg-muted text-muted-foreground',
+      statusColor: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+      matchScore: 75,
+      pipelineStep: 1, // Applied
     },
   ]);
+
+  pipelineSteps = [
+    { label: 'Applied' },
+    { label: 'Screen' },
+    { label: 'Interview' },
+    { label: 'Task' },
+    { label: 'Offer' }
+  ];
 }

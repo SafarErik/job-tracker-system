@@ -1,3 +1,53 @@
-    :host {
-        display: block;
+:host {
+    display: block;
+}
+
+/* Operational Status Glow */
+.status-glow {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    animation: status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes status-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.9);
+    }
+}
+
+/* Card Accents */
+.card-accent-violet {
+    border-left: 2px solid #8b5cf6;
+}
+
+.card-accent-emerald {
+    border-left: 2px solid #10b981;
+}
+
+.card-accent-blue {
+    border-left: 2px solid #3b82f6;
+}
+
+/* Subtle Glow for AI Action */
+.ai-glow-button {
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.15);
+    transition: all 0.3s ease;
+}
+
+.ai-glow-button:hover {
+    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Glass Card Polish */
+.command-card {
+    background: white;
+    box-shadow: 0_8px_30px_rgb(0, 0, 0, 0.04);
+}

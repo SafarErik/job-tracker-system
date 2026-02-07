@@ -125,4 +125,14 @@ Provision a PostgreSQL instance on a provider such as Neon.tech and obtain the c
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. 
+
+### Why this license?
+We believe in open source, but we also want to protect the project's future as a service. Under the AGPL:
+- You are free to use, study, and modify the code.
+- If you run the software on a server and let others interact with it over a network, **you must make your source code available** under the same license.
+- This prevents "closed-source" commercialization of the project without contributing back.
+
+For commercial licensing or alternative arrangements, please contact the maintainer.
+
+See the [LICENSE](LICENSE) file for the full text.

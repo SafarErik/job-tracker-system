@@ -165,7 +165,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
         if (current.id !== this.lastCompanyId) {
           // Flush pending notes save if switching companies
           if (this.notesTimer && this.lastCompanyId) {
-            const pendingNotes = this.companyNotes();
+            // Use untracked to read the signal without creating a dependency
+            const pendingNotes = untracked(() => this.companyNotes());
             const oldId = this.lastCompanyId;
             untracked(() => {
               this.companyService.updateCompany(oldId, { notes: pendingNotes }).subscribe();

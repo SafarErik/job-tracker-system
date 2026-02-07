@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, finalize } from 'rxjs';
+import { Observable, tap, finalize, defer } from 'rxjs';
+
 import { Company, CompanyDetail, CreateCompany, UpdateCompany } from '../models/company.model';
 import { environment } from '../../../../environments/environment';
 
@@ -95,14 +96,17 @@ export class CompanyService {
    * @param company Company data to create
    */
   createCompany(company: CreateCompany): Observable<Company> {
-    this._isLoading.set(true);
-    return this.http.post<Company>(this.apiUrl, company).pipe(
-      tap((newCompany) => {
-        // Optimistic update or just append
-        this._companies.update(list => [...list, newCompany]);
-      }),
-      finalize(() => this._isLoading.set(false))
-    );
+    return defer(() => {
+      this._isLoading.set(true);
+      return this.http.post<Company>(this.apiUrl, company).pipe(
+        tap((newCompany) => {
+          // Optimistic update or just append
+          this._companies.update(list => [...list, newCompany]);
+        }),
+        finalize(() => this._isLoading.set(false))
+      );
+    });
+
   }
 
   /**

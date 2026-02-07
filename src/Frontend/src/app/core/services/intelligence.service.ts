@@ -1,4 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
+
 import { Observable, of, delay } from 'rxjs';
 
 export interface GlobalSignal {
@@ -100,7 +102,7 @@ export class IntelligenceService {
             matchScore: 98,
             salaryRange: '£90k - £120k',
             source: 'LinkedIn',
-            logoUrl: 'https://logo.dev/twitter.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+            logoUrl: `https://logo.dev/twitter.com?token=${environment.logoDevToken}` // Placeholder
         },
         {
             id: '102',
@@ -110,7 +112,7 @@ export class IntelligenceService {
             matchScore: 92,
             salaryRange: '€100k - €140k',
             source: 'Greenhouse',
-            logoUrl: 'https://logo.dev/google.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+            logoUrl: `https://logo.dev/google.com?token=${environment.logoDevToken}` // Placeholder
         },
         {
             id: '103',
@@ -120,7 +122,7 @@ export class IntelligenceService {
             matchScore: 88,
             salaryRange: '$180k - $250k',
             source: 'Wellfound',
-            logoUrl: 'https://logo.dev/openai.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+            logoUrl: `https://logo.dev/openai.com?token=${environment.logoDevToken}` // Placeholder
         }
     ];
 

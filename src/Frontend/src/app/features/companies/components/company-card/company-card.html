@@ -1,51 +1,39 @@
 <section hlmCard
-  class="group relative flex h-full flex-col overflow-hidden border-border/40 bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-primary/40 hover:-translate-y-1 active:scale-[0.98] card-hover-effect"
-  [class.shadow-[0_0_30px_hsl(var(--warning)/0.15)]]="company().priority === 'Tier1'"
-  [class]="{ 'border-warning/20': company().priority === 'Tier1' }" (click)="onViewDossier()">
-
-  <!-- Decorative Accent Line -->
-  <div class="absolute top-0 left-0 w-full h-1 transition-transform origin-left" [class.bg-gradient-to-r]="true"
-    [class]="{
-      'from-warning via-warning/30 to-warning': company().priority === 'Tier1',
-      'from-primary/0 via-primary/40 to-primary/0 scale-x-0 group-hover:scale-x-100': company().priority !== 'Tier1'
-    }">
-  </div>
+  class="group relative flex h-full flex-col overflow-hidden bg-card rounded-2xl border border-border/50 hover:border-primary/50 hover:-translate-y-1 transition-all duration-300 ease-out cursor-pointer shadow-sm hover:shadow-lg dark:hover:shadow-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+  tabindex="0" (keydown.enter)="onViewDossier()" (click)="onViewDossier()">
 
   <!-- Priority Indicator (Top Right) -->
   <div class="absolute top-4 right-4 z-10">
     @if (company().priority === 'Tier1') {
     <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-warning/10 shadow-[0_0_15px_hsl(var(--warning)/0.3)] animate-pulse-soft border border-warning/20 group-hover:scale-110">
-      <ng-icon name="lucideCrown" class="text-warning text-lg"></ng-icon>
-    </div>
-    } @else if (company().priority === 'Tier2') {
-    <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 border border-primary/20 group-hover:scale-110 shadow-[0_0_10px_hsl(var(--primary)/0.1)]">
-      <ng-icon name="lucideCircle" class="text-primary text-[8px]"></ng-icon>
+      class="flex items-center justify-center h-8 w-8 rounded-full bg-violet-500/10 border border-violet-500/20 group-hover:scale-110 transition-transform">
+      <ng-icon name="lucideCrown" class="text-violet-600 dark:text-violet-400 text-lg"></ng-icon>
     </div>
     } @else {
-    <!-- Tier 3 Indicator (Subtle for "clean" look but visible in corner) -->
-    <div
-      class="flex items-center justify-center h-8 w-8 rounded-full bg-muted/20 border border-border/40 opacity-40 group-hover:opacity-100 group-hover:scale-110">
-      <span class="text-[8px] font-black text-muted-foreground uppercase">T3</span>
+    <div class="flex items-center justify-center h-8 w-8 rounded-full group-hover:scale-110 transition-transform">
+      <ng-icon name="lucideCrown"
+        [class]="company().priority === 'Tier2' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground/50'"
+        class="text-lg"></ng-icon>
     </div>
     }
   </div>
 
-  <!-- Header: Logo/Icon + Industry -->
+  <!-- Header: Logo/Avatar + Industry -->
   <div hlmCardHeader class="flex-row items-start justify-between space-y-0 pb-4 pr-12">
-    <!-- Icon Container -->
+    <!-- Brand Avatar Container -->
     <div
-      class="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 shadow-sm"
-      [class.bg-warning/10]="company().priority === 'Tier1'" [class.text-warning]="company().priority === 'Tier1'"
-      [class.shadow-warning/20]="company().priority === 'Tier1'">
-      <ng-icon name="lucideBuilding2" class="text-2xl"></ng-icon>
+      class="h-12 w-12 rounded-2xl bg-muted border border-border overflow-hidden flex items-center justify-center group-hover:border-primary/30 transition-all shadow-sm">
+      <!-- Logo logic: If not failed and url exists, show image. Else show Brand Avatar -->
+      @if (!logoFailed && logoUrl()) {
+      <img [src]="logoUrl()" [alt]="company().name" (error)="onLogoError()" class="h-full w-full object-contain p-2">
+      } @else {
+      <app-logo-placeholder [companyName]="company().name" class="text-sm w-full h-full"></app-logo-placeholder>
+      }
     </div>
 
-    <!-- Industry Badge -->
+    <!-- Industry Label -->
     @if (company().industry) {
-    <span hlmBadge variant="secondary"
-      class="bg-muted/50 text-[10px] font-black uppercase tracking-[0.2em] border-none px-3">
+    <span class="text-xs font-sans tracking-widest text-muted-foreground uppercase">
       {{ company().industry }}
     </span>
     }
@@ -54,55 +42,51 @@
   <!-- Content: Company Details & Skill Cloud -->
   <div hlmCardContent class="pt-2 flex-1 space-y-6">
     <div>
-      <h3 hlmCardTitle class="text-xl font-black tracking-tighter mb-1 group-hover:text-primary leading-none"
-        [class.text-warning]="company().priority === 'Tier1'">
+      <h3 class="text-2xl font-serif text-foreground mb-1 group-hover:text-primary transition-colors leading-none">
         {{ company().name }}
       </h3>
 
       @if (company().address) {
       <p
-        class="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest leading-none">
+        class="flex items-center gap-1.5 text-[10px] font-sans text-muted-foreground uppercase tracking-widest leading-none">
         <ng-icon name="lucideMapPin" class="text-xs"></ng-icon>
         <span class="truncate">{{ company().address }}</span>
       </p>
       }
     </div>
 
-    <!-- Skill Cloud: Tech Stack -->
+    <!-- Tech Stack Cloud -->
     <div class="flex flex-wrap gap-2">
-      @for (tech of getVisibleTechStack(); track tech) {
-      <span
-        class="skill-tag inline-flex items-center justify-center rounded-xl bg-muted/40 px-3 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border border-transparent hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-all cursor-default">
+      @for (tech of visibleTechStack(); track tech) {
+      <span [class]="getTechColor(tech)" class="text-xs rounded-md px-2 py-1 border transition-all cursor-default">
         {{ tech }}
       </span>
       }
-      @if (getRemainingTechCount() > 0) {
-      <span
-        class="inline-flex items-center justify-center rounded-xl bg-muted/20 px-3 py-1.5 text-[10px] font-bold text-muted-foreground/60 border border-dashed border-border/60">
-        +{{ getRemainingTechCount() }}
+      @if (remainingTechCount() > 0) {
+      <span class="bg-muted/50 border border-border/50 text-muted-foreground text-xs rounded-md px-2 py-1">
+        +{{ remainingTechCount() }}
       </span>
       }
     </div>
   </div>
 
   <!-- Footer: Pipeline & View Dashboard -->
-  <div hlmCardFooter
-    class="flex flex-col gap-4 border-t border-border/30 bg-muted/5 p-6 mt-auto transition-colors group-hover:bg-muted/10">
+  <div hlmCardFooter class="flex flex-col gap-4 border-t border-border bg-muted/30 p-6 mt-auto">
     <!-- Active Pipeline Indicator -->
     <div class="w-full space-y-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           @if (hasApplications()) {
-          <div class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+          <div class="relative flex h-1.5 w-1.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
           </div>
-          <span class="text-[10px] font-black uppercase tracking-[0.15em] text-success">
+          <span class="text-[10px] font-sans uppercase tracking-[0.15em] text-emerald-600 dark:text-emerald-500">
             {{ company().totalApplications }} Active Leads
           </span>
           } @else {
-          <div class="h-2 w-2 rounded-full bg-muted-foreground/30"></div>
-          <span class="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground/60 px-1">
+          <div class="h-1.5 w-1.5 rounded-full bg-muted-foreground/30"></div>
+          <span class="text-[10px] font-sans uppercase tracking-[0.15em] text-muted-foreground px-1">
             Dormant Registry
           </span>
           }
@@ -111,18 +95,17 @@
         <div class="flex items-center gap-1 group/btn cursor-pointer py-1"
           (click)="onViewDossier(); $event.stopPropagation()">
           <span
-            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover/btn:text-primary transition-colors">Dossier</span>
+            class="text-[10px] font-sans uppercase tracking-widest text-muted-foreground group-hover/btn:text-foreground transition-colors">Dossier</span>
           <ng-icon name="lucideChevronRight"
             class="text-[10px] text-muted-foreground group-hover/btn:translate-x-1 transition-transform"></ng-icon>
         </div>
       </div>
 
-      <!-- 4-Segment Modern Pipeline Bar -->
+      <!-- Thinner Pipeline Bar with Gaps -->
       <div class="grid grid-cols-4 gap-1.5 h-1.5">
         @for (seg of [1,2,3,4]; track seg) {
-        <div class="pipeline-segment rounded-full" [class.bg-success]="getPipelineProgress() >= seg"
-          [class.shadow-[0_0_8px_rgba(var(--success),0.4)]]="getPipelineProgress() >= seg"
-          [class.bg-muted/40]="getPipelineProgress() < seg" [class.animate-pulse-soft]="getPipelineProgress() === seg">
+        <div class="rounded-full transition-all duration-500" [class.bg-emerald-500]="pipelineProgress() >= seg"
+          [class.bg-muted-foreground/20]="pipelineProgress() < seg">
         </div>
         }
       </div>

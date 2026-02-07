@@ -1,156 +1,231 @@
-<div class="flex flex-col gap-8">
-  <!-- HEADER -->
-  <div class="flex flex-col items-center text-center">
-    <!-- Use our premium LogoComponent -->
-    <app-logo size="lg" [vertical]="true" [withGlow]="true" [showSlogan]="true"></app-logo>
-    <h1 class="text-3xl font-bold tracking-tight text-foreground mt-6">Welcome back</h1>
-    <p class="mt-2 text-muted-foreground">Sign in to your workstation</p>
-  </div>
+<div class="min-h-screen w-full flex overflow-hidden bg-background">
 
-  <!-- MAIN CARD -->
+  <!-- LEFT PANE: Interaction Zone (40%) -->
   <div
-    class="flex flex-col gap-6 rounded-3xl bg-card p-8 shadow-xl shadow-gray-200/50 ring-1 ring-border/50 dark:shadow-none dark:ring-white/10">
+    class="w-full lg:w-[40%] flex flex-col justify-center px-8 sm:px-12 lg:px-24 relative z-10 bg-background/95 backdrop-blur-sm transition-all duration-500">
 
-    <!-- SOCIAL LOGIN (Fixed Style) -->
-    <button hlmBtn variant="outline" type="button"
-      class="w-full h-11 bg-card hover:bg-muted font-medium transition-all active:scale-[0.98] gap-3"
-      (click)="loginWithGoogle()">
-      <!-- Google G Logo (SVG) -->
-      <svg class="h-5 w-5" viewBox="0 0 24 24">
-        <path
-          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-          fill="#4285F4" />
-        <path
-          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-          fill="#34A853" />
-        <path
-          d="M5.84 14.11c-.22-.66-.35-1.36-.35-2.11s.13-1.45.35-2.11V7.05H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.95l3.66-2.84z"
-          fill="#FBBC05" />
-        <path
-          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.05l3.66 2.84c.87-2.6 3.3-4.51 6.16-4.51z"
-          fill="#EA4335" />
-      </svg>
-      Continue with Google
-    </button>
-
-    <div class="relative flex items-center py-2">
-      <div class="grow border-t border-border"></div>
-      <span class="mx-3 text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Or email</span>
-      <div class="grow border-t border-border"></div>
+    <!-- Top actions -->
+    <div class="absolute top-8 left-8 lg:left-12">
+      <app-logo size="md" [withGlow]="true" />
+    </div>
+    <div class="absolute top-8 right-8">
+      <app-theme-toggle />
     </div>
 
-    <!-- Error Message -->
-    @if (errorMessage()) {
-    <div
-      class="flex items-center gap-2 p-3 rounded-xl bg-destructive/10 text-destructive text-sm animate-in fade-in slide-in-from-top-2 duration-300">
-      <svg class="h-4 w-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <span>{{ errorMessage() }}</span>
-    </div>
-    }
+    <div class="w-full max-w-md mx-auto space-y-8 animate-in slide-in-from-left-8 fade-in duration-700">
 
-    <!-- FORM -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-
-      <!-- Email Input -->
-      <div class="flex flex-col gap-1.5">
-        <label hlmLabel for="email"
-          class="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 ml-1">Email Address</label>
-        <div class="relative group">
-          <svg
-            class="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-          </svg>
-          <input hlmInput type="email" id="email" formControlName="email" placeholder="name@example.com"
-            class="h-12 w-full pl-11 rounded-xl bg-muted/30 border-border/50 focus:bg-card transition-all placeholder:text-muted-foreground/30">
-        </div>
-        @if (hasError('email', 'required')) {
-        <span class="text-[10px] font-bold text-destructive uppercase tracking-wide ml-1">Email is required</span>
-        } @else if (hasError('email', 'email')) {
-        <span class="text-[10px] font-bold text-destructive uppercase tracking-wide ml-1">Invalid email address</span>
-        }
+      <!-- Header -->
+      <div class="space-y-2">
+        <h1
+          class="text-4xl font-extrabold tracking-tight lg:text-5xl bg-linear-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          Welcome back
+        </h1>
+        <p class="text-muted-foreground text-lg">
+          Enter your credentials to access the command center.
+        </p>
       </div>
 
-      <!-- Password Input -->
-      <div class="flex flex-col gap-1.5">
-        <label hlmLabel for="password"
-          class="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 ml-1">Password</label>
-        <div class="relative group">
-          <svg
-            class="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors"
-            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <input hlmInput [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
-            placeholder="••••••••"
-            class="h-12 w-full pl-11 pr-11 rounded-xl bg-muted/30 border-border/50 focus:bg-card transition-all placeholder:text-muted-foreground/30">
+      <!-- Main Form -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
 
-          <!-- Visibility Toggle -->
-          <button type="button"
-            class="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-            (click)="togglePasswordVisibility()">
-            @if (showPassword()) {
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-            </svg>
-            } @else {
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
+        <!-- Error Alert -->
+        @if (error()) {
+        <div
+          class="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium animate-in zoom-in-95">
+          {{ error() }}
+        </div>
+        }
+
+        <!-- Email Field -->
+        <div class="space-y-2 group">
+          <label hlmLabel for="email"
+            class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors">
+            Email Interface
+          </label>
+          <div class="relative">
+            <input hlmInput id="email" type="email" formControlName="email" placeholder="operative@jobtracker.ai"
+              class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-12 rounded-lg transition-all font-medium" />
+            <!-- Validation Signal -->
+            @if (form.controls.email.invalid && (form.controls.email.dirty || form.controls.email.touched)) {
+            <div class="absolute right-3 top-3 text-destructive animate-pulse">!</div>
             }
-          </button>
+          </div>
+          @if (form.controls.email.invalid && (form.controls.email.dirty || form.controls.email.touched)) {
+          <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
+            Valid email coordinates required.
+          </span>
+          }
         </div>
-        @if (hasError('password', 'required')) {
-        <span class="text-[10px] font-bold text-destructive uppercase tracking-wide ml-1">Password is required</span>
-        } @else if (hasError('password', 'minlength')) {
-        <span class="text-[10px] font-bold text-destructive uppercase tracking-wide ml-1">Password must be at least 6
-          characters</span>
-        }
+
+        <!-- Password Field -->
+        <div class="space-y-2 group">
+          <div class="flex items-center justify-between">
+            <label hlmLabel for="password"
+              class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors">
+              Security Token
+            </label>
+            <a routerLink="/auth/forgot-password"
+              class="text-xs font-medium text-primary hover:text-primary/80 transition-colors">
+              Lost access?
+            </a>
+          </div>
+          <div class="relative">
+            <input hlmInput [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+              placeholder="••••••••"
+              class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-12 rounded-lg pr-12 transition-all font-medium" />
+            <button type="button" (click)="togglePasswordVisibility()"
+              class="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:text-foreground transition-colors">
+              <span class="sr-only">Toggle password visibility</span>
+              @if(showPassword()) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                <path
+                  d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                <path d="m2 2 20 20" />
+              </svg>
+              }
+            </button>
+          </div>
+          @if (form.controls.password.invalid && (form.controls.password.dirty || form.controls.password.touched)) {
+          <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
+            Minimum 6 characters required.
+          </span>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button hlmBtn type="submit" [disabled]="isLoading()"
+          class="w-full h-12 text-base font-bold tracking-wide shadow-lg shadow-primary/25 bg-linear-to-r from-primary to-primary/80 hover:to-primary hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 rounded-lg group">
+          @if (isLoading()) {
+          <div class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+          Authenticating...
+          } @else {
+          Initialize Session
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="ml-2 transition-transform group-hover:translate-x-1">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+          }
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative py-4">
+        <div class="absolute inset-0 flex items-center">
+          <span class="w-full border-t border-border"></span>
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+          <span class="bg-background px-2 text-muted-foreground font-mono">Or connect via</span>
+        </div>
       </div>
 
-      <!-- Forgot Password Link -->
-      <div class="flex justify-end mt-[-8px]">
-        <a href="#"
-          class="text-[11px] font-bold uppercase tracking-wider text-primary hover:text-primary/80 transition-colors">
-          Forgot password?
-        </a>
-      </div>
-
-      <!-- Submit Button -->
-      <button hlmBtn type="submit"
-        class="h-12 w-full rounded-xl bg-primary text-base font-bold text-white shadow-lg shadow-primary/25 hover:bg-primary/90 hover:-translate-y-0.5 transition-all active:translate-y-0 active:shadow-none mt-2"
-        [disabled]="isLoading()">
-        @if (isLoading()) {
-        <svg class="h-5 w-5 animate-spin mr-2" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none">
-          </circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
+      <!-- Social Login -->
+      <button hlmBtn variant="outline" (click)="googleLogin()"
+        class="w-full h-12 gap-3 bg-secondary/20 border-border hover:bg-secondary/40 hover:text-foreground transition-all duration-300 rounded-lg group">
+        <svg class="h-5 w-5" viewBox="0 0 24 24">
+          <path
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            fill="#4285F4" />
+          <path
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            fill="#34A853" />
+          <path
+            d="M5.84 14.11c-.22-.66-.35-1.36-.35-2.11s.13-1.45.35-2.11V7.05H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.95l3.66-2.84z"
+            fill="#FBBC05" />
+          <path
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.05l3.66 2.84c.87-2.6 3.3-4.51 6.16-4.51z"
+            fill="#EA4335" />
         </svg>
-        Signing in...
-        } @else {
-        Sign In
-        }
+        <span class="font-medium">Google Workspace</span>
       </button>
-    </form>
+
+      <!-- Footer -->
+      <p class="text-center text-sm text-muted-foreground pt-4">
+        Need access?
+        <a routerLink="/auth/register"
+          class="font-semibold text-primary hover:text-primary/80 underline underline-offset-4 transition-colors">
+          Register new account
+        </a>
+      </p>
+
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="text-center text-sm text-muted-foreground">
-    Don't have an account?
-    <a routerLink="/register"
-      class="font-bold text-foreground hover:text-primary transition-colors decoration-primary decoration-2 underline-offset-4 hover:underline">
-      Create an account
-    </a>
+  <!-- RIGHT PANE: Visual Hook (60%) -->
+  <div class="hidden lg:flex lg:w-[60%] relative bg-muted/10 overflow-hidden items-center justify-center p-20">
+
+    <!-- Background Gradient Mesh / Abstract Shape -->
+    <div class="absolute inset-0 bg-linear-to-br from-primary/20 via-background to-primary/10 z-0"></div>
+    <div
+      class="absolute top-[-20%] right-[-10%] w-[70%] h-[70%] bg-primary/20 rounded-full blur-[120px] opacity-30 animate-pulse">
+    </div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/20 rounded-full blur-[100px] opacity-20">
+    </div>
+
+    <!-- Grid Pattern Overlay -->
+    <div class="absolute inset-0 bg-[url('/noise.svg')] opacity-20 mix-blend-soft-light">
+    </div>
+    <div class="absolute inset-0"
+      style="background-image: radial-gradient(rgba(120, 119, 198, 0.1) 1px, transparent 1px); background-size: 40px 40px;">
+    </div>
+
+    <!-- Floating Glassmorphic Card (Testimonial / System Status) -->
+    <div class="relative z-10 max-w-xl w-full">
+      <div
+        class="backdrop-blur-xl bg-card/30 border border-white/10 rounded-2xl p-8 shadow-2xl shadow-black/20 animate-in zoom-in-95 duration-1000 slide-in-from-bottom-10">
+
+        <!-- Decoration Dots -->
+        <div class="flex gap-2 mb-6">
+          <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+        </div>
+
+        <blockquote class="space-y-6">
+          <p class="text-2xl font-medium leading-relaxed text-foreground/90">
+            "Vantage has completely transformed how I manage my career applications. It feels less like a
+            spreadsheet
+            and more like a tactical command center."
+          </p>
+          <footer class="flex items-center gap-4">
+            <div
+              class="h-12 w-12 rounded-full bg-linear-to-tr from-pink-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg">
+              JS
+            </div>
+            <div>
+              <div class="font-bold text-foreground">Jamie Smith</div>
+              <div class="text-sm text-muted-foreground">Senior Frontend Engineer</div>
+            </div>
+          </footer>
+        </blockquote>
+
+        <!-- System Status Simulation -->
+        <div
+          class="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-xs font-mono text-muted-foreground">
+          <div class="flex items-center gap-2">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            SYSTEM ONLINE
+          </div>
+          <div>v2.4.0-stable</div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>

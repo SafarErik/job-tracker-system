@@ -1,0 +1,110 @@
+:host {
+    display: block;
+    overflow-x: hidden;
+}
+
+/* Bento Card Staggered Animation */
+[hlmCard] {
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[hlmCard]:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+[hlmCard]:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+[hlmCard]:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+[hlmCard]:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+[hlmCard]:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Custom chart animations */
+.animate-dash {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 3s ease-in-out forwards;
+}
+
+@keyframes dash {
+    from {
+        stroke-dashoffset: 1000;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* SVG Theme Utilities */
+.stroke-border {
+    stroke: hsl(var(--border));
+}
+
+.fill-border {
+    fill: hsl(var(--border));
+}
+
+/* Heatmap intensity colors for Light/Dark mode */
+:host {
+    --intensity-0: hsla(var(--muted), 0.4);
+}
+
+/* Heatmap intensity animations */
+.heatmap-cell {
+    transition: all 0.3s ease;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.5);
+    z-index: 10;
+    box-shadow: 0 0 10px hsla(var(--primary), 0.5);
+}
+
+/* AI Special Card Overrides */
+[hlmCard].border-violet-500\/30 {
+    background-image: radial-gradient(circle at top right, hsla(var(--primary), 0.05), transparent);
+}
+
+.dark [hlmCard].border-violet-500\/30 {
+    background-image: radial-gradient(circle at top right, hsla(var(--primary), 0.1), transparent);
+}
+
+/* Custom Scrollbar for the heatmap if needed */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+}

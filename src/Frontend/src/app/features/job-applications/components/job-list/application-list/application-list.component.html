@@ -1,0 +1,23 @@
+<div class="w-full overflow-hidden rounded-xl border border-border/50 bg-card shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead
+                class="bg-muted/20 text-[11px] uppercase tracking-wider font-medium text-slate-400 border-b border-border/40">
+                <tr>
+                    <th class="px-6 py-3 font-medium">Role / Company</th>
+                    <th class="px-6 py-3 font-medium">Status</th>
+                    <th class="px-6 py-3 font-medium">Salary</th>
+                    <th class="px-6 py-3 font-medium">Match</th>
+                    <th class="px-6 py-3 font-medium">Last Activity</th>
+                    <th class="px-4 py-3 text-right font-medium">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border/30" #listBody>
+                @for (app of apps(); track app.id) {
+                <tr app-application-row [application]="app" (viewDetail)="viewApplicationDetail($event)"
+                    (archive)="onArchive($event)"></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

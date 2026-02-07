@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { CompanyNews } from '../models/company.model';
+import { CompanyNews, IntelligenceBriefing } from '../models/company.model';
 
 /**
  * Mock Company Intelligence Service
@@ -113,5 +113,23 @@ export class CompanyIntelligenceService {
             'GraphQL',
             'REST API',
         ];
+    }
+
+    /**
+     * Generate an intelligence briefing for a company
+     * @param companyName - The company name to generate for
+     */
+    generateIntelligenceBriefing(companyName: string): Observable<IntelligenceBriefing> {
+        const briefing: IntelligenceBriefing = {
+            mission: `A prominent force in the technical landscape, ${companyName} continues to pioneer solutions in infrastructure and enterprise services, maintaining a robust market presence through constant innovation.`,
+            fit: [
+                'Deep technical expertise in distributed systems aligns with current architectural objectives.',
+                'Proven capacity for scaling enterprise applications addresses immediate infrastructure needs.',
+                'Strategic focus on AI-driven automation complements our long-term technical roadmap.'
+            ],
+            risks: `Rapid market shifts in the ${companyName} sector may lead to aggressive pivoting. Internal focus is currently consolidated on streamlining core service delivery.`
+        };
+
+        return of(briefing).pipe(delay(1500));
     }
 }

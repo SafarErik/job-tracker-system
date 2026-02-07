@@ -32,84 +32,229 @@
   --radius-2xl: 1.125rem;
 
   --animate-float: float 4s ease-in-out infinite;
+
+  --color-sidebar-background: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --backdrop-blur-xs: 2px;
 }
 
-/* 
-   THEME TOKENS (Industry Standard HSL) 
-   Values are stored as: H S% L%
-*/
+/* ============================================
+   LIGHT MODE (Default)
+   - Background: white / zinc-50
+   - Surfaces (Cards, Sheets): white
+   - Borders: zinc-200
+   - Headings: zinc-950
+   - Body: zinc-600
+   - Muted: zinc-400
+   - Primary: violet-600
+   - Success: emerald-600
+   - Warning: amber-600
+   ============================================ */
 :root {
   color-scheme: light;
-  --background: 240 20% 98%;
-  /* #FBFBFD */
-  --foreground: 240 26% 18%;
-  /* #22223B */
+
+  /* Backgrounds & Surfaces */
+  --background: 0 0% 98%;
+  /* zinc-50 */
+  --foreground: 240 10% 3.9%;
+  /* zinc-950 */
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  /* white */
+  --card-foreground: 240 10% 3.9%;
+  /* zinc-950 */
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --primary: 240 100% 74%;
-  /* #7C7CFF */
+  /* white */
+  --popover-foreground: 240 10% 3.9%;
+  /* zinc-950 */
+
+  /* Brand Colors */
+  --primary: 262.1 83.3% 57.8%;
+  /* violet-600 */
   --primary-foreground: 0 0% 100%;
-  --accent: 42 100% 50%;
-  /* #FFB703 */
-  --accent-foreground: 222 47% 11%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 240 100% 74%;
-  --success: 161 64% 39%;
-  --warning: 38 92% 50%;
-  --info: 214 95% 53%;
-  --destructive: 345 100% 60%;
+  --accent: 262.1 83.3% 57.8%;
+  /* violet-600 */
+  --accent-foreground: 0 0% 100%;
+
+  /* UI Elements */
+  --muted: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --muted-foreground: 240 3.8% 46.1%;
+  /* zinc-500 */
+  --border: 240 5.9% 90%;
+  /* zinc-200 */
+  --input: 240 5.9% 90%;
+  /* zinc-200 */
+  --ring: 262.1 83.3% 57.8%;
+  /* violet-600 */
+
+  /* Feedback Colors */
+  --success: 160.1 84.1% 39.4%;
+  /* emerald-600 */
+  --warning: 37.7 92.1% 50.2%;
+  /* amber-500 */
+  --info: 217.2 91.2% 59.8%;
+  /* blue-500 */
+  --destructive: 0 72.2% 50.6%;
+  /* red-600 */
   --destructive-foreground: 0 0% 100%;
+
+  /* Sidebar Variables - Light Mode */
+  --sidebar-background: var(--background);
+  /* white */
+  --sidebar-foreground: 240 10% 3.9%;
+  /* zinc-950 */
+  --sidebar-primary: 262.1 83.3% 57.8%;
+  /* violet-600 */
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --sidebar-accent-foreground: 240 10% 3.9%;
+  /* zinc-950 */
+  --sidebar-border: 240 5.9% 90%;
+  /* zinc-200 */
+  --sidebar-ring: 262.1 83.3% 57.8%;
+
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* ============================================
+   DARK MODE
+   - Background: zinc-950
+   - Surfaces: zinc-900
+   - Borders: zinc-800
+   - Text: zinc-100
+   - Muted: zinc-400
+   ============================================ */
 .dark {
   color-scheme: dark;
-  --background: 231 27% 8%;
-  /* #0F111A */
-  --foreground: 240 100% 94%;
-  /* #E0E0FF */
-  --card: 229 22% 12%;
-  /* #181B27 */
-  --card-foreground: 210 40% 92%;
-  --popover: 229 22% 12%;
-  --popover-foreground: 210 40% 92%;
-  --primary: 240 100% 74%;
+
+  /* Backgrounds & Surfaces */
+  --background: 240 0% 3.9%;
+  /* zinc-950 */
+  --foreground: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --card: 240 0% 5.9%;
+  /* zinc-900 */
+  --card-foreground: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --popover: 240 0% 5.9%;
+  /* zinc-900 */
+  --popover-foreground: 240 4.8% 95.9%;
+  /* zinc-100 */
+
+  /* Brand Colors */
+  --primary: 262.1 83.3% 57.8%;
+  /* violet-600 */
   --primary-foreground: 0 0% 100%;
-  --accent: 42 100% 50%;
-  --accent-foreground: 231 27% 8%;
-  --muted: 229 24% 16%;
-  --muted-foreground: 215 20% 65%;
-  --border: 228 20% 23%;
-  /* #2E3346 */
-  --input: 228 20% 23%;
-  --ring: 240 100% 74%;
-  --success: 161 64% 52%;
-  --warning: 38 92% 56%;
-  --info: 214 95% 65%;
-  --destructive: 345 100% 60%;
+  --accent: 262.1 83.3% 57.8%;
+  /* violet-600 */
+  --accent-foreground: 0 0% 100%;
+
+  /* UI Elements */
+  --muted: 240 0% 10%;
+  /* zinc-800 */
+  --muted-foreground: 240 5% 64.9%;
+  /* zinc-400 */
+  --border: 240 0% 10%;
+  /* zinc-800 */
+  --input: 240 0% 10%;
+  /* zinc-800 */
+  --ring: 262.1 83.3% 57.8%;
+  /* violet-600 */
+
+  /* Feedback Colors */
+  --success: 158.1 64.5% 51.6%;
+  /* emerald-500 */
+  --warning: 38 92% 50%;
+  /* amber-500 */
+  --info: 214 95% 53%;
+  /* blue-500 */
+  --destructive: 0 84.2% 60.2%;
+  /* red-500 */
   --destructive-foreground: 0 0% 100%;
+
+  /* Sidebar Variables - Dark Mode */
+  --sidebar-background: var(--background);
+  /* zinc-950 */
+  --sidebar-foreground: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --sidebar-primary: 262.1 83.3% 57.8%;
+  /* violet-600 */
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: var(--muted);
+  /* zinc-900 */
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  /* zinc-100 */
+  --sidebar-border: 240 5% 15.7%;
+  /* zinc-800 */
+  --sidebar-ring: 262.1 83.3% 57.8%;
 }
 
-/* 
+
+/* ============================================
    GLOBAL STYLES & TRANSITIONS 
-*/
+   ============================================ */
 body {
   @apply bg-background text-foreground antialiased selection:bg-primary/30;
-  /* Smoother background transition for Cinematic feel */
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
-/* Spartan UI components often need these defined */
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 * {
   @apply border-border outline-ring/50;
 }
 
+/* View Transitions */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.3s;
   animation-timing-function: ease-in-out;
+}
+
+/* Scrollbar - Light Mode */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  /* zinc-300 */
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+  /* zinc-400 */
+}
+
+/* Scrollbar - Dark Mode */
+.dark ::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  /* zinc-700 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+  /* zinc-600 */
 }

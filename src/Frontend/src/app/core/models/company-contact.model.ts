@@ -1,5 +1,5 @@
 export interface CompanyContact {
-    id: number;
+    id: string;
     name: string;
     role?: string | null;
     email?: string;

@@ -18,150 +18,162 @@
 
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './core/auth';
+// import { SignalsComponent } from './features/signals/signals.component'; // Managed via lazy load
+
 
 export const routes: Routes = [
   // ============================================
-  // PROTECTED ROOT (Dashboard)
+  // PUBLIC ROOT (Landing Page)
   // ============================================
   {
     path: '',
     loadComponent: () =>
-      import('./features/job-applications/components/job-list/job-list').then((m) => m.JobList),
-    canActivate: [authGuard],
+      import('./features/landing/components/landing-page/landing-page.component').then(
+        (m) => m.LandingPageComponent,
+      ),
     pathMatch: 'full',
-    title: 'Applications - JobTracker',
+    title: 'VantageCursus - Your Career, Autopilot Engaged',
   },
 
   // ============================================
-  // GUEST ROUTES (Login, Register, etc.)
+  // AUTH ROUTES (Login, Register, Callback)
+  // ============================================
+  {
+    path: 'auth',
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+  },
+
+  // ============================================
+  // PROTECTED APP SHELL
   // ============================================
   {
     path: '',
     loadComponent: () =>
-      import('./features/auth/layouts/auth-layout/auth-layout').then((m) => m.AuthLayoutComponent),
+      import('./layout/shell/app-shell/app-shell.component').then((m) => m.AppShellComponent),
+    canActivate: [authGuard],
     children: [
       {
-        path: 'login',
-        canActivate: [guestGuard],
+        path: 'dashboard',
         loadComponent: () =>
-          import('./features/auth/components/login/login.component').then((m) => m.LoginComponent),
-        title: 'Login - JobTracker',
+          import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+        title: 'Dashboard - VantageCursus',
+        data: { breadcrumb: 'Dashboard' }
       },
       {
-        path: 'register',
-        canActivate: [guestGuard],
+        path: 'applications',
         loadComponent: () =>
-          import('./features/auth/components/register/register.component').then(
-            (m) => m.RegisterComponent,
-          ),
-        title: 'Register - JobTracker',
+          import('./features/job-applications/components/job-list/applications/applications.component').then((m) => m.ApplicationsComponent),
+        title: 'Applications - VantageCursus',
+        data: { breadcrumb: 'Applications' }
       },
       {
-        path: 'auth/callback',
+        path: 'new',
         loadComponent: () =>
-          import('./features/auth/components/auth-callback/auth-callback.component').then(
-            (m) => m.AuthCallbackComponent,
+          import('./features/job-applications/components/add-job-form/add-job-form').then(
+            (m) => m.AddJobFormComponent,
           ),
-        title: 'Signing In... - JobTracker',
+        title: 'New Application - VantageCursus',
+        data: { breadcrumb: 'New Application' }
+      },
+      {
+        // Application Workstation - full page view with tabs
+        path: 'applications/:id',
+        loadComponent: () =>
+          import('./features/job-applications/components/job-workstation/job-workstation').then(
+            (m) => m.JobWorkstationComponent,
+          ),
+        title: 'Application Workstation - VantageCursus',
+        data: { breadcrumb: 'Workstation' }
+      },
+      {
+        // Keep view/:id as alias for backwards compatibility
+        path: 'view/:id',
+        loadComponent: () =>
+          import('./features/job-applications/components/job-workstation/job-workstation').then(
+            (m) => m.JobWorkstationComponent,
+          ),
+        title: 'View Application - VantageCursus',
+        data: { breadcrumb: 'View Application' }
+      },
+
+      // Companies
+      {
+        path: 'companies',
+        loadComponent: () =>
+          import('./features/companies/components/company-list/company-list').then(
+            (m) => m.CompanyListComponent,
+          ),
+        title: 'Companies - VantageCursus',
+        data: { breadcrumb: 'Companies' }
+      },
+      {
+        path: 'companies/edit/:id',
+        loadComponent: () =>
+          import('./features/companies/components/company-form/company-form').then(
+            (m) => m.CompanyFormComponent,
+          ),
+        title: 'Edit Company - VantageCursus',
+        data: { breadcrumb: 'Edit Company' }
+      },
+      {
+        path: 'companies/:id',
+        loadComponent: () =>
+          import('./features/companies/components/company-details/company-details').then(
+            (m) => m.CompanyDetailsComponent,
+          ),
+        title: 'Company Details - VantageCursus',
+        data: { breadcrumb: 'Company Details' }
+      },
+
+      // Documents
+      {
+        path: 'documents',
+        loadComponent: () =>
+          import('./features/documents/components/documents-list/documents-list').then(
+            (m) => m.DocumentsListComponent,
+          ),
+        title: 'Documents - VantageCursus',
+        data: { breadcrumb: 'Documents' }
+      },
+
+      // Profile
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
+        title: 'Profile - VantageCursus',
+        data: { breadcrumb: 'Profile' }
+      },
+
+      // Statistics & Intelligence
+      {
+        path: 'statistics',
+        loadChildren: () => import('./features/statistics/statistics.routes').then(m => m.STATISTICS_ROUTES),
+        title: 'Intelligence Analytics - VantageCursus',
+        data: { breadcrumb: 'Intelligence' }
+      },
+
+      // Global Signals
+      {
+        path: 'signals',
+        loadComponent: () => import('./features/signals/signals.component').then(m => m.SignalsComponent),
+
+        title: 'Global Feed - VantageCursus',
+        data: { breadcrumb: 'Global Signals' }
+      },
+
+      // Compatibility Redirects
+      {
+        path: 'company/:id',
+        redirectTo: 'companies/:id',
+        pathMatch: 'full',
+      },
+      {
+        path: 'companies/:id/details',
+        redirectTo: 'companies/:id',
+        pathMatch: 'full',
       },
     ],
-  },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('./features/job-applications/components/add-job-form/add-job-form').then(
-        (m) => m.AddJobFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'New Application - JobTracker',
-  },
-  {
-    // Application Workstation - full page view with tabs
-    path: 'applications/:id',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-workstation/job-workstation').then(
-        (m) => m.JobWorkstationComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Application Workstation - JobTracker',
-  },
-  {
-    // Keep view/:id as alias for backwards compatibility
-    path: 'view/:id',
-    loadComponent: () =>
-      import('./features/job-applications/components/job-workstation/job-workstation').then(
-        (m) => m.JobWorkstationComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'View Application - JobTracker',
-  },
-
-  // Companies
-  {
-    path: 'companies',
-    loadComponent: () =>
-      import('./features/companies/components/company-list/company-list').then(
-        (m) => m.CompanyListComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Companies - JobTracker',
-  },
-  {
-    path: 'companies/new',
-    loadComponent: () =>
-      import('./features/companies/components/company-form/company-form').then(
-        (m) => m.CompanyFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'New Company - JobTracker',
-  },
-  {
-    path: 'companies/edit/:id',
-    loadComponent: () =>
-      import('./features/companies/components/company-form/company-form').then(
-        (m) => m.CompanyFormComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Edit Company - JobTracker',
-  },
-  {
-    path: 'companies/:id',
-    loadComponent: () =>
-      import('./features/companies/components/company-details/company-details').then(
-        (m) => m.CompanyDetailsComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Company Details - JobTracker',
-  },
-
-  // Documents
-  {
-    path: 'documents',
-    loadComponent: () =>
-      import('./features/documents/components/documents-list/documents-list').then(
-        (m) => m.DocumentsListComponent,
-      ),
-    canActivate: [authGuard],
-    title: 'Documents - JobTracker',
-  },
-
-  // Profile
-  {
-    path: 'profile',
-    loadComponent: () =>
-      import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-    canActivate: [authGuard],
-    title: 'Profile - JobTracker',
-  },
-
-  // Compatibility Redirects
-  {
-    path: 'company/:id',
-    redirectTo: 'companies/:id',
-  },
-  {
-    path: 'companies/:id/details',
-    redirectTo: 'companies/:id',
   },
 
   // ============================================

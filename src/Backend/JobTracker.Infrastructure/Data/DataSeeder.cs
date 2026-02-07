@@ -71,7 +71,15 @@ public static class DataSeeder
         Console.WriteLine("✅ Demo user skills assigned");
 
         // ============================================
-        // 4. CREATE JOB APPLICATIONS
+        // 5. CREATE DOCUMENTS (Master Resume)
+        // ============================================
+        var resume = CreateMasterResume(demoUser.Id);
+        await context.Documents.AddAsync(resume);
+        await context.SaveChangesAsync();
+        Console.WriteLine("✅ Master Resume created");
+
+        // ============================================
+        // 6. CREATE JOB APPLICATIONS
         // ============================================
         var applications = CreateJobApplications(companies, skills, demoUser.Id);
         await context.JobApplications.AddRangeAsync(applications);
@@ -269,6 +277,25 @@ public static class DataSeeder
     }
 
     /// <summary>
+    /// Creates a dummy master resume for the demo user
+    /// </summary>
+    private static Document CreateMasterResume(string userId)
+    {
+        return new Document
+        {
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            FileName = "demo_resume.pdf",
+            OriginalFileName = "Demo_User_Resume_2026.pdf",
+            ContentType = "application/pdf",
+            FileSize = 1024 * 540, // ~540KB
+            UploadedAt = DateTime.UtcNow.AddDays(-30),
+            Type = DocumentType.Resume,
+            IsMaster = true
+        };
+    }
+
+    /// <summary>
     /// Creates skills with categories for better organization
     /// </summary>
     private static List<Skill> CreateSkills()
@@ -276,30 +303,30 @@ public static class DataSeeder
         return new List<Skill>
         {
             // Programming Languages
-            new Skill { Name = "C#", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "Python", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "JavaScript", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "TypeScript", Category = CategoryProgrammingLanguage },
-            new Skill { Name = "Java", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "C#", NormalizedName = "C#".ToUpperInvariant(), Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Python", NormalizedName = "PYTHON", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "JavaScript", NormalizedName = "JAVASCRIPT", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "TypeScript", NormalizedName = "TYPESCRIPT", Category = CategoryProgrammingLanguage },
+            new Skill { Name = "Java", NormalizedName = "JAVA", Category = CategoryProgrammingLanguage },
 
             // Frameworks
-            new Skill { Name = ".NET Core", Category = CategoryFramework },
-            new Skill { Name = "Angular", Category = CategoryFramework },
-            new Skill { Name = "React", Category = CategoryFramework },
-            new Skill { Name = "Spring Boot", Category = CategoryFramework },
+            new Skill { Name = ".NET Core", NormalizedName = ".NET CORE", Category = CategoryFramework },
+            new Skill { Name = "Angular", NormalizedName = "ANGULAR", Category = CategoryFramework },
+            new Skill { Name = "React", NormalizedName = "REACT", Category = CategoryFramework },
+            new Skill { Name = "Spring Boot", NormalizedName = "SPRING BOOT", Category = CategoryFramework },
 
             // Databases
-            new Skill { Name = "SQL", Category = CategoryDatabase },
-            new Skill { Name = "PostgreSQL", Category = CategoryDatabase },
-            new Skill { Name = "MongoDB", Category = CategoryDatabase },
+            new Skill { Name = "SQL", NormalizedName = "SQL", Category = CategoryDatabase },
+            new Skill { Name = "PostgreSQL", NormalizedName = "POSTGRESQL", Category = CategoryDatabase },
+            new Skill { Name = "MongoDB", NormalizedName = "MONGODB", Category = CategoryDatabase },
 
             // DevOps
-            new Skill { Name = "Docker", Category = CategoryDevOps },
-            new Skill { Name = "Kubernetes", Category = CategoryDevOps },
-            new Skill { Name = "Azure", Category = CategoryCloud },
-            new Skill { Name = "AWS", Category = CategoryCloud },
-            new Skill { Name = "Git", Category = CategoryVersionControl },
-            new Skill { Name = "CI/CD", Category = CategoryDevOps }
+            new Skill { Name = "Docker", NormalizedName = "DOCKER", Category = CategoryDevOps },
+            new Skill { Name = "Kubernetes", NormalizedName = "KUBERNETES", Category = CategoryDevOps },
+            new Skill { Name = "Azure", NormalizedName = "AZURE", Category = CategoryCloud },
+            new Skill { Name = "AWS", NormalizedName = "AWS", Category = CategoryCloud },
+            new Skill { Name = "Git", NormalizedName = "GIT", Category = CategoryVersionControl },
+            new Skill { Name = "CI/CD", NormalizedName = "CI/CD", Category = CategoryDevOps }
         };
     }
 
@@ -325,6 +352,53 @@ public static class DataSeeder
             "QA Automation Engineer"
         };
 
+        var jobDescriptions = new[]
+        {
+            @"We are looking for a skilled Software Engineer to join our dynamic team.
+            
+            Responsibilities:
+            - Design and build scalable backend services using .NET Core and C#.
+            - Collaborate with frontend engineers to integrate user-facing elements.
+            - Optimize applications for maximum speed and scalability.
+            - Participate in code reviews and architectural discussions.
+            
+            Requirements:
+            - 3+ years of experience with C# and the .NET ecosystem.
+            - Strong understanding of RESTful API design.
+            - Experience with SQL and NoSQL databases.
+            - Familiarity with cloud platforms like Azure or AWS.
+            - Bachelor's degree in Computer Science or related field.",
+
+            @"Join our frontend team to build modern web applications using Angular and TypeScript.
+            
+            What you'll do:
+            - Develop responsive and interactive user interfaces.
+            - Translate design mockups into high-quality code.
+            - Ensure cross-browser compatibility and accessibility.
+            - Write unit and integration tests for UI components.
+            
+            What we're looking for:
+            - Proficiency in HTML, CSS, and JavaScript/TypeScript.
+            - Deep knowledge of Angular (v14+) framework.
+            - Experience with state management (NgRx or Signals).
+            - Familiarity with build tools like Webpack or Vite.
+            - Detail-oriented mindset with a passion for UX.",
+
+            @"Seeking a DevOps Engineer to automate and streamline our operations and processes.
+            
+            Key Responsibilities:
+            - Manage and monitor cloud infrastructure on AWS.
+            - implement CI/CD pipelines using GitHub Actions or Azure DevOps.
+            - Containerize applications using Docker and Kubernetes.
+            - Ensure system security and compliance.
+            
+            Qualifications:
+            - Experience with Linux administration and shell scripting.
+            - Hands-on experience with Docker and Kubernetes.
+            - Knowledge of Infrastructure as Code (Terraform or Ansible).
+            - Understanding of network security best practices."
+        };
+
         var statuses = Enum.GetValues<JobApplicationStatus>();
         var random = new Random(42); // Fixed seed for reproducible results
 
@@ -336,7 +410,8 @@ public static class DataSeeder
             var position = positions[random.Next(positions.Length)];
             var status = statuses[random.Next(statuses.Length)];
             var daysAgo = random.Next(1, 60);
-            
+            var description = jobDescriptions[random.Next(jobDescriptions.Length)];
+
             // Randomly select new metadata
             var jobTypes = Enum.GetValues<JobType>();
             var workplaceTypes = Enum.GetValues<WorkplaceType>();
@@ -344,20 +419,20 @@ public static class DataSeeder
 
             var application = new JobApplication
             {
+                Id = Guid.NewGuid(),
                 UserId = userId, // Link to the demo user
                 Position = position,
                 CompanyId = company.Id,
                 JobUrl = $"https://jobs.example.com/{company.Name.Replace(" ", "-").ToLower()}/{i}",
-                Description = $"Application for {position} position at {company.Name}. " +
-                             $"This role offers exciting opportunities for career growth.",
+                Description = description,
                 AppliedAt = DateTime.UtcNow.AddDays(-daysAgo),
                 Status = status,
                 JobType = jobTypes[random.Next(jobTypes.Length)],
                 WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
                 Priority = priorities[random.Next(priorities.Length)],
                 MatchScore = random.Next(40, 95), // Random but realistic scores
-                SalaryOffer = status == JobApplicationStatus.Offer 
-                    ? random.Next(600000, 1200000) 
+                SalaryOffer = status == JobApplicationStatus.Offer
+                    ? random.Next(600000, 1200000)
                     : null
             };
 
@@ -424,7 +499,9 @@ public static class DataSeeder
                     .Where(i => !string.IsNullOrWhiteSpace(i.Name))
                     .Select(i => new Skill
                     {
+                        Id = Guid.NewGuid(),
                         Name = i.Name.Trim(),
+                        NormalizedName = i.Name.Trim().ToUpperInvariant(),
                         Category = string.IsNullOrWhiteSpace(i.Category) ? null : i.Category.Trim()
                     })
                     .ToList();

@@ -1,0 +1,70 @@
+<div class="relative inline-block">
+    <button brnPopoverTrigger hlmBtn variant="ghost" size="icon"
+        class="relative h-9 w-9 rounded-full transition-all hover:bg-muted/80 active:scale-95">
+        <ng-icon hlm name="lucideBell" class="h-5 w-5" />
+        @if (hasUnread()) {
+        <span
+            class="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)] border-2 border-background"></span>
+        }
+    </button>
+
+    <ng-template brnPopoverContent let-condition="condition">
+        <div hlmPopoverContent
+            class="bg-popover/95 border border-border shadow-2xl rounded-2xl p-0 min-w-[380px] overflow-hidden backdrop-blur-xl animate-in fade-in zoom-in-95">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-muted/30">
+                <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Intelligence Feed</h3>
+                <button hlmBtn variant="ghost" size="sm" (click)="markAllAsRead()"
+                    class="h-7 px-2 text-[10px] font-bold uppercase tracking-wider text-primary hover:text-primary/80 hover:bg-primary/10">
+                    <ng-icon hlm name="lucideCheckCheck" class="mr-1.5 h-3.5 w-3.5" />
+                    Mark all read
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="max-h-[450px] overflow-y-auto scrollbar-hide">
+                @if (notifications().length > 0) { @for (notification of notifications(); track notification.id) {
+                <div (click)="markAsRead(notification.id)"
+                    class="relative flex gap-4 p-4 hover:bg-muted/50 transition-colors cursor-pointer group">
+                    <!-- Unread Indicator -->
+                    @if (!notification.isRead) {
+                    <div
+                        class="absolute left-0 top-0 bottom-0 w-[2px] bg-primary shadow-[0_0_8px_rgba(var(--primary),0.5)]">
+                    </div>
+                    }
+
+                    <!-- Icon/Avatar -->
+                    <div
+                        class="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border border-border bg-muted/50 group-hover:border-primary/30 transition-all">
+                        <ng-icon hlm [name]="getIcon(notification.type)" class="h-5 w-5 text-muted-foreground" />
+                    </div>
+
+                    <!-- Text -->
+                    <div class="flex-1 min-w-0 space-y-1">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-sm font-bold text-foreground truncate">{{ notification.title }}</span>
+                            <span class="text-[10px] font-medium text-muted-foreground whitespace-nowrap">{{
+                                getTimestamp(notification.timestamp)
+                                }}</span>
+                        </div>
+                        <p class="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                            {{ notification.message }}
+                        </p>
+                    </div>
+                </div>
+                } } @else {
+                <!-- Empty State -->
+                <div class="flex flex-col items-center justify-center py-16 px-8 text-center">
+                    <div
+                        class="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4 border border-border">
+                        <ng-icon hlm name="lucideRadar" class="h-8 w-8 text-primary animate-pulse" />
+                    </div>
+                    <h4 class="text-sm font-bold text-foreground mb-1 leading-tight">Signal Clear</h4>
+                    <p class="text-[11px] text-muted-foreground tracking-wide uppercase font-medium">No new intelligence
+                        detected.</p>
+                </div>
+                }
+            </div>
+        </div>
+    </ng-template>
+</div>

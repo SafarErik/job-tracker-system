@@ -1,706 +1,480 @@
-<div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
-  <!-- Loading State -->
-  @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
-    <ng-icon name="lucideLoader2" class="text-4xl animate-spin text-primary"></ng-icon>
-    <p class="text-sm font-medium">Initializing Mission Control...</p>
-  </div>
-  }
-
-  <!-- Error State -->
-  @if (error()) {
-  <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
-    <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
-      <ng-icon name="lucideActivity" class="text-4xl text-destructive"></ng-icon>
-    </div>
-    <div class="space-y-2">
-      <h2 class="text-2xl font-black tracking-tight">System Error</h2>
-      <p class="text-muted-foreground max-w-sm mx-auto">{{ error() }}</p>
-    </div>
-    <button hlmBtn variant="outline" (click)="goBack()" class="rounded-2xl">
-      <ng-icon name="lucideChevronLeft" class="mr-2"></ng-icon>
-      Return to Safety
-    </button>
-  </div>
-  }
-
-  <!-- Main Content -->
-  @if (application() && !isLoading()) {
-  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-8">
-
-    <!-- 1. Breadcrumbs -->
-    <nav hlmBreadcrumb class="text-sm">
-      <ol hlmBreadcrumbList>
-        <li hlmBreadcrumbItem>
-          <a hlmBreadcrumbLink link="/">Home</a>
-        </li>
-        <li hlmBreadcrumbSeparator>
-          <ng-icon name="lucideChevronRight" />
-        </li>
-        <li hlmBreadcrumbItem>
-          <a hlmBreadcrumbLink link="/applications">Applications</a>
-        </li>
-        <li hlmBreadcrumbSeparator>
-          <ng-icon name="lucideChevronRight" />
-        </li>
-        <li hlmBreadcrumbItem>
-          <span hlmBreadcrumbPage class="font-medium text-foreground">{{ application()?.companyName }}</span>
-        </li>
-      </ol>
-    </nav>
-
-    <!-- 2. Header & Controls -->
-    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-4">
-      <div class="space-y-4">
-        <div class="flex flex-col gap-1">
-          <div class="flex items-center gap-3 min-h-[60px]">
-            @if (editingField() !== 'position') {
-            <h1 (click)="startEditing('position')"
-              class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-tight hover:bg-muted/50 -ml-2 px-2 rounded-lg cursor-pointer transition-colors group relative flex items-center gap-3">
-              {{ application()?.position }}
-              <ng-icon name="lucidePencil"
-                class="opacity-0 group-hover:opacity-100 h-6 w-6 text-muted-foreground/50"></ng-icon>
-              @if (lastSavedField() === 'position') {
-              <ng-icon name="lucideCheck" class="h-8 w-8 text-success"></ng-icon>
-              }
-            </h1>
-            } @else {
-            <div [formGroup]="editForm" class="flex gap-2 items-center w-full max-w-2xl">
-              <input hlmInput formControlName="position"
-                class="text-3xl md:text-5xl font-black h-16 w-full bg-background border-primary/50"
-                placeholder="Position title" (blur)="saveField('position')" (keydown.enter)="saveField('position')"
-                autofocus>
-            </div>
-            }
-          </div>
-          <div class="flex items-center gap-2 text-2xl">
-            <span class="text-muted-foreground font-medium">at</span>
-            <a [routerLink]="['/companies', application()?.companyId]" [queryParams]="{from: 'application'}"
-              class="font-bold text-primary hover:text-primary/80 transition-all hover:underline decoration-4 underline-offset-8">
-              {{ application()?.companyName }}
-            </a>
-          </div>
+<div class="min-h-screen bg-background text-foreground flex flex-col font-['Inter'] focus-transition"
+  [class.focus-active]="isFocusMode()">
+  <!-- Top Bar -->
+  <header *ngIf="!isFocusMode()"
+    class="h-16 border-b border-border bg-background sticky top-0 z-50 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button (click)="goBack()"
+        class="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+        aria-label="Go back" title="Go back">
+        <ng-icon name="lucideArrowLeft" class="text-xl" aria-hidden="true"></ng-icon>
+      </button>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest font-semibold">
+          <span>Applications</span>
+          <ng-icon name="lucideChevronRight" class="text-border"></ng-icon>
+          <span class="text-muted-foreground">{{ store.selectedApplication()?.companyName }}</span>
         </div>
-
-        <!-- Interactive Control Badges -->
-        <div class="flex flex-wrap gap-3 items-center pt-2">
-
-          <!-- Status -->
-          <button [hlmDropdownMenuTrigger]="statusMenu"
-            class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border-none ring-1 ring-border/40"
-            [ngClass]="getStatusClass(application()?.status)">
-            <span class="font-bold tracking-wide">{{ getStatusLabel(application()?.status) }}</span>
-            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
-          </button>
-
-          <!-- Priority -->
-          <button [hlmDropdownMenuTrigger]="priorityMenu"
-            class="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border-none ring-1 ring-border/40"
-            [ngClass]="getPriorityClass(application()?.priority)">
-            <span class="font-bold tracking-wide">{{ getPriorityLabel(application()?.priority) }}</span>
-            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
-          </button>
-
-          <!-- Workplace -->
-          <button
-            class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-card text-foreground text-sm font-bold border-none ring-1 ring-border/40 hover:bg-muted transition-all shadow-sm cursor-pointer"
-            [hlmDropdownMenuTrigger]="workplaceMenu">
-            <ng-icon name="lucideMapPin" size="14" class="text-muted-foreground"></ng-icon>
-            <span class="tracking-wide">{{ getWorkplaceLabel(application()?.workplaceType) }}</span>
-            <ng-icon name="lucideChevronDown" size="14" class="opacity-50"></ng-icon>
-          </button>
-
-          @if (application()?.jobUrl) {
-          <div class="h-6 w-px bg-border/60 mx-1"></div>
-          <a [href]="application()?.jobUrl" target="_blank"
-            class="text-sm font-bold text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors">
-            Job Posting <ng-icon name="lucideExternalLink" size="14"></ng-icon>
-          </a>
-          }
-
-          <div class="h-6 w-px bg-border/60 mx-1"></div>
-          <button (click)="deleteApplication()"
-            class="text-sm font-bold text-muted-foreground hover:text-destructive flex items-center gap-2 transition-colors">
-            Purge records <ng-icon name="lucideTrash2" size="14"></ng-icon>
-          </button>
-        </div>
+        <h1 class="text-sm font-medium text-foreground">{{ store.selectedApplication()?.position }}</h1>
       </div>
+    </div>
 
-      <!-- Hero Metric (Match Score) -->
-      <div class="relative group">
+    <!-- Command Bar Trigger (Mockup) -->
+    <div class="absolute left-1/2 -translate-x-1/2 w-full max-w-md hidden md:block">
+      <button (click)="toggleCommandBar()"
+        class="w-full h-10 px-4 flex items-center justify-between rounded-xl border border-border bg-card/50 backdrop-blur-md hover:border-primary/30 transition-all group">
+        <div class="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors">
+          <ng-icon name="lucideSearch" class="text-lg"></ng-icon>
+          <span class="text-sm font-light">Ask AI or search...</span>
+        </div>
         <div
-          class="absolute -inset-4 bg-success/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          class="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded border border-border text-[10px] font-mono text-muted-foreground">
+          <ng-icon name="lucideCommand" class="text-xs"></ng-icon>
+          <span>K</span>
         </div>
-        <div class="relative flex flex-col items-end">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[0.7rem] uppercase tracking-[0.3em] font-black text-muted-foreground/60">Match
-              Accuracy</span>
-            <ng-icon name="lucideZap" size="16" class="text-success animate-pulse"></ng-icon>
-          </div>
-          <div class="text-5xl md:text-7xl font-black text-success tabular-nums tracking-tighter drop-shadow-sm">
-            {{ application()?.matchScore }}%
-          </div>
-        </div>
-      </div>
+      </button>
     </div>
 
-    <!-- Dropdown Templates -->
-    <ng-template #statusMenu>
-      <hlm-dropdown-menu class="w-56 p-2 rounded-2xl backdrop-blur-xl bg-popover/95 border-border shadow-2xl">
-        <hlm-dropdown-menu-label
-          class="px-3 py-2 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Update Protocol
-          Status</hlm-dropdown-menu-label>
-        <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
-        <hlm-dropdown-menu-group>
-          @for (option of statusOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.status === option.value }"
-            [class.text-primary]="application()?.status === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
-            (click)="selectStatus(option.value)">
-            {{ option.label }}
-            @if (application()?.status === option.value) {
-            <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
-            }
+    <div class="flex items-center gap-3">
+      <!-- Status Dropdown -->
+      <button [hlmDropdownMenuTrigger]="statusMenu" [class]="getStatusBadgeClasses(store.selectedApplication()?.status)"
+        class="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all cursor-pointer border-none h-auto">
+        {{ getStatusLabel(store.selectedApplication()?.status) }}
+        <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
+      </button>
+
+      <ng-template #statusMenu>
+        <div hlmDropdownMenu class="w-48 bg-popover border-border shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel
+            class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            Update Status</div>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Applied)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Applied</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.PhoneScreen)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Phone Screen</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.TechnicalTask)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Technical Task</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Interviewing)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Interviewing</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Offer)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground">Offer Received</button>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Accepted)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-success">Accepted</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Rejected)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive">Rejected</button>
+          <button hlmDropdownMenuItem (click)="updateStatus(JobStatus.Ghosted)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground">Ghosted</button>
+        </div>
+      </ng-template>
+
+      <!-- Priority Dropdown -->
+      <button [hlmDropdownMenuTrigger]="priorityMenu"
+        [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)"
+        class="flex items-center gap-2 transition-all cursor-pointer h-auto">
+        {{ store.selectedApplication()?.priority | jobPriority }} Priority
+        <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
+      </button>
+
+      <ng-template #priorityMenu>
+        <div hlmDropdownMenu class="w-40 bg-popover border-border shadow-2xl p-1 rounded-xl">
+          <div hlmDropdownMenuLabel
+            class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+            Set Priority</div>
+          <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Low)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground flex items-center">
+            <div class="w-2 h-2 rounded-full bg-muted-foreground mr-2"></div> Low
           </button>
-          }
-        </hlm-dropdown-menu-group>
-      </hlm-dropdown-menu>
-    </ng-template>
-
-    <ng-template #priorityMenu>
-      <hlm-dropdown-menu class="w-56 p-2 rounded-2xl backdrop-blur-xl bg-popover/95 border-border shadow-2xl">
-        <hlm-dropdown-menu-label
-          class="px-3 py-2 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Set Mission
-          Priority</hlm-dropdown-menu-label>
-        <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
-        <hlm-dropdown-menu-group>
-          @for (option of priorityOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.priority === option.value }"
-            [class.text-primary]="application()?.priority === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
-            (click)="selectPriority(option.value)">
-            {{ option.label }}
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.Medium)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-info flex items-center">
+            <div class="w-2 h-2 rounded-full bg-info mr-2"></div> Medium
           </button>
-          }
-        </hlm-dropdown-menu-group>
-      </hlm-dropdown-menu>
-    </ng-template>
-
-    <ng-template #workplaceMenu>
-      <hlm-dropdown-menu class="w-56 p-2 rounded-2xl backdrop-blur-xl bg-popover/95 border-border shadow-2xl">
-        <hlm-dropdown-menu-label
-          class="px-3 py-2 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Environment
-          Type</hlm-dropdown-menu-label>
-        <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
-        <hlm-dropdown-menu-group>
-          @for (option of workplaceOptions; track option.value) {
-          <button hlmDropdownMenuItem [class]="{ 'bg-primary/10': application()?.workplaceType === option.value }"
-            [class.text-primary]="application()?.workplaceType === option.value"
-            class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold transition-all focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[highlighted]:translate-x-1"
-            (click)="selectWorkplace(option.value)">
-            {{ option.label }}
+          <button hlmDropdownMenuItem (click)="updatePriority(JobPriority.High)"
+            class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive flex items-center">
+            <div class="w-2 h-2 rounded-full bg-destructive mr-2"></div> High
           </button>
-          }
-        </hlm-dropdown-menu-group>
-      </hlm-dropdown-menu>
-    </ng-template>
+        </div>
+      </ng-template>
 
-    <!-- 3. Navigation Tabs (The Dock) -->
-    <div class="flex justify-start lg:justify-center overflow-x-auto pb-2 custom-scrollbar">
-      <div
-        class="inline-flex items-center p-1.5 bg-card/60 backdrop-blur-xl rounded-[2rem] border border-border/40 shadow-xl min-w-max">
-        @for (tab of tabs; track tab.id) {
-        <button (click)="setActiveTab(tab.id)"
-          class="group relative flex items-center gap-2.5 px-6 py-3 rounded-[1.5rem] text-sm font-bold transition-all duration-500 whitespace-nowrap"
-          [class.text-primary]="activeTab() === tab.id" [class.text-muted-foreground]="activeTab() !== tab.id"
-          [class.hover:text-foreground]="activeTab() !== tab.id">
+      <div class="w-px h-6 bg-border mx-1"></div>
 
-          <!-- Background Pill -->
-          @if (activeTab() === tab.id) {
-          <div class="absolute inset-0 bg-secondary shadow-inner rounded-[1.5rem] animate-in zoom-in-95 duration-300"
-            style="animation-fill-mode: both;">
-          </div>
-          }
+      <!-- Action Buttons -->
+      <button (click)="uiState.openJobSettings()"
+        class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-foreground transition-colors tooltip"
+        aria-label="Edit Application Metadata" title="Edit Application Metadata">
+        <ng-icon name="lucideSettings" class="text-sm"></ng-icon>
+      </button>
 
-          <span class="relative z-10 flex items-center gap-2.5">
-            <ng-icon [name]="tab.icon" size="18" [class.animate-pulse]="activeTab() === tab.id"></ng-icon>
-            {{ tab.label }}
-          </span>
-        </button>
-        }
-      </div>
+      <button (click)="deleteApplication()"
+        class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-destructive transition-colors tooltip"
+        aria-label="Delete Application" title="Delete Application">
+        <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
+      </button>
+
+      <button (click)="onAddWorkstationItem()"
+        class="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors" aria-label="Add item">
+        <ng-icon name="lucidePlus" class="text-xl" aria-hidden="true"></ng-icon>
+      </button>
     </div>
+  </header>
 
-
-    <!-- 4. CONTENT AREA (Bento Grid) -->
-    <div class="min-h-[500px]">
-      <!-- AI COACH TAB -->
-      @if (activeTab() === 'coach') {
-      <div class="space-y-8 max-w-6xl mx-auto">
-
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center p-1 bg-muted/50 rounded-2xl mb-6">
-            <button (click)="setAiCoachTab('suggestions')" class="px-6 py-2 rounded-xl text-xs font-bold transition-all"
-              [class.bg-primary]="aiCoachActiveTab() === 'suggestions'"
-              [class.text-white]="aiCoachActiveTab() === 'suggestions'">
-              Strategic Suggestions
-            </button>
-            <button (click)="setAiCoachTab('analysis')" class="px-6 py-2 rounded-xl text-xs font-bold transition-all"
-              [class.bg-primary]="aiCoachActiveTab() === 'analysis'"
-              [class.text-white]="aiCoachActiveTab() === 'analysis'">
-              Full Analysis
-            </button>
-          </div>
-          <h2 class="text-4xl font-black tracking-tight mb-2">
-            @if(aiCoachActiveTab() === 'suggestions') { AI Optimized Suggestions } @else { Full AI Insight Report }
-          </h2>
-        </div>
-
-        @if(aiCoachActiveTab() === 'suggestions') {
-        @if (!aiAnalysis()) {
-        <div class="text-center py-20 bg-card rounded-3xl border border-border/40 border-dashed">
-          <ng-icon name="lucideBrain" size="48" class="text-muted-foreground/30 mb-4"></ng-icon>
-          <h3 class="text-xl font-bold mb-2">No Analysis Yet</h3>
-          <p class="text-muted-foreground mb-6">Go to the <strong>Job Context</strong> tab and click "Analyze" to unlock
-            this feature.</p>
-          <button hlmBtn variant="outline" (click)="setActiveTab('context')" class="rounded-xl">Go to Job
-            Context</button>
-        </div>
-        } @else {
-        <div class="grid grid-cols-1 gap-8">
-          @for (enhancement of aiAnalysis()?.resumeEnhancements; track enhancement.id) {
-          <div
-            class="bg-card rounded-3xl border border-border/40 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <!-- Reasoning -->
-            <div class="bg-info/5 border-b border-info/10 p-4 flex items-center gap-3">
-              <ng-icon name="lucideLightbulb" class="text-info" size="18"></ng-icon>
-              <span class="text-sm font-medium text-info/80">
-                <strong>AI Insight:</strong> {{ enhancement.reasoning }}
-              </span>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2">
-              <!-- Original -->
-              <div class="p-8 border-b lg:border-b-0 lg:border-r border-border/40 bg-destructive/5">
-                <span class="text-[10px] font-black uppercase tracking-widest text-destructive mb-4 block">Original
-                  Asset</span>
-                <p
-                  class="text-muted-foreground line-through decoration-destructive/50 decoration-2 font-mono text-sm leading-relaxed">
-                  "{{ enhancement.originalBullet }}"
-                </p>
-              </div>
-
-              <!-- Rebranded -->
-              <div class="p-8 bg-success/5 relative group">
-                <div class="flex items-center justify-between mb-4">
-                  <span class="text-[10px] font-black uppercase tracking-widest text-success flex items-center gap-2">
-                    <ng-icon name="lucideSparkles" size="14"></ng-icon> Optimized Version
-                  </span>
-                  <button (click)="copyToClipboard(enhancement.rebrandedBullet)"
-                    class="text-xs font-bold text-success hover:underline">Copy</button>
-                </div>
-                <p class="text-foreground font-medium text-lg leading-relaxed">{{ enhancement.rebrandedBullet }}</p>
-              </div>
-            </div>
-          </div>
-          }
-        </div>
-        }
-        } @else {
-        <!-- Full Analysis Content -->
-        <div class="bg-card rounded-[2.5rem] border border-border/40 p-6 md:p-10 shadow-sm animate-fade-in-up">
-          <div class="prose dark:prose-invert max-w-none">
-            <h3 class="text-2xl font-black mb-6">Strategic Position Analysis</h3>
-            <p class="text-lg text-muted-foreground">This is a hyper-personalized breakdown of your fit for the role at
-              {{ application()?.companyName }}.</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
-              <div class="p-6 rounded-3xl bg-primary/5 border border-primary/10">
-                <h4 class="font-bold text-primary mb-2 uppercase tracking-widest text-xs">Core Advantage</h4>
-                <p>Your previous experience with Angular Signals aligns perfectly with their requirement for 'Reactive
-                  State Management'.</p>
-              </div>
-              <div class="p-6 rounded-3xl bg-warning/5 border border-warning/10">
-                <h4 class="font-bold text-warning mb-2 uppercase tracking-widest text-xs">Primary Risk</h4>
-                <p>The job description mentions 'Legacy Migration'. Be prepared to discuss refactoring and modernizing
-                  legacy codebases.</p>
-              </div>
-            </div>
-
-            <h4 class="text-xl font-bold mt-8">Culture Fit & Keywords</h4>
-            <p>The job description emphasizes <strong>ownership</strong> and <strong>autonomy</strong>. Pivot from
-              'assisted in' to 'led the development of'.</p>
-          </div>
-        </div>
-        }
-      </div>
+  <!-- Phase Navigation -->
+  <div *ngIf="!isFocusMode()" class="p-6 flex justify-center">
+    <div class="p-1.5 bg-card/80 backdrop-blur-md border border-border rounded-2xl flex gap-1 shadow-xl">
+      @for (phase of phases; track phase.id) {
+      <button (click)="setPhase(phase.id)" [class.bg-primary]="currentPhase() === phase.id"
+        [class.text-primary-foreground]="currentPhase() === phase.id"
+        [class.text-muted-foreground]="currentPhase() !== phase.id"
+        [class.hover:text-foreground]="currentPhase() !== phase.id"
+        [class.hover:bg-muted/50]="currentPhase() !== phase.id"
+        class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 group/btn">
+        <ng-icon [name]="phase.icon" class="text-lg group-hover/btn:scale-110 transition-transform"></ng-icon>
+        {{ phase.label }}
+      </button>
       }
+    </div>
+  </div>
 
-      <!-- JOB CONTEXT TAB -->
-      @if (activeTab() === 'context') {
-      <div class="max-w-5xl mx-auto animate-fade-in-up">
-        <div class="bg-card rounded-[2.5rem] border border-border/40 shadow-2xl overflow-hidden">
-          <div class="p-8 border-b border-border/40 flex items-center justify-between bg-muted/20">
-            <div>
-              <h3 class="text-2xl font-black tracking-tight">Job Intelligence Hub</h3>
-              <p class="text-muted-foreground text-sm">Our AI uses this content as the "Source of Truth" for all
-                optimizations.</p>
-            </div>
-            <div class="flex gap-2">
-              <button hlmBtn variant="outline" size="sm" class="rounded-xl px-4" (click)="jobDescriptionInput.set('')">
-                <ng-icon name="lucideTrash2" class="mr-2"></ng-icon> Clear
-              </button>
-            </div>
+  <!-- Main Content Space -->
+  <main class="flex-1 px-8 pb-12 overflow-y-auto">
+    <div class="max-w-[1400px] mx-auto">
+      @switch (currentPhase()) {
+      @case (Phase.Strategy) {
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[calc(100vh-220px)] animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+        <!-- Left Column: Job Context (Scrollable) -->
+        <div class="flex flex-col min-h-0 bg-card/30 border border-border/50 rounded-3xl overflow-hidden group/context">
+          <div class="px-6 py-4 border-b border-border/50 bg-card/20 flex items-center justify-between">
+            <h3 class="text-xs font-serif font-bold text-muted-foreground uppercase tracking-widest">Job Context</h3>
+            @if (highlightedDescription()) {
+            <button (click)="startManualPaste()"
+              class="text-[10px] text-muted-foreground hover:text-foreground transition-colors uppercase font-bold tracking-tighter">Edit
+              Description</button>
+            }
           </div>
 
-          <div class="p-8">
-            <div class="relative group">
+          <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-border flex flex-col min-h-0">
+            @if (isPastingManually()) {
+            <div class="flex-1 flex flex-col p-6 gap-4 animate-in fade-in slide-in-from-top-4 duration-300">
               <div
-                class="absolute -inset-1 bg-gradient-to-r from-primary/10 to-info/10 rounded-[2rem] blur opacity-25 group-hover:opacity-100 transition duration-1000">
+                class="flex-1 bg-muted border border-border rounded-3xl p-4 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all flex flex-col">
+                <textarea [(ngModel)]="manualPasteText"
+                  placeholder="Paste the full job description here... (requirements, responsibilities, etc.)"
+                  class="flex-1 w-full bg-transparent border-none outline-none text-sm font-mono text-foreground resize-none scrollbar-thin scrollbar-thumb-border"></textarea>
               </div>
-              <textarea [ngModel]="jobDescriptionInput()" (ngModelChange)="jobDescriptionInput.set($event)"
-                placeholder="Paste Job Description Here..."
-                class="relative w-full h-[400px] bg-background/50 backdrop-blur-sm border-2 border-border/40 rounded-[2rem] p-8 font-mono text-sm leading-relaxed focus:border-primary/50 focus:ring-0 transition-all outline-none resize-none custom-scrollbar">
-              </textarea>
-            </div>
 
-            <div class="mt-8 flex justify-center">
-              <button hlmBtn size="lg"
-                class="h-16 px-12 rounded-full text-lg font-black bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 group"
-                [disabled]="isAnalyzing()" (click)="analyzeJobDescription()">
-                @if (isAnalyzing()) {
-                <ng-icon name="lucideLoader2" class="mr-3 animate-spin"></ng-icon> Synthesizing Data...
+              <div class="flex items-center justify-end gap-3">
+                <button (click)="cancelManualPaste()" hlmBtn variant="ghost"
+                  class="text-xs font-bold uppercase tracking-widest text-muted-foreground px-6">
+                  Cancel
+                </button>
+                <button (click)="saveManualPaste()" [disabled]="!manualPasteText().trim()" hlmBtn
+                  class="bg-linear-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold uppercase tracking-widest px-8 rounded-xl shadow-lg">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+            } @else if (highlightedDescription()) {
+            <div class="flex min-h-full">
+              <!-- Line Numbers -->
+              <div
+                class="w-12 py-6 bg-muted/20 border-r border-border/50 flex flex-col items-center select-none shrink-0">
+                @for (num of lineNumbers(); track num) {
+                <span class="text-[10px] font-mono text-muted-foreground/50 leading-relaxed block h-5">{{ num }}</span>
+                }
+              </div>
+              <!-- Content -->
+              <div
+                class="flex-1 p-6 font-mono text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap select-text selection:bg-primary/30"
+                [innerHTML]="highlightedDescription()">
+              </div>
+            </div>
+            } @else {
+            <!-- Enhanced Empty State -->
+            <div
+              class="h-full flex-col flex items-center justify-center p-8 text-center animate-in fade-in zoom-in-95 duration-700">
+              <div
+                class="w-20 h-20 rounded-3xl bg-muted flex items-center justify-center mb-6 shadow-inner border border-border">
+                <ng-icon name="lucideFileText" class="text-4xl text-muted-foreground/30"></ng-icon>
+              </div>
+              <h4 class="text-lg font-sans font-bold text-foreground mb-2">No Job Description Detected</h4>
+              <p class="text-xs text-muted-foreground max-w-xs mb-8 leading-relaxed">
+                Analyze the specific role requirements to unlock tailored strategy and gap analysis.
+              </p>
+
+              <div class="w-full max-w-sm space-y-4">
+                <div class="relative group">
+                  <ng-icon name="lucideLink"
+                    class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors"
+                    aria-hidden="true"></ng-icon>
+                  <label for="job-url-input" class="sr-only">Job URL</label>
+                  <input id="job-url-input" type="text" placeholder="Paste Job URL..."
+                    class="w-full h-12 pl-11 pr-4 bg-muted border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground">
+                </div>
+
+                <button
+                  class="w-full h-12 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold text-sm shadow-lg transition-all flex items-center justify-center gap-2 group/btn">
+                  <ng-icon name="lucideSparkles" class="text-lg group-hover:rotate-12 transition-transform"></ng-icon>
+                  Magic Auto-Fill
+                </button>
+
+                <div class="flex items-center gap-4 py-2">
+                  <div class="h-px flex-1 bg-border/50"></div>
+                  <span class="text-[10px] text-muted-foreground/50 font-bold uppercase tracking-widest">or</span>
+                  <div class="h-px flex-1 bg-border/50"></div>
+                </div>
+
+                <button (click)="startManualPaste()"
+                  class="w-full py-2 text-xs font-sans font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest">
+                  Paste Text Manually
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-8 overflow-y-auto pr-2 scrollbar-none">
+
+          <!-- Compact Mission Intel -->
+          <div class="p-6 rounded-3xl bg-card border border-border mission-intel-card shrink-0">
+            <h3
+              class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
+              <ng-icon name="lucideTarget" class="text-primary"></ng-icon>
+              Mission Intel
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="space-y-2">
+                <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Priority</p>
+                <div [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)"
+                  class="inline-block px-4 py-1.5">
+                  {{ store.selectedApplication()?.priority | jobPriority }}
+                </div>
+              </div>
+
+              <div class="space-y-2 flex flex-col items-center md:items-start">
+                <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Match Score</p>
+                <div class="relative w-24 h-24 flex items-center justify-center">
+                  <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 36 36">
+                    <!-- Background Track -->
+                    <circle class="text-muted/20 stroke-current" stroke-width="3" fill="none" cx="18" cy="18"
+                      r="15.9155" />
+                    <!-- Progress Bar -->
+                    <circle class="text-primary stroke-current gauge-path transition-all duration-1000"
+                      [style.stroke-dasharray]="(simulatedScore() ?? service.currentJob()?.matchScore ?? 0) + ', 100'"
+                      stroke-width="3" stroke-linecap="round" fill="none" cx="18" cy="18" r="15.9155" />
+                  </svg>
+                  <div class="absolute flex flex-col items-center">
+                    <span class="text-xl font-black transition-all" [class.text-success]="simulatedScore()"
+                      [class.scale-110]="simulatedScore()">
+                      {{ simulatedScore() ?? service.currentJob()?.matchScore ?? 0 }}
+                    </span>
+                    <span class="text-[8px] text-muted-foreground font-bold uppercase -mt-1">
+                      {{ simulatedScore() ? 'SIM' : '%' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Type</p>
+                <div
+                  class="bg-muted border border-border text-muted-foreground px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider inline-block">
+                  {{ store.selectedApplication()?.jobType | jobType }}
+                </div>
+              </div>
+            </div>
+            <!-- Analyze Button -->
+            <div class="mt-8 pt-6 border-t border-border">
+              <button (click)="triggerAnalysis()" [disabled]="service.isProcessing()"
+                class="w-full py-4 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 disabled:from-muted disabled:to-muted disabled:cursor-not-allowed text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3">
+                @if (service.isProcessing()) {
+                <ng-icon name="lucideLoader2" class="text-lg animate-spin"></ng-icon>
+                Synchronizing Intel...
                 } @else {
-                <ng-icon name="lucideSparkles" class="mr-3 group-hover:animate-pulse"></ng-icon> Analyze & Generate
-                Insights
+                <ng-icon name="lucideBrain" class="text-lg"></ng-icon>
+                Initiate AI Analysis
                 }
               </button>
             </div>
           </div>
-        </div>
-      </div>
-      }
 
-      <!-- OVERVIEW TAB -->
-      @if (activeTab() === 'overview') {
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up">
-        <div class="lg:col-span-1 bg-card rounded-3xl border border-border/40 p-6 md:p-8 shadow-sm">
-          <h3 class="text-lg font-bold mb-8 flex items-center gap-2">
-            <ng-icon name="lucideActivity" class="text-primary"></ng-icon> Timeline
-          </h3>
-          <div
-            class="relative space-y-8 before:absolute before:inset-0 before:left-3 before:h-full before:w-px before:bg-border/60">
-            @for (event of timeline(); track event.id; let last = $last) {
-            <div class="relative pl-10">
-              <div
-                class="absolute left-0 top-1.5 w-6 h-6 rounded-full border-4 border-background flex items-center justify-center transition-all duration-500"
-                [class.bg-primary]="!last" [class.bg-primary/20]="last"></div>
-              <div>
-                <p class="text-sm font-bold">{{ event.title }}</p>
-                <p class="text-xs text-muted-foreground mt-0.5">{{ formatDate(event.timestamp) }}</p>
-              </div>
+          <!-- Gap Analysis (Bento Cards) -->
+          <div class="space-y-6 flex-1 min-h-0">
+            <div class="flex items-center justify-between">
+              <h3
+                class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                <ng-icon name="lucideBrain" class="text-primary"></ng-icon>
+                Gap Analysis
+              </h3>
+              <button (click)="triggerAnalysis()"
+                class="text-[9px] font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-widest">Refresh
+                Scan</button>
             </div>
-            }
-          </div>
-        </div>
 
-        <div class="lg:col-span-2 space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-info/10 text-info"><ng-icon name="lucideCalendar" size="24"></ng-icon>
-              </div>
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Applied Date
-                </p>
-                <p class="text-xl font-bold">{{ formatDate(application()!.appliedAt) }}</p>
-              </div>
-            </div>
-            <div class="bg-card rounded-3xl border border-border/40 p-6 flex items-center gap-4">
-              <div class="p-4 rounded-2xl bg-primary/10 text-primary"><ng-icon name="lucideClipboardList"
-                  size="24"></ng-icon></div>
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Job Type</p>
-                <p class="text-xl font-bold">{{ getJobTypeLabel(application()!.jobType) }}</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-card rounded-3xl border border-border/40 p-6 md:p-8 h-full relative overflow-hidden group">
-            <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-700">
-              <ng-icon name="lucideSparkles" size="120" class="text-primary"></ng-icon>
-            </div>
-            <div class="flex flex-col md:flex-row items-center gap-10">
-              <div class="relative w-40 h-40 shrink-0">
-                <svg class="w-full h-full transform -rotate-90" role="img"
-                  [attr.aria-label]="'Match score: ' + (application()?.matchScore ?? 0) + ' percent'">
-                  <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
-                    class="text-muted/20" />
-                  <circle cx="80" cy="80" r="74" fill="transparent" stroke="currentColor" stroke-width="12"
-                    stroke-linecap="round" class="text-success" [attr.stroke-dasharray]="465"
-                    [attr.stroke-dashoffset]="465 * (1 - (application()?.matchScore ?? 0) / 100)" />
-                </svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-3xl font-black">{{ application()?.matchScore }}%</span>
-                  <span class="text-[0.6rem] font-black uppercase text-muted-foreground">AI Score</span>
-                </div>
-              </div>
-              <div class="flex-1 space-y-4">
-                <h4 class="text-2xl font-black leading-tight">AI Readiness Report</h4>
-                <p class="text-muted-foreground text-sm leading-relaxed">Your profile has a <strong>{{
-                    application()!.matchScore }}% compatibility</strong> with this position's requirements.</p>
-                <div class="flex flex-wrap gap-2 pt-2">
-                  <div
-                    class="px-3 py-1.5 rounded-full bg-success/10 border border-success/20 text-[10px] font-black uppercase text-success">
-                    Resume Optimized</div>
-                  <div
-                    class="px-3 py-1.5 rounded-full bg-info/10 border border-info/20 text-[10px] font-black uppercase text-info">
-                    Company Researched</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-
-      <!-- INTERVIEW PREP TAB -->
-      @if (activeTab() === 'interview') {
-      <div class="max-w-6xl mx-auto animate-fade-in-up">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-black mb-3">Interview Combat Simulator</h2>
-          <p class="text-muted-foreground">Interactive practice for high-probability questions.</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">
-          @for (card of interviewQuestions(); track card.id) {
-          <div class="h-[300px] perspective-1000 group cursor-pointer" (click)="flipCard(card.id)" tabindex="0"
-            role="button" (keydown.enter)="flipCard(card.id)"
-            (keydown.space)="flipCard(card.id); $event.preventDefault()">
-            <div class="relative w-full h-full transition-all duration-700 preserve-3d shadow-xl rounded-[2.5rem]"
-              [class.rotate-y-180]="card.flipped">
-              <!-- Front -->
-              <div
-                class="absolute inset-0 backface-hidden bg-card border border-border/40 rounded-[2.5rem] p-8 flex flex-col justify-between">
-                <div>
-                  <span
-                    class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-4 inline-block">{{
-                    card.category }}</span>
-                  <p class="text-xl font-bold leading-tight">{{ card.question }}</p>
-                </div>
-                <div
-                  class="flex items-center gap-2 text-muted-foreground/60 text-xs font-bold uppercase tracking-widest">
-                  <ng-icon name="lucideRotateCw" size="14"></ng-icon> Reveal Tactic
-                </div>
-              </div>
-              <!-- Back -->
-              <div
-                class="absolute inset-0 backface-hidden bg-primary rotate-y-180 rounded-[2.5rem] p-8 text-white flex flex-col justify-between">
-                <div>
-                  <h4 class="text-[10px] font-black uppercase tracking-[0.3em] mb-4 text-white/60">AI Suggested Tactic
-                  </h4>
-                  <p class="text-sm font-medium leading-relaxed">{{ card.answer }}</p>
-                </div>
-                <div class="flex items-center gap-2 text-white/60 text-xs font-bold uppercase tracking-widest">
-                  <ng-icon name="lucideArrowLeft" size="14"></ng-icon> Back
-                </div>
-              </div>
-            </div>
-          </div>
-          }
-        </div>
-      </div>
-      }
-
-      <!-- STRATEGY TAB -->
-      @if (activeTab() === 'strategy') {
-      <div class="space-y-6 animate-fade-in-up">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Package -->
-          <div class="lg:col-span-4 bg-card rounded-3xl border border-border/40 p-6 flex flex-col justify-between">
-            <h3
-              class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-success"></span> The Package
-            </h3>
-            <div class="space-y-4">
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-1">Target
-                  Base</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">$</span>
-                  <input type="number" [ngModel]="targetSalary()" (ngModelChange)="targetSalary.set($event)"
-                    class="w-full bg-background border border-border/40 rounded-xl px-10 py-3 font-bold focus:ring-2 focus:ring-primary/20 outline-none">
-                </div>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-1">Actual
-                  Offer</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">$</span>
-                  <input type="number" [ngModel]="actualOffer()" (ngModelChange)="actualOffer.set($event)"
-                    class="w-full bg-background border border-border/40 rounded-xl px-10 py-3 font-bold focus:ring-2 focus:ring-primary/20 outline-none">
-                </div>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/80 pl-1">Equity &
-                  Perks</label>
-                <textarea [ngModel]="equityBonus()" (ngModelChange)="equityBonus.set($event)"
-                  class="w-full bg-background border border-border/40 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-primary/20 outline-none resize-none h-24"></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- Intel -->
-          <div class="lg:col-span-8 bg-card rounded-3xl border border-border/40 p-6">
-            <h3
-              class="text-sm font-black uppercase tracking-widest text-muted-foreground/60 mb-6 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-info"></span> Interviewer Intelligence
-            </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              @if (application()?.primaryContact; as contact) {
-              <div
-                class="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex items-center justify-between group">
-                <div class="flex items-center gap-3">
-                  <div
-                    class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black">
-                    {{ contact.name.charAt(0) }}
-                  </div>
-                  <div class="text-sm font-bold">
-                    {{ contact.name }}
-                    <p class="text-[10px] text-muted-foreground font-normal">{{ contact.role }}</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  @if (contact.linkedIn) {
-                  <a [href]="contact.linkedIn" target="_blank"
-                    class="text-muted-foreground hover:text-primary transition-colors">
-                    <ng-icon name="lucideLinkedin" size="16"></ng-icon>
-                  </a>
-                  }
-                  <button [hlmDropdownMenuTrigger]="contactMenu"
-                    class="text-muted-foreground hover:text-primary transition-colors">
-                    <ng-icon name="lucideChevronDown" size="16"></ng-icon>
-                  </button>
-                </div>
-              </div>
+              @for (item of gapAnalysis(); track item.name) {
+              <div class="p-6 rounded-3xl border transition-all bento-card-interactive group/bento shadow-sm"
+                [class]="item.matched ? 'bg-success/5 border-success/10' : 'bg-destructive/5 border-destructive/10'">
 
-              <!-- Display role context if available -->
-              <div class="p-4 rounded-2xl bg-muted/20 border border-border/20 flex flex-col justify-center">
-                <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-1">Assigned
-                  Liaison</p>
-                <p class="text-xs font-medium italic">"Primary contact for negotiation and tactical feedback."</p>
-              </div>
-              } @else {
-              <div
-                class="md:col-span-2 py-8 text-center border-2 border-dashed border-border/20 rounded-2xl bg-muted/5">
-                <p class="text-xs font-bold text-muted-foreground/40 uppercase tracking-widest mb-4">No Liaison Assigned
-                </p>
-                <button hlmBtn variant="outline" size="sm" class="rounded-xl font-black text-[10px] uppercase"
-                  [hlmDropdownMenuTrigger]="contactMenu">
-                  Assign from Hierarchy
-                </button>
+                <div class="flex flex-col h-full gap-4">
+                  <div class="flex items-start justify-between">
+                    <div class="p-2 rounded-xl"
+                      [class]="item.matched ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'">
+                      <ng-icon [name]="item.matched ? 'lucideCheckCircle2' : 'lucideAlertCircle'"
+                        class="text-lg"></ng-icon>
+                    </div>
+                    @if (!item.matched) {
+                    <button (click)="simulateImprovement(item.name)"
+                      class="text-[8px] font-black uppercase tracking-tighter px-2 py-1 rounded bg-foreground/5 hover:bg-foreground/10 transition-colors">
+                      Simulate Improvement
+                    </button>
+                    }
+                  </div>
+
+                  <div>
+                    <h4 class="text-sm font-black tracking-tight" [class.text-success]="item.matched"
+                      [class.text-destructive]="!item.matched">
+                      {{ item.name }}
+                    </h4>
+                    @if (!item.matched) {
+                    <p class="text-[10px] text-muted-foreground mt-2 leading-relaxed opacity-80">{{ item.suggestion }}
+                    </p>
+                    }
+                  </div>
+                </div>
               </div>
               }
             </div>
 
-            <ng-template #contactMenu>
-              <hlm-dropdown-menu class="w-64 p-2 rounded-2xl backdrop-blur-xl bg-popover/95 border-border shadow-2xl">
-                <hlm-dropdown-menu-label
-                  class="px-3 py-2 text-xs font-black uppercase tracking-widest text-muted-foreground/60">Company
-                  Personnel</hlm-dropdown-menu-label>
-                <hlm-dropdown-menu-separator class="my-2"></hlm-dropdown-menu-separator>
-                <hlm-dropdown-menu-group>
-                  @for (contact of companyContacts(); track contact.id) {
-                  <button hlmDropdownMenuItem
-                    class="rounded-xl px-3 py-2.5 mb-1 last:mb-0 font-semibold flex items-center justify-between group transition-all"
-                    (click)="selectPrimaryContact(contact.id)">
-                    <div class="flex flex-col">
-                      <span>{{ contact.name }}</span>
-                      <span class="text-[9px] text-muted-foreground font-normal">{{ contact.role }}</span>
-                    </div>
-                    @if (application()?.primaryContactId === contact.id) {
-                    <div class="w-1.5 h-1.5 rounded-full bg-primary shadow-sm shadow-primary/50"></div>
-                    }
-                  </button>
-                  }
-                  @if (companyContacts().length === 0) {
-                  <div class="px-3 py-4 text-center">
-                    <p class="text-[10px] text-muted-foreground font-bold uppercase italic">No contacts found in dossier
-                    </p>
-                    <a [routerLink]="['/companies', application()?.companyId]"
-                      class="text-[10px] text-primary hover:underline mt-2 inline-block">Update Company Dossier</a>
-                  </div>
-                  }
-                </hlm-dropdown-menu-group>
-              </hlm-dropdown-menu>
-            </ng-template>
+            <!-- AI Feedback / Position Strategy -->
+            <div class="p-8 rounded-[40px] bg-card border border-border mt-4 relative overflow-hidden group/feedback">
+              <div class="absolute top-0 right-0 p-8 opacity-5 group-hover/feedback:opacity-10 transition-opacity">
+                <ng-icon name="lucideSparkles" class="text-6xl text-primary"></ng-icon>
+              </div>
+
+              <div class="flex items-center gap-3 mb-6">
+                <div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+                </div>
+                <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">AI Strategic Insights</h4>
+              </div>
+
+              @if (service.currentJob()?.aiFeedback) {
+              <div class="text-xs text-muted-foreground leading-[1.8] whitespace-pre-wrap font-medium">
+                {{ service.currentJob()?.aiFeedback }}
+              </div>
+              } @else {
+              <p class="text-xs text-muted-foreground leading-relaxed italic opacity-60">
+                Click "Initiate AI Analysis" above to generate a tactical blueprint for this role.
+              </p>
+              }
+            </div>
           </div>
 
-          <!-- Scratchpad -->
-          <div class="lg:col-span-12 bg-muted/30 rounded-3xl border border-border/40 p-8 relative">
-            <div class="absolute top-4 right-8 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
-              <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Tactical
-                Scratchpad</span>
-            </div>
-            <textarea [ngModel]="strategyNotes()" (ngModelChange)="updateStrategyNotes($event)"
-              placeholder="Draft your negotiation notes here..."
-              class="w-full h-48 bg-transparent text-foreground font-mono text-sm leading-loose outline-none custom-scrollbar"></textarea>
-            <div class="mt-4 pt-4 border-t border-border/40 flex items-center justify-between">
-              <p class="text-[10px] text-muted-foreground uppercase tracking-widest">Local Draft</p>
-            </div>
-          </div>
         </div>
       </div>
       }
+      @case (Phase.Assets) {
+      <app-assets-view />
+      }
+      @case (Phase.Interview) {
+      <app-interview-view />
+      }
+      @case (Phase.Deal) {
+      <app-deal-view />
+      }
+      @case (Phase.Timeline) {
+      <app-timeline-view />
+      }
+      }
+    </div>
+  </main>
 
-      <!-- DOCUMENTS TAB -->
-      @if (activeTab() === 'documents') {
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in-up">
-        <div class="lg:col-span-4 bg-card rounded-[2rem] border border-border/40 p-6 md:p-8 flex flex-col h-full group">
-          <h3 class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-8">Primary Asset</h3>
-          <div class="flex-1 flex flex-col items-center justify-center space-y-4">
-            @if (documents().length > 0) {
-            <div
-              class="w-24 h-32 bg-background border-2 border-border/40 rounded-xl flex items-center justify-center relative overflow-hidden group-hover:border-primary/40 transition-all shadow-lg">
-              <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-              <ng-icon name="lucideFileText" size="32" class="text-muted-foreground/40"></ng-icon>
-            </div>
-            <p class="text-sm font-bold text-foreground line-clamp-1 text-center">{{ documents()[0].originalFileName }}
-            </p>
-            <button hlmBtn variant="outline" class="w-full rounded-xl mt-8 text-xs font-bold gap-2"
-              (click)="downloadDocument(documents()[0])">
-              <ng-icon name="lucideDownload" size="14"></ng-icon> Download
-            </button>
+  <!-- Command Bar Overlay (Mockup) -->
+  @if (isCommandBarOpen()) {
+  <div (click)="closeCommandBar()"
+    class="fixed inset-0 z-100 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300">
+    <div (click)="$event.stopPropagation()"
+      class="w-full max-w-2xl bg-popover border border-border rounded-3xl shadow-2xl overflow-hidden scale-in duration-300">
+      <div class="p-6 flex items-center gap-4 border-b border-border">
+        <ng-icon name="lucideSearch" class="text-2xl text-primary" aria-hidden="true"></ng-icon>
+        <label for="command-bar-input" class="sr-only">Search or ask AI</label>
+        <input id="command-bar-input" autofocus type="text" placeholder="Ask AI anything about this application..."
+          class="flex-1 bg-transparent border-none outline-none text-foreground text-lg placeholder:text-muted-foreground">
+        <button (click)="toggleCommandBar()" class="p-2 hover:bg-muted rounded-lg text-muted-foreground"
+          aria-label="Close command bar">
+          <ng-icon name="lucideChevronRight" class="rotate-90" aria-hidden="true"></ng-icon>
+        </button>
+      </div>
+      <div class="p-4">
+        <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">Quick Actions</p>
+        <div class="mt-2 space-y-1">
+          <button (click)="triggerAnalysis(); toggleCommandBar()" [disabled]="service.isProcessing()"
+            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50">
+            @if (service.isProcessing()) {
+            <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
             } @else {
-            <div class="text-center p-4">
-              <p class="text-xs text-muted-foreground">No documents uploaded.</p>
-            </div>
-            <button hlmBtn variant="outline" class="w-full rounded-xl mt-8 text-xs font-bold gap-2" disabled>
-              <ng-icon name="lucideDownload" size="14"></ng-icon> Download
-            </button>
+            <ng-icon name="lucideBrain" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
             }
-          </div>
-        </div>
-
-        <div class="lg:col-span-8 bg-card rounded-[2rem] border border-border/40 shadow-sm flex flex-col">
-          <div class="p-6 md:p-8 border-b border-border/40 flex items-center justify-between bg-muted/20">
-            <div>
-              <h3 class="text-xl font-black tracking-tight">Cover Letter Studio</h3>
-            </div>
-            <button hlmBtn size="sm" class="rounded-xl font-black text-[10px] uppercase bg-primary"
-              [disabled]="isGeneratingCoverLetter()" (click)="generateCoverLetter()">
-              @if (isGeneratingCoverLetter()) { <ng-icon name="lucideLoader2" class="animate-spin"></ng-icon> } @else {
-              <ng-icon name="lucideSparkles" class="mr-2"></ng-icon> Generate }
-            </button>
-          </div>
-          <div class="p-6 md:p-8 flex-1">
-            <textarea [ngModel]="coverLetter().content" (ngModelChange)="updateCoverLetterContent($event)"
-              placeholder="Generate a cover letter to see it here..."
-              class="w-full h-[350px] bg-background border border-border/40 rounded-2xl p-6 text-sm leading-relaxed outline-none resize-none custom-scrollbar"></textarea>
-          </div>
+            <span class="text-foreground">Analyze Job Description</span>
+          </button>
+          <button (click)="generateAssets(); toggleCommandBar()" [disabled]="service.isProcessing()"
+            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50">
+            @if (service.isProcessing()) {
+            <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
+            } @else {
+            <ng-icon name="lucideSparkles" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
+            }
+            <span class="text-foreground">Generate Cover Letter</span>
+          </button>
+          <button class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group">
+            <ng-icon name="lucideMic2" class="text-xl text-muted-foreground group-hover:text-primary"></ng-icon>
+            <span class="text-foreground">Prepare for Interview</span>
+          </button>
         </div>
       </div>
+      <div
+        class="bg-muted p-4 border-t border-border flex justify-between items-center text-[10px] text-muted-foreground">
+        <div class="flex gap-4">
+          <span class="flex items-center gap-1"><span class="bg-card px-1 rounded border border-border">↑↓</span>
+            Navigate</span>
+          <span class="flex items-center gap-1"><span class="bg-card px-1 rounded border border-border">↵</span>
+            Select</span>
+        </div>
+        <span>Deep Mode Alpha v2.0</span>
+      </div>
+    </div>
+  </div>
+  }
+  <!-- Global Command Orb FAB -->
+  <div *ngIf="!isFocusMode()" class="fixed bottom-8 right-8 z-100 flex flex-col items-end gap-3">
+    <!-- Context Menu (Expanded Above Orb) -->
+    <div *ngIf="isCommandBarOpen()" class="mb-4 space-y-2 animate-in slide-in-from-bottom-4 duration-300">
+      @for (cmd of commands(); track cmd.id) {
+      <button (click)="cmd.action(); closeCommandBar()"
+        class="group flex items-center gap-3 bg-card border border-border px-4 py-2 rounded-2xl shadow-2xl hover:bg-muted transition-all">
+        <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary">{{
+          cmd.label }}</span>
+        <div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+          <ng-icon [name]="cmd.icon" class="text-primary"></ng-icon>
+        </div>
+      </button>
       }
-    </div> <!-- End Bento Grid -->
-  </div> <!-- End Max-width Container -->
-  } <!-- End application() if -->
-</div> <!-- End Outer Div -->
+    </div>
+
+    <button (click)="toggleCommandBar()" class="command-orb group" [class.command-orb-active]="isCommandBarOpen()">
+      <ng-icon name="lucideBrain" class="text-3xl text-white group-hover:scale-110 transition-transform"></ng-icon>
+
+      <!-- Pulse ring when expanded -->
+      <span *ngIf="isCommandBarOpen()"
+        class="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-20"></span>
+    </button>
+  </div>
+</div>
+
+<!-- Slide-over Panels -->
+<app-job-settings-sheet />

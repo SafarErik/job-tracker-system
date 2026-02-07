@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using JobTracker.Infrastructure.Data;
 using JobTracker.Infrastructure.Repositories;
+using JobTracker.Infrastructure.Services;
 using JobTracker.Core.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.API.Extensions;
@@ -12,6 +13,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using JobTracker.API.Middleware;
 using AspNetCoreRateLimit;
+using JobTracker.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,7 +50,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
     // User settings
     options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters = 
+    options.User.AllowedUserNameCharacters =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
     // Sign-in settings
@@ -63,7 +65,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 // Get JWT settings from configuration
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"] 
+var secretKey = jwtSettings["SecretKey"]
     ?? throw new InvalidOperationException("JWT SecretKey is not configured!");
 
 builder.Services.AddAuthentication(options =>
@@ -129,7 +131,7 @@ if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientS
         {
             options.ClientId = googleClientId;
             options.ClientSecret = googleClientSecret;
-            
+
             // Configure correlation cookie for cross-origin OAuth
             // Required when frontend and backend are on different domains
             options.CorrelationCookie.SameSite = SameSiteMode.None;
@@ -150,6 +152,14 @@ builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>(
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
+
+// ============================================
+// AI & APPLICATION SERVICES REGISTRATION
+// ============================================
+
+builder.Services.AddScoped<IAIService, JobTracker.Infrastructure.Services.GeminiAIService>();
+builder.Services.AddScoped<IJobApplicationService, JobTracker.Infrastructure.Services.JobApplicationService>();
 
 // ============================================
 // HTTP CLIENT FACTORY REGISTRATION
@@ -172,7 +182,7 @@ builder.Services.Configure<AspNetCoreRateLimit.IpRateLimitOptions>(options =>
     options.RealIpHeader = "X-Real-IP";
     options.ClientIdHeader = "X-ClientId";
     options.HttpStatusCode = 429; // Too Many Requests
-    
+
     // General rules for all endpoints
     options.GeneralRules = new List<AspNetCoreRateLimit.RateLimitRule>
     {
@@ -303,18 +313,18 @@ builder.Services.AddCors(options =>
                    // Allow configured origins
                    if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
                        return true;
-                   
+
                    // Allow all Vercel preview deployments (*.vercel.app)
                    if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                    {
                        if (uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase))
                            return true;
                    }
-                   
+
                    // Allow localhost for development
                    if (origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
                        return true;
-                       
+
                    return false;
                })
               .AllowAnyMethod()
@@ -327,11 +337,11 @@ builder.Services.AddCors(options =>
 // Required for correct hostname/protocol detection behind load balancers
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor 
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost;
     // Clear default restrictions to trust any proxy
-    options.KnownNetworks.Clear();
+    options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
 
@@ -369,16 +379,20 @@ if (app.Environment.IsDevelopment())
         Console.WriteLine("⚠️  WARNING: Database deletion in 3 seconds...");
         Console.ResetColor();
         await Task.Delay(3000);
-        
+
         await app.ResetDatabaseAsync();
     }
-    else
-    {
-        using var scope = app.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        await context.Database.EnsureCreatedAsync();
-    }
-    
+}
+
+// Production: Migrations are handled via CI/CD (deploy-database.yml)
+// Development: Migrations are applied automatically on startup
+if (app.Environment.IsDevelopment())
+{
+    await app.ApplyMigrationsAsync();
+}
+
+if (app.Environment.IsDevelopment())
+{
     // Seed initial data with demo user (Development only)
     using (var scope = app.Services.CreateScope())
     {
@@ -387,9 +401,6 @@ if (app.Environment.IsDevelopment())
         await DataSeeder.SeedAsync(context, userManager);
     }
 }
-// Production: Migrations are applied automatically on startup
-// This ensures the database is always up-to-date with the code
-await app.ApplyMigrationsAsync();
 
 // ============================================
 // HTTP REQUEST PIPELINE
@@ -419,7 +430,7 @@ else
         // Strict Transport Security (HSTS)
         context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
         // Content Security Policy - permissive for Angular SPA with external resources
-        context.Response.Headers.Append("Content-Security-Policy", 
+        context.Response.Headers.Append("Content-Security-Policy",
             "default-src 'self'; " +
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +

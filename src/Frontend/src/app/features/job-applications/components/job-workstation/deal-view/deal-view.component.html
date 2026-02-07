@@ -1,0 +1,158 @@
+<div class="h-[calc(100vh-280px)] flex flex-col gap-6 overflow-y-auto scrollbar-thin scrollbar-thumb-border p-1">
+
+    <!-- Top Row: Offer Scanner & Value Gauge -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 shrink-0">
+
+        <!-- Offer Scanner Card -->
+        <div
+            class="lg:col-span-2 p-8 rounded-[40px] bg-card border border-border flex flex-col items-center justify-center relative overflow-hidden group/scanner">
+            <div
+                class="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover/scanner:opacity-100 transition-opacity pointer-events-none">
+            </div>
+
+            @if (!isOfferUploaded()) {
+            <div class="text-center py-10" (click)="simulateUpload()"
+                class="cursor-pointer w-full flex flex-col items-center">
+                <div
+                    class="w-20 h-20 rounded-3xl bg-emerald-500/10 border-2 border-dashed border-emerald-500/30 flex items-center justify-center mb-6 group-hover/scanner:scale-110 group-hover/scanner:border-emerald-500 transition-all duration-500">
+                    @if (isAnalyzing()) {
+                    <ng-icon name="lucideLoader2" class="text-3xl text-emerald-500 animate-spin"></ng-icon>
+                    } @else {
+                    <ng-icon name="lucideUploadCloud" class="text-3xl text-emerald-500"></ng-icon>
+                    }
+                </div>
+                <h3 class="text-lg font-bold text-foreground mb-2">Deploy Offer Letter</h3>
+                <p class="text-xs text-muted-foreground uppercase tracking-widest font-black">Upload for AI Contract
+                    Audit</p>
+            </div>
+            } @else {
+            <div class="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="flex items-start justify-between mb-8">
+                    <div>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-emerald-500 mb-1">Audit Results
+                        </h3>
+                        <h2 class="text-2xl font-serif font-bold text-foreground">Offer Strategy Analysis</h2>
+                    </div>
+                    <div
+                        class="px-4 py-2 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
+                        <span class="text-xs font-black text-emerald-500">{{ analysisResults().score }}</span>
+                        <span class="text-[8px] font-bold text-emerald-500/60 uppercase">Impact Score</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <div class="flex items-center gap-2 text-emerald-500 mb-2">
+                            <ng-icon name="lucideTrendingUp"></ng-icon>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Salary Rating</span>
+                        </div>
+                        <p class="text-xs font-bold">{{ analysisResults().salaryRating }}</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <div class="flex items-center gap-2 text-primary mb-2">
+                            <ng-icon name="lucideGavel"></ng-icon>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Red Flags</span>
+                        </div>
+                        <div class="space-y-1">
+                            @for (flag of analysisResults().redFlags; track flag) {
+                            <div class="flex items-center gap-1.5">
+                                <div class="w-1 h-1 rounded-full bg-destructive"></div>
+                                <span class="text-[10px] text-muted-foreground">{{ flag }}</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-muted/50 border border-border">
+                        <div class="flex items-center gap-2 text-info mb-2">
+                            <ng-icon name="lucideShieldCheck"></ng-icon>
+                            <span class="text-[10px] font-black uppercase tracking-tighter">Equity Complexity</span>
+                        </div>
+                        <p class="text-xs font-bold">{{ analysisResults().equityComplexity }}</p>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Total Value Gauge -->
+        <div
+            class="p-8 rounded-[40px] bg-card text-card-foreground border border-emerald-500/20 shadow-2xl shadow-emerald-500/5 relative overflow-hidden flex flex-col items-center justify-center">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-emerald-500/10 blur-[80px]"></div>
+
+            <div class="relative w-40 h-40 mb-6">
+                <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                    <!-- Segmented Radial -->
+                    @for (segment of compBreakdown(); track segment.label; let i = $index) {
+                    <circle cx="18" cy="18" r="15.9155" fill="none" class="transition-all duration-1000"
+                        [style.stroke]="segment.color" stroke-width="4"
+                        [style.stroke-dasharray]="segment.value + ', 100'" [style.stroke-dashoffset]="-(i * 33.3)"
+                        stroke-linecap="butt" />
+                    }
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-xs font-black uppercase tracking-widest text-emerald-500">Total</span>
+                    <span class="text-2xl font-bold">$185k</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 w-full">
+                @for (item of compBreakdown(); track item.label) {
+                <div class="text-center">
+                    <div class="text-[9px] font-black uppercase text-zinc-500 mb-1">{{ item.label }}</div>
+                    <div class="text-sm font-bold" [style.color]="item.color">{{ item.value }}%</div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Negotiation Playbook -->
+    <div class="flex-1 min-h-0 flex flex-col">
+        <div class="flex items-center justify-between mb-4 px-2">
+            <div>
+                <h3 class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Negotiation Playbook
+                </h3>
+                <p class="text-[11px] text-muted-foreground">Tactical scripts generated from Match Score & Contract
+                    Analysis.</p>
+            </div>
+            <button (click)="generateCounterOffer()"
+                class="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-zinc-950 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/20">
+                <ng-icon name="lucideMail"></ng-icon>
+                Draft Counter-Offer
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+            @for (card of playbook(); track card.id) {
+            <div
+                class="p-8 rounded-[40px] bg-card border border-border hover:border-emerald-500/30 transition-all group/play relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 right-0 p-6 opacity-5 group-hover/play:opacity-20 transition-opacity">
+                    <ng-icon name="lucideMessageSquareText" class="text-6xl text-emerald-500"></ng-icon>
+                </div>
+
+                <div class="mb-6 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                        <ng-icon name="lucideSparkles" class="text-emerald-500"></ng-icon>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-foreground">{{ card.label }}</h4>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-emerald-500/60">{{ card.type
+                            }} Defense</span>
+                    </div>
+                </div>
+
+                <div
+                    class="flex-1 bg-muted/30 rounded-3xl p-6 mb-6 font-mono text-xs leading-relaxed text-muted-foreground border border-border/50 italic">
+                    "{{ card.script }}"
+                </div>
+
+                <div
+                    class="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                    <ng-icon name="lucideInfo" class="text-primary"></ng-icon>
+                    {{ card.impact }}
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

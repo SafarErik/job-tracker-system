@@ -5,6 +5,7 @@ import {
     effect,
     ChangeDetectionStrategy,
     inject,
+    DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -13,7 +14,9 @@ import { Router, RouterModule } from '@angular/router';
 // Services
 import { ApplicationService } from '../../services/application.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { CompanyService } from '../../../companies/services/company.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Models
 import { JobApplicationStatus } from '../../models/application-status.enum';
@@ -52,6 +55,7 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddJobFormComponent {
+    private destroyRef!: DestroyRef;
     form: FormGroup;
     isSubmitting = signal(false);
     isLoadingData = signal(false);
@@ -129,6 +133,9 @@ export class AddJobFormComponent {
         private notificationService: NotificationService,
         private router: Router
     ) {
+        const destroyRef = inject(DestroyRef);
+        this.destroyRef = destroyRef;
+
         this.form = this.fb.group({
             companyName: ['', [Validators.required]],
             companyId: [null],
@@ -164,16 +171,20 @@ export class AddJobFormComponent {
         this.isLoadingData.set(true);
 
         // Load Companies
-        this.companyService.getCompanies().subscribe(comps => {
-            this.companies.set(comps);
-        });
+        this.companyService.getCompanies()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(comps => {
+                this.companies.set(comps);
+            });
 
         // Load Applications to derive recent positions
-        this.applicationService.getApplications().subscribe(apps => {
-            const uniquePositions = [...new Set(apps.map(a => a.position))].filter(Boolean);
-            this.recentPositions.set(uniquePositions);
-            this.isLoadingData.set(false);
-        });
+        this.applicationService.getApplications()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(apps => {
+                const uniquePositions = [...new Set(apps.map(a => a.position))].filter(Boolean);
+                this.recentPositions.set(uniquePositions);
+                this.isLoadingData.set(false);
+            });
     }
 
     // --- Company Autocomplete Logic ---
@@ -245,9 +256,9 @@ export class AddJobFormComponent {
             const text = await navigator.clipboard.readText();
             if (text && (text.startsWith('http') || text.startsWith('www'))) {
                 this.form.patchValue({ jobUrl: text });
-                this.notificationService.success('URL pasted!', 'Success');
+                toast.success('Success', { description: 'URL pasted!' });
             } else {
-                this.notificationService.info('Clipboard does not contain a broad URL.', 'Info');
+                toast.info('Info', { description: 'Clipboard does not contain a broad URL.' });
             }
         } catch (err) {
             console.error('Failed to read clipboard', err);
@@ -290,18 +301,18 @@ export class AddJobFormComponent {
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            this.notificationService.error('Invalid file type. Please upload PDF or Word document.', 'Error');
+            toast.error('Error', { description: 'Invalid file type. Please upload PDF or Word document.' });
             return;
         }
 
         // Validate size (e.g., 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            this.notificationService.error('File too large. Max size is 5MB.', 'Error');
+            toast.error('Error', { description: 'File too large. Max size is 5MB.' });
             return;
         }
 
         this.selectedFile.set(file);
-        this.notificationService.success(`File "${file.name}" ready to upload.`, 'File Selected');
+        toast.success('File Selected', { description: `File "${file.name}" ready to upload.` });
     }
 
     removeFile(event?: Event) {
@@ -347,7 +358,7 @@ export class AddJobFormComponent {
                 },
                 error: () => {
                     this.isSubmitting.set(false);
-                    this.notificationService.error('Could not create company.', 'Error');
+                    toast.error('Error', { description: 'Could not create company.' });
                 }
             });
         }
@@ -364,12 +375,12 @@ export class AddJobFormComponent {
 
         this.applicationService.createApplication(apiPayload).subscribe({
             next: () => {
-                this.notificationService.success('Application saved!', 'Success');
+                toast.success('Success', { description: 'Application saved!' });
                 this.router.navigate(['/']);
             },
             error: () => {
                 this.isSubmitting.set(false);
-                this.notificationService.error('Failed to save.', 'Error');
+                toast.error('Error', { description: 'Failed to save.' });
             }
         });
     }

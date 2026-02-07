@@ -24,15 +24,15 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     /// It's accessible via this.Users
     /// </summary>
 
-    public DbSet<Company> Companies { get; set; }
+    public DbSet<Company> Companies { get; set; } = default!;
 
-    public DbSet<Skill> Skills { get; set; }
+    public DbSet<Skill> Skills { get; set; } = default!;
 
-    public DbSet<JobApplication> JobApplications { get; set; }
+    public DbSet<JobApplication> JobApplications { get; set; } = default!;
 
-    public DbSet<CompanyContact> CompanyContacts { get; set; }
+    public DbSet<CompanyContact> CompanyContacts { get; set; } = default!;
 
-    public DbSet<Document> Documents { get; set; }
+    public DbSet<Document> Documents { get; set; } = default!;
 
     // ============================================
     // MODEL CONFIGURATION
@@ -90,6 +90,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithMany(c => c.JobApplications)
                 .HasForeignKey(j => j.PrimaryContactId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.Property(j => j.AppliedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.Property(j => j.RowVersion)
+                  .HasColumnName("xmin")
+                  .HasColumnType("xid")
+                  .IsRowVersion();
         });
 
         // ============================================

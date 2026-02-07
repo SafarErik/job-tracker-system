@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
+import { AiGeneratedAssets } from '../../../core/models/ai-generated-assets.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -10,7 +11,7 @@ import { environment } from '../../../../environments/environment';
 export class ApplicationService {
   private readonly apiUrl = `${environment.apiBaseUrl}/JobApplications`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   // 1. Lista lekérése
   getApplications(): Observable<JobApplication[]> {
@@ -23,17 +24,38 @@ export class ApplicationService {
   }
 
   // 3. Törlés
-  deleteApplication(id: number): Observable<any> {
+  deleteApplication(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   // 4. Get single application by ID (for editing)
-  getApplicationById(id: number): Observable<JobApplication> {
+  getApplicationById(id: string): Observable<JobApplication> {
     return this.http.get<JobApplication>(`${this.apiUrl}/${id}`);
   }
 
   // 5. Update application (for editing and status changes)
-  updateApplication(id: number, application: Partial<JobApplication>): Observable<void> {
+  updateApplication(id: string, application: Partial<JobApplication>): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, application);
   }
+
+  // 6. Trigger AI analysis for a job application
+  analyzeJob(id: string): Observable<JobApplication> {
+    return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
+  }
+
+  // 7. Generate tailored resume + cover letter assets
+  generateAssets(id: string): Observable<AiGeneratedAssets> {
+    return this.http.post<AiGeneratedAssets>(`${this.apiUrl}/${id}/generate-assets`, {});
+  }
+
+  // 8. Generate a tailored cover letter
+  generateCoverLetter(id: string): Observable<{ content: string }> {
+    return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/cover-letter`, {});
+  }
+
+  // 9. Optimize resume for a specific job
+  optimizeResume(id: string): Observable<{ content: string }> {
+    return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/resume-optimize`, {});
+  }
 }
+

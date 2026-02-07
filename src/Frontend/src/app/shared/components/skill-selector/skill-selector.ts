@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, inject, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, OnInit, signal, inject, computed, input, output, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SkillService } from '../../../features/skills/services/skill.service';
@@ -32,7 +32,8 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
     provideIcons({ lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck })
   ],
   template: `
-    <div class="space-y-6">
+    <div [class]="compact() ? 'space-y-4' : 'space-y-6'">
+      @if (!hideTitle()) {
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-semibold flex items-center gap-2">
           <ng-icon name="lucideGraduationCap" class="h-4 w-4 text-primary"></ng-icon>
@@ -40,16 +41,18 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
         </h2>
         <span class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{{ selectedSkills().length }} Active</span>
       </div>
+      }
 
       <!-- Search Bar (Spartan Command) -->
-      <hlm-command class="rounded-xl border border-input bg-background shadow-sm overflow-hidden min-h-[300px]">
+      <hlm-command [class]="(compact() ? 'min-h-[150px]' : 'min-h-[300px]') + ' rounded-xl border border-input bg-background shadow-sm overflow-hidden flex flex-col'">
         <hlm-command-search class="border-b border-border">
           <ng-icon hlm name="lucideSearch" class="ml-2 h-4 w-4 text-muted-foreground"></ng-icon>
           <input hlm-command-search-input [formControl]="searchControl"
             [placeholder]="placeholder()" class="text-sm" />
         </hlm-command-search>
 
-        <!-- Active Stack -->
+        <!-- Active Stack - ONLY SHOW IF NOT COMPACT (because parents handle lists in compact mode) -->
+        @if (!compact()) {
         <div class="p-4 bg-muted/20 border-b border-border/40 space-y-3 min-h-[60px]">
           <div class="flex items-center justify-between">
             <h4 class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Active Stack</h4>
@@ -71,12 +74,13 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
             }
           </div>
         </div>
+        }
 
         <div *brnCommandEmpty hlmCommandEmpty class="py-6 px-4 text-center text-xs text-muted-foreground">
-          No matches found. Press Enter to add custom skill.
+          No matches found.
         </div>
 
-        <hlm-command-list class="max-h-[200px] overflow-y-auto">
+        <hlm-command-list class="flex-1 overflow-y-auto" [class]="compact() ? 'max-h-[120px]' : 'max-h-[200px]'">
           <hlm-command-group *ngIf="filteredSuggestions().length > 0">
             @for (skill of filteredSuggestions().slice(0, 8); track skill.id) {
             <button hlm-command-item [value]="skill.name"
@@ -87,7 +91,6 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
             }
           </hlm-command-group>
 
-          <!-- Custom Add Action if no match -->
           @if (filteredSuggestions().length === 0 && searchTerm()?.trim()) {
           <hlm-command-group>
             <button hlm-command-item [value]="searchTerm() || ''" (selected)="addCustomSkill()">
@@ -99,8 +102,8 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
         </hlm-command-list>
       </hlm-command>
 
-      <!-- Quick Suggestions (Top suggested skills not yet added) -->
-      @if (suggestions().length > 0) {
+      <!-- Quick Suggestions - ONLY SHOW IF NOT COMPACT -->
+      @if (!compact() && suggestions().length > 0) {
       <div class="space-y-2">
         <div class="text-[9px] uppercase font-black text-muted-foreground/60 tracking-[0.2em]">Recommendations</div>
         <div class="flex flex-wrap gap-2">
@@ -131,11 +134,14 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
 export class SkillSelectorComponent implements OnInit {
   private readonly skillService = inject(SkillService);
   private readonly notificationService = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Inputs
   selectedSkills = input<string[]>([]);
   title = input<string>('Skills Engine');
   placeholder = input<string>('Add a skill (e.g. React)...');
+  compact = input<boolean>(false);
+  hideTitle = input<boolean>(false);
 
   // Outputs
   skillAdded = output<string>();
@@ -168,10 +174,12 @@ export class SkillSelectorComponent implements OnInit {
   }
 
   loadSkills(): void {
-    this.skillService.getSkills().subscribe({
-      next: (skills) => this.availableSkills.set(skills),
-      error: (err) => console.error('Failed to load skills:', err)
-    });
+    this.skillService.getSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => this.availableSkills.set(skills),
+        error: (err) => console.error('Failed to load skills:', err)
+      });
   }
 
   addSkill(name: string): void {
@@ -196,16 +204,18 @@ export class SkillSelectorComponent implements OnInit {
       return;
     }
 
-    this.skillService.createSkill({ name }).subscribe({
-      next: (newSkill) => {
-        this.availableSkills.update(skills => [...skills, newSkill]);
-        this.addSkill(newSkill.name);
-      },
-      error: () => {
-        this.notificationService.error('Failed to create new skill', 'Error');
-        console.error('Failed to create skill:', name);
-      }
-    });
+    this.skillService.createSkill({ name })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newSkill) => {
+          this.availableSkills.update(skills => [...skills, newSkill]);
+          this.addSkill(newSkill.name);
+        },
+        error: () => {
+          this.notificationService.error('Failed to create new skill', 'Error');
+          console.error('Failed to create skill:', name);
+        }
+      });
   }
 
   removeSkill(skill: string): void {

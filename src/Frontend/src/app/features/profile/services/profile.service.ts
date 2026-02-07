@@ -73,4 +73,25 @@ export class ProfileService {
     formData.append('file', file, file.name);
     return this.http.post<{ url: string }>(`${this.apiUrl}/upload-picture`, formData);
   }
+
+  /**
+   * Polish bio using AI
+   */
+  polishBio(bio: string): Observable<{ polishedBio: string }> {
+    return this.http.post<{ polishedBio: string }>(`${this.apiUrl}/polish-bio`, { bio });
+  }
+
+  /**
+   * Get AI suggested skills
+   */
+  getSuggestedSkills(): Observable<UserSkill[]> {
+    return this.http.get<UserSkill[]>(`${this.apiUrl}/suggested-skills`);
+  }
+
+  /**
+   * Get AI career insights
+   */
+  getCareerInsights(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/career-insights`);
+  }
 }

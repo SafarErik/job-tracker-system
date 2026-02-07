@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
 
 namespace JobTracker.Core.Entities;
@@ -12,7 +13,7 @@ public class JobApplication
     // PRIMARY KEY
     // ============================================
 
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     // ============================================
     // USER RELATIONSHIP (OWNER)
@@ -46,10 +47,13 @@ public class JobApplication
 
     /// <summary>
     /// Full job description text.
-    /// This will be analyzed by spaCy NLP to extract required skills
-    /// and compare them against the user's skills.
+    /// This will be analyzed by an LLM
     /// </summary>
     public string? Description { get; set; }
+
+    public string? GeneratedCoverLetter { get; set; }
+
+    public string? AiFeedback { get; set; }
 
     // ============================================
     // APPLICATION METADATA
@@ -97,7 +101,7 @@ public class JobApplication
     /// <summary>
     /// Foreign key to the company
     /// </summary>
-    public int CompanyId { get; set; }
+    public Guid CompanyId { get; set; }
 
     /// <summary>
     /// Navigation property - the company this application is for
@@ -111,7 +115,7 @@ public class JobApplication
     /// <summary>
     /// The primary contact person for this specific job application
     /// </summary>
-    public int? PrimaryContactId { get; set; }
+    public Guid? PrimaryContactId { get; set; }
 
     /// <summary>
     /// Navigation property to the primary contact
@@ -142,4 +146,7 @@ public class JobApplication
     /// Compared against user's skills for match percentage calculation.
     /// </summary>
     public ICollection<Skill> Skills { get; set; } = new List<Skill>();
+
+    [Timestamp]
+    public uint RowVersion { get; set; }
 }

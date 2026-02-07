@@ -13,3 +13,4 @@ export * from './documents';
 export * from './auth';
 export * from './skills';
 export * from './profile';
+export * from './statistics';

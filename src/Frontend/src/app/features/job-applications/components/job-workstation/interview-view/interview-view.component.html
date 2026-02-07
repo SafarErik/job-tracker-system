@@ -1,0 +1,228 @@
+<div [class.h-screen]="isFocusMode()" [class.h-[calc(100vh-280px)]]="!isFocusMode()"
+    class="flex flex-col bg-card rounded-[40px] border border-border overflow-hidden relative group/dojo focus-transition">
+
+    <!-- AI Listening Badge -->
+    @if (isRecording()) {
+    <div
+        class="absolute top-6 right-8 z-20 flex items-center gap-2 px-3 py-1 bg-destructive/10 border border-destructive/20 rounded-full animate-pulse">
+        <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
+        <span class="text-[10px] font-bold text-destructive uppercase tracking-widest">AI Listening...</span>
+    </div>
+    }
+
+    <!-- Header -->
+    <div *ngIf="!isFocusMode()"
+        class="px-8 py-5 border-b border-border bg-card flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-muted border border-border flex items-center justify-center">
+                <ng-icon name="lucideSparkles" class="text-primary text-sm"></ng-icon>
+            </div>
+            <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">The Dojo / AI Coach
+            </h3>
+        </div>
+
+        @if (messages().length > 0) {
+        <div class="flex items-center gap-4">
+            <button (click)="toggleFocus()" class="p-2 hover:bg-muted rounded text-muted-foreground">
+                <ng-icon name="lucideMaximize2" class="text-lg"></ng-icon>
+            </button>
+            <button (click)="endSession()"
+                class="text-[10px] font-bold text-muted-foreground hover:text-destructive transition-colors uppercase tracking-widest">
+                End Session
+            </button>
+        </div>
+        }
+    </div>
+
+    <!-- Conversation Area -->
+    <div class="flex-1 overflow-y-auto p-8 md:p-12 space-y-8 scrollbar-thin scrollbar-thumb-border">
+        @if (messages().length === 0) {
+        <div class="h-full flex flex-col items-center justify-center max-w-4xl mx-auto">
+            <div class="text-center mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
+                <h2 class="text-2xl font-serif font-bold text-foreground mb-3">Ready for Combat?</h2>
+                <p class="text-sm text-muted-foreground max-w-md mx-auto">Select an interview simulation to begin your
+                    session
+                    with the AI Coach.</p>
+            </div>
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                @for (card of starterCards; track card.id) {
+                <div (click)="startSession(card.id)"
+                    class="bg-muted/40 border border-border hover:border-primary/50 hover:bg-muted transition-all cursor-pointer p-8 rounded-3xl group/card relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover/card:opacity-30 transition-opacity">
+                        <ng-icon [name]="card.icon" class="text-4xl text-primary"></ng-icon>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-background border border-border flex items-center justify-center mb-6 group-hover/card:scale-110 transition-transform duration-500">
+                        <ng-icon [name]="card.icon"
+                            class="text-xl text-muted-foreground group-hover/card:text-primary transition-colors"></ng-icon>
+                    </div>
+                    <h4 class="text-sm font-bold text-foreground mb-2 truncate">{{ card.title }}</h4>
+                    <p class="text-xs text-muted-foreground leading-relaxed">{{ card.description }}</p>
+                </div>
+                }
+            </div>
+        </div>
+        } @else {
+        <!-- Chat Interface -->
+        <div class="max-w-3xl mx-auto space-y-10 pb-20">
+            @for (msg of messages(); track msg.id) {
+            <div [class.flex-row-reverse]="msg.sender === 'user'"
+                class="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+
+                <!-- Avatar -->
+                <div [class]="msg.sender === 'ai' ? 'bg-muted border-border' : 'bg-primary border-primary shadow-lg shadow-primary/20'"
+                    class="w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0">
+                    @if (msg.sender === 'ai') {
+                    <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+                    } @else {
+                    <span class="text-xs font-bold text-primary-foreground uppercase">ME</span>
+                    }
+                </div>
+
+                <!-- Bubble -->
+                <div [class]="msg.sender === 'ai' 
+                ? 'bg-muted/80 border border-border/50 text-foreground text-base leading-relaxed rounded-2xl rounded-tl-none shadow-2xl' 
+                : 'bg-background border border-border text-foreground text-sm rounded-2xl rounded-tr-none shadow-xl'"
+                    class="p-5 max-w-[80%]">
+                    <p class="whitespace-pre-wrap">{{ msg.text }}</p>
+                    <div class="mt-2 text-[10px] text-muted-foreground/60 font-medium">
+                        {{ msg.timestamp | date:'shortTime' }}
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+    <!-- Feedback Panel (Slide-in) -->
+    @if (messages().length > 0) {
+    <div
+        class="absolute right-8 top-1/2 -translate-y-1/2 w-64 space-y-4 z-30 animate-in slide-in-from-right-8 duration-500">
+        <div class="p-6 rounded-3xl bg-card/80 backdrop-blur-xl border border-border shadow-2xl">
+            <h4
+                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
+                <ng-icon name="lucideActivity" class="text-primary"></ng-icon>
+                Performance
+            </h4>
+
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                        <span class="text-muted-foreground">Clarity</span>
+                        <span class="text-primary">{{ metrics().clarity | number:'1.0-0' }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
+                        <div class="h-full bg-primary transition-all duration-500" [style.width.%]="metrics().clarity">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                        <span class="text-muted-foreground">Tone</span>
+                        <span class="text-success">{{ metrics().tone | number:'1.0-0' }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
+                        <div class="h-full bg-success transition-all duration-500" [style.width.%]="metrics().tone">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                        <span class="text-muted-foreground">Keyword Density</span>
+                        <span class="text-info">{{ metrics().density | number:'1.0-0' }}%</span>
+                    </div>
+                    <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
+                        <div class="h-full bg-info transition-all duration-500" [style.width.%]="metrics().density">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="mt-8 pt-4 border-t border-border flex items-center gap-2 text-[9px] text-muted-foreground font-medium uppercase tracking-widest">
+                <ng-icon name="lucideShieldCheck" class="text-success text-sm"></ng-icon>
+                Validation Active
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Combat Deck (Fixed Bottom Input) -->
+    <div class="bg-card/80 backdrop-blur-md border-t border-border p-8 shrink-0 relative z-20">
+
+        <!-- Audio Waveform Visualizer -->
+        <div *ngIf="isRecording()"
+            class="absolute -top-12 left-0 right-0 h-10 flex items-center justify-center gap-1.5 animate-in fade-in duration-300">
+            @for (bar of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; track bar) {
+            <div class="waveform-bar" [style.animation-delay]="(bar * 0.05) + 's'"></div>
+            }
+        </div>
+
+        <div class="max-w-2xl mx-auto flex items-center justify-between mb-2">
+
+            <!-- Text Mode Toggle / Focus Toggle -->
+            <div class="flex items-center gap-2">
+                <button (click)="toggleTextMode()" [class.text-primary]="isTextMode()"
+                    [class.text-muted-foreground]="!isTextMode()"
+                    class="p-4 hover:bg-muted rounded-2xl transition-all group" aria-label="Toggle text input mode">
+                    <ng-icon name="lucideKeyboard" class="text-xl group-hover:scale-110 transition-transform"></ng-icon>
+                </button>
+                <button *ngIf="isFocusMode()" (click)="toggleFocus()"
+                    class="p-4 hover:bg-muted rounded-2xl transition-all text-muted-foreground group"
+                    aria-label="Minimize View">
+                    <ng-icon name="lucideMinimize2"
+                        class="text-xl group-hover:scale-110 transition-transform"></ng-icon>
+                </button>
+            </div>
+
+            <!-- Mic Button Container -->
+            <div class="relative">
+                @if (isRecording()) {
+                <div class="absolute inset-0 rounded-full bg-primary/20 animate-ping"></div>
+                <div class="absolute -inset-2 rounded-full border border-primary/30 animate-pulse"></div>
+                }
+                <button (click)="toggleRecording()" [class.bg-primary]="isRecording()"
+                    [class.border-primary]="isRecording()" [class.bg-muted]="!isRecording()"
+                    [class.border-border]="!isRecording()" [attr.aria-pressed]="isRecording()"
+                    [aria-label]="isRecording() ? 'Stop recording' : 'Start voice response'"
+                    class="w-20 h-20 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 shadow-2xl relative z-10 group/mic">
+                    <ng-icon name="lucideMic" [class.text-white]="isRecording()"
+                        [class.text-muted-foreground]="!isRecording()"
+                        class="text-3xl group-hover/mic:text-foreground transition-colors" aria-hidden="true"></ng-icon>
+                </button>
+            </div>
+
+            <!-- End Session Shortcut -->
+            <button (click)="endSession()"
+                class="p-4 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-2xl transition-all group"
+                aria-label="End interview session">
+                <ng-icon name="lucideX"
+                    class="text-xl group-hover:rotate-90 transition-transform duration-300"></ng-icon>
+            </button>
+
+        </div>
+
+        <!-- Stable Container for Text Mode to avoid jumping -->
+        <div class="h-0 overflow-hidden transition-all duration-300" [class.h-20]="isTextMode()"
+            [class.mt-4]="isTextMode()">
+            <div class="max-w-lg mx-auto">
+                <div class="relative">
+                    <input type="text" placeholder="Type your response..." [(ngModel)]="responseText"
+                        (keyup.enter)="sendResponse()"
+                        class="w-full bg-muted border border-border rounded-2xl px-6 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all">
+                    <button (click)="sendResponse()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                        aria-label="Send message">
+                        <ng-icon name="lucideZap" class="text-lg"></ng-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

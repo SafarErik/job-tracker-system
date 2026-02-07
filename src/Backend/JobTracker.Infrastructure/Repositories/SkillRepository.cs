@@ -19,12 +19,12 @@ public class SkillRepository : ISkillRepository
         return await _context.Skills.ToListAsync();
     }
 
-    public async Task<Skill?> GetByIdAsync(int id)
+    public async Task<Skill?> GetByIdAsync(Guid id)
     {
         return await _context.Skills.FindAsync(id);
     }
 
-    public async Task<int> AddAsync(Skill skill)
+    public async Task<Guid> AddAsync(Skill skill)
     {
         await _context.Skills.AddAsync(skill);
         await _context.SaveChangesAsync();
@@ -37,7 +37,7 @@ public class SkillRepository : ISkillRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var skill = await _context.Skills.FindAsync(id);
         if (skill != null)

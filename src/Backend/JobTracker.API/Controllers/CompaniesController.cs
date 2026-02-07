@@ -27,7 +27,7 @@ public class CompaniesController : ControllerBase
             return Unauthorized();
         }
         var companies = await _repository.GetAllByUserIdAsync(userId);
-        
+
         // Mapping --> Entity => DTO
         // projection => We project the data by hand
         var dtos = companies.Select(c => new CompanyDto
@@ -58,15 +58,15 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CompanyDto>> Get(int id)
+    public async Task<ActionResult<CompanyDto>> Get(Guid id)
     {
         var company = await _repository.GetByIdAsync(id);
 
-        if(company == null)
+        if (company == null)
         {
             return NotFound(); // 404 - ID Doesn't exist!
         }
-        
+
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
         {
@@ -74,7 +74,7 @@ public class CompaniesController : ControllerBase
         }
         if (company.UserId != userId)
         {
-             return NotFound();
+            return NotFound();
         }
 
         var dto = new CompanyDto
@@ -108,7 +108,7 @@ public class CompaniesController : ControllerBase
     /// <param name="id">Company ID</param>
     /// <returns>Detailed company information with all job applications</returns>
     [HttpGet("{id}/details")]
-    public async Task<ActionResult<CompanyDetailDto>> GetDetails(int id)
+    public async Task<ActionResult<CompanyDetailDto>> GetDetails(Guid id)
     {
         var company = await _repository.GetByIdAsync(id);
 
@@ -124,7 +124,7 @@ public class CompaniesController : ControllerBase
         }
         if (company.UserId != userId)
         {
-             return NotFound();
+            return NotFound();
         }
 
         var detailDto = new CompanyDetailDto
@@ -135,6 +135,7 @@ public class CompaniesController : ControllerBase
             Address = company.Address,
             TotalApplications = company.JobApplications?.Count ?? 0,
             Priority = company.Priority,
+            TechStack = company.TechStack?.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList() ?? new List<string>(),
             ApplicationHistory = company.JobApplications?
                 .OrderByDescending(ja => ja.AppliedAt)
                 .Select(ja => new JobApplicationHistoryDto
@@ -160,7 +161,8 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<CompanyDto>> Create(CreateCompanyDto createDto) {
+    public async Task<ActionResult<CompanyDto>> Create(CreateCompanyDto createDto)
+    {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userId))
         {
@@ -186,7 +188,7 @@ public class CompaniesController : ControllerBase
         };
 
         var id = await _repository.AddAsync(company);
-        
+
         var dto = new CompanyDto
         {
             Id = id,
@@ -196,16 +198,16 @@ public class CompaniesController : ControllerBase
             TotalApplications = 0,
             Priority = company.Priority
         };
-    
+
         return CreatedAtAction(nameof(Get), new { id }, dto);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateCompanyDto updateDto)
+    public async Task<IActionResult> Update(Guid id, UpdateCompanyDto updateDto)
     {
         var existingCompany = await _repository.GetByIdAsync(id);
 
-        if(existingCompany == null)
+        if (existingCompany == null)
         {
             return NotFound();
         }
@@ -217,7 +219,7 @@ public class CompaniesController : ControllerBase
         }
         if (existingCompany.UserId != userId)
         {
-             return NotFound();
+            return NotFound();
         }
 
         // Mapping: update existing entity with new values  
@@ -225,7 +227,7 @@ public class CompaniesController : ControllerBase
         {
             existingCompany.Name = updateDto.Name;
         }
-        
+
         if (updateDto.Website != null)
         {
             existingCompany.Website = updateDto.Website;
@@ -235,7 +237,7 @@ public class CompaniesController : ControllerBase
         {
             existingCompany.Address = updateDto.Address;
         }
-        
+
         if (!string.IsNullOrEmpty(updateDto.Priority))
         {
             existingCompany.Priority = updateDto.Priority;
@@ -256,7 +258,7 @@ public class CompaniesController : ControllerBase
         {
             // Simple reconciliation: Remove items not in updateDto, Update existing, Add new
             var existingContacts = existingCompany.Contacts.ToList();
-            
+
             // Remove
             foreach (var existing in existingContacts)
             {
@@ -269,7 +271,7 @@ public class CompaniesController : ControllerBase
             // Add or Update
             foreach (var contactDto in updateDto.Contacts)
             {
-                if (contactDto.Id == 0)
+                if (contactDto.Id == Guid.Empty)
                 {
                     existingCompany.Contacts.Add(new CompanyContact
                     {
@@ -301,7 +303,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         var existingCompany = await _repository.GetByIdAsync(id);
         if (existingCompany == null)
@@ -316,7 +318,7 @@ public class CompaniesController : ControllerBase
         }
         if (existingCompany.UserId != userId)
         {
-             return NotFound();
+            return NotFound();
         }
 
         await _repository.DeleteAsync(id);

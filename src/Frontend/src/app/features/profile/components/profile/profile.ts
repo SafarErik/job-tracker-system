@@ -10,6 +10,8 @@ import {
 import { ProfileService } from '../../services/profile.service';
 import { SkillService } from '../../../skills/services/skill.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { ProfileStore } from '../../services/profile.store';
+import { toast } from 'ngx-sonner';
 import { UserProfile, ProfileStats, UserSkill } from '../../models/profile.model';
 import { Skill } from '../../../skills/models/skill.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -49,6 +51,8 @@ import {
 
 // Shared
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+import { UiStateService } from '../../../../core/services/ui-state.service';
+
 @Component({
   selector: 'app-profile',
   imports: [
@@ -106,11 +110,13 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
   ]
 })
 export class ProfileComponent implements OnInit {
+  private profileStore = inject(ProfileStore);
   private profileService = inject(ProfileService);
   private skillService = inject(SkillService);
   private notificationService = inject(NotificationService);
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
+  public uiService = inject(UiStateService);
 
   // State
   profile = signal<UserProfile | null>(null);
@@ -124,8 +130,13 @@ export class ProfileComponent implements OnInit {
   editingField = signal<string | null>(null);
   isUploadingPicture = signal(false);
   isAddingSkill = signal(false);
+  isPolishingBio = signal(false);
   skillSearchTerm = signal('');
   lastSavedField = signal<string | null>(null);
+
+  // AI Signals from Store
+  suggestedSkills = this.profileStore.suggestedSkills;
+  careerInsights = this.profileStore.careerInsights;
 
   // Top suggested skills not yet added
   topSkills = computed(() => {
@@ -175,6 +186,7 @@ export class ProfileComponent implements OnInit {
     this.loadStats();
     this.loadSkills();
     this.loadAvailableSkills();
+    this.loadAISuggestions();
 
     this.skillSearchControl.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -185,39 +197,71 @@ export class ProfileComponent implements OnInit {
 
   loadProfile(): void {
     this.isLoading.set(true);
-    this.profileService.getProfile().subscribe({
-      next: (profile) => {
-        this.profile.set(profile);
-        this.populateForm(profile);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load profile');
-        this.isLoading.set(false);
-        console.error(err);
-      },
-    });
+    this.profileService.getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.populateForm(profile);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load profile');
+          this.isLoading.set(false);
+          console.error(err);
+        },
+      });
   }
 
   private loadStats(): void {
-    this.profileService.getProfileStats().subscribe({
-      next: (stats) => this.stats.set(stats),
-      error: (err) => console.error('Failed to load stats:', err),
-    });
+    this.profileService.getProfileStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (stats) => this.stats.set(stats),
+        error: (err) => console.error('Failed to load stats:', err),
+      });
   }
 
   private loadSkills(): void {
-    this.profileService.getUserSkills().subscribe({
-      next: (skills) => this.userSkills.set(skills),
-      error: (err) => console.error('Failed to load skills:', err),
-    });
+    this.profileService.getUserSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => {
+          this.userSkills.set(skills);
+          this.profileStore.updateSkills(skills); // Sync with global store
+        },
+        error: (err) => console.error('Failed to load skills:', err),
+      });
   }
 
   private loadAvailableSkills(): void {
-    this.skillService.getSkills().subscribe({
-      next: (skills) => this.availableSkills.set(skills),
-      error: (err) => console.error('Failed to load available skills:', err),
+    this.skillService.getSkills()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (skills) => this.availableSkills.set(skills),
+        error: (err) => console.error('Failed to load available skills:', err),
+      });
+  }
+
+  private loadAISuggestions(): void {
+    // Mocking for now as backend might not have this
+    this.profileStore.setSuggestedSkills([
+      { id: 9991, name: 'Cloud Architecture', category: 'DevOps' },
+      { id: 9992, name: 'Kubernetes', category: 'DevOps' },
+      { id: 9993, name: 'Rust', category: 'Backend' }
+    ]);
+
+    this.profileStore.setCareerInsights({
+      nextLevelPath: 'Lead Engineer roles',
+      salaryBenchmark: 145000,
+      missingKey: 'Cloud Architecture'
     });
+
+    // In a real scenario:
+    /*
+    this.profileService.getSuggestedSkills().subscribe(skills => this.profileStore.setSuggestedSkills(skills));
+    this.profileService.getCareerInsights().subscribe(insights => this.profileStore.setCareerInsights(insights));
+    */
   }
 
   private populateForm(profile: UserProfile): void {
@@ -246,10 +290,9 @@ export class ProfileComponent implements OnInit {
     const control = this.profileForm.get(field);
 
     if (control?.invalid) {
-      this.notificationService.error(
-        'Please enter a valid value',
-        'Validation Error',
-      );
+      toast.error('Validation Error', {
+        description: 'Please enter a valid value',
+      });
       return;
     }
 
@@ -278,10 +321,9 @@ export class ProfileComponent implements OnInit {
         setTimeout(() => this.lastSavedField.set(null), 2000);
       },
       error: (err) => {
-        this.notificationService.error(
-          'Failed to update profile.',
-          'Update Failed',
-        );
+        toast.error('Update Failed', {
+          description: 'Failed to update profile.',
+        });
         console.error(err);
         // Revert form
         if (this.profile()) this.populateForm(this.profile()!);
@@ -297,14 +339,14 @@ export class ProfileComponent implements OnInit {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      this.notificationService.error('Please select a valid image file', 'Invalid File Type');
+      toast.error('Invalid File Type', { description: 'Please select a valid image file' });
       input.value = '';
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      this.notificationService.error('Image size must not exceed 5MB', 'File Too Large');
+      toast.error('File Too Large', { description: 'Image size must not exceed 5MB' });
       input.value = '';
       return;
     }
@@ -317,15 +359,14 @@ export class ProfileComponent implements OnInit {
           this.profile.update((p) => ({ ...p!, profilePictureUrl: response.url }));
         }
         this.isUploadingPicture.set(false);
-        this.notificationService.success(
-          'Profile picture updated successfully!',
-          'Upload Complete',
-        );
+        toast.success('Upload Complete', {
+          description: 'Profile picture updated successfully!',
+        });
         input.value = '';
       },
       error: (err) => {
         this.isUploadingPicture.set(false);
-        this.notificationService.error('Failed to upload profile picture', 'Upload Failed');
+        toast.error('Upload Failed', { description: 'Failed to upload profile picture' });
         console.error(err);
         input.value = '';
       },
@@ -358,18 +399,19 @@ export class ProfileComponent implements OnInit {
   addSkill(skill: Skill): void {
     this.profileService.addSkill(skill.id).subscribe({
       next: () => {
-        this.userSkills.update((skills) => [
-          ...skills,
+        const updatedSkills = [
+          ...this.userSkills(),
           { id: skill.id, name: skill.name, category: skill.category || 'Other' },
-        ]);
+        ];
+        this.userSkills.set(updatedSkills);
+        this.profileStore.updateSkills(updatedSkills); // Sync with store
         this.skillSearchControl.reset();
-        this.notificationService.success(
-          `${skill.name} has been added to your profile`,
-          'Skill Added',
-        );
+        toast.success('Skill Added', {
+          description: `${skill.name} has been added to your profile`,
+        });
       },
       error: (err) => {
-        this.notificationService.error('Failed to add skill', 'Error');
+        toast.error('Error', { description: 'Failed to add skill' });
         console.error(err);
       },
     });
@@ -381,13 +423,13 @@ export class ProfileComponent implements OnInit {
     const category = this.skillCategoryControl.value?.toString().trim();
 
     if (!name) {
-      this.notificationService.error('Please enter a skill name first', 'Missing Name');
+      toast.error('Missing Name', { description: 'Please enter a skill name first' });
       return;
     }
 
     const lower = name.toLowerCase();
     if (this.userSkills().some((s) => s.name.toLowerCase() === lower)) {
-      this.notificationService.error('You already have this skill', 'Duplicate');
+      toast.error('Duplicate', { description: 'You already have this skill' });
       return;
     }
 
@@ -408,14 +450,13 @@ export class ProfileComponent implements OnInit {
         this.skillSearchControl.setValue('');
         this.skillCategoryControl.setValue('');
         this.isAddingSkill.set(false);
-        this.notificationService.success(
-          `${userSkill.name} has been added as a new skill`,
-          'Skill Added',
-        );
+        toast.success('Skill Added', {
+          description: `${userSkill.name} has been added as a new skill`,
+        });
       },
       error: (err) => {
         this.isAddingSkill.set(false);
-        this.notificationService.error('Failed to add custom skill', 'Error');
+        toast.error('Error', { description: 'Failed to add custom skill' });
         console.error(err);
       },
     });
@@ -442,14 +483,15 @@ export class ProfileComponent implements OnInit {
 
     this.profileService.removeSkill(skill.id).subscribe({
       next: () => {
-        this.userSkills.update((skills) => skills.filter((s) => s.id !== skill.id));
-        this.notificationService.success(
-          `${skill.name} has been removed from your profile`,
-          'Skill Removed',
-        );
+        const updatedSkills = this.userSkills().filter((s) => s.id !== skill.id);
+        this.userSkills.set(updatedSkills);
+        this.profileStore.updateSkills(updatedSkills); // Sync with global store
+        toast.success('Skill Removed', {
+          description: `${skill.name} has been removed from your profile`,
+        });
       },
       error: (err) => {
-        this.notificationService.error('Failed to remove skill', 'Error');
+        toast.error('Error', { description: 'Failed to remove skill' });
         console.error(err);
       },
     });
@@ -473,6 +515,28 @@ export class ProfileComponent implements OnInit {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+    });
+  }
+
+  polishBio(): void {
+    const currentBio = this.profileForm.get('bio')?.value;
+    if (!currentBio) return;
+
+    this.isPolishingBio.set(true);
+
+    this.profileService.polishBio(currentBio).subscribe({
+      next: (res) => {
+        this.profileForm.patchValue({ bio: res.polishedBio });
+        this.saveField('bio');
+        this.isPolishingBio.set(false);
+        toast.success('AI Polish Complete', { description: 'Your narrative has been optimized for impact.' });
+      },
+      error: (err) => {
+        this.isPolishingBio.set(false);
+        // Fallback or error message
+        toast.error('AI Polish Failed', { description: 'System currently unavailable. Try again later.' });
+        console.error(err);
+      }
     });
   }
 }

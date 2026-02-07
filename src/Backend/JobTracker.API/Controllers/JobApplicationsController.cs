@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
+using JobTracker.Application.Interfaces;
 using JobTracker.Application.DTOs.JobApplications;
+using JobTracker.Application.DTOs.AI;
 using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.API.Controllers;
@@ -15,18 +17,16 @@ namespace JobTracker.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize] // Requires authentication for all endpoints
-public class JobApplicationsController : ControllerBase
+public class JobApplicationsController(
+    IJobApplicationRepository repository,
+    IDocumentRepository documentRepository,
+    IJobApplicationService jobApplicationService) : ControllerBase
 {
-    private readonly IJobApplicationRepository _repository;
-    private readonly IDocumentRepository _documentRepository;
+    private const string UserIdNotFoundMessage = "User ID not found in token";
 
-    public JobApplicationsController(
-        IJobApplicationRepository repository, 
-        IDocumentRepository documentRepository)
-    {
-        _repository = repository;
-        _documentRepository = documentRepository;
-    }
+    private readonly IJobApplicationRepository _repository = repository;
+    private readonly IDocumentRepository _documentRepository = documentRepository;
+    private readonly IJobApplicationService _jobApplicationService = jobApplicationService;
 
     /// <summary>
     /// Gets the current authenticated user's ID from the JWT token claims.
@@ -44,9 +44,9 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
-        
+
         // Only get applications belonging to the current user
         var applications = await _repository.GetAllByUserIdAsync(userId);
 
@@ -56,6 +56,8 @@ public class JobApplicationsController : ControllerBase
             Position = app.Position,
             JobUrl = app.JobUrl,
             Description = app.Description,
+            GeneratedCoverLetter = app.GeneratedCoverLetter,
+            AiFeedback = app.AiFeedback,
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
@@ -82,13 +84,13 @@ public class JobApplicationsController : ControllerBase
 
     // GET: api/jobapplications/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<JobApplicationDto>> Get(int id)
+    public async Task<ActionResult<JobApplicationDto>> Get(Guid id)
     {
         // Validate user is authenticated
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var app = await _repository.GetByIdAsync(id);
@@ -110,6 +112,8 @@ public class JobApplicationsController : ControllerBase
             Position = app.Position,
             JobUrl = app.JobUrl,
             Description = app.Description,
+            GeneratedCoverLetter = app.GeneratedCoverLetter,
+            AiFeedback = app.AiFeedback,
             AppliedAt = app.AppliedAt,
             Status = app.Status,
             CompanyId = app.CompanyId,
@@ -142,7 +146,7 @@ public class JobApplicationsController : ControllerBase
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         // MAPPING: DTO -> Entity
@@ -171,10 +175,10 @@ public class JobApplicationsController : ControllerBase
         // AddAsync doesn't automatically populate navigation properties from IDs
         var createdApp = await _repository.GetByIdAsync(application.Id);
 
-        if (createdApp == null) 
+        if (createdApp == null)
         {
-             // Should not happen if add succeeded
-             return StatusCode(500, "Failed to retrieve created application");
+            // Should not happen if add succeeded
+            return StatusCode(500, "Failed to retrieve created application");
         }
 
         application = createdApp;
@@ -194,6 +198,8 @@ public class JobApplicationsController : ControllerBase
             Position = application.Position,
             JobUrl = application.JobUrl,
             Description = application.Description,
+            GeneratedCoverLetter = application.GeneratedCoverLetter,
+            AiFeedback = application.AiFeedback,
             AppliedAt = application.AppliedAt,
             Status = application.Status,
             CompanyId = application.CompanyId,
@@ -224,13 +230,13 @@ public class JobApplicationsController : ControllerBase
     /// Only the owner of the application can update it.
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, UpdateJobApplicationDto updateDto)
+    public async Task<IActionResult> Update(Guid id, UpdateJobApplicationDto updateDto)
     {
         // Validate user is authenticated
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var existingApp = await _repository.GetByIdAsync(id);
@@ -246,16 +252,16 @@ public class JobApplicationsController : ControllerBase
         // Partial update - only update fields that are provided
         if (updateDto.Position != null)
             existingApp.Position = updateDto.Position;
-        
+
         if (updateDto.CompanyId.HasValue)
             existingApp.CompanyId = updateDto.CompanyId.Value;
-        
+
         if (updateDto.JobUrl != null)
             existingApp.JobUrl = updateDto.JobUrl;
-        
+
         if (updateDto.Description != null)
             existingApp.Description = updateDto.Description;
-        
+
         if (updateDto.Status.HasValue)
             existingApp.Status = updateDto.Status.Value;
 
@@ -273,7 +279,7 @@ public class JobApplicationsController : ControllerBase
 
         if (updateDto.SalaryOffer.HasValue)
             existingApp.SalaryOffer = updateDto.SalaryOffer.Value;
-        
+
         if (updateDto.DocumentIdProvided)
             existingApp.DocumentId = updateDto.DocumentId;
 
@@ -290,17 +296,17 @@ public class JobApplicationsController : ControllerBase
     /// Delete a job application. Only the owner can delete.
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         // Validate user is authenticated
         var userId = GetUserId();
         if (userId is null)
         {
-            return Unauthorized("User ID not found in token");
+            return Unauthorized(UserIdNotFoundMessage);
         }
 
         var app = await _repository.GetByIdAsync(id);
-        
+
         if (app == null) return NotFound();
 
         // Security check: Only allow owners to delete their applications
@@ -313,5 +319,97 @@ public class JobApplicationsController : ControllerBase
         return NoContent();
     }
 
-    
+    // POST: api/jobapplications/{id}/analyze
+    /// <summary>
+    /// Trigger AI analysis for a job application.
+    /// Analyzes the job description against the user's master resume.
+    /// Updates the application with match score and AI feedback.
+    /// </summary>
+    /// <param name="id">The job application ID</param>
+    /// <returns>Updated job application with AI analysis results</returns>
+    [HttpPost("{id}/analyze")]
+    public async Task<ActionResult<JobApplicationDto>> Analyze(Guid id)
+    {
+        // Validate user is authenticated
+        var userId = GetUserId();
+        if (userId is null)
+        {
+            return Unauthorized("User ID not found in token");
+        }
+
+        try
+        {
+            var result = await _jobApplicationService.TriggerAIAnalysisAsync(id, userId);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound($"Job application {id} not found");
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    // POST: api/jobapplications/{id}/generate-assets
+    /// <summary>
+    /// Generates tailored resume and cover letter assets using AI.
+    /// </summary>
+    [HttpPost("{id}/generate-assets")]
+    public async Task<ActionResult<AiGeneratedAssetsDto>> GenerateAssets(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.GenerateAssetsAsync(id, userId);
+            return Ok(result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    // POST: api/jobapplications/{id}/cover-letter
+    [HttpPost("{id}/cover-letter")]
+    public async Task<ActionResult<string>> GenerateCoverLetter(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.GenerateCoverLetterAsync(id, userId);
+            return Ok(new { content = result });
+        }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+    }
+
+    // POST: api/jobapplications/{id}/resume-optimize
+    [HttpPost("{id}/resume-optimize")]
+    public async Task<ActionResult<string>> OptimizeResume(Guid id)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
+
+        try
+        {
+            var result = await _jobApplicationService.OptimizeResumeAsync(id, userId);
+            return Ok(new { content = result });
+        }
+        catch (KeyNotFoundException) { return NotFound(); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+    }
 }

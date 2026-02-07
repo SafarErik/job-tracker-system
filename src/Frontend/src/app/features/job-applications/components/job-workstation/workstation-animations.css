@@ -1,3 +1,5 @@
+@reference "../../../../../styles.css";
+
 /* Micro-animations for JobTracker Workstation */
 
 @keyframes fade-in-up {
@@ -19,6 +21,113 @@
 /* Base styles for 3D Flashcards if not handled by utility classes */
 .perspective-1000 {
     perspective: 1000px;
+}
+
+/* Violet Glow for Interactive Keywords */
+.keyword-highlight {
+    @apply relative cursor-pointer px-1 rounded transition-all duration-300;
+    background: linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));
+    border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+}
+
+.keyword-highlight:hover {
+    @apply text-primary;
+    background: rgba(139, 92, 246, 0.15);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    border-bottom-color: rgba(139, 92, 246, 0.6);
+    transform: translateY(-1px);
+}
+
+/* Gauge Chart Animations */
+@keyframes gauge-fill {
+    from {
+        stroke-dasharray: 0 100;
+    }
+}
+
+.gauge-path {
+    transition: stroke-dasharray 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dash Animation */
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Mission Intel Card Glow */
+.mission-intel-card {
+    @apply relative overflow-hidden;
+}
+
+.mission-intel-card::after {
+    content: '';
+    @apply absolute -inset-full pointer-events-none;
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+    animation: pulse-glow 8s infinite linear;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.2) translate(5%, 5%);
+        opacity: 0.8;
+    }
+}
+
+/* Command Orb Stylings */
+.command-orb {
+    @apply fixed bottom-8 right-8 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer z-100 transition-all duration-500;
+    background: radial-gradient(circle at 30% 30%, #a78bfa, #7c3aed);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.command-orb:hover {
+    @apply scale-110 -rotate-12;
+    box-shadow: 0 0 40px rgba(124, 58, 237, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.command-orb-active {
+    @apply scale-90 rotate-45;
+}
+
+/* Focus Mode Layout */
+.focus-active {
+    @apply fixed inset-0 z-200 bg-background border-none rounded-none w-screen h-screen m-0 p-0;
+}
+
+.focus-transition {
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Bento Card Hover */
+.bento-card-interactive {
+    @apply transition-all duration-300 hover:translate-y-[-4px] hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/30 active:scale-[0.98];
+}
+
+/* Audio Waveform Animation */
+.waveform-bar {
+    @apply w-1 rounded-full bg-linear-to-t from-primary/20 via-primary to-primary/80;
+    animation: wave 1s infinite ease-in-out;
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        height: 10px;
+    }
+
+    50% {
+        height: 40px;
+    }
 }
 
 .preserve-3d {

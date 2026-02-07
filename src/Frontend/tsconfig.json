@@ -18,6 +18,9 @@
       "@ui/*": [
         "libs/ui/*"
       ],
+      "@core/*": [
+        "src/app/core/*"
+      ],
       "@spartan-ng/helm/button": [
         "./libs/ui/button/src/index"
       ],
@@ -104,6 +107,15 @@
       ],
       "@spartan-ng/helm/breadcrumb": [
         "./libs/ui/breadcrumb/src/index.ts"
+      ],
+      "@spartan-ng/helm/sidebar": [
+        "./libs/ui/sidebar/src/index.ts"
+      ],
+      "@spartan-ng/helm/switch": [
+        "./libs/ui/switch/src/index.ts"
+      ],
+      "@spartan-ng/helm/calendar": [
+        "./libs/ui/calendar/src/index.ts"
       ]
     }
   },

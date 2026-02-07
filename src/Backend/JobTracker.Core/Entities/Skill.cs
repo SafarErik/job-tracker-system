@@ -8,7 +8,7 @@ namespace JobTracker.Core.Entities;
 /// </summary>
 public class Skill
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// The skill name (e.g., "C#", "Python", "Kubernetes")

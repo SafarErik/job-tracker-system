@@ -2,6 +2,7 @@ using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace JobTracker.Infrastructure.Repositories;
 
@@ -12,10 +13,12 @@ namespace JobTracker.Infrastructure.Repositories;
 public class JobApplicationRepository : IJobApplicationRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<JobApplicationRepository> _logger;
 
-    public JobApplicationRepository(ApplicationDbContext context)
+    public JobApplicationRepository(ApplicationDbContext context, ILogger<JobApplicationRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     /// <summary>
@@ -25,6 +28,8 @@ public class JobApplicationRepository : IJobApplicationRepository
     public async Task<IEnumerable<JobApplication>> GetAllAsync()
     {
         return await _context.JobApplications
+            .AsNoTracking() // We don't follow the changes --> Excelent for reading
+            .AsSplitQuery() // Separate SQL quaries for relations
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
@@ -39,6 +44,8 @@ public class JobApplicationRepository : IJobApplicationRepository
     public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId)
     {
         return await _context.JobApplications
+            .AsNoTracking()
+            .AsSplitQuery()
             .Where(j => j.UserId == userId)
             .Include(j => j.Company)
             .Include(j => j.Skills)
@@ -48,9 +55,10 @@ public class JobApplicationRepository : IJobApplicationRepository
             .ToListAsync();
     }
 
-    public async Task<JobApplication?> GetByIdAsync(int id)
+    public async Task<JobApplication?> GetByIdAsync(Guid id)
     {
         return await _context.JobApplications
+            .AsSplitQuery()
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
@@ -66,18 +74,27 @@ public class JobApplicationRepository : IJobApplicationRepository
 
     public async Task UpdateAsync(JobApplication application)
     {
-        _context.JobApplications.Update(application);
-        await _context.SaveChangesAsync();
+        try
+        {
+            _context.JobApplications.Update(application);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _logger.LogWarning(ex, "Concurrency conflict for JobApplication {Id}", application.Id);
+            throw;
+        }
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
-        var app = await _context.JobApplications.FindAsync(id);
-        if (app != null)
-        {
-            _context.JobApplications.Remove(app);
-            await _context.SaveChangesAsync();
+        var rowsAffected = await _context.JobApplications
+           .Where(j => j.Id == id)
+           .ExecuteDeleteAsync();
 
+        if (rowsAffected == 0)
+        {
+            _logger.LogWarning("Attempted to delete JobApplication {Id}, but it was not found.", id);
         }
 
     }

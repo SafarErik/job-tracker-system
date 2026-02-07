@@ -43,7 +43,7 @@
       Google API Auth Library - for local cryptographic validation of Google ID tokens.
       More secure than calling external tokeninfo endpoint - validates JWT signature locally.
     -->
-    <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
     
     <!--
       FluentValidation - for robust input validation and sanitization.
@@ -62,6 +62,7 @@
       Essential for production security monitoring on Azure.
     -->
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>

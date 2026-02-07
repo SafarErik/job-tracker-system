@@ -1,5 +1,5 @@
 export interface Company {
-  id: number;
+  id: string;
   name: string;
   website?: string;
   address?: string;
@@ -10,12 +10,13 @@ export interface Company {
   techStack?: string[];
   totalApplications: number;
   priority: string;
+  updatedAt?: string;
   // For rich display in list view
   recentApplications?: ApplicationPreview[];
 }
 
 export interface ApplicationPreview {
-  id: number;
+  id: string;
   position: string;
   status: string;
 }
@@ -51,7 +52,7 @@ export interface UpdateCompany {
 }
 
 export interface CompanyDetail {
-  id: number;
+  id: string;
   name: string;
   website?: string;
   address?: string;
@@ -62,17 +63,25 @@ export interface CompanyDetail {
   techStack?: string[];
   totalApplications: number;
   priority: string;
+  updatedAt?: string;
   applicationHistory: JobApplicationHistory[];
   // Intelligence fields (mock data for now)
   contacts?: CompanyContact[];
   notes?: string;
+  compatibility?: CompatibilityIndex;
+}
+
+export interface CompatibilityIndex {
+  score: number;
+  pros: string[];
+  cons: string[];
 }
 
 import type { CompanyContact } from '../../../core/models/company-contact.model';
 export type { CompanyContact };
 
 export interface JobApplicationHistory {
-  id: number;
+  id: string;
   position: string;
   appliedAt: string;
   status: string;
@@ -85,5 +94,34 @@ export interface CompanyNews {
   title: string;
   date: string;
   source: string;
+  summary?: string;
 }
 
+export interface IntelligenceBriefing {
+  mission: string;
+  fit: string[];
+  risks: string;
+}
+
+
+export interface TacticalEvent {
+  id: string;
+  type: 'Application' | 'Follow-up' | 'Networking' | 'Interview' | 'Outcome';
+  date: string | Date;
+  title: string;
+  subtitle?: string;
+  status?: string; // Original status if applicable
+  description?: string; // AI notes or manual notes
+  assets?: EventAsset[];
+  meta?: {
+    isGhosted?: boolean;
+    isTerminal?: boolean;
+    aiInsight?: string;
+  };
+}
+
+export interface EventAsset {
+  type: 'resume' | 'cover_letter' | 'link' | 'other';
+  label: string;
+  url: string;
+}

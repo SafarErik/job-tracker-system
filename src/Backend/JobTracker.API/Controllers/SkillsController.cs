@@ -20,9 +20,9 @@ public class SkillsController : ControllerBase
     public async Task<ActionResult<IEnumerable<SkillDto>>> GetAll()
     {
         var skills = await _repository.GetAllAsync();
-        var dtos = skills.Select(s => new SkillDto 
-        { 
-            Id = s.Id, 
+        var dtos = skills.Select(s => new SkillDto
+        {
+            Id = s.Id,
             Name = s.Name,
             Category = s.Category
         });
@@ -30,16 +30,16 @@ public class SkillsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<SkillDto>> GetById(int id)
+    public async Task<ActionResult<SkillDto>> GetById(Guid id)
     {
         var skill = await _repository.GetByIdAsync(id);
         if (skill == null)
         {
             return NotFound();
         }
-        return Ok(new SkillDto 
-        { 
-            Id = skill.Id, 
+        return Ok(new SkillDto
+        {
+            Id = skill.Id,
             Name = skill.Name,
             Category = skill.Category
         });
@@ -48,15 +48,15 @@ public class SkillsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<SkillDto>> Create(CreateSkillDto dto)
     {
-        var skill = new Skill 
-        { 
+        var skill = new Skill
+        {
             Name = dto.Name,
             Category = dto.Category
         };
         var id = await _repository.AddAsync(skill);
-        var createdSkill = new SkillDto 
-        { 
-            Id = id, 
+        var createdSkill = new SkillDto
+        {
+            Id = id,
             Name = skill.Name,
             Category = skill.Category
         };
@@ -64,7 +64,7 @@ public class SkillsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         var skill = await _repository.GetByIdAsync(id);
         if (skill == null)

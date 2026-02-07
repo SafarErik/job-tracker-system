@@ -1,17 +1,20 @@
-import { Component, OnInit, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, HostListener, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
 import { Company, ApplicationPreview } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { toast } from 'ngx-sonner';
 import { CompanyCardComponent } from '../company-card/company-card';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmLabelImports } from '../../../../../../libs/ui/label';
 import { LucideAngularModule } from 'lucide-angular';
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle } from '@ng-icons/lucide';
+import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp } from '@ng-icons/lucide';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
+
+import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet.component';
 
 @Component({
   selector: 'app-company-list',
@@ -23,36 +26,75 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
     ...HlmLabelImports,
     CompanyCardComponent,
     NgIcon,
-    ErrorStateComponent
+    ErrorStateComponent,
+    CompanyAddSheetComponent
   ],
   providers: [
-    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle })
+    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp })
   ],
   templateUrl: './company-list.html',
 })
 export class CompanyListComponent implements OnInit {
-  // Signal for companies list
-  companies = signal<Company[]>([]);
+  private readonly companyService = inject(CompanyService);
+  private readonly router = inject(Router);
+  private readonly notificationService = inject(NotificationService);
 
-  // Signal for loading state
-  isLoading = signal(true);
+  // Read signals from service
+  // No need for local 'companies' signal, we use the service's one
+  isLoading = this.companyService.isLoading;
+  error = this.companyService.error;
+  companies = this.companyService.companies;
 
-  // Signal for error state
-  error = signal<string | null>(null);
-
-  // Signal for search filter
+  // Local state
   searchTerm = signal('');
-
-  // Track failed logo loads
-  logoFailedIds = signal<Set<number>>(new Set());
+  logoFailedIds = signal<Set<string>>(new Set());
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  constructor(
-    private readonly companyService: CompanyService,
-    private readonly router: Router,
-    private readonly notificationService: NotificationService,
-  ) { }
+  // Computed: Filtered companies
+  filteredCompanies = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const allCompanies = this.companyService.companies();
+
+    if (!term) return allCompanies;
+
+    return allCompanies.filter(
+      (company) =>
+        company.name.toLowerCase().includes(term) ||
+        company.website?.toLowerCase().includes(term) ||
+        company.address?.toLowerCase().includes(term) ||
+        company.industry?.toLowerCase().includes(term),
+    );
+  });
+
+  // Computed: Metrics for the Command Deck
+  totalNetwork = computed(() => this.companies().length);
+  activePursuits = computed(() =>
+    this.companies().filter(c => c.totalApplications > 0).length
+  );
+  responseRate = computed(() => {
+    const totalWithApps = this.companies().filter(c => c.totalApplications > 0);
+    if (totalWithApps.length === 0) return '0%';
+
+    // Simple heuristic: if furthest status is past 'Applied', it's a response
+    const statusWeights: Record<string, number> = {
+      'Applied': 1,
+      'Rejected': 1,
+      'Ghosted': 1
+    };
+
+    const responses = totalWithApps.filter(c => {
+      const apps = c.recentApplications || [];
+      return apps.some(a => {
+        const s = a.status || 'Applied';
+        return !statusWeights[s] || statusWeights[s] > 1;
+      });
+    }).length;
+
+    return Math.round((responses / totalWithApps.length) * 100) + '%';
+  });
+
+  constructor() { }
 
   // ============================================
   // Keyboard Shortcuts
@@ -79,50 +121,15 @@ export class CompanyListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadCompanies();
-  }
-
-  /**
-   * Load all companies from the API
-   */
-  private loadCompanies(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.companyService.getCompanies().subscribe({
-      next: (companies) => {
-        this.companies.set(companies);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading companies:', err);
-        this.error.set('Failed to load companies. Please try again.');
-        this.isLoading.set(false);
-      },
-    });
+    // Initial load
+    this.companyService.loadCompanies();
   }
 
   /**
    * Navigate to company details page
    */
-  viewCompanyDetails(companyId: number): void {
+  viewCompanyDetails(companyId: string): void {
     this.router.navigate(['/companies', companyId]);
-  }
-
-  /**
-   * Filter companies based on search term
-   */
-  get filteredCompanies(): Company[] {
-    const term = this.searchTerm().toLowerCase();
-    if (!term) return this.companies();
-
-    return this.companies().filter(
-      (company) =>
-        company.name.toLowerCase().includes(term) ||
-        company.website?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term) ||
-        company.industry?.toLowerCase().includes(term),
-    );
   }
 
   /**
@@ -137,20 +144,14 @@ export class CompanyListComponent implements OnInit {
    * Retry loading companies
    */
   retry(): void {
-    this.loadCompanies();
+    this.companyService.loadCompanies();
   }
 
-  /**
-   * Navigate to add new company
-   */
-  addNewCompany(): void {
-    this.router.navigate(['/companies/new']);
-  }
 
   /**
    * Navigate to edit company
    */
-  editCompany(companyId: number, event: Event): void {
+  editCompany(companyId: string, event: Event): void {
     event.stopPropagation();
     this.router.navigate(['/companies/edit', companyId]);
   }
@@ -172,17 +173,15 @@ export class CompanyListComponent implements OnInit {
 
     this.companyService.deleteCompany(company.id).subscribe({
       next: () => {
-        this.notificationService.success(
-          `${company.name} has been deleted successfully.`,
-          'Company Deleted',
-        );
-        this.loadCompanies();
+        toast.success('Company Deleted', {
+          description: `${company.name} has been deleted successfully.`,
+        });
+        // No need to manually reload, the service updates the signal
       },
       error: (err) => {
-        this.notificationService.error(
-          'An error occurred while deleting the company. Please try again.',
-          'Delete Failed',
-        );
+        toast.error('Delete Failed', {
+          description: 'An error occurred while deleting the company. Please try again.',
+        });
         console.error(err);
       },
     });
@@ -191,7 +190,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Handle keyboard navigation for table rows
    */
-  onRowKeyDown(event: KeyboardEvent, companyId: number): void {
+  onRowKeyDown(event: KeyboardEvent, companyId: string): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.viewCompanyDetails(companyId);
@@ -210,7 +209,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Handle logo load error
    */
-  onLogoError(companyId: number): void {
+  onLogoError(companyId: string): void {
     this.logoFailedIds.update((ids) => {
       const newSet = new Set(ids);
       newSet.add(companyId);
@@ -221,7 +220,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Check if logo failed for company
    */
-  isLogoFailed(companyId: number): boolean {
+  isLogoFailed(companyId: string): boolean {
     return this.logoFailedIds().has(companyId);
   }
 

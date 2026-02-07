@@ -1,0 +1,110 @@
+<!-- Pipeline Manager Page Container -->
+<div class="container mx-auto px-4 py-8 min-h-screen">
+
+  <!-- STICKY HEADER CONTAINER -->
+  <div class="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-border -mx-4 px-4 pt-4 pb-4 mb-8">
+
+    <!-- PIPELINE TOOLBAR (Top Section) -->
+    <app-application-statbar></app-application-statbar>
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mt-6">
+
+      <!-- LEFT: Category Filters (Segmented Control) -->
+      <div class="flex items-center p-1 bg-secondary/30 rounded-xl border border-border/50">
+        @for (category of categories; track category.id) {
+        <button (click)="setCategory(category.id)"
+          [class]="selectedCategory() === category.id ? 'bg-secondary text-foreground font-bold shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
+          class="h-9 px-4 rounded-lg text-sm transition-all duration-200">
+          {{ category.label }}
+        </button>
+        }
+      </div>
+
+      <!-- RIGHT: Actions & Search -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
+
+        <!-- Local Search -->
+        <div class="relative flex-1 sm:w-64">
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+            <ng-icon name="lucideSearch" class="h-4 w-4"></ng-icon>
+          </div>
+          <input #searchInput type="text" [value]="searchQuery()" (input)="onSearchChange(searchInput.value)"
+            placeholder="Filter by company..."
+            class="h-10 w-full rounded-xl bg-card border border-border/50 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all">
+        </div>
+
+        <!-- View Toggle -->
+        <div class="flex items-center p-1 bg-secondary/30 rounded-xl border border-border/50">
+          <button (click)="switchView('grid')"
+            [class]="viewMode() === 'grid' ? 'bg-secondary text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
+            class="h-8 w-8 flex items-center justify-center rounded-lg transition-all" title="Grid View">
+            <ng-icon name="lucideLayoutGrid" class="h-4 w-4"></ng-icon>
+          </button>
+          <button (click)="switchView('kanban')"
+            [class]="viewMode() === 'kanban' ? 'bg-secondary text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
+            class="h-8 w-8 flex items-center justify-center rounded-lg transition-all" title="Kanban View">
+            <ng-icon name="lucideKanban" class="h-4 w-4"></ng-icon>
+          </button>
+          <button (click)="switchView('list')"
+            [class]="viewMode() === 'list' ? 'bg-secondary text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
+            class="h-8 w-8 flex items-center justify-center rounded-lg transition-all" title="List View">
+            <ng-icon name="lucideLayoutList" class="h-4 w-4"></ng-icon>
+          </button>
+        </div>
+
+        <!-- New Application Button -->
+        <button hlmBtn (click)="uiService.openAddAppSheet()"
+          class="bg-primary text-primary-foreground gap-2 rounded-xl h-10 px-4">
+          <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
+          New Application
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="store.isLoading()" class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    <p class="mt-4 text-muted-foreground">Loading pipeline...</p>
+  </div>
+
+  <!-- Empty Search/Filter Results -->
+  <div *ngIf="!store.isLoading() && filteredApps().length === 0"
+    class="flex flex-col items-center justify-center py-20 bg-card/50 rounded-3xl border border-dashed border-border">
+    <div class="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center text-muted-foreground mb-4">
+      <ng-icon name="lucideSearch" size="32"></ng-icon>
+    </div>
+    <h3 class="text-xl font-bold">No applications found</h3>
+    <p class="text-muted-foreground mt-1">Try adjusting your filters or search query.</p>
+    <button (click)="searchQuery.set(''); selectedCategory.set('all')" hlmBtn variant="link" class="mt-2">Clear all
+      filters</button>
+  </div>
+
+  <!-- Application Content -->
+  <div *ngIf="!store.isLoading() && filteredApps().length > 0">
+    @switch (viewMode()) {
+    @case ('grid') {
+    <app-application-grid [apps]="filteredApps()" (statusChange)="onStatusChange($event)" />
+    }
+    @case ('kanban') {
+    @defer (on idle) {
+    <app-application-kanban [apps]="filteredApps()" (statusChange)="onStatusChange($event)" />
+    } @placeholder {
+    <div class="flex items-center justify-center py-20">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+    }
+    }
+    @case ('list') {
+    @defer (on idle) {
+    <app-application-list [apps]="filteredApps()" (viewDetail)="viewApplicationDetail($event)"
+      (archive)="onArchive($event)" />
+    } @placeholder {
+    <div class="flex items-center justify-center py-20">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+    }
+    }
+    }
+  </div>
+
+</div>

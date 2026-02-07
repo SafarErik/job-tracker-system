@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import {
@@ -13,351 +13,188 @@ import { JobApplication } from '../../models/job-application.model';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 
 // Components
-import { JobCardComponent } from '../job-card/job-card';
-
-// Services
-import { ApplicationService } from '../../services/application.service';
-import { NotificationService } from '../../../../core/services/notification.service';
+import { ApplicationKanbanCardComponent } from './application-kanban-card/application-kanban-card.component';
 
 /**
- * Status Column Configuration
- * Defines the visual representation and order of Kanban columns
+ * Bucket Column Configuration (4 Columns)
+ * Each column can contain multiple statuses
  */
-interface StatusColumn {
+interface BucketColumn {
   id: string;
   title: string;
-  status: JobApplicationStatus;
-  color: string; // Tailwind color class
+  statuses: JobApplicationStatus[];
+  borderColor: string;
+  textColor: string;
   applications: JobApplication[];
+  /** Optional limit for items (used for Archive column) */
+  limit?: number;
 }
 
-/**
- * KanbanBoard Component
- *
- * A drag-and-drop Kanban board for managing job applications.
- * Users can drag cards between columns to update application status.
- *
- * Key Features:
- * - Drag & drop using Angular CDK
- * - Real-time status updates
- * - Responsive design with Tailwind CSS
- * - Visual feedback during drag operations
- */
 @Component({
-  selector: 'app-kanban-board',
+  selector: 'app-application-kanban',
   standalone: true,
-  imports: [CommonModule, DragDropModule, JobCardComponent],
+  imports: [CommonModule, DragDropModule, ApplicationKanbanCardComponent],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KanbanBoardComponent {
-  /**
-   * Input: All job applications to display on the board
-   */
-  @Input() set applications(apps: JobApplication[]) {
-    this._applications = apps;
-    this.organizeApplicationsByStatus();
-  }
+export class ApplicationKanbanComponent {
+  // Inputs
+  apps = input.required<JobApplication[]>();
 
-  /**
-   * Output: Emits when an application is updated
-   * Parent component can refresh data if needed
-   */
-  @Output() applicationUpdated = new EventEmitter<void>();
+  // Outputs
+  statusChange = output<{ applicationId: string; status: JobApplicationStatus }>();
 
-  /**
-   * Internal storage for applications
-   */
-  private _applications: JobApplication[] = [];
-
-  /**
-   * Kanban columns configuration
-   * Order matters - represents the visual flow from left to right
-   */
-  columns: StatusColumn[] = [
-    {
-      id: 'Applied',
-      title: 'Applied',
-      status: JobApplicationStatus.Applied,
-      applications: [],
-      color: 'border-info/20 bg-info/5',
-    },
-    {
-      id: 'PhoneScreen',
-      title: 'Phone Screen',
-      status: JobApplicationStatus.PhoneScreen,
-      applications: [],
-      color: 'border-info/20 bg-info/5',
-    },
-    {
-      id: 'TechnicalTask',
-      title: 'Tech Task',
-      status: JobApplicationStatus.TechnicalTask,
-      applications: [],
-      color: 'border-warning/20 bg-warning/5',
-    },
-    {
-      id: 'Interviewing',
-      title: 'Interviewing',
-      status: JobApplicationStatus.Interviewing,
-      applications: [],
-      color: 'border-primary/20 bg-primary/5',
-    },
-    {
-      id: 'Offer',
-      title: 'Offer',
-      status: JobApplicationStatus.Offer,
-      applications: [],
-      color: 'border-success/30 bg-success/5',
-    },
-    {
-      id: 'Accepted',
-      title: 'Accepted',
-      status: JobApplicationStatus.Accepted,
-      applications: [],
-      color: 'border-success/20 bg-success/5',
-    },
-    {
-      id: 'Rejected',
-      title: 'Rejected',
-      status: JobApplicationStatus.Rejected,
-      applications: [],
-      color: 'border-destructive/20 bg-destructive/5',
-    },
-    {
-      id: 'Ghosted',
-      title: 'Ghosted',
-      status: JobApplicationStatus.Ghosted,
-      applications: [],
-      color: 'border-muted-foreground/20 bg-muted-foreground/5',
-    },
-  ];
-
-  /**
-   * Loading state for update operations
-   */
-  isUpdating = false;
-
-  /**
-   * Expose status enum for template conditionals
-   */
+  // Expose status enum
   readonly Status = JobApplicationStatus;
 
-  constructor(
-    private readonly applicationService: ApplicationService,
-    private readonly notificationService: NotificationService,
-    private readonly router: Router,
-  ) { }
+  constructor(private readonly router: Router) { }
 
-  /**
-   * Organize applications into their respective status columns
-   */
-  private organizeApplicationsByStatus(): void {
-    // Reset all columns
-    this.columns.forEach((col) => (col.applications = []));
+  // Computed Columns (4 Buckets)
+  columns = computed(() => {
+    const apps = this.apps();
 
-    // Distribute applications to columns based on status
-    this._applications.forEach((app) => {
-      const column = this.columns.find((col) => col.status === app.status);
-      if (column) {
-        column.applications.push(app);
+    // Define 4 bucket columns (Agglomerations)
+    const cols: BucketColumn[] = [
+      {
+        id: 'inbox',
+        title: 'Inbox',
+        statuses: [JobApplicationStatus.Applied],
+        borderColor: 'border-zinc-800',
+        textColor: 'text-zinc-500',
+        applications: [],
+      },
+      {
+        id: 'active',
+        title: 'Active',
+        statuses: [JobApplicationStatus.PhoneScreen, JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing],
+        borderColor: 'border-zinc-800',
+        textColor: 'text-zinc-500',
+        applications: [],
+      },
+      {
+        id: 'offers',
+        title: 'Offers',
+        statuses: [JobApplicationStatus.Offer, JobApplicationStatus.Accepted],
+        borderColor: 'border-zinc-800',
+        textColor: 'text-zinc-500',
+        applications: [],
+      },
+      {
+        id: 'archive',
+        title: 'Archive',
+        statuses: [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted],
+        borderColor: 'border-zinc-800',
+        textColor: 'text-zinc-600',
+        applications: [],
+        limit: 25, // Performance limit
+      },
+    ];
+
+    // Distribute applications to buckets
+    apps.forEach(app => {
+      const col = cols.find(c => c.statuses.includes(app.status));
+      if (col) {
+        // Respect limit if set
+        if (!col.limit || col.applications.length < col.limit) {
+          col.applications.push(app);
+        }
       }
     });
-  }
+
+    // Custom Sort for Active Column
+    const activeCol = cols.find(c => c.id === 'active');
+    if (activeCol) {
+      activeCol.applications.sort((a, b) => {
+        // 1. Status Priority
+        const priority: Partial<Record<JobApplicationStatus, number>> = {
+          [JobApplicationStatus.Interviewing]: 3,
+          [JobApplicationStatus.TechnicalTask]: 2,
+          [JobApplicationStatus.PhoneScreen]: 1
+        };
+
+        const priorityA = priority[a.status] || 0;
+        const priorityB = priority[b.status] || 0;
+
+        if (priorityA !== priorityB) {
+          return priorityB - priorityA; // Higher priority first
+        }
+
+        // 2. UpdatedAt (Newest First) - with fallback to AppliedAt
+        const dateA = new Date(a.updatedAt || a.appliedAt).getTime();
+        const dateB = new Date(b.updatedAt || b.appliedAt).getTime();
+        return dateB - dateA;
+      });
+    }
+
+    return cols;
+  });
 
   /**
    * Handle drag & drop events
-   * Called when user drops a card in a column
-   *
-   * @param event - CDK drag-drop event containing source and target info
    */
   onCardDropped(event: CdkDragDrop<JobApplication[]>): void {
-    const previousColumn = event.previousContainer.data;
-    const currentColumn = event.container.data;
-
-    // Case 1: Card moved within the same column (reorder)
     if (event.previousContainer === event.container) {
-      moveItemInArray(currentColumn, event.previousIndex, event.currentIndex);
+      // Reorder within column
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       return;
     }
 
-    // Case 2: Card moved to a different column (status change)
-    const movedApplication = previousColumn[event.previousIndex];
-    const newStatus = this.getStatusFromColumn(event.container.id);
+    // Status change
+    const movedApp = event.previousContainer.data[event.previousIndex];
+    const targetColId = event.container.id;
+    const targetStatus = this.getStatusFromColumnId(targetColId);
 
-    if (newStatus !== undefined && movedApplication) {
-      // Save old status for potential rollback
-      const oldStatus = movedApplication.status;
-
-      // Optimistically update UI first
-      transferArrayItem(previousColumn, currentColumn, event.previousIndex, event.currentIndex);
-
-      // Update backend
-      this.updateApplicationStatus(movedApplication, newStatus, oldStatus);
+    if (targetStatus !== undefined && movedApp.status !== targetStatus) {
+      this.statusChange.emit({ applicationId: movedApp.id, status: targetStatus });
     }
   }
 
   /**
-   * Get status enum value from column ID
+   * Get the default status for a bucket column ID
+   * Rules:
+   * - Active -> Interviewing
+   * - Archive -> Rejected
+   * - Screening -> PhoneScreen
+   * - Inbox -> Applied
+   * - Offers -> Offer
    */
-  private getStatusFromColumn(columnId: string): JobApplicationStatus | undefined {
-    const column = this.columns.find((col) => col.id === columnId);
-    return column?.status;
-  }
-
-  /**
-   * Update application status in the backend
-   *
-   * @param application - The application to update
-   * @param newStatus - The new status to apply
-   */
-  /**
-   * Update application status in the backend
-   *
-   * @param application - The application to update
-   * @param newStatus - The new status to apply
-   * @param oldStatus - The previous status for rollback
-   */
-  private updateApplicationStatus(
-    application: JobApplication,
-    newStatus: JobApplicationStatus,
-    oldStatus: JobApplicationStatus,
-  ): void {
-    this.isUpdating = true;
-    const statusLabel = this.getStatusLabel(newStatus);
-
-    // Optimistically update the local application object
-    application.status = newStatus;
-
-    // Create update payload with all required fields
-    const updatePayload = {
-      position: application.position,
-      companyId: application.companyId,
-      jobUrl: application.jobUrl,
-      description: application.description,
-      status: newStatus,
-    };
-
-    this.applicationService.updateApplication(application.id, updatePayload).subscribe({
-      next: () => {
-        this.isUpdating = false;
-
-        // Show success notification
-        this.notificationService.success(
-          `${application.position} moved to ${statusLabel}`,
-          'Status Updated',
-        );
-
-        // No need to emit update - component state is already correct
-        // Parent doesn't need to reload since we've already updated locally
-      },
-      error: (error) => {
-        console.error('Failed to update application status:', error);
-        this.isUpdating = false;
-
-        // Revert the optimistic update
-        application.status = oldStatus;
-
-        // Show error notification
-        this.notificationService.error(
-          'Unable to update application status. The change has been reverted.',
-          'Update Failed',
-        );
-
-        // Re-organize columns to revert the UI change
-        this.organizeApplicationsByStatus();
-
-        // Still emit update to ensure parent is aware
-        this.applicationUpdated.emit();
-      },
-    });
-  }
-
-  /**
-   * Get human-readable status label
-   */
-  private getStatusLabel(status: JobApplicationStatus): string {
-    switch (status) {
-      case JobApplicationStatus.Applied:
-        return 'Applied';
-      case JobApplicationStatus.PhoneScreen:
-        return 'Phone Screen';
-      case JobApplicationStatus.TechnicalTask:
-        return 'Technical Task';
-      case JobApplicationStatus.Interviewing:
-        return 'Interviewing';
-      case JobApplicationStatus.Offer:
-        return 'Offer Received';
-      case JobApplicationStatus.Accepted:
-        return 'Accepted';
-      case JobApplicationStatus.Rejected:
-        return 'Rejected';
-      case JobApplicationStatus.Ghosted:
-        return 'Ghosted';
-      default:
-        return 'Unknown';
+  private getStatusFromColumnId(id: string): JobApplicationStatus | undefined {
+    switch (id) {
+      case 'inbox': return JobApplicationStatus.Applied;
+      case 'active': return JobApplicationStatus.Interviewing; // Entry point to active
+      case 'offers': return JobApplicationStatus.Offer;
+      case 'archive': return JobApplicationStatus.Rejected;
+      default: return undefined;
     }
   }
 
   /**
-   * Get semantic text color for column headers
+   * Helpers
    */
-  getColumnColorClass(status: JobApplicationStatus): string {
-    switch (status) {
-      case JobApplicationStatus.Applied: return 'text-info';
-      case JobApplicationStatus.PhoneScreen: return 'text-info/80';
-      case JobApplicationStatus.TechnicalTask: return 'text-warning/80';
-      case JobApplicationStatus.Interviewing: return 'text-primary';
-      case JobApplicationStatus.Offer: return 'text-success';
-      case JobApplicationStatus.Accepted: return 'text-success/80';
-      case JobApplicationStatus.Rejected: return 'text-destructive';
-      case JobApplicationStatus.Ghosted: return 'text-muted-foreground';
-      default: return 'text-muted-foreground';
-    }
-  }
 
-  /**
-   * Format date for display
-   */
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric',
     });
   }
 
-  /**
-   * Navigate to company details page
-   */
-  navigateToCompany(event: Event, companyId: number): void {
+  navigateToCompany(event: Event, companyId: string): void {
     event.preventDefault();
     event.stopPropagation();
     this.router.navigate(['/company', companyId]);
   }
 
-  /**
-   * Get connected drop list IDs for CDK drag-drop
-   * This allows cards to be moved between any columns
-   */
   getConnectedLists(): string[] {
-    return this.columns.map((col) => col.id);
+    return this.columns().map(c => c.id);
   }
 
-  /**
-   * Handle 'Open Workstation' event from Job Card
-   */
-  onOpenWorkstation(applicationId: number): void {
-    // Navigate to workstation view (assuming route structure)
-    // Adjust route as needed based on app routing
+  onOpenWorkstation(applicationId: string): void {
     this.router.navigate(['/applications', applicationId]);
   }
 
-  /**
-   * Handle 'Open Job URL' event from Job Card
-   */
   onOpenJobUrl(url: string): void {
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

@@ -8,14 +8,14 @@ namespace JobTracker.Application.DTOs.Companies;
 /// </summary>
 public class CompanyDto
 {
-    public int Id { get; set; }
-    
+    public Guid Id { get; set; }
+
     public string Name { get; set; } = string.Empty;
-    
+
     public string? Website { get; set; }
-    
+
     public string? Address { get; set; }
-    
+
     /// <summary>
     /// Total number of applications submitted to this company
     /// </summary>
@@ -42,15 +42,15 @@ public class CompanyDto
 /// </summary>
 public class CompanyDetailDto
 {
-    public int Id { get; set; }
-    
+    public Guid Id { get; set; }
+
     public string Name { get; set; } = string.Empty;
-    
+
     public string? Website { get; set; }
-    
+
     public string? Address { get; set; }
-    
-    
+
+
     /// <summary>
     /// Total number of applications to this company
     /// </summary>
@@ -64,7 +64,7 @@ public class CompanyDetailDto
     /// Company Priority (Tier1, Tier2, Tier3)
     /// </summary>
     public string Priority { get; set; } = "Tier3";
-    
+
     /// <summary>
     /// History of all applications to this company
     /// </summary>
@@ -81,17 +81,17 @@ public class CompanyDetailDto
 /// </summary>
 public class JobApplicationHistoryDto
 {
-    public int Id { get; set; }
-    
+    public Guid Id { get; set; }
+
     public string Position { get; set; } = string.Empty;
-    
+
     public DateTime AppliedAt { get; set; }
-    
+
     /// <summary>
     /// Status as string for display purposes
     /// </summary>
     public string Status { get; set; } = string.Empty;
-    
+
     public decimal? SalaryOffer { get; set; }
 }
 
@@ -106,9 +106,9 @@ public class CreateCompanyDto
 
     [Url(ErrorMessage = "Invalid website URL format")]
     public string? Website { get; set; }
-    
+
     public string? Address { get; set; }
-    
+
 
     public string? Industry { get; set; }
 
@@ -133,9 +133,9 @@ public class UpdateCompanyDto
 
     [Url(ErrorMessage = "Invalid website URL format")]
     public string? Website { get; set; }
-    
+
     public string? Address { get; set; }
-    
+
 
     public string? Industry { get; set; }
 
@@ -154,14 +154,14 @@ public class UpdateCompanyDto
 /// </summary>
 public class CompanyContactDto
 {
-    public int Id { get; set; }
-    
+    public Guid Id { get; set; }
+
     [Required]
     public string Name { get; set; } = string.Empty;
-    
+
     public string? Email { get; set; }
-    
+
     public string? LinkedIn { get; set; }
-    
+
     public string? Role { get; set; }
 }

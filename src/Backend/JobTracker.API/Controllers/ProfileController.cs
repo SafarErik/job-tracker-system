@@ -162,8 +162,8 @@ public class ProfileController : ControllerBase
             .SelectMany(u => u.Skills)
             .CountAsync();
 
-        var successRate = totalApplications > 0 
-            ? (int)Math.Round((double)offersReceived / totalApplications * 100) 
+        var successRate = totalApplications > 0
+            ? (int)Math.Round((double)offersReceived / totalApplications * 100)
             : 0;
 
         var stats = new
@@ -252,7 +252,7 @@ public class ProfileController : ControllerBase
             .FirstOrDefaultAsync(s => s.Name.ToLower() == normalizedName);
 
         Core.Entities.Skill skill;
-        
+
         if (existingSkill != null)
         {
             // Use existing skill with its original category
@@ -284,15 +284,15 @@ public class ProfileController : ControllerBase
         {
             // Handle unique constraint violation (race condition where skill was created concurrently)
             _logger.LogWarning($"Unique constraint violation while adding skill '{name}': {ex.Message}");
-            
+
             // Re-fetch the existing skill that was created by another request
             existingSkill = await _context.Skills
                 .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName || s.Name.ToLower() == normalizedName);
-            
+
             if (existingSkill != null)
             {
                 skill = existingSkill;
-                
+
                 // Add to user if not already present
                 if (!user.Skills.Any(s => s.Id == skill.Id))
                 {
@@ -325,7 +325,7 @@ public class ProfileController : ControllerBase
     /// Add skill to user profile
     /// </summary>
     [HttpPost("skills/{skillId}")]
-    public async Task<IActionResult> AddSkill(int skillId)
+    public async Task<IActionResult> AddSkill(Guid skillId)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -363,7 +363,7 @@ public class ProfileController : ControllerBase
     /// Remove skill from user profile
     /// </summary>
     [HttpDelete("skills/{skillId}")]
-    public async Task<IActionResult> RemoveSkill(int skillId)
+    public async Task<IActionResult> RemoveSkill(Guid skillId)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -435,7 +435,7 @@ public class ProfileController : ControllerBase
 
         // Update the user's profile picture URL
         user.ProfilePictureUrl = placeholderUrl;
-        
+
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {

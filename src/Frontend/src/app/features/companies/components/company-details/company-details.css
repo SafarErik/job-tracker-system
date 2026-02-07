@@ -84,7 +84,49 @@
     transform: translateX(4px);
 }
 
-/* Custom Scrollbar for Notes */
+/* Vantage Refactor - Visual Polish */
+:host {
+    --serif-stack: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.font-serif {
+    font-family: var(--serif-stack) !important;
+}
+
+/* Strategic Whitespace & Layout */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Fix Line Overlaps in Personnel Radar (Contact List) */
+::ng-deep app-contact-list>div {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Section Header Support (Legacy/Common) */
+.section-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.application-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.application-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
+}
+
+/* Custom Scrollbar for Notes and Lists */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }

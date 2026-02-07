@@ -1,28 +1,28 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import {
   HlmCard,
   HlmCardHeader,
-  HlmCardTitle,
   HlmCardContent,
   HlmCardFooter,
 } from '@spartan-ng/helm/card';
-import { HlmBadge } from '@spartan-ng/helm/badge';
 import { CommonModule } from '@angular/common';
 import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
+import { ProfileStore } from '../../../../features/profile/services/profile.store';
+import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 
 @Component({
   selector: 'app-company-card',
+  standalone: true,
   imports: [
     CommonModule,
     NgIcon,
     HlmCard,
     HlmCardHeader,
-    HlmCardTitle,
     HlmCardContent,
     HlmCardFooter,
-    HlmBadge,
+    LogoPlaceholderComponent,
   ],
   providers: [provideIcons({ lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle })],
   templateUrl: './company-card.html',
@@ -30,8 +30,9 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyCardComponent {
+  private readonly profileStore = inject(ProfileStore);
   company = input.required<Company>();
-  viewDossier = output<number>();
+  viewDossier = output<string>();
 
   logoFailed = false;
 
@@ -47,7 +48,7 @@ export class CompanyCardComponent {
   /**
    * Get website domain from company website or name
    */
-  getWebsiteDomain(): string {
+  readonly websiteDomain = computed(() => {
     const website = this.company().website;
     if (website) {
       try {
@@ -64,63 +65,81 @@ export class CompanyCardComponent {
       .name.toLowerCase()
       .replace(/[^a-z0-9]/g, '');
     return name ? `${name}.com` : '';
-  }
+  });
 
   /**
    * Get Clearbit logo URL using website domain
    */
-  getLogoUrl(): string | null {
-    if (this.logoFailed) return null;
-    const domain = this.getWebsiteDomain();
+  readonly logoUrl = computed(() => {
+    const domain = this.websiteDomain();
     return domain ? `https://logo.clearbit.com/${domain}` : null;
-  }
-
-  /**
-   * Handle logo load error - fallback to building icon
-   */
-  onLogoError(): void {
-    this.logoFailed = true;
-  }
+  });
 
   /**
    * Get tech stack - use actual data or mock for demo
    */
-  getTechStack(): string[] {
+  readonly techStack = computed(() => {
     const actual = this.company().techStack;
     if (actual && actual.length > 0) return actual;
 
     // Mock data for demo - deterministic based on company ID
-    const index = this.company().id % this.mockTechStacks.length;
+    // Simplified hash for string ID
+    const hash = this.company().id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const index = hash % this.mockTechStacks.length;
     return this.mockTechStacks[index];
-  }
+  });
 
   /**
    * Get limited tech stack (max 3 items)
    */
-  getVisibleTechStack(): string[] {
-    return this.getTechStack().slice(0, 3);
-  }
+  readonly visibleTechStack = computed(() => {
+    return this.techStack().slice(0, 3);
+  });
 
   /**
    * Count of remaining tech items
    */
-  getRemainingTechCount(): number {
-    const total = this.getTechStack().length;
+  readonly remainingTechCount = computed(() => {
+    const total = this.techStack().length;
     return Math.max(0, total - 3);
-  }
+  });
 
   /**
    * Check if company has active applications
    */
-  hasApplications(): boolean {
+  readonly hasApplications = computed(() => {
     return this.company().totalApplications > 0;
+  });
+
+  /**
+   * Get first letter of company name for avatar
+   */
+  readonly firstLetter = computed(() => {
+    return this.company().name.charAt(0).toUpperCase();
+  });
+
+  /**
+   * Get color class for tech stack chips
+   * Highlights matched skills in Obsidian (Purple/Violet)
+   * Others in Blue theme
+   */
+  getTechColor(tech: string): string {
+    const isMatched = this.profileStore.hasSkill(tech);
+
+    if (isMatched) {
+      // Obsidian / Purple theme for matched skills
+      return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20 hover:border-violet-500/40';
+    }
+
+    // Default Blue theme for unmatched skills
+    return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 hover:border-blue-500/40';
   }
 
   /**
    * Get pipeline progress (1-4 segments)
    * Based on the furthest application status
    */
-  getPipelineProgress(): number {
+  readonly pipelineProgress = computed(() => {
     const company = this.company();
     const apps = company.recentApplications;
 
@@ -153,6 +172,13 @@ export class CompanyCardComponent {
     }
 
     return maxWeight;
+  });
+
+  /**
+   * Handle logo load error - fallback to building icon
+   */
+  onLogoError(): void {
+    this.logoFailed = true;
   }
 
   /**

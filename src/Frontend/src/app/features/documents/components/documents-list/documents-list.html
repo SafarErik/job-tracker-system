@@ -1,204 +1,212 @@
 <div class="container mx-auto px-4 py-8 min-h-screen relative" (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
-  <!-- Drag & Drop Overlay -->
-  @if (isDragging()) {
-  <div class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
-    <div class="flex flex-col items-center gap-4 text-primary animate-in fade-in zoom-in duration-300">
-      <ng-icon name="lucideFileUp" class="h-16 w-16 stroke-[1.5]"></ng-icon>
-      <p class="text-xl font-medium">Drop your PDF here to upload</p>
-    </div>
-  </div>
-  }
-
-  <!-- Header: Strategic Asset Management -->
-  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
-    <div class="flex items-start gap-4">
-      <div class="p-3 bg-primary/10 text-primary rounded-xl">
-        <ng-icon name="lucideLibrary" class="h-8 w-8 stroke-[1.5]"></ng-icon>
-      </div>
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight text-foreground">Document Vault</h1>
-        <p class="text-muted-foreground mt-1">
-          Manage your strategic career assets and master CVs.
-        </p>
-      </div>
-    </div>
-
-    <!-- Storage Tracker -->
-    <div class="flex flex-col items-end gap-2 min-w-[200px]">
-      <div class="flex items-center justify-between w-full text-xs font-medium text-muted-foreground">
-        <span>Storage Used</span>
-        <span>{{ formatFileSize(usedStorage()) }} / 10 MB</span>
-      </div>
-      <div class="h-2 w-full bg-muted rounded-full overflow-hidden">
-        <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="storagePercentage()"
-          [class.bg-primary]="storagePercentage() < 80"
-          [class.bg-warning]="storagePercentage() >= 80 && storagePercentage() < 95"
-          [class.bg-destructive]="storagePercentage() >= 95"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Actions Bar -->
-  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
-
-    <!-- Search Hub - The "Command Center" -->
-    <div class="mb-10" (focusin)="setSearchFocus(true)" (focusout)="setSearchFocus(false)">
-      <div class="group relative w-full max-w-2xl transition-all duration-300">
-        <!-- Unified Container -->
-        <div
-          class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
-
-          <!-- Search Input Wrapper -->
-          <div class="relative flex-1 flex items-center">
-            <!-- SEARCH ICON -->
-            <div
-              class="absolute left-4 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
-              <ng-icon name="lucideLibrary" class="h-5 w-5 stroke-[1.5]"></ng-icon>
-            </div>
-
-            <!-- THE ACTUAL INPUT -->
-            <input #searchInput type="text" [ngModel]="searchTerm()"
-              (ngModelChange)="searchTerm.set($event); onSearch()" placeholder="Search documents by filename..."
-              class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
-              id="document-search">
-
-            <!-- KEYBOARD SHORTCUT HINT -->
-            <div class="absolute right-4 hidden items-center gap-1 sm:flex">
-              <kbd
-                class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 transition-opacity">
-                <span class="text-xs">⌘</span>K
-              </kbd>
-            </div>
-          </div>
-        </div>
-
-        <!-- File Type Chips (Shown on focus or when filter is active) -->
-        <div *ngIf="isSearchFocused() || activeTypeFilter()"
-          class="absolute top-full left-6 mt-3 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
-          <button (click)="filterByType(null)"
-            [class]="!activeTypeFilter() ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
-            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
-            All
-          </button>
-          <button (click)="filterByType('PDF')"
-            [class]="activeTypeFilter() === 'PDF' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
-            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
-            PDF
-          </button>
-          <button (click)="filterByType('DOCX')"
-            [class]="activeTypeFilter() === 'DOCX' ? 'bg-primary text-white border-primary' : 'bg-card text-muted-foreground border-border hover:border-primary/40'"
-            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
-            DOCX
-          </button>
-          <button (click)="filterByType('MASTER')"
-            [class]="activeTypeFilter() === 'MASTER' ? 'bg-warning text-white border-warning' : 'bg-card text-muted-foreground border-border hover:border-warning/40'"
-            class="px-3 py-1 rounded-full border text-[10px] font-bold uppercase tracking-wider transition-all shadow-sm">
-            Master
-          </button>
-        </div>
-
-        <!-- Quick Tips / Search Stats -->
-        <div *ngIf="searchTerm() || activeTypeFilter()"
-          class="mt-12 px-6 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">
-          <span>Found {{ filteredDocuments().length }} assets</span>
-          <button (click)="searchTerm.set(''); activeTypeFilter.set(null); onSearch()"
-            class="hover:text-primary transition-colors">Clear Results</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Upload Button -->
-    <div>
-      <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
-      <button hlmBtn (click)="fileInput.click()"
-        class="gap-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-        <ng-icon name="lucideFileUp" class="h-4 w-4"></ng-icon>
-        Upload New Asset
-      </button>
-    </div>
-  </div>
 
   <!-- Upload Progress -->
   @if (uploadProgress() !== null) {
-  <div class="mb-8 p-4 bg-muted/30 rounded-xl border border-border/50">
+  <div
+    class="fixed top-24 left-1/2 -translate-x-1/2 z-50 w-full max-w-md p-4 bg-card/90 backdrop-blur border border-primary/30 rounded-xl shadow-2xl animate-in fade-in slide-in-from-top-4">
     <div class="flex items-center justify-between mb-2">
-      <span class="text-sm font-medium">Uploading Document...</span>
+      <span class="text-sm font-medium text-primary flex items-center gap-2">
+        <ng-icon name="lucideLoader2" class="h-4 w-4 animate-spin"></ng-icon>
+        Scanning & Encrypting...
+      </span>
       <span class="text-sm text-muted-foreground">{{ uploadProgress() }}%</span>
     </div>
-    <div class="h-2 bg-muted rounded-full overflow-hidden">
+    <div class="h-1 bg-muted rounded-full overflow-hidden">
       <div class="h-full bg-primary transition-all duration-300" [style.width.%]="uploadProgress()"></div>
     </div>
   </div>
   }
 
-  <!-- Loading State -->
-  @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
-    <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
-    <p>Retrieving assets from vault...</p>
-  </div>
-  }
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight text-foreground mb-2">Strategic Asset Library</h1>
+      <p class="text-muted-foreground">Manage your deployed career weaponry and master blueprints.</p>
+    </div>
 
-  <!-- Error State -->
-  @if (error()) {
-  <div class="mb-8">
-    <app-error-state title="Vault Inaccessible" [message]="error()!" icon="lucideFileWarning" (retry)="loadDocuments()">
-    </app-error-state>
-  </div>
-  }
-
-  <!-- Documents Grid -->
-  @if (!isLoading() && !error()) {
-  @if (filteredDocuments().length === 0) {
-  <!-- Empty State: Neo-Professional Dropzone -->
-  <div class="flex items-center justify-center min-h-[400px]">
-    <div
-      class="group relative flex flex-col items-center justify-center p-12 rounded-[2rem] border-2 border-dashed border-border/60 bg-muted/5 hover:border-primary/40 hover:bg-primary/[0.02] transition-all duration-500 cursor-pointer"
-      (click)="fileInput.click()">
-
-      <!-- ICON -->
-      <div
-        class="mb-6 p-4 rounded-xl bg-muted/50 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all duration-500">
-        <ng-icon name="lucideFileUp" class="text-4xl stroke-[1.5]"></ng-icon>
+    <!-- Right Side: Search & Storage -->
+    <div class="flex items-center gap-6">
+      <!-- Storage Meter (Thin Elegant Line) -->
+      <div class="flex flex-col items-end gap-1.5 w-48">
+        <div
+          class="flex items-center justify-between w-full text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
+          <span>Vault Capacity</span>
+          <span>{{ formatFileSize(store.usedStorage()) }} Used</span>
+        </div>
+        <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
+          <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="store.storagePercentage()"
+            [class.bg-primary]="store.storagePercentage() < 90"
+            [class.bg-destructive]="store.storagePercentage() >= 90"></div>
+        </div>
       </div>
 
-      <div class="text-center space-y-1 mb-8">
-        <h3 class="text-lg font-bold text-foreground">
-          @if (searchTerm()) {
-          No documents found
-          } @else {
-          Ready Your Arsenal
-          }
-        </h3>
-        <p class="text-sm text-muted-foreground max-w-[240px]">
-          @if (searchTerm()) {
-          No documents found matching "{{ searchTerm() }}"
-          } @else {
-          Upload your Resumes and Cover Letters to unlock AI tailoring.
-          }
-        </p>
+      <!-- Ingestion Zone (Drop Target) -->
+      <div class="relative">
+        <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
+        <button hlmBtn (click)="fileInput.click()"
+          class="bg-card border border-border hover:border-primary/50 hover:bg-muted text-foreground gap-2 rounded-xl transition-all">
+          <ng-icon name="lucideFileUp" class="h-4 w-4"></ng-icon>
+          Ingest Asset
+        </button>
       </div>
-
-      <button hlmBtn variant="secondary"
-        class="rounded-xl px-6 h-10 border border-border/40 shadow-sm pointer-events-none">
-        Select PDF File
-      </button>
-
-      <!-- Hint -->
-      <span class="mt-4 text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50">Max size 10MB</span>
     </div>
   </div>
-  } @else {
-  <!-- Grid of Dossier Cards -->
-  <div
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-    @for (doc of filteredDocuments(); track doc.id) {
-    <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
-      (setMaster)="setMasterDocument($event)" (delete)="deleteDocument($event)" class="h-full">
-    </app-document-card>
-    }
+
+  <!-- Loading & Error -->
+  @if (store.isLoading()) {
+  <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
+    <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
+    <p>Decryption in progress...</p>
   </div>
   }
+
+  @if (store.error()) {
+  <app-error-state title="Vault Locked" [message]="store.error()!" icon="lucideFileWarning"
+    (retry)="store.loadAll()"></app-error-state>
+  }
+
+  @if (!store.isLoading() && !store.error()) {
+
+  <!-- SECTION 1: THE MASTER BLUEPRINT (Hero) -->
+  @if (masterDocument(); as master) {
+  <section class="mb-16">
+    <div class="flex items-center gap-3 mb-4 text-sm font-bold uppercase tracking-widest text-primary/80 pl-1">
+      <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
+      The Master Blueprint
+    </div>
+
+    <div
+      class="relative group w-full bg-card/40 border-2 border-dashed border-primary/30 rounded-3xl p-8 hover:bg-card/60 hover:border-primary/50 transition-all duration-500">
+      <!-- Badge -->
+      <div class="absolute -top-3 -right-3">
+        <span
+          class="flex items-center gap-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+          <ng-icon name="lucideAward" class="h-3 w-3"></ng-icon>
+          Master
+        </span>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center gap-8">
+        <!-- Icon / Visual -->
+        <div class="h-24 w-24 rounded-2xl bg-muted border border-border flex items-center justify-center shadow-inner">
+          <ng-icon name="lucideLibrary" class="h-10 w-10 text-primary"></ng-icon>
+        </div>
+
+        <div class="flex-1 space-y-2 text-center md:text-left">
+          <h2 class="text-3xl font-serif text-foreground tracking-wide">{{ master.originalFileName }}</h2>
+          <div
+            class="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-muted-foreground font-medium">
+            <span>{{ formatFileSize(master.fileSize) }}</span>
+            <span class="w-1 h-1 rounded-full bg-border"></span>
+            <span>Updated {{ formatDate(master.uploadedAt) }}</span>
+            <span class="w-1 h-1 rounded-full bg-border"></span>
+            <span class="text-primary">Source of Truth</span>
+          </div>
+          <p class="text-sm text-muted-foreground max-w-2xl mt-2">
+            This is your primary source of truth for all AI-powered optimizations. Keep this document comprehensive and
+            up-to-date.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button hlmBtn variant="ghost" class="text-muted-foreground hover:text-foreground"
+            (click)="fileInput.click()">Update
+            Master</button>
+          <button hlmBtn class="bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-lg"
+            (click)="previewDocument(master)">Open Preview</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  } @else {
+  <!-- Empty Master State -->
+  <section class="mb-16">
+    <div class="border-2 border-dashed border-border bg-muted/20 rounded-3xl p-12 text-center">
+      <h3 class="text-lg font-bold text-foreground mb-2">No Master Blueprint Set</h3>
+      <p class="text-muted-foreground text-sm mb-6">Select a document from your library to promote it to Master status,
+        or
+        upload a new one.</p>
+      <button hlmBtn variant="outline" (click)="fileInput.click()">Upload Master Candidate</button>
+    </div>
+  </section>
+  }
+
+  <!-- SECTION 2: THE DEPLOYED LIBRARY -->
+  <section>
+    <div class="flex items-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-success/80 pl-1">
+      <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
+      Deployed Asset Library
+    </div>
+
+    <!-- Filter / Sub-Nav could go here -->
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Column 1: Tailored Resumes -->
+      <div class="lg:col-span-2 space-y-6">
+        @if (tailoredResumes().length > 0) {
+        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Tailored Resumes ({{
+          tailoredResumes().length }})</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          @for (doc of tailoredResumes(); track doc.id) {
+          <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
+            (setMaster)="setMasterDocument($event)" (delete)="deleteDocument($event)"
+            (viewApplication)="viewApplication($event)">
+          </app-document-card>
+          }
+        </div>
+        } @else if (!store.isLoading()) {
+        <!-- Ghost Card -->
+        <div
+          class="h-full min-h-[140px] flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-border/60 bg-muted/10 text-center hover:bg-muted/30 hover:border-border transition-all cursor-pointer group">
+          <div
+            class="h-10 w-10 rounded-full bg-muted border border-border flex items-center justify-center mb-3 group-hover:scale-110 group-hover:border-primary/30 transition-all shadow-sm">
+            <ng-icon name="lucideFileUp"
+              class="text-muted-foreground group-hover:text-primary transition-colors"></ng-icon>
+          </div>
+          <p class="text-muted-foreground text-xs max-w-[200px] leading-relaxed">
+            No assets deployed yet. Generate a tailored resume in the <span
+              class="text-primary font-medium hover:underline">Application Workstation</span> to see it here.
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- Column 2: Cover Letters / Other -->
+      <div class="space-y-6">
+        @if (coverLetters().length > 0) {
+        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Cover Letters ({{
+          coverLetters().length }})</h3>
+        <div class="grid grid-cols-1 gap-4">
+          @for (doc of coverLetters(); track doc.id) {
+          <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
+            (setMaster)="setMasterDocument($event)" (delete)="deleteDocument($event)"
+            (viewApplication)="viewApplication($event)">
+          </app-document-card>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- EMPTY STATE (overall) -->
+  @if (store.filteredDocuments().length === 0) {
+  <div class="text-center py-20">
+    <p class="text-muted-foreground">The vault is complete empty.</p>
+    <button class="text-primary hover:underline mt-2" (click)="fileInput.click()">Ingest your first asset</button>
+  </div>
+  }
+  }
+
+  <!-- Drag Overlay -->
+  @if (isDragging()) {
+  <div
+    class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none animate-in fade-in duration-200">
+    <div class="bg-card border border-primary/50 p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
+      <ng-icon name="lucideFileUp" class="h-12 w-12 text-primary"></ng-icon>
+      <p class="text-xl font-bold text-foreground">Drop to Ingest</p>
+    </div>
+  </div>
   }
 </div>

@@ -41,7 +41,7 @@ import { SkillSelectorComponent } from '../../../../shared/components/skill-sele
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup;
   isEditMode = signal(false);
-  companyId = signal<number | null>(null);
+  companyId = signal<string | null>(null);
   isLoading = signal(false);
   isSubmitting = signal(false);
   error = signal<string | null>(null);
@@ -88,7 +88,7 @@ export class CompanyFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
-      this.companyId.set(+id);
+      this.companyId.set(id);
       this.loadCompany();
     }
   }
@@ -181,7 +181,7 @@ export class CompanyFormComponent implements OnInit {
     if (formValue.hrContactName) {
       // If editing, try to preserve the ID and role of the first contact
       const existingPrimary = this.existingContacts[0];
-      const contactId = this.isEditMode() && existingPrimary ? existingPrimary.id : 0;
+      const contactId = this.isEditMode() && existingPrimary ? existingPrimary.id : '0';
       const contactRole = this.isEditMode() && existingPrimary ? existingPrimary.role : 'Recruiter';
 
       const newPrimaryContact: CompanyContact = {

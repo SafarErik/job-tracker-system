@@ -23,4 +23,5 @@ export const environment = {
   // Set via Azure Static Web App settings or VITE_GOOGLE_CLIENT_ID
   // Falls back to empty string - Google auth will be disabled if missing
   googleClientId: getRequiredEnvVar('GOOGLE_CLIENT_ID', ''),
+  logoDevToken: getRequiredEnvVar('LOGO_DEV_TOKEN', ''),
 };

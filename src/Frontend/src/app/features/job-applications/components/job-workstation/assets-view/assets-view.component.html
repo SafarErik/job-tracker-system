@@ -1,0 +1,198 @@
+<div class="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+    <!-- Sub-Navigation (Pill Toggle) -->
+    <div class="flex justify-center">
+        <div class="p-1 bg-muted border border-border rounded-xl flex gap-1">
+            <button (click)="setMode('resume')" [class.bg-background]="mode() === 'resume'"
+                [class.text-foreground]="mode() === 'resume'" [class.text-muted-foreground]="mode() !== 'resume'"
+                class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
+                <ng-icon name="lucideFileText" class="text-sm"></ng-icon>
+                Resume
+            </button>
+            <button (click)="setMode('cover-letter')" [class.bg-background]="mode() === 'cover-letter'"
+                [class.text-foreground]="mode() === 'cover-letter'"
+                [class.text-muted-foreground]="mode() !== 'cover-letter'"
+                class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
+                <ng-icon name="lucideMail" class="text-sm"></ng-icon>
+                Cover Letter
+            </button>
+        </div>
+    </div>
+
+    @if (mode() === 'resume') {
+    <!-- Resume Mode: The Document Forge (VS Code Style) -->
+    <div
+        class="flex gap-1 h-[calc(100vh-280px)] bg-card border border-border rounded-lg overflow-hidden relative shadow-2xl">
+
+        <!-- Sidebar Toggle (Vertical Strip) -->
+        <div class="w-12 border-r border-border bg-muted/30 flex flex-col items-center py-4 gap-4 z-20">
+            <button (click)="toggleSidebar()" [class.text-primary]="isSidebarOpen()"
+                class="p-2 hover:bg-muted rounded text-muted-foreground transition-colors">
+                <ng-icon name="lucideWand2" class="text-xl"></ng-icon>
+            </button>
+            <div class="flex-1"></div>
+            <button class="p-2 hover:bg-muted rounded text-muted-foreground transition-colors">
+                <ng-icon name="lucideInfo" class="text-xl"></ng-icon>
+            </button>
+        </div>
+
+        <!-- Left Column: Master Source (Read Only) -->
+        <div class="flex-1 flex flex-col min-w-0 border-r border-border bg-card text-card-foreground">
+            <div class="px-4 py-2 border-b border-border bg-muted flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold opacity-60">
+                    <ng-icon name="lucideLock"></ng-icon>
+                    MASTER.md
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 flex">
+                <!-- Line Numbers -->
+                <div
+                    class="w-10 py-4 bg-card border-r border-border flex flex-col items-center select-none text-muted-foreground text-[11px] font-mono shrink-0">
+                    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track i) {
+                    <div class="h-5 leading-5">{{ i }}</div>
+                    }
+                </div>
+                <div class="flex-1 p-4 font-mono text-sm leading-5 whitespace-pre-wrap opacity-60 italic">
+                    @if (store.selectedApplication()?.documentName) {
+                    {{ store.selectedApplication()?.documentName }} linked as source.
+                    } @else if (documentStore.masterResume()) {
+                    Using global Master Resume source.
+                    }
+
+                    The original source content is protected.
+                    The AI Forge uses this as the seed for
+                    targeted generation.
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Tailored Output (Live Diff Style) -->
+        <div class="flex-1 flex flex-col min-w-0 bg-card text-card-foreground relative">
+            <div class="px-4 py-2 border-b border-border bg-muted flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-primary">
+                    <ng-icon name="lucideSparkles"></ng-icon>
+                    TARGETED_OUTPUT.md
+                </div>
+                <div class="flex items-center gap-2">
+                    <button (click)="tailorResume()" [disabled]="store.isProcessing()"
+                        class="px-3 py-1 bg-primary/20 hover:bg-primary/30 border border-primary/40 text-primary text-[10px] font-bold uppercase rounded flex items-center gap-2">
+                        @if (store.isProcessing()) {
+                        <ng-icon name="lucideLoader2" class="animate-spin"></ng-icon>
+                        } @else {
+                        <ng-icon name="lucideSparkles"></ng-icon>
+                        }
+                        Regenerate
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 flex">
+                <div
+                    class="w-10 py-4 bg-card border-r border-border flex flex-col items-center select-none text-muted-foreground text-[11px] font-mono shrink-0">
+                    @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]; track i) {
+                    <div class="h-5 leading-5">{{ i }}</div>
+                    }
+                </div>
+                <div class="flex-1 font-mono text-sm leading-5">
+                    @if (store.tailoredResume()) {
+                    <div class="py-4">
+                        <!-- Mock Diff Highlighting -->
+                        <div class="px-4 bg-success/10 border-l-2 border-success text-success-foreground py-0.5">+ New
+                            summary aligned with {{ store.selectedApplication()?.position }}...</div>
+                        <div class="px-4 py-0.5 mt-2">{{ store.tailoredResume() }}</div>
+                    </div>
+                    } @else {
+                    <div class="h-full flex flex-col items-center justify-center text-center opacity-40 p-8">
+                        <ng-icon name="lucideSparkles" class="text-4xl mb-4"></ng-icon>
+                        <p class="text-xs uppercase tracking-widest">Awaiting Transmission</p>
+                        <p class="text-[10px] mt-2">Initialize "Tailor with AI" to forge content.</p>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- AI Suggestion Sidebar -->
+            <div [class.translate-x-0]="isSidebarOpen()" [class.translate-x-full]="!isSidebarOpen()"
+                class="absolute right-0 top-0 bottom-0 w-80 bg-muted border-l border-border z-30 transition-transform duration-300 shadow-2xl flex flex-col">
+                <div class="p-4 border-b border-border flex items-center justify-between">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-primary">AI Suggestions</h4>
+                    <button (click)="toggleSidebar()" class="text-muted-foreground hover:text-foreground">
+                        <ng-icon name="lucideChevronRight"></ng-icon>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                    @for (sug of suggestions(); track sug.id) {
+                    <div (click)="selectSuggestion(sug)"
+                        class="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all cursor-pointer group">
+                        <h5 class="text-xs font-bold text-foreground mb-2 flex items-center justify-between">
+                            {{ sug.title }}
+                            <ng-icon name="lucideWand2"
+                                class="opacity-0 group-hover:opacity-100 transition-opacity text-primary"></ng-icon>
+                        </h5>
+                        <p class="text-[11px] text-muted-foreground leading-relaxed">{{ sug.content }}</p>
+                    </div>
+                    }
+                </div>
+                @if (selectedSuggestion()) {
+                <div class="p-4 bg-primary/10 border-t border-primary/20">
+                    <p class="text-[10px] font-bold text-primary uppercase mb-1">Applied Strategy:</p>
+                    <p class="text-[10px] text-muted-foreground leading-tight">{{ selectedSuggestion() }}</p>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    } @else {
+    <!-- Cover Letter Mode: Focused Editor -->
+    <div
+        class="max-w-3xl mx-auto w-full h-[calc(100vh-280px)] flex flex-col bg-card border border-border rounded-[40px] overflow-hidden">
+        <div class="px-8 py-5 border-b border-border bg-muted/20 flex items-center justify-between">
+            <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">Tailored Cover
+                Letter</h3>
+            @if (store.selectedApplication()?.generatedCoverLetter) {
+            <div class="flex gap-2">
+                <button (click)="copyContent(store.selectedApplication()?.generatedCoverLetter)"
+                    class="p-2 bg-muted hover:bg-muted/80 text-muted-foreground rounded-xl transition-colors tooltip"
+                    title="Copy Text">
+                    <ng-icon name="lucideCopy"></ng-icon>
+                </button>
+                <button (click)="downloadAsPdf(store.selectedApplication()?.generatedCoverLetter, 'cover_letter')"
+                    class="px-4 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-[10px] font-bold uppercase rounded-xl transition-colors">Download
+                    PDF</button>
+            </div>
+            }
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-12 scrollbar-thin scrollbar-thumb-border">
+            @if (store.selectedApplication()?.generatedCoverLetter) {
+            <div
+                class="max-w-2xl mx-auto font-mono text-sm text-foreground/80 leading-relaxed outline-none whitespace-pre-wrap">
+                {{ store.selectedApplication()?.generatedCoverLetter }}
+            </div>
+            } @else {
+            <div class="h-full flex flex-col items-center justify-center text-center">
+                <div
+                    class="w-16 h-16 rounded-2xl bg-muted border border-border flex items-center justify-center mb-6 text-muted-foreground">
+                    <ng-icon name="lucideMail" class="text-3xl"></ng-icon>
+                </div>
+                <h4 class="text-lg font-sans font-bold text-foreground mb-2">No Cover Letter Found</h4>
+                <p class="text-sm text-muted-foreground max-w-xs mb-8">Let the AI Forge draft a professional,
+                    position-aware
+                    cover letter for you.</p>
+                <button (click)="generateCoverLetter()" [disabled]="store.isProcessing()"
+                    class="px-8 py-3 bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all flex items-center gap-2 group">
+                    @if (store.isProcessing()) {
+                    <ng-icon name="lucideLoader2" class="animate-spin text-xl"></ng-icon>
+                    Forging Content...
+                    } @else {
+                    <ng-icon name="lucideSparkles" class="text-xl group-hover:rotate-12 transition-transform"></ng-icon>
+                    Draft with AI Intelligence
+                    }
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

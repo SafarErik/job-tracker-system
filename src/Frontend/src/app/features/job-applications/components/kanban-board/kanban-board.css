@@ -17,7 +17,19 @@
     @apply transition-transform duration-200 ease-out;
 }
 
-/* Smooth reordering animation */
-.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
-    @apply transition-transform duration-200;
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+    width: 6px;
+    background: transparent;
+    /* Track is invisible */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-700/50 hover:bg-slate-600 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
 }

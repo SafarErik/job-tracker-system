@@ -1,111 +1,177 @@
-<div class="container mx-auto px-4 py-8 min-h-screen">
-  <!-- Header -->
-  <div class="mb-8">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="p-3 bg-primary/10 text-primary rounded-xl">
-          <ng-icon name="lucideBuilding2" class="h-8 w-8 stroke-[1.5]"></ng-icon>
-        </div>
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight text-foreground">Companies Database</h1>
-          <p class="text-muted-foreground mt-1">Manage and track all companies you've applied to</p>
-        </div>
-      </div>
-      <button hlmBtn size="lg" (click)="addNewCompany()" type="button"
-        class="gap-2 rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-        <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
-        Add Company
-      </button>
-    </div>
-  </div>
+<div class="min-h-screen bg-background text-foreground pb-20 font-sans selection:bg-primary/20 overflow-x-hidden">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-12">
 
-  <!-- Search Hub - The "Command Center" -->
-  <div class="mb-10">
-    <div class="group relative w-full max-w-2xl transition-all duration-300">
-      <!-- Unified Container -->
-      <div
-        class="relative flex items-center p-1.5 rounded-[2rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-sm hover:shadow-md focus-within:shadow-lg focus-within:border-primary/50 transition-all duration-300">
-
-        <!-- Search Input Wrapper -->
-        <div class="relative flex-1 flex items-center">
-          <!-- SEARCH ICON -->
-          <div
-            class="absolute left-4 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
-            <ng-icon name="lucideSearch" class="h-5 w-5 stroke-[1.5]"></ng-icon>
+    <!-- Header: Strategic Asset Registry -->
+    <div class="space-y-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 leading-none">
+        <div class="space-y-3">
+          <!-- Breadcrumb -->
+          <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            <span>Central Intelligence</span>
+            <span class="text-border">/</span>
+            <span class="text-primary/80">Asset Registry</span>
           </div>
 
-          <!-- THE ACTUAL INPUT -->
-          <input #searchInput type="text" [value]="searchTerm()" (input)="onSearchChange($event)"
-            placeholder="Search companies by name, website, or industry..."
-            class="h-12 w-full rounded-2xl bg-transparent px-12 text-sm font-medium focus:outline-none placeholder:text-muted-foreground/60"
-            id="company-search">
-
-          <!-- KEYBOARD SHORTCUT HINT -->
-          <div class="absolute right-4 hidden items-center gap-1 sm:flex">
-            <kbd
-              class="pointer-events-none flex h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 group-focus-within:opacity-0 transition-opacity">
-              <span class="text-xs">⌘</span>K
-            </kbd>
-          </div>
+          <h1 class="text-4xl md:text-5xl font-serif text-foreground tracking-tight">Companies Database</h1>
         </div>
+
+        <button hlmBtn size="lg" (click)="addSheetComp.open()"
+          class="gap-3 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-black uppercase tracking-widest px-8 h-14 shadow-lg dark:shadow-primary/20 border-0 transition-all hover:scale-[1.02]">
+          <ng-icon name="lucidePlus" class="h-5 w-5"></ng-icon>
+          Initialize Asset
+        </button>
       </div>
-
-      <!-- Quick Tips / Search Stats -->
-      @if (searchTerm()) {
-      <div
-        class="mt-3 px-6 flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50 animate-in fade-in slide-in-from-top-2 duration-300">
-        <span>Found {{ filteredCompanies.length }} matching companies</span>
-        <button (click)="searchTerm.set('')" class="hover:text-primary transition-colors">Clear Results</button>
-      </div>
-      }
     </div>
-  </div>
 
-  <!-- Loading State -->
-  @if (isLoading()) {
-  <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
-    <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
-    <p>Retrieving company registry...</p>
-  </div>
-  }
-
-  <!-- Error State -->
-  @if (error()) {
-  <app-error-state title="Connection Lost" [message]="error()!" icon="lucideBuilding2" (retry)="retry()">
-  </app-error-state>
-  }
-
-  <!-- Companies Table -->
-  @if (!isLoading() && !error()) {
-  <div>
-    @if (filteredCompanies.length === 0) {
-    <div class="flex flex-col items-center justify-center py-16 text-muted-foreground">
-      <svg class="h-16 w-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-      <h3 class="text-lg font-semibold text-foreground mb-1">No companies found</h3>
-      <p>
-        @if (searchTerm()) {
-        Try adjusting your search criteria
-        } @else {
-        Start adding companies from your job applications
-        }
-      </p>
-    </div>
-    } @else {
-    <!-- Company Grid -->
+    <!-- Metrics Deck: Intelligence Yield -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (company of filteredCompanies; track company.id) {
-      <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+      <!-- Total Network -->
+      <div
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-primary/30 transition-all leading-none">
+        <div class="space-y-3">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Asset Network</p>
+          <h4 class="text-4xl font-serif text-foreground">{{ totalNetwork() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Identified Entities</p>
+        </div>
+        <div
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-primary group-hover:border-primary/20 transition-all shadow-sm">
+          <ng-icon name="lucideBuilding2" class="h-8 w-8"></ng-icon>
+        </div>
+      </div>
+
+      <!-- Active Pursuits -->
+      <div
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-success/30 transition-all leading-none relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-success/5 blur-3xl rounded-full"></div>
+        <div class="space-y-3 relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Active Pursuits</p>
+          <h4 class="text-4xl font-serif text-success">{{ activePursuits() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Ongoing Infiltrations</p>
+        </div>
+        <div
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-success group-hover:border-success/20 transition-all shadow-sm">
+          <ng-icon name="lucideActivity" class="h-8 w-8"></ng-icon>
+        </div>
+      </div>
+
+      <!-- Intelligence Yield -->
+      <div
+        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-info/30 transition-all leading-none relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-info/5 blur-3xl rounded-full"></div>
+        <div class="space-y-3 relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Intelligence Yield</p>
+          <h4 class="text-4xl font-serif text-info">{{ responseRate() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Sector Success rate</p>
+        </div>
+        <div
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-info group-hover:border-info/20 transition-all shadow-sm">
+          <ng-icon name="lucideTrendingUp" class="h-8 w-8"></ng-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Hub: Command Center -->
+    <div class="space-y-6">
+      <div class="max-w-3xl">
+        <div class="relative group">
+          <div
+            class="absolute -inset-1 bg-linear-to-r from-primary/20 to-info/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500">
+          </div>
+
+          <div
+            class="relative flex items-center p-2 rounded-[2.5rem] border border-border bg-card/60 backdrop-blur-xl transition-all duration-300 focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/20 shadow-xl">
+            <!-- Search Icon -->
+            <div
+              class="absolute left-6 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
+              <ng-icon name="lucideSearch" class="h-6 w-6"></ng-icon>
+            </div>
+
+            <!-- Input -->
+            <input #searchInput type="text" [value]="searchTerm()" (input)="onSearchChange($event)"
+              placeholder="Query Asset Registry (Name, Industry, Domain)..."
+              class="h-14 w-full rounded-2xl bg-transparent pl-16 pr-24 text-sm font-medium focus:outline-none text-foreground placeholder:text-muted-foreground placeholder:font-mono placeholder:uppercase placeholder:tracking-widest"
+              id="company-search">
+
+            <!-- Terminal Hint -->
+            <div class="absolute right-6 hidden md:flex items-center gap-2">
+              <span class="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest">Shortcut:</span>
+              <kbd
+                class="flex h-7 px-2 items-center gap-1 rounded-lg border border-border bg-muted text-[10px] font-mono text-muted-foreground shadow-sm">
+                <span>⌘</span>K
+              </kbd>
+            </div>
+          </div>
+
+          @if (searchTerm()) {
+          <div
+            class="mt-4 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-2 duration-500">
+            <span class="text-muted-foreground">Matches Found: <span class="text-foreground">{{
+                filteredCompanies().length
+                }}</span></span>
+            <button (click)="searchTerm.set('')" class="text-primary hover:text-primary/80 transition-colors">Abort
+              Query</button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid: Data Visualization -->
+    <div class="space-y-12">
+      <!-- Loading Registry -->
+      @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center py-32 gap-6 text-muted-foreground">
+        <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-primary"></ng-icon>
+        <p class="text-[11px] font-black uppercase tracking-[0.3em] animate-pulse">Establishing Secure Connection...</p>
+      </div>
+      }
+
+      <!-- Error State -->
+      @if (error()) {
+      <div class="py-20 max-w-lg mx-auto">
+        <app-error-state title="Connection Segfault" [message]="error()!" icon="lucideBuilding2" (retry)="retry()">
+        </app-error-state>
+      </div>
+      }
+
+      @if (!isLoading() && !error()) {
+      <div class="space-y-12">
+        @if (filteredCompanies().length === 0) {
+        <div
+          class="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed border-border bg-muted/10 text-muted-foreground">
+          <ng-icon name="lucideAlertTriangle" class="h-12 w-12 mb-6 text-muted-foreground/30"></ng-icon>
+          <h3 class="text-lg font-black uppercase tracking-widest text-muted-foreground/50 mb-2">No Signal Detected</h3>
+          <p class="text-sm font-medium">
+            @if (searchTerm()) {
+            Zero matches for current query. Refine parameters.
+            } @else {
+            Asset registry is empty. Initialize new companies to begin.
+            }
+          </p>
+        </div>
+        } @else {
+        <!-- Asset Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          @for (company of filteredCompanies(); track company.id) {
+          <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+          }
+        </div>
+
+        <!-- Registry Footer -->
+        <div class="flex items-center justify-center py-10 border-t border-border">
+          <div
+            class="px-6 py-2 rounded-full bg-card/50 border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+            Catalogued Assets: <span class="text-foreground">{{ filteredCompanies().length }}</span> / Total Registry:
+            <span class="text-foreground">{{ companies().length }}</span>
+          </div>
+        </div>
+        }
+      </div>
       }
     </div>
 
-    <!-- Results Count -->
-    <div class="text-center text-sm text-muted-foreground mt-6">
-      Showing {{ filteredCompanies.length }} of {{ companies().length }} companies
-    </div>
-    }
   </div>
-  }
 </div>
+
+<!-- Sheet Integration -->
+<app-company-add-sheet #addSheetComp />

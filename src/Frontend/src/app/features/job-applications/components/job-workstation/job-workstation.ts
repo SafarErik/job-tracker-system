@@ -24,6 +24,7 @@ import { JobPriority } from '../../models/job-priority.enum';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
 import { InterviewViewComponent } from './interview-view/interview-view.component';
 import { DealViewComponent } from './deal-view/deal-view.component';
+import { TimelineViewComponent } from './timeline-view/timeline-view.component';
 import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
 import { UiStateService } from '../../../../core/services/ui-state.service';
 
@@ -104,6 +105,7 @@ interface GapAnalysisItem {
     AssetsViewComponent,
     InterviewViewComponent,
     DealViewComponent,
+    TimelineViewComponent,
     JobSettingsSheetComponent
   ],
   providers: [
@@ -161,7 +163,7 @@ export class JobWorkstationComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
 
   // Workstation State
-  currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal'>('strategy');
+  currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'>('strategy');
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
   manualPasteText = signal('');
@@ -187,6 +189,11 @@ export class JobWorkstationComponent implements OnInit {
     } else if (phase === 'deal') {
       return [
         { id: 'analyze-offer', label: 'Analyze Offer', icon: 'lucideGavel', action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal') }
+      ];
+    } else if (phase === 'timeline') {
+      return [
+        { id: 'sync', label: 'Sync Calendar', icon: 'lucideRefreshCw', action: () => this.notificationService.info('Syncing mission roadmap...', 'Timeline') },
+        { id: 'add-event', label: 'Add Mission Event', icon: 'lucidePlus', action: () => this.notificationService.info('Opening tactical event form...', 'Timeline') }
       ];
     } else {
       return [
@@ -253,7 +260,8 @@ export class JobWorkstationComponent implements OnInit {
     Strategy: 'strategy' as const,
     Assets: 'assets' as const,
     Interview: 'interview' as const,
-    Deal: 'deal' as const
+    Deal: 'deal' as const,
+    Timeline: 'timeline' as const
   };
 
   readonly JobStatus = JobApplicationStatus;
@@ -265,6 +273,7 @@ export class JobWorkstationComponent implements OnInit {
     { id: 'assets' as const, label: 'Assets', icon: 'lucideFolderKanban' },
     { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
     { id: 'deal' as const, label: 'The Deal', icon: 'lucideGavel' },
+    { id: 'timeline' as const, label: 'Timeline', icon: 'lucideCalendar' },
   ];
 
   simulateImprovement(skill: string): void {
@@ -304,7 +313,7 @@ export class JobWorkstationComponent implements OnInit {
   }
 
   // Helpers
-  setPhase(phase: 'strategy' | 'assets' | 'interview' | 'deal'): void {
+  setPhase(phase: 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'): void {
     this.currentPhase.set(phase);
   }
 

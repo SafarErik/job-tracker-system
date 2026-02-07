@@ -113,8 +113,15 @@ export class CompanyNotesComponent {
     });
   }
 
+  private generationCounter = 0;
+  private pendingResolvers: (() => void)[] = [];
+
   async runTypewriter(b: IntelligenceBriefing): Promise<void> {
-    // Clear any existing intervals to prevent memory leak
+    // Increment generation to cancel any previous runs
+    this.generationCounter++;
+    const currentGeneration = this.generationCounter;
+
+    // Clear any existing intervals and resolve pending promises
     this.clearAllIntervals();
 
     this.isScanning.set(true);
@@ -123,26 +130,36 @@ export class CompanyNotesComponent {
     this.displayedRisksIntel.set('');
 
     // Safely iterate over mission context
-    await this.typewriter('mission', b.mission);
+    await this.typewriter('mission', b.mission, undefined, currentGeneration);
+    if (currentGeneration !== this.generationCounter) return;
 
     // Safely iterate over each fit point
     if (b.fit && Array.isArray(b.fit)) {
       for (let i = 0; i < b.fit.length; i++) {
-        await this.typewriter('fit', b.fit[i], i);
+        await this.typewriter('fit', b.fit[i], i, currentGeneration);
+        if (currentGeneration !== this.generationCounter) return;
       }
     }
 
     // Safely iterate over risks
-    await this.typewriter('risks', b.risks);
+    await this.typewriter('risks', b.risks, undefined, currentGeneration);
+    if (currentGeneration !== this.generationCounter) return;
 
     this.isScanning.set(false);
   }
 
-  private typewriter(section: 'mission' | 'fit' | 'risks', text: string, index?: number): Promise<void> {
+  private typewriter(section: 'mission' | 'fit' | 'risks', text: string, index?: number, generation?: number): Promise<void> {
     return new Promise((resolve) => {
+      this.pendingResolvers.push(resolve);
       let current = '';
       const speed = 15;
       const interval = setInterval(() => {
+        // Bail if generation mismatch
+        if (generation !== undefined && generation !== this.generationCounter) {
+          this.cleanupInterval(interval, resolve);
+          return;
+        }
+
         if (current.length < text.length) {
           current += text.charAt(current.length);
           if (section === 'mission') this.displayedMissionContext.set(current);
@@ -155,18 +172,27 @@ export class CompanyNotesComponent {
             });
           }
         } else {
-          clearInterval(interval);
-          this.removeInterval(interval);
-          resolve();
+          this.cleanupInterval(interval, resolve);
         }
       }, speed);
       this.activeIntervals.push(interval);
     });
   }
 
+  private cleanupInterval(interval: ReturnType<typeof setInterval>, resolve: () => void): void {
+    clearInterval(interval);
+    this.removeInterval(interval);
+    const resolverIndex = this.pendingResolvers.indexOf(resolve);
+    if (resolverIndex > -1) this.pendingResolvers.splice(resolverIndex, 1);
+    resolve();
+  }
+
   private clearAllIntervals(): void {
     this.activeIntervals.forEach(id => clearInterval(id));
     this.activeIntervals = [];
+    // Resolve all pending promises to prevent hanging
+    this.pendingResolvers.forEach(resolve => resolve());
+    this.pendingResolvers = [];
   }
 
   private removeInterval(interval: ReturnType<typeof setInterval>): void {

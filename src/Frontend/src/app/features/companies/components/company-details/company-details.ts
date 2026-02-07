@@ -434,10 +434,12 @@ export class CompanyDetailsComponent implements OnInit {
 
   formatDate(dateString: string | Date | undefined): string | null {
     if (!dateString) return null;
-    return new Date(dateString).toLocaleTimeString('en-US', {
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hour12: false
     });
   }

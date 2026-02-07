@@ -3,16 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace JobTracker.Application.DTOs.Notifications;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum NotificationType
 {
-    [JsonPropertyName("ai")]
     Ai,
-    [JsonPropertyName("company")]
     Company,
-    [JsonPropertyName("reminder")]
     Reminder,
-    [JsonPropertyName("system")]
     System
 }
 

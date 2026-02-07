@@ -116,7 +116,9 @@ export class CompanyIntelComponent implements OnDestroy {
 
   getReliabilityLabel(item: CompanyNews): string {
     const s = item.source.toLowerCase();
-    if (s.includes('official') || s.includes('pr') || s.includes('wire')) return 'Confirmed';
+    // More precise check: word boundary for 'pr', or explicit phrases
+    const isPR = /\bpr\b/.test(s) || s.includes('press release') || s.includes('pr newswire');
+    if (s.includes('official') || isPR || s.includes('wire')) return 'Confirmed';
     return 'Speculation';
   }
 

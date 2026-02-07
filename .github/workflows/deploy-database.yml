@@ -1,0 +1,31 @@
+name: Deploy Database Changes
+
+on:
+  push:
+    branches:
+      - main # Only on main
+    paths:
+      - 'src/Backend/JobTracker.Infrastructure/Migrations/**' # only when there are new migrations
+
+jobs:
+  apply-migrations:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Install EF Core Tool
+      run: dotnet tool install --global dotnet-ef
+
+    - name: Build Migration Bundle
+      run: |
+        dotnet ef migrations bundle --project src/Backend/JobTracker.Infrastructure --startup-project src/Backend/JobTracker.API --self-contained -r linux-x64 -o efbundle
+
+    - name: Apply Migrations
+      run: |
+        ./efbundle --connection "${{ secrets.DATABASE_URL }}"

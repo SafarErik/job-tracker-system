@@ -23,6 +23,7 @@ import { JobTypePipe } from '../../pipes/job-type.pipe';
 import { JobPriority } from '../../models/job-priority.enum';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
 import { InterviewViewComponent } from './interview-view/interview-view.component';
+import { DealViewComponent } from './deal-view/deal-view.component';
 import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
 import { UiStateService } from '../../../../core/services/ui-state.service';
 
@@ -102,6 +103,7 @@ interface GapAnalysisItem {
     JobTypePipe,
     AssetsViewComponent,
     InterviewViewComponent,
+    DealViewComponent,
     JobSettingsSheetComponent
   ],
   providers: [
@@ -159,7 +161,7 @@ export class JobWorkstationComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
 
   // Workstation State
-  currentPhase = signal<'strategy' | 'assets' | 'interview'>('strategy');
+  currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal'>('strategy');
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
   manualPasteText = signal('');
@@ -181,6 +183,10 @@ export class JobWorkstationComponent implements OnInit {
     } else if (phase === 'assets') {
       return [
         { id: 'tailor', label: 'Forge Document', icon: 'lucideSparkles', action: () => this.generateAssets() }
+      ];
+    } else if (phase === 'deal') {
+      return [
+        { id: 'analyze-offer', label: 'Analyze Offer', icon: 'lucideGavel', action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal') }
       ];
     } else {
       return [
@@ -246,7 +252,8 @@ export class JobWorkstationComponent implements OnInit {
   readonly Phase = {
     Strategy: 'strategy' as const,
     Assets: 'assets' as const,
-    Interview: 'interview' as const
+    Interview: 'interview' as const,
+    Deal: 'deal' as const
   };
 
   readonly JobStatus = JobApplicationStatus;
@@ -257,6 +264,7 @@ export class JobWorkstationComponent implements OnInit {
     { id: 'strategy' as const, label: 'Strategy', icon: 'lucideSwords' },
     { id: 'assets' as const, label: 'Assets', icon: 'lucideFolderKanban' },
     { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
+    { id: 'deal' as const, label: 'The Deal', icon: 'lucideGavel' },
   ];
 
   simulateImprovement(skill: string): void {
@@ -296,7 +304,7 @@ export class JobWorkstationComponent implements OnInit {
   }
 
   // Helpers
-  setPhase(phase: 'strategy' | 'assets' | 'interview'): void {
+  setPhase(phase: 'strategy' | 'assets' | 'interview' | 'deal'): void {
     this.currentPhase.set(phase);
   }
 

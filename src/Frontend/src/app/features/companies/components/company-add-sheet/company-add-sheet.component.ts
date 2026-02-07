@@ -14,6 +14,7 @@ import { CompanyService } from '../../services/company.service';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { SkillSelectorComponent } from '../../../../shared/components/skill-selector/skill-selector';
 import { CreateCompany } from '../../models/company.model';
+import { CompanyContact } from '../../../../core/models/company-contact.model';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -91,43 +92,49 @@ export class CompanyAddSheetComponent {
      * Mock "Fetch Data" functionality
      */
     async scanDomain() {
-        if (!this.scoutUrl()) return;
+        if (!this.scoutUrl() || this.isScanning()) return;
 
         this.isScanning.set(true);
 
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Mock Data based on domain
-        const domain = this.scoutUrl().toLowerCase();
-        let mockData: any = {
-            name: '',
-            industry: 'Technology',
-            techStack: ['React', 'TypeScript']
-        };
+            // Mock Data based on domain
+            const domain = this.scoutUrl().toLowerCase();
+            let mockData: any = {
+                name: '',
+                industry: 'Technology',
+                techStack: ['React', 'TypeScript']
+            };
 
-        if (domain.includes('google')) {
-            mockData = { name: 'Google', industry: 'Big Tech', techStack: ['Angular', 'Go', 'Python', 'Kubernetes'] };
-        } else if (domain.includes('netflix')) {
-            mockData = { name: 'Netflix', industry: 'Streaming', techStack: ['Java', 'React', 'Node.js', 'AWS'] };
-        } else {
-            // Generic fallback derived from domain
-            const name = domain.split('.')[0];
-            mockData.name = name.charAt(0).toUpperCase() + name.slice(1);
+            if (domain.includes('google')) {
+                mockData = { name: 'Google', industry: 'Big Tech', techStack: ['Angular', 'Go', 'Python', 'Kubernetes'] };
+            } else if (domain.includes('netflix')) {
+                mockData = { name: 'Netflix', industry: 'Streaming', techStack: ['Java', 'React', 'Node.js', 'AWS'] };
+            } else {
+                // Generic fallback derived from domain
+                const name = domain.split('.')[0];
+                mockData.name = name.charAt(0).toUpperCase() + name.slice(1);
+            }
+
+            // Auto-fill form
+            this.form.patchValue({
+                name: mockData.name,
+                website: this.scoutUrl(),
+                industry: mockData.industry
+            });
+
+            // Merge tech stack
+            this.techStack.update(stack => [...new Set([...stack, ...mockData.techStack])]);
+
+            toast.success('Intelligence Gathered', { description: `Data retrieved for ${mockData.name}` });
+        } catch (error) {
+            console.error('Scan failed:', error);
+            toast.error('Search Failed', { description: 'Target intelligence could not be retrieved.' });
+        } finally {
+            this.isScanning.set(false);
         }
-
-        // Auto-fill form
-        this.form.patchValue({
-            name: mockData.name,
-            website: this.scoutUrl(),
-            industry: mockData.industry
-        });
-
-        // Merge tech stack
-        this.techStack.update(stack => [...new Set([...stack, ...mockData.techStack])]);
-
-        this.isScanning.set(false);
-        toast.success('Intelligence Gathered', { description: `Data retrieved for ${mockData.name}` });
     }
 
     setPriority(p: 'Tier1' | 'Tier2' | 'Tier3') {
@@ -172,12 +179,12 @@ export class CompanyAddSheetComponent {
         // Add contact if provided
         if (formVal.hrContactName) {
             payload.contacts?.push({
-                // id field omitted for new contact
+                id: '0', // sentinel for new contact
                 name: formVal.hrContactName,
                 email: formVal.hrContactEmail || '',
                 linkedIn: formVal.hrContactLinkedIn || '',
                 role: 'Recruiter'
-            });
+            } as CompanyContact);
         }
 
         this.companyService.createCompany(payload).subscribe({

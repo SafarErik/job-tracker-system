@@ -62,6 +62,7 @@ export class CompanyDetailsComponent implements OnInit {
   // AI Briefing State
   intelligenceBriefing = signal<IntelligenceBriefing | null>(null);
   briefingLoading = signal(false);
+  private latestBriefingRequestId = 0;
 
   // Tactical Timeline State
   manualEvents = signal<TacticalEvent[]>([]); // For manual adds in this session
@@ -196,17 +197,24 @@ export class CompanyDetailsComponent implements OnInit {
     const current = this.company();
     if (!current) return;
 
+    const requestId = ++this.latestBriefingRequestId;
     this.briefingLoading.set(true);
     this.intelligenceService.generateIntelligenceBriefing(current.name)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (briefing) => {
-          this.intelligenceBriefing.set(briefing);
-          this.briefingLoading.set(false);
-          // Refresh news as well as requested in the prompt
-          this.loadCompanyNews(current.name);
+          if (requestId === this.latestBriefingRequestId) {
+            this.intelligenceBriefing.set(briefing);
+            this.briefingLoading.set(false);
+            // Refresh news as well as requested in the prompt
+            this.loadCompanyNews(current.name);
+          }
         },
-        error: () => this.briefingLoading.set(false)
+        error: () => {
+          if (requestId === this.latestBriefingRequestId) {
+            this.briefingLoading.set(false);
+          }
+        }
       });
   }
 
@@ -383,9 +391,8 @@ export class CompanyDetailsComponent implements OnInit {
     let newContacts: CompanyContact[];
 
     if (!contact.id || contact.id === '0') {
-      // Create new - omit sentinel ID so backend generates GUID
-      const { id, ...contactData } = contact;
-      newContacts = [...contacts, contactData as CompanyContact];
+      // Create new
+      newContacts = [...contacts, { ...contact, id: '0' }];
     } else {
       // Update
       newContacts = contacts.map(c => c.id === contact.id ? contact : c);

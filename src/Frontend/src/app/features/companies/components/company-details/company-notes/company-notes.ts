@@ -4,12 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX } from '@ng-icons/lucide';
-
-export interface IntelligenceBriefing {
-  mission: string;
-  fit: string[];
-  risks: string;
-}
+import { IntelligenceBriefing } from '../../../models/company.model';
 
 @Component({
   selector: 'app-company-notes',

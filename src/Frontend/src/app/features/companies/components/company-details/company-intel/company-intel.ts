@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, computed, signal, HostListener } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed, signal, HostListener, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CompanyNews, JobApplicationHistory as ApplicationHistory } from '../../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -12,14 +12,21 @@ import { lucideExternalLink, lucideLoader2, lucideTrendingUp, lucideShieldCheck,
   templateUrl: './company-intel.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompanyIntelComponent {
+export class CompanyIntelComponent implements OnDestroy {
   news = input.required<CompanyNews[]>();
   loading = input(false);
 
   selectedItem = signal<CompanyNews | null>(null);
   displayedSummary = signal('');
-  private typeInterval: any;
+  private typeInterval: ReturnType<typeof setInterval> | null = null;
   private previousActiveElement: HTMLElement | null = null;
+
+  ngOnDestroy() {
+    if (this.typeInterval) {
+      clearInterval(this.typeInterval);
+      this.typeInterval = null;
+    }
+  }
 
   @HostListener('document:keydown.escape')
   onEscape() {
@@ -67,7 +74,10 @@ export class CompanyIntelComponent {
 
   closeReport() {
     this.selectedItem.set(null);
-    clearInterval(this.typeInterval);
+    if (this.typeInterval) {
+      clearInterval(this.typeInterval);
+      this.typeInterval = null;
+    }
     this.displayedSummary.set('');
 
     // Restore focus
@@ -79,14 +89,19 @@ export class CompanyIntelComponent {
   private startTypewriter(text: string) {
     this.displayedSummary.set('');
     let i = 0;
-    clearInterval(this.typeInterval);
+    if (this.typeInterval) {
+      clearInterval(this.typeInterval);
+    }
 
     this.typeInterval = setInterval(() => {
       if (i < text.length) {
         this.displayedSummary.update(current => current + text.charAt(i));
         i++;
       } else {
-        clearInterval(this.typeInterval);
+        if (this.typeInterval) {
+          clearInterval(this.typeInterval);
+          this.typeInterval = null;
+        }
       }
     }, 20); // Fast typing speed
   }

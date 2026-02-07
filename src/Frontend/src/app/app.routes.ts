@@ -18,6 +18,7 @@
 
 import { Routes } from '@angular/router';
 import { authGuard, guestGuard } from './core/auth';
+import { SignalsComponent } from './features/signals/signals.component';
 
 export const routes: Routes = [
   // ============================================
@@ -154,8 +155,7 @@ export const routes: Routes = [
       // Global Signals
       {
         path: 'signals',
-        loadComponent: () =>
-          import('./features/signals').then((m) => m.SignalsComponent),
+        component: SignalsComponent,
         title: 'Global Feed - VantageCursus',
         data: { breadcrumb: 'Global Signals' }
       },

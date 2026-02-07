@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ProfileStore } from '../profile/services/profile.store';
-import { IntelligenceService, GlobalSignal } from '../../core/services/intelligence.service';
+import { IntelligenceService, GlobalSignal, CareerOpportunity } from '../../core/services/intelligence.service';
+import { ApplicationService } from '../job-applications/services/application.service';
+import { CreateJobApplication } from '../job-applications/models/job-application.model';
+import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
 
 // Icons
 import { provideIcons, NgIcon } from '@ng-icons/core';
@@ -13,27 +17,31 @@ import {
     lucideSearch,
     lucideRadio,
     lucideClock,
-    lucideAlertCircle,
+    lucideMessageSquare,
     lucideX,
+    lucideSend,
+    lucideBriefcase,
+    lucideMapPin,
+    lucideBuilding2,
     lucideExternalLink
 } from '@ng-icons/lucide';
 
-// Spartan UI Imports
-import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
+import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
 
 @Component({
     selector: 'app-signals',
     standalone: true,
     imports: [
         CommonModule,
-        DatePipe,
+        FormsModule,
         NgIcon,
-        ...HlmBadgeImports,
-        ...HlmButtonImports,
-        ...HlmSkeletonImports,
+        DatePipe,
+        HlmButtonImports,
+        HlmSkeleton
     ],
+    templateUrl: './signals.component.html',
+    styleUrls: ['./signals.component.css'],
     providers: [
         provideIcons({
             lucideGlobe,
@@ -43,26 +51,39 @@ import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
             lucideSearch,
             lucideRadio,
             lucideClock,
-            lucideAlertCircle,
+            lucideMessageSquare,
             lucideX,
+            lucideSend,
+            lucideBriefcase,
+            lucideMapPin,
+            lucideBuilding2,
             lucideExternalLink
-        }),
+        })
     ],
-    templateUrl: './signals.component.html',
-    styleUrls: ['./signals.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignalsComponent {
     private readonly profileStore = inject(ProfileStore);
     private readonly intelligenceService = inject(IntelligenceService);
+    private readonly jobApplicationService = inject(ApplicationService);
 
     // Profile data
     readonly profile = this.profileStore.profile;
     readonly userSkills = this.profileStore.userSkills;
 
+
+    readonly activeTab = signal<'intelligence' | 'careers'>('intelligence');
     readonly signals = signal<GlobalSignal[]>([]);
+    readonly opportunities = signal<CareerOpportunity[]>([]);
     readonly isLoading = signal<boolean>(true);
     readonly selectedFilter = signal<string>('All');
+
+    // Chat state
+    readonly isChatOpen = signal(false);
+    readonly chatMessages = signal<{ sender: 'user' | 'agent', text: string }[]>([
+        { sender: 'agent', text: 'Vantage Agent initialized. Grid monitoring active. Awaiting command.' }
+    ]);
+    readonly isScanning = signal(false);
 
     // Overlay state
     readonly selectedItem = signal<GlobalSignal | null>(null);
@@ -88,23 +109,44 @@ export class SignalsComponent {
     });
 
     constructor() {
-        // Load signals when profile is loaded or skills change
+        console.log('SignalsComponent: Initializing...');
+        // Load signals and opportunities
         effect(() => {
+            console.log('SignalsComponent: Effect triggered');
             const skills = this.userSkills().map(s => s.name);
             const jobTitle = this.profile()?.currentJobTitle || '';
 
+            console.log('SignalsComponent: Loading signals for', { skills, jobTitle });
+
             this.isLoading.set(true);
+
+            // ForkJoin or consistent loading? independent for now
             this.intelligenceService.getGlobalSignals(skills, jobTitle).subscribe({
                 next: (data) => {
+                    console.log('SignalsComponent: Signals loaded', data);
                     this.signals.set(data);
-                    this.isLoading.set(false);
+                    if (this.activeTab() === 'intelligence') this.isLoading.set(false);
                 },
                 error: (err) => {
                     console.error('Failed to fetch signals', err);
                     this.isLoading.set(false);
                 }
             });
+
+            this.intelligenceService.getCareerOpportunities().subscribe({
+                next: (data) => {
+                    console.log('SignalsComponent: Opportunities loaded', data);
+                    this.opportunities.set(data);
+                    if (this.activeTab() === 'careers') this.isLoading.set(false);
+                },
+                error: (err) => console.error('Failed to fetch opportunities', err)
+            });
+
         }, { allowSignalWrites: true });
+    }
+
+    setActiveTab(tab: 'intelligence' | 'careers') {
+        this.activeTab.set(tab);
     }
 
     setFilter(filter: string) {
@@ -133,6 +175,52 @@ export class SignalsComponent {
         }
         this.displayedSummary.set('');
     }
+
+    // Career Actions
+    acquireTarget(opp: CareerOpportunity) {
+        // Convert to Job Application
+        const newApp: CreateJobApplication = {
+            position: opp.roleTitle,
+            companyName: opp.company,
+            status: JobApplicationStatus.Applied, // or INTERESTED
+            location: opp.location,
+            source: opp.source,
+            matchScore: opp.matchScore,
+            // Map other fields as needed
+            jobUrl: '', // need from opp?
+            description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`
+        };
+
+        this.jobApplicationService.createApplication(newApp).subscribe({
+            next: () => {
+                // Show toast or feedback?
+                alert(`Target Acquired: ${opp.roleTitle}`);
+            },
+            error: (err) => alert('Failed to acquire target')
+        });
+    }
+
+    // Chat Actions
+    toggleChat() {
+        this.isChatOpen.update(v => !v);
+    }
+
+    sendMessage(message: string) {
+        if (!message.trim()) return;
+
+        this.chatMessages.update(msgs => [...msgs, { sender: 'user', text: message }]);
+        this.isScanning.set(true);
+
+        // Mock response
+        setTimeout(() => {
+            this.isScanning.set(false);
+            this.chatMessages.update(msgs => [...msgs, {
+                sender: 'agent',
+                text: `Acknowledged. Scanning global sectors for "${message}". Correlation matrix updated.`
+            }]);
+        }, 2000);
+    }
+
 
     private startTypewriter(text: string) {
         this.displayedSummary.set('');

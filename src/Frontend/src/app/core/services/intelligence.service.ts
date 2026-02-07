@@ -13,6 +13,19 @@ export interface GlobalSignal {
     category: 'Market' | 'Tech' | 'Hiring' | 'Layoffs' | 'M&A';
 }
 
+// ... (existing code)
+
+export interface CareerOpportunity {
+    id: string;
+    roleTitle: string;
+    company: string;
+    location: string;
+    matchScore: number;
+    salaryRange: string;
+    source: string;
+    logoUrl?: string; // Optional logo
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -78,6 +91,39 @@ export class IntelligenceService {
         }
     ];
 
+    private readonly _mockOpportunities: CareerOpportunity[] = [
+        {
+            id: '101',
+            roleTitle: 'Senior Frontend Engineer',
+            company: 'Vantage Systems',
+            location: 'London, UK (Hybrid)',
+            matchScore: 98,
+            salaryRange: '£90k - £120k',
+            source: 'LinkedIn',
+            logoUrl: 'https://logo.dev/twitter.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+        },
+        {
+            id: '102',
+            roleTitle: 'Lead Product Designer',
+            company: 'Nebula Corp',
+            location: 'Remote (EU)',
+            matchScore: 92,
+            salaryRange: '€100k - €140k',
+            source: 'Greenhouse',
+            logoUrl: 'https://logo.dev/google.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+        },
+        {
+            id: '103',
+            roleTitle: 'AI Solutions Architect',
+            company: 'Cyberdyne',
+            location: 'San Francisco, CA',
+            matchScore: 88,
+            salaryRange: '$180k - $250k',
+            source: 'Wellfound',
+            logoUrl: 'https://logo.dev/openai.com?token=pk_mcaO5iQcTZ-sCZhRe8hF1Q' // Placeholder
+        }
+    ];
+
     /**
      * Fetches global signals based on skills and job title
      * @param skills List of user skills
@@ -87,4 +133,9 @@ export class IntelligenceService {
         // Simulating API call latency
         return of(this._mockSignals).pipe(delay(1500));
     }
+
+    getCareerOpportunities(): Observable<CareerOpportunity[]> {
+        return of(this._mockOpportunities).pipe(delay(1000));
+    }
 }
+

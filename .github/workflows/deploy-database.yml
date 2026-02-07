@@ -7,6 +7,10 @@ on:
     paths:
       - 'src/Backend/JobTracker.Infrastructure/Migrations/**' # only when there are new migrations
 
+concurrency:
+  group: migrations-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   apply-migrations:
     runs-on: ubuntu-latest

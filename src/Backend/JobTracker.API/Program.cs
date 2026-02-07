@@ -250,9 +250,6 @@ if (!builder.Environment.IsDevelopment())
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // Global Enum Serialization: Use CamelCase (e.g., "Ai" becomes "ai")
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
-
         // Use safe encoder with explicit Unicode ranges for special characters (á, é, ñ, etc.)
         // This keeps accented characters unescaped while HTML-sensitive characters stay escaped
         options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(
@@ -387,9 +384,12 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-// Production & Development: Migrations are applied automatically on startup
-// This ensures the database is always up-to-date with the code
-await app.ApplyMigrationsAsync();
+// Production: Migrations are handled via CI/CD (deploy-database.yml)
+// Development: Migrations are applied automatically on startup
+if (app.Environment.IsDevelopment())
+{
+    await app.ApplyMigrationsAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {

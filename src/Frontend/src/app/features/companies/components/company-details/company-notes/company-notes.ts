@@ -148,11 +148,12 @@ export class CompanyNotesComponent {
     this.isScanning.set(false);
   }
 
-  private typewriter(section: 'mission' | 'fit' | 'risks', text: string, index?: number, generation?: number): Promise<void> {
+  private typewriter(section: 'mission' | 'fit' | 'risks', text: string | null | undefined, index?: number, generation?: number): Promise<void> {
     return new Promise((resolve) => {
       this.pendingResolvers.push(resolve);
       let current = '';
       const speed = 15;
+      const textToUse = text ?? '';
       const interval = setInterval(() => {
         // Bail if generation mismatch
         if (generation !== undefined && generation !== this.generationCounter) {
@@ -160,8 +161,8 @@ export class CompanyNotesComponent {
           return;
         }
 
-        if (current.length < text.length) {
-          current += text.charAt(current.length);
+        if (current.length < textToUse.length) {
+          current += textToUse.charAt(current.length);
           if (section === 'mission') this.displayedMissionContext.set(current);
           if (section === 'risks') this.displayedRisksIntel.set(current);
           if (section === 'fit' && index !== undefined) {

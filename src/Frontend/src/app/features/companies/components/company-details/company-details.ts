@@ -147,14 +147,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
 
   // Engagement Log moved to Application Timeline
 
-  private getMockAiInsight(status: string): string {
-    switch (status) {
-      case 'Rejected': return 'Analysis indicates a skills mismatch in "System Design". Recommend strengthening architectural portfolio.';
-      case 'Offer': return 'Strong alignment confirmed. Negotiation leverage is high due to specialized tech stack fit.';
-      case 'Ghosted': return 'Pattern suggests hiring freeze or internal restructure. Low probability of recovery.';
-      default: return 'Outcome analysis pending...';
-    }
-  }
+
 
   constructor() {
     // Effect to sync notes and load news when company changes
@@ -198,13 +191,20 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clear active company state to free memory when leaving detail view
-    this.companyService.clearActiveCompany();
-    // Clear any pending notes timer
+    // Check for pending notes and save immediately
     if (this.notesTimer) {
+      const current = untracked(this.company);
+      if (current) {
+        const pendingNotes = untracked(this.companyNotes);
+        // Use immediate update since we're destroying
+        this.companyService.updateCompany(current.id, { notes: pendingNotes }).subscribe();
+      }
       clearTimeout(this.notesTimer);
       this.notesTimer = null;
     }
+
+    // Clear active company state to free memory when leaving detail view
+    this.companyService.clearActiveCompany();
   }
 
   handleRegenerateBriefing(): void {

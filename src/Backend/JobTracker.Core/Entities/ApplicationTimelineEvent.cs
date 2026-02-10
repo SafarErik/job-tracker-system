@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using JobTracker.Core.Enums;
 
@@ -33,11 +34,13 @@ public class ApplicationTimelineEvent
     /// <summary>
     /// Short title or summary of the event (e.g., "Tech Interview with Peter").
     /// </summary>
+    [StringLength(150)]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
     /// Detailed description or notes for the event.
     /// </summary>
+    [MaxLength(2000)]
     public string? Description { get; set; }
 
     /// <summary>

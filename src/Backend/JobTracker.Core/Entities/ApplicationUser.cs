@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,31 +18,38 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// User's first name for personalization.
     /// </summary>
+    [StringLength(50)]
     public string? FirstName { get; set; }
 
     /// <summary>
     /// User's last name for personalization.
     /// </summary>
+    [StringLength(50)]
     public string? LastName { get; set; }
 
     /// <summary>
     /// URL or path to user's profile picture.
     /// </summary>
+    [Url]
+    [StringLength(255)]
     public string? ProfilePictureUrl { get; set; }
 
     /// <summary>
     /// User's current job title (e.g., "Junior Developer").
     /// </summary>
+    [StringLength(100)]
     public string? CurrentJobTitle { get; set; }
 
     /// <summary>
     /// Years of professional experience.
     /// </summary>
+    [Range(0, 70)]
     public int? YearsOfExperience { get; set; }
 
     /// <summary>
     /// Brief professional summary or bio.
     /// </summary>
+    [MaxLength(1000)]
     public string? Bio { get; set; }
 
     /// <summary>
@@ -62,6 +70,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// The external provider name if registered externally (e.g., "Google").
     /// </summary>
+    [StringLength(50)]
     public string? ExternalProvider { get; set; }
 
     /// <summary>
@@ -87,6 +96,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// User's own OpenAI API key ("Bring Your Own Key" support).
     /// </summary>
+    [StringLength(200)]
     public string? OpenAiApiKey { get; set; }
 
     /// <summary>

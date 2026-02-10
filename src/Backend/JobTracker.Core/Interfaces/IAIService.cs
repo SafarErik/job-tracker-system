@@ -93,8 +93,13 @@ public class AiAnalysisResult
     public string? ErrorMessage { get; set; }
 
     /// <summary>
-    /// Creates a successful analysis result
+    /// Creates a successful analysis result.
     /// </summary>
+    /// <param name="matchScore">The calculated compatibility percentage (0-100).</param>
+    /// <param name="gapAnalysis">Markdown string detailing the identified skill/experience gaps.</param>
+    /// <param name="missingSkills">List of concrete skills required by the job but missing from the resume.</param>
+    /// <param name="strategicAdvice">Actionable advice for the candidate's application strategy.</param>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as successful.</returns>
     public static AiAnalysisResult CreateSuccess(int matchScore, string gapAnalysis, List<string> missingSkills, string strategicAdvice)
     {
         return new AiAnalysisResult
@@ -108,13 +113,16 @@ public class AiAnalysisResult
     }
 
     /// <summary>
-    /// Static factory for empty success result
+    /// Static factory for creating an empty success result.
     /// </summary>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as successful.</returns>
     public static AiAnalysisResult SuccessResult() => new() { Success = true };
 
     /// <summary>
-    /// Creates a failed analysis result with an error message
+    /// Creates a failed analysis result with an error message.
     /// </summary>
+    /// <param name="errorMessage">Human-readable description of why the analysis failed.</param>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as failed.</returns>
     public static AiAnalysisResult CreateError(string errorMessage)
     {
         return new AiAnalysisResult

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
 
 namespace JobTracker.Core.Entities;
@@ -27,21 +28,25 @@ public class Document
     /// <summary>
     /// Stored filename on the server (e.g., "a1b2c3d4.pdf").
     /// </summary>
+    [StringLength(255)]
     public string FileName { get; set; } = string.Empty;
 
     /// <summary>
     /// Original filename as uploaded by the user.
     /// </summary>
+    [StringLength(255)]
     public string OriginalFileName { get; set; } = string.Empty;
 
     /// <summary>
     /// File size in bytes.
     /// </summary>
+    [Range(0, 52428800)]
     public long FileSize { get; set; }
 
     /// <summary>
     /// MIME type of the file (e.g., "application/pdf").
     /// </summary>
+    [StringLength(100)]
     public string ContentType { get; set; } = "application/pdf";
 
     /// <summary>

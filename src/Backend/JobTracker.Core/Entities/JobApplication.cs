@@ -38,12 +38,14 @@ public class JobApplication
     /// <summary>
     /// The position title (e.g., "Junior Developer", "Senior DevOps Engineer")
     /// </summary>
+    [StringLength(150)]
     public required string Position { get; set; }
 
     /// <summary>
     /// URL to the original job posting.
     /// </summary>
     [Url]
+    [StringLength(2083)]
     public string? JobUrl { get; set; }
 
     /// <summary>
@@ -88,16 +90,22 @@ public class JobApplication
     /// <summary>
     /// AI computed match score (0-100)
     /// </summary>
+    [Range(0, 100)]
     public int MatchScore { get; set; } = 0;
 
     /// <summary>
     /// Offered or expected salary (nullable)
     /// </summary>
+    [Range(0, 1000000000)]
     public decimal? SalaryOffer { get; set; }
 
+    [Range(0, 1000000000)]
     public decimal? BaseSalary { get; set; }
+    [Range(0, 1000000000)]
     public decimal? Bonus { get; set; }
+    [Range(0, 1000000000)]
     public decimal? EquityValue { get; set; }
+    [StringLength(10)]
     public string? Currency { get; set; } = "USD";
 
     [Timestamp]

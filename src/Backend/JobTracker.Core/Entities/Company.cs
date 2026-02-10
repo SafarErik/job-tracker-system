@@ -1,4 +1,6 @@
 
+using JobTracker.Core.Enums;
+
 namespace JobTracker.Core.Entities;
 
 
@@ -26,20 +28,15 @@ public class Company
     // Company Domain
     public string? Industry { get; set; }
 
-    // Tech Stack (semicolon separated)
-    public string? TechStack { get; set; }
-
     // Company Priority
-    public string Priority { get; set; } = "Tier3";
+    public CompanyPriority Priority { get; set; } = CompanyPriority.MidTier;
 
     public string? LogoUrl { get; set; }
     public string? HqLocation { get; set; }
     public string? Description { get; set; }
     public int CompatibilityScore { get; set; }
-    public bool IsDreamTarget { get; set; } = false;
 
-    
-
+    public ICollection<Skill> TechStack { get; set; } = new List<Skill>();
 
     // Navigation property
     // Defines a one-to-many relationship: one company can have multiple job applications
@@ -47,4 +44,6 @@ public class Company
 
     // Companies can have multiple contacts
     public ICollection<CompanyContact> Contacts { get; set; } = new List<CompanyContact>();
+
+
 }

@@ -1,3 +1,5 @@
+using JobTracker.Core.Enums;
+
 namespace JobTracker.Core.Entities;
 
 /// <summary>
@@ -75,16 +77,4 @@ public class Document
     /// Job applications that use this document
     /// </summary>
     public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
-}
-
-/// <summary>
-/// Types of documents that can be uploaded
-/// </summary>
-public enum DocumentType
-{
-    Resume = 0,
-    CoverLetter = 1,
-    Certificate = 2,
-    Portfolio = 3,
-    Other = 99
 }

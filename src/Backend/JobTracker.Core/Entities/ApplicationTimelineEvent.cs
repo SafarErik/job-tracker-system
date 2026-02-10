@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using JobTracker.Core.Enums;
+
 namespace JobTracker.Core.Entities;
 
 public class ApplicationTimelineEvent
@@ -10,7 +13,7 @@ public class ApplicationTimelineEvent
     public DateTime OccurredAt { get; set; } = DateTime.UtcNow;
 
     // Type: "Interview", "Email", "Note", "StatusChange", "TechnicalTask"
-    public string EventType { get; set; } = "Note";
+    public TimelineEventType EventType { get; set; } = TimelineEventType.Note;
 
     public string Title { get; set; } = string.Empty; // Pl: "Tech Interview with Peter"
     public string? Description { get; set; }
@@ -19,4 +22,7 @@ public class ApplicationTimelineEvent
     public DateTime? DueDate { get; set; }
 
     public Guid? RelatedDocumentId { get; set; }
+
+    [ForeignKey("RelatedDocumentId")]
+    public Document? RelatedDocument { get; set; }
 }

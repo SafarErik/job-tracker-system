@@ -9,5 +9,6 @@ public enum JobApplicationStatus
     PhoneScreen,
     Ghosted,
     TechnicalTask,
-    Accepted
+    Accepted,
+    Withdrawn
 }

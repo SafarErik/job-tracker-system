@@ -42,4 +42,6 @@ public class Skill
     /// Used for matching users to job requirements.
     /// </summary>
     public ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+
+    public ICollection<Company> Companies { get; set; } = new List<Company>();
 }

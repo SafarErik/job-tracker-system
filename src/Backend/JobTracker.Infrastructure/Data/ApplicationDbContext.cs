@@ -149,6 +149,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<Company>()
+       .HasMany(c => c.TechStack)
+       .WithMany(s => s.Companies)
+       .UsingEntity(j => j.ToTable("CompanySkills"));
+
         // ============================================
         // INDEXES FOR PERFORMANCE
         // ============================================

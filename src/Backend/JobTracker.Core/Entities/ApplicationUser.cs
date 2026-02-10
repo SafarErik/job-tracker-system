@@ -1,3 +1,4 @@
+using JobTracker.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace JobTracker.Core.Entities;
@@ -100,7 +101,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// User's Subscription tier 
     /// </summary>
-    public string SubscriptionTier { get; set; } = "Operative"; // "Operative" | "Elite"
+    public SubscriptionTier SubscriptionTier { get; set; } = SubscriptionTier.Operative; // "Operative" | "Elite"
 
     /// <summary>
     /// User's own key
@@ -110,7 +111,7 @@ public class ApplicationUser : IdentityUser
     /// <summary>
     /// User's choosen AI persona
     /// </summary>
-    public string AiPersona { get; set; } = "Professional"; // "Professional" | "Aggressive" | "Mentor"
+    public AiPersona AiPersona { get; set; } = AiPersona.Professional; // "Professional" | "Aggressive" | "Mentor"
 
 
     // ============================================

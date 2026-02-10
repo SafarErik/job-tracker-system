@@ -97,6 +97,22 @@ public class ApplicationUser : IdentityUser
     /// </summary>
     public ICollection<Document> Documents { get; set; } = new List<Document>();
 
+    /// <summary>
+    /// User's Subscription tier 
+    /// </summary>
+    public string SubscriptionTier { get; set; } = "Operative"; // "Operative" | "Elite"
+
+    /// <summary>
+    /// User's own key
+    /// </summary>
+    public string? OpenAiApiKey { get; set; } // "Bring Your Own Key" support
+
+    /// <summary>
+    /// User's choosen AI persona
+    /// </summary>
+    public string AiPersona { get; set; } = "Professional"; // "Professional" | "Aggressive" | "Mentor"
+
+
     // ============================================
     // HELPER PROPERTIES
     // ============================================

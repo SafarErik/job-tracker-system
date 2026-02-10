@@ -302,41 +302,13 @@ public class JobApplicationService : IJobApplicationService
 
     private async Task<string> ExtractResumeTextAsync(Document resume)
     {
-        if (string.IsNullOrEmpty(resume.FileName))
+        var (fullPath, errorNote) = ValidateResumeFile(resume);
+        if (fullPath == null)
         {
-            _logger.LogWarning("Resume document {ResumeId} has no filename", resume.Id);
-            return $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.";
+            return errorNote!;
         }
 
-        // 1. Get safe filename and join with uploads path
-        var safeFileName = Path.GetFileName(resume.FileName);
-        var candidatePath = Path.Combine(_uploadsPath, safeFileName);
-
-        // 2. Resolve full paths for comparison
-        // Ensure uploadsPath has a trailing separator for reliable StartsWith check
-        var fullUploadsPath = Path.GetFullPath(_uploadsPath);
-        if (!fullUploadsPath.EndsWith(Path.DirectorySeparatorChar))
-        {
-            fullUploadsPath += Path.DirectorySeparatorChar;
-        }
-
-        var fullCandidatePath = Path.GetFullPath(candidatePath);
-
-        // 3. Verify the candidate path is within the uploads directory
-        if (!fullCandidatePath.StartsWith(fullUploadsPath, StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogError("Path traversal attempt detected! Requested file: {FileName}, Resolved Path: {Path}",
-                resume.FileName, fullCandidatePath);
-            return $"Resume: {resume.OriginalFileName}\n\nNote: Security violation - file access blocked.";
-        }
-
-        if (!File.Exists(fullCandidatePath))
-        {
-            _logger.LogWarning("Resume file not found at {Path}", fullCandidatePath);
-            return $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.";
-        }
-
-        var resumeText = await _textExtractor.ExtractTextAsync(fullCandidatePath);
+        var resumeText = await _textExtractor.ExtractTextAsync(fullPath);
 
         if (string.IsNullOrWhiteSpace(resumeText))
         {
@@ -345,6 +317,41 @@ public class JobApplicationService : IJobApplicationService
         }
 
         return resumeText;
+    }
+
+    private (string? FullPath, string? ErrorNote) ValidateResumeFile(Document resume)
+    {
+        if (string.IsNullOrEmpty(resume.FileName))
+        {
+            _logger.LogWarning("Resume document {ResumeId} has no filename", resume.Id);
+            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.");
+        }
+
+        var safeFileName = Path.GetFileName(resume.FileName);
+        var candidatePath = Path.Combine(_uploadsPath, safeFileName);
+        var fullUploadsPath = Path.GetFullPath(_uploadsPath);
+
+        if (!fullUploadsPath.EndsWith(Path.DirectorySeparatorChar))
+        {
+            fullUploadsPath += Path.DirectorySeparatorChar;
+        }
+
+        var fullCandidatePath = Path.GetFullPath(candidatePath);
+
+        if (!fullCandidatePath.StartsWith(fullUploadsPath, StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogError("Path traversal attempt detected! Requested file: {FileName}, Resolved Path: {Path}",
+                resume.FileName, fullCandidatePath);
+            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: Security violation - file access blocked.");
+        }
+
+        if (!File.Exists(fullCandidatePath))
+        {
+            _logger.LogWarning("Resume file not found at {Path}", fullCandidatePath);
+            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.");
+        }
+
+        return (fullCandidatePath, null);
     }
 
     private static string BuildAiFeedback(AiAnalysisResult analysisResult)
@@ -408,87 +415,6 @@ public class JobApplicationService : IJobApplicationService
 
     private static JobApplicationDto MapToDto(JobApplication app)
     {
-        var dto = new JobApplicationDto
-        {
-            Id = app.Id,
-            Position = app.Position,
-            JobUrl = app.JobUrl,
-            Description = app.Description,
-            GeneratedCoverLetter = app.GeneratedCoverLetter,
-            AiFeedback = app.AiFeedback,
-            MatchScore = app.MatchScore,
-            AiGoodPoints = new List<string>(),
-            AiGaps = new List<string>(),
-            AiAdvice = new List<string>(),
-            AppliedAt = app.AppliedAt,
-            Status = app.Status,
-            JobType = app.JobType,
-            WorkplaceType = app.WorkplaceType,
-            Priority = app.Priority,
-            SalaryOffer = app.SalaryOffer,
-            CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company",
-            DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName,
-            Skills = app.Skills?.Select(s => s.Name).ToList() ?? new List<string>(),
-            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
-            {
-                Id = app.PrimaryContact.Id,
-                Name = app.PrimaryContact.Name,
-                Email = app.PrimaryContact.Email,
-                LinkedIn = app.PrimaryContact.LinkedIn,
-                Role = app.PrimaryContact.Role
-            } : null,
-            RowVersion = app.RowVersion
-        };
-
-        // Try to hydrate transient lists from the persisted markdown feedback
-        ParseAiFeedbackToDto(app.AiFeedback, dto);
-
-        return dto;
-    }
-
-    /// <summary>
-    /// Reconstructs the structured lists from the persisted markdown feedback.
-    /// This ensures the UI remains populated even after page refresh.
-    /// </summary>
-    private static void ParseAiFeedbackToDto(string? aiFeedback, JobApplicationDto dto)
-    {
-        if (string.IsNullOrWhiteSpace(aiFeedback)) return;
-
-        var lines = aiFeedback.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(l => l.Trim());
-
-        string currentSection = "";
-
-        foreach (var line in lines)
-        {
-            if (line.StartsWith("## Good Points", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "GoodPoints";
-                continue;
-            }
-            if (line.StartsWith("## Gaps", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "Gaps";
-                continue;
-            }
-            if (line.StartsWith("## Strategic Advice", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "Advice";
-                continue;
-            }
-
-            if (line.StartsWith("- ") && line.Length > 2)
-            {
-                var content = line[2..].Trim();
-                switch (currentSection)
-                {
-                    case "GoodPoints": dto.AiGoodPoints.Add(content); break;
-                    case "Gaps": dto.AiGaps.Add(content); break;
-                    case "Advice": dto.AiAdvice.Add(content); break;
-                }
-            }
-        }
+        return Mappers.JobApplicationMapper.MapToDto(app);
     }
 }

@@ -62,8 +62,7 @@ public class CreateJobApplicationDto
 public class UpdateJobApplicationDto
 {
 
-    [Required]
-    public byte[] RowVersion { get; set; }
+    public required byte[] RowVersion { get; set; }
 
     public string? Position { get; set; }
     public Guid? CompanyId { get; set; }

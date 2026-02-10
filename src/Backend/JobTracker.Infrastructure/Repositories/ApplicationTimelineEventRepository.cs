@@ -12,29 +12,22 @@ public class ApplicationTimelineEventRepository : IApplicationTimelineEventRepos
 {
     private readonly ApplicationDbContext _context;
 
-    public ApplicationTimelineEventRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    public ApplicationTimelineEventRepository(ApplicationDbContext context) => _context = context;
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ApplicationTimelineEvent>> GetByApplicationIdAsync(Guid jobApplicationId)
-    {
-        return await _context.TimelineEvents
+    public async Task<IEnumerable<ApplicationTimelineEvent>> GetByApplicationIdAsync(Guid jobApplicationId) =>
+        await _context.TimelineEvents
             .AsNoTracking()
             .Where(e => e.JobApplicationId == jobApplicationId)
             .Include(e => e.RelatedDocument)
             .OrderBy(e => e.OccurredAt)
             .ToListAsync();
-    }
 
     /// <inheritdoc/>
-    public async Task<ApplicationTimelineEvent?> GetByIdAsync(Guid id)
-    {
-        return await _context.TimelineEvents
+    public async Task<ApplicationTimelineEvent?> GetByIdAsync(Guid id) =>
+        await _context.TimelineEvents
             .Include(e => e.RelatedDocument)
             .FirstOrDefaultAsync(e => e.Id == id);
-    }
 
     /// <inheritdoc/>
     public async Task<Guid> AddAsync(ApplicationTimelineEvent timelineEvent)
@@ -52,13 +45,8 @@ public class ApplicationTimelineEventRepository : IApplicationTimelineEventRepos
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(Guid id)
-    {
-        var timelineEvent = await _context.TimelineEvents.FindAsync(id);
-        if (timelineEvent != null)
-        {
-            _context.TimelineEvents.Remove(timelineEvent);
-            await _context.SaveChangesAsync();
-        }
-    }
+    public async Task DeleteAsync(Guid id) =>
+        await _context.TimelineEvents
+            .Where(e => e.Id == id)
+            .ExecuteDeleteAsync();
 }

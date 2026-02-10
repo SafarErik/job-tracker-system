@@ -12,26 +12,20 @@ public class CompanyRepository : ICompanyRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public CompanyRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+    public CompanyRepository(ApplicationDbContext context) => _context = context;
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Company>> GetAllAsync()
-    {
-        return await _context.Companies
+    public async Task<IEnumerable<Company>> GetAllAsync() =>
+        await _context.Companies
             .AsNoTracking()
             .Include(c => c.JobApplications)
             .Include(c => c.Contacts)
             .Include(c => c.TechStack)
             .ToListAsync();
-    }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<Company>> GetAllByUserIdAsync(string userId)
-    {
-        return await _context.Companies
+    public async Task<IEnumerable<Company>> GetAllByUserIdAsync(string userId) =>
+        await _context.Companies
             .AsNoTracking()
             .Where(c => c.UserId == userId)
             .Include(c => c.JobApplications)
@@ -39,17 +33,14 @@ public class CompanyRepository : ICompanyRepository
             .Include(c => c.TechStack)
             .OrderBy(c => c.Name)
             .ToListAsync();
-    }
 
     /// <inheritdoc/>
-    public async Task<Company?> GetByIdAsync(Guid id)
-    {
-        return await _context.Companies
+    public async Task<Company?> GetByIdAsync(Guid id) =>
+        await _context.Companies
             .Include(c => c.JobApplications)
             .Include(c => c.Contacts)
             .Include(c => c.TechStack)
             .FirstOrDefaultAsync(c => c.Id == id);
-    }
 
     /// <inheritdoc/>
     public async Task<Guid> AddAsync(Company company)
@@ -67,13 +58,8 @@ public class CompanyRepository : ICompanyRepository
     }
 
     /// <inheritdoc/>
-    public async Task DeleteAsync(Guid id)
-    {
-        var company = await _context.Companies.FindAsync(id);
-        if (company != null)
-        {
-            _context.Companies.Remove(company);
-            await _context.SaveChangesAsync();
-        }
-    }
+    public async Task DeleteAsync(Guid id) =>
+        await _context.Companies
+            .Where(c => c.Id == id)
+            .ExecuteDeleteAsync();
 }

@@ -22,23 +22,20 @@ public class JobApplicationRepository : IJobApplicationRepository
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<JobApplication>> GetAllAsync()
-    {
-        return await _context.JobApplications
-            .AsNoTracking() // We don't follow the changes --> Excellent for reading
-            .AsSplitQuery() // Separate SQL queries for relations
+    public async Task<IEnumerable<JobApplication>> GetAllAsync() =>
+        await _context.JobApplications
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .Include(j => j.PrimaryContact)
             .Include(j => j.TimelineEvents)
             .ToListAsync();
-    }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId)
-    {
-        return await _context.JobApplications
+    public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId) =>
+        await _context.JobApplications
             .AsNoTracking()
             .AsSplitQuery()
             .Where(j => j.UserId == userId)
@@ -46,15 +43,13 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .Include(j => j.PrimaryContact)
-             .Include(j => j.TimelineEvents)
+            .Include(j => j.TimelineEvents)
             .OrderByDescending(j => j.AppliedAt)
             .ToListAsync();
-    }
 
     /// <inheritdoc/>
-    public async Task<JobApplication?> GetByIdAsync(Guid id)
-    {
-        return await _context.JobApplications
+    public async Task<JobApplication?> GetByIdAsync(Guid id) =>
+        await _context.JobApplications
             .AsSplitQuery()
             .Include(j => j.Company)
             .Include(j => j.Skills)
@@ -62,7 +57,6 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.PrimaryContact)
             .Include(j => j.TimelineEvents)
             .FirstOrDefaultAsync(j => j.Id == id);
-    }
 
     /// <inheritdoc/>
     public async Task AddAsync(JobApplication application)

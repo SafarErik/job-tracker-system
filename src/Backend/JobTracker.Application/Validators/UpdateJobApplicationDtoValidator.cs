@@ -54,5 +54,9 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
         RuleFor(x => x.PrimaryContactId)
             .NotEqual(Guid.Empty).WithMessage("Invalid primary contact ID")
             .When(x => x.PrimaryContactId.HasValue);
+
+        RuleFor(x => x.Currency)
+            .IsInEnum().WithMessage("Invalid currency")
+            .When(x => x.Currency.HasValue);
     }
 }

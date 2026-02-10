@@ -38,6 +38,9 @@ public class CreateJobApplicationDtoValidator : AbstractValidator<CreateJobAppli
             .GreaterThanOrEqualTo(0).WithMessage("Salary offer must be positive")
             .When(x => x.SalaryOffer.HasValue);
 
+        RuleFor(x => x.Currency)
+            .IsInEnum().WithMessage("Invalid currency");
+
         RuleFor(x => x.MatchScore)
             .InclusiveBetween(0, 100).WithMessage("Match score must be between 0 and 100");
 

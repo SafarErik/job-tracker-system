@@ -105,8 +105,7 @@ public class JobApplication
     public decimal? Bonus { get; set; }
     [Range(0, 1000000000)]
     public decimal? EquityValue { get; set; }
-    [StringLength(10)]
-    public string? Currency { get; set; } = "USD";
+    public Currency Currency { get; set; } = Currency.USD;
 
     [Timestamp]
     public byte[] RowVersion { get; set; } = [];

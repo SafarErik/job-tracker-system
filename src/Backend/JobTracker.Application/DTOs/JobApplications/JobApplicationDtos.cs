@@ -29,7 +29,7 @@ public class JobApplicationDto
     public decimal? BaseSalary { get; set; }
     public decimal? Bonus { get; set; }
     public decimal? EquityValue { get; set; }
-    public string? Currency { get; set; }
+    public Currency Currency { get; set; }
 
     public Guid CompanyId { get; set; }
     public string? CompanyName { get; set; }
@@ -64,8 +64,7 @@ public class CreateJobApplicationDto
     public decimal? Bonus { get; set; }
     public decimal? EquityValue { get; set; }
 
-    [StringLength(10)]
-    public string? Currency { get; set; } = "USD";
+    public Currency Currency { get; set; } = Currency.USD;
 
     public int MatchScore { get; set; }
     public Guid? DocumentId { get; set; }
@@ -91,8 +90,7 @@ public class UpdateJobApplicationDto
     public decimal? Bonus { get; set; }
     public decimal? EquityValue { get; set; }
 
-    [StringLength(10)]
-    public string? Currency { get; set; }
+    public Currency? Currency { get; set; }
 
     public int? MatchScore { get; set; }
     public Guid? DocumentId { get; set; }

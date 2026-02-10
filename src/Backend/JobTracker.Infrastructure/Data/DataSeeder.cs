@@ -431,7 +431,8 @@ public static class DataSeeder
                 MatchScore = random.Next(40, 95), // Random but realistic scores
                 SalaryOffer = status == JobApplicationStatus.OfferReceived
                     ? random.Next(600000, 1200000)
-                    : null
+                    : null,
+                Currency = Enum.GetValues<Currency>()[random.Next(Enum.GetValues<Currency>().Length)]
             };
 
             // Add random skills (2-4 per application)

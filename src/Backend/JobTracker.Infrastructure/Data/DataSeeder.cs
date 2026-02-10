@@ -86,6 +86,14 @@ public static class DataSeeder
         await context.SaveChangesAsync();
         Console.WriteLine("✅ 15 job applications created");
 
+        // ============================================
+        // 7. CREATE TIMELINE EVENTS
+        // ============================================
+        var timelineEvents = CreateTimelineEvents(applications);
+        await context.TimelineEvents.AddRangeAsync(timelineEvents);
+        await context.SaveChangesAsync();
+        Console.WriteLine($"✅ {timelineEvents.Count} timeline events created");
+
         Console.WriteLine("🎉 Database seeding completed!");
         Console.WriteLine($"📧 Demo user: {DemoUserEmail}");
         Console.WriteLine($"🔑 Password: {DemoUserPassword}");
@@ -435,6 +443,84 @@ public static class DataSeeder
         }
 
         return applications;
+    }
+
+    /// <summary>
+    /// Creates timeline events for the seeded job applications
+    /// </summary>
+    private static List<ApplicationTimelineEvent> CreateTimelineEvents(List<JobApplication> applications)
+    {
+        var events = new List<ApplicationTimelineEvent>();
+        var random = new Random(42);
+
+        foreach (var app in applications)
+        {
+            // 1. Applied event (always present)
+            events.Add(new ApplicationTimelineEvent
+            {
+                Id = Guid.NewGuid(),
+                JobApplicationId = app.Id,
+                EventType = TimelineEventType.StatusChange,
+                Title = "Application Submitted",
+                Description = "Applied via company website.",
+                OccurredAt = app.AppliedAt
+            });
+
+            // 2. Add random subsequent events based on status
+            if (app.Status != JobApplicationStatus.Applied)
+            {
+                // Simulate a screening call
+                var screeningDate = app.AppliedAt.AddDays(random.Next(2, 5));
+                if (screeningDate < DateTime.UtcNow)
+                {
+                    events.Add(new ApplicationTimelineEvent
+                    {
+                        Id = Guid.NewGuid(),
+                        JobApplicationId = app.Id,
+                        EventType = TimelineEventType.Email,
+                        Title = "Screening Call Invitation",
+                        Description = "Recruiter reached out to schedule a screening call.",
+                        OccurredAt = screeningDate
+                    });
+                }
+
+                // If interview or later stage
+                if (app.Status is JobApplicationStatus.Interviewing or JobApplicationStatus.OfferReceived or JobApplicationStatus.Accepted)
+                {
+                    var interviewDate = screeningDate.AddDays(random.Next(3, 7));
+                    if (interviewDate < DateTime.UtcNow)
+                    {
+                        events.Add(new ApplicationTimelineEvent
+                        {
+                            Id = Guid.NewGuid(),
+                            JobApplicationId = app.Id,
+                            EventType = TimelineEventType.Interview,
+                            Title = "Technical Interview",
+                            Description = "Technical with the team lead.",
+                            OccurredAt = interviewDate,
+                            DueDate = interviewDate.AddHours(1) // 1 hour duration
+                        });
+                    }
+                }
+
+                // If offer received
+                if (app.Status == JobApplicationStatus.OfferReceived)
+                {
+                    var offerDate = DateTime.UtcNow.AddDays(-random.Next(1, 3));
+                    events.Add(new ApplicationTimelineEvent
+                    {
+                        Id = Guid.NewGuid(),
+                        JobApplicationId = app.Id,
+                        EventType = TimelineEventType.OfferReceived,
+                        Title = "Offer Received!",
+                        Description = $"Received an offer details: Salary {app.SalaryOffer:C}",
+                        OccurredAt = offerDate
+                    });
+                }
+            }
+        }
+
+        return events;
     }
 
     /// <summary>

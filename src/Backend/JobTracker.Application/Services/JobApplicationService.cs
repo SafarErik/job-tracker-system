@@ -4,12 +4,10 @@ using JobTracker.Application.DTOs.AI;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.Interfaces;
-using JobTracker.Infrastructure.Data;
 using JobTracker.Core.Enums;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace JobTracker.Infrastructure.Services;
+namespace JobTracker.Application.Services;
 
 /// <summary>
 /// Service implementation for job application business logic.
@@ -19,9 +17,9 @@ public class JobApplicationService : IJobApplicationService
 {
     private readonly IJobApplicationRepository _jobRepository;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IAIService _aiService;
     private readonly IDocumentTextExtractor _textExtractor;
-    private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<JobApplicationService> _logger;
     private readonly string _uploadsPath;
 
@@ -30,16 +28,16 @@ public class JobApplicationService : IJobApplicationService
     public JobApplicationService(
         IJobApplicationRepository jobRepository,
         IDocumentRepository documentRepository,
+        IUserRepository userRepository,
         IAIService aiService,
         IDocumentTextExtractor textExtractor,
-        ApplicationDbContext dbContext,
         ILogger<JobApplicationService> logger)
     {
         _jobRepository = jobRepository;
+        _userRepository = userRepository;
         _documentRepository = documentRepository;
         _aiService = aiService;
         _textExtractor = textExtractor;
-        _dbContext = dbContext;
         _logger = logger;
 
         // Use BaseDirectory for more reliable path resolution in different hosting environments
@@ -278,8 +276,8 @@ public class JobApplicationService : IJobApplicationService
         if (application.UserId != userId) throw new UnauthorizedAccessException("You do not have access to this job application");
         if (string.IsNullOrWhiteSpace(application.Description)) throw new InvalidOperationException(MissingAiInputsMessage);
 
-        // 2. Load User Skills
-        var user = await _dbContext.Users.Include(u => u.Skills).FirstOrDefaultAsync(u => u.Id == userId);
+        // 2. Load User Skills via Repository abstraction (No DbContext)
+        var user = await _userRepository.GetUserWithSkillsAsync(userId);
         if (user == null) throw new UnauthorizedAccessException("User not found");
 
         var skills = user.Skills.Select(s => s.Name).Where(name => !string.IsNullOrWhiteSpace(name)).ToList();

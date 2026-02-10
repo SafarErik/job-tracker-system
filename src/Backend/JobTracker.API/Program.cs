@@ -158,8 +158,9 @@ builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
 // AI & APPLICATION SERVICES REGISTRATION
 // ============================================
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAIService, JobTracker.Infrastructure.Services.GeminiAIService>();
-builder.Services.AddScoped<IJobApplicationService, JobTracker.Infrastructure.Services.JobApplicationService>();
+builder.Services.AddScoped<IJobApplicationService, JobTracker.Application.Services.JobApplicationService>();
 
 // ============================================
 // HTTP CLIENT FACTORY REGISTRATION

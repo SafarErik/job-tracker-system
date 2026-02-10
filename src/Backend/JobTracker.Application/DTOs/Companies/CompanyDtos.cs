@@ -28,7 +28,7 @@ public class CompanyDto
     /// <summary>
     /// Company Priority (Tier1, Tier2, Tier3)
     /// </summary>
-    public string Priority { get; set; } = "Tier3";
+    public string Priority { get; set; } = "LowTier";
 
     /// <summary>
     /// Recent job applications for this company
@@ -63,7 +63,7 @@ public class CompanyDetailDto
     /// <summary>
     /// Company Priority (Tier1, Tier2, Tier3)
     /// </summary>
-    public string Priority { get; set; } = "Tier3";
+    public string Priority { get; set; } = "LowTier";
 
     /// <summary>
     /// History of all applications to this company
@@ -114,7 +114,7 @@ public class CreateCompanyDto
 
     public List<string>? TechStack { get; set; }
 
-    public string Priority { get; set; } = "Tier3";
+    public string Priority { get; set; } = "LowTier";
 
     /// <summary>
     /// Optional list of contacts to add during creation

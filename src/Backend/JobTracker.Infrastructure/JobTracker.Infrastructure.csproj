@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JobTracker.Core\JobTracker.Core.csproj" />
-    <ProjectReference Include="..\JobTracker.Application\JobTracker.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

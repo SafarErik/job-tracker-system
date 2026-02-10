@@ -32,6 +32,14 @@ public class Company
     // Company Priority
     public string Priority { get; set; } = "Tier3";
 
+    public string? LogoUrl { get; set; }
+    public string? HqLocation { get; set; }
+    public string? Description { get; set; }
+    public int CompatibilityScore { get; set; }
+    public bool IsDreamTarget { get; set; } = false;
+
+    
+
 
     // Navigation property
     // Defines a one-to-many relationship: one company can have multiple job applications

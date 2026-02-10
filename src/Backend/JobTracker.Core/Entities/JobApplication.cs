@@ -94,6 +94,14 @@ public class JobApplication
     /// </summary>
     public decimal? SalaryOffer { get; set; }
 
+    public decimal? BaseSalary { get; set; }
+    public decimal? Bonus { get; set; }
+    public decimal? EquityValue { get; set; }
+    public string? Currency { get; set; } = "USD";
+
+    [Timestamp]
+    public byte[] RowVersion { get; set; } = [];
+
     // ============================================
     // COMPANY RELATIONSHIP
     // ============================================
@@ -147,6 +155,8 @@ public class JobApplication
     /// </summary>
     public ICollection<Skill> Skills { get; set; } = new List<Skill>();
 
-    [Timestamp]
-    public uint RowVersion { get; set; }
+
+    public ICollection<ApplicationTimelineEvent> TimelineEvents { get; set; } = new List<ApplicationTimelineEvent>();
+
+
 }

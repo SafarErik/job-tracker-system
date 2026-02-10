@@ -64,6 +64,9 @@ public class Document
     /// </summary>
     public bool IsMaster { get; set; }
 
+    public string? ParsedContent { get; set; }
+    public string? AiSummary { get; set; }
+
     // ============================================
     // NAVIGATION PROPERTIES
     // ============================================

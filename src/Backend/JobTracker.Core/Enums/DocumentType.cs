@@ -5,21 +5,33 @@ namespace JobTracker.Core.Enums;
 /// </summary>
 public enum DocumentType
 {
-    /// <summary>Curriculum Vitae or Resume.</summary>
+    /// <summary>
+    /// Curriculum Vitae or Resume.
+    /// </summary>
     Resume,
 
-    /// <summary>Formal cover letter for an application.</summary>
+    /// <summary>
+    /// Formal cover letter for an application.
+    /// </summary>
     CoverLetter,
 
-    /// <summary>Educational or professional certificate.</summary>
+    /// <summary>
+    /// Educational or professional certificate.
+    /// </summary>
     Certificate,
 
-    /// <summary>Link or file representing a professional portfolio.</summary>
+    /// <summary>
+    /// Link or file representing a professional portfolio.
+    /// </summary>
     Portfolio,
 
-    /// <summary>Official job offer letter received from a company.</summary>
+    /// <summary>
+    /// Official job offer letter received from a company.
+    /// </summary>
     OfferLetter,
 
-    /// <summary>Other miscellaneous document types.</summary>
+    /// <summary>
+    /// Other miscellaneous document types.
+    /// </summary>
     Other = 99
 }

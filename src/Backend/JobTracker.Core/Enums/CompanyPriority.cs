@@ -5,15 +5,23 @@ namespace JobTracker.Core.Enums;
 /// </summary>
 public enum CompanyPriority
 {
-    /// <summary>Top target, "Dream" companies.</summary>
+    /// <summary>
+    /// Top target, "Dream" companies.
+    /// </summary>
     TopTier = 1,
 
-    /// <summary>Solid options, good for regular applications.</summary>
+    /// <summary>
+    /// Solid options, good for regular applications.
+    /// </summary>
     MidTier = 2,
 
-    /// <summary>Safety or backup options.</summary>
+    /// <summary>
+    /// Safety or backup options.
+    /// </summary>
     LowTier = 3,
 
-    /// <summary>No longer active or interested.</summary>
+    /// <summary>
+    /// No longer active or interested.
+    /// </summary>
     Archived = 99
 }

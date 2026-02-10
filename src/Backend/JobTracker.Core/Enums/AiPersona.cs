@@ -5,15 +5,23 @@ namespace JobTracker.Core.Enums;
 /// </summary>
 public enum AiPersona
 {
-    /// <summary>Balanced, formal, and objective.</summary>
+    /// <summary>
+    /// Balanced, formal, and objective.
+    /// </summary>
     Professional,
 
-    /// <summary>Direct, focused on keywords and ATS optimization.</summary>
+    /// <summary>
+    /// Direct, focused on keywords and ATS optimization.
+    /// </summary>
     Recruiter,
 
-    /// <summary>Encouraging, providing career advice and growth tips.</summary>
+    /// <summary>
+    /// Encouraging, providing career advice and growth tips.
+    /// </summary>
     Mentor,
 
-    /// <summary>Analytical, focused on long-term career moves and negotiation.</summary>
+    /// <summary>
+    /// Analytical, focused on long-term career moves and negotiation.
+    /// </summary>
     Strategist
 }

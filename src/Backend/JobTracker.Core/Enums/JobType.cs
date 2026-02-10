@@ -5,14 +5,24 @@ namespace JobTracker.Core.Enums;
 /// </summary>
 public enum JobType
 {
-    /// <summary>Standard permanent employment.</summary>
+    /// <summary>
+    /// Standard permanent employment.
+    /// </summary>
     FullTime,
-    /// <summary>Reduced hours employment.</summary>
+    /// <summary>
+    /// Reduced hours employment.
+    /// </summary>
     PartTime,
-    /// <summary>Temporary position for students or career starters.</summary>
+    /// <summary>
+    /// Temporary position for students or career starters.
+    /// </summary>
     Internship,
-    /// <summary>Fixed-term contract basis.</summary>
+    /// <summary>
+    /// Fixed-term contract basis.
+    /// </summary>
     Contract,
-    /// <summary>Project-based self-employment.</summary>
+    /// <summary>
+    /// Project-based self-employment.
+    /// </summary>
     Freelance
 }

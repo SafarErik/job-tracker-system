@@ -7,9 +7,15 @@ public class CompanyContact
 {
     public Guid Id { get; set; }
 
-    [Required]
+    /// <summary>
+    /// Name of the contact person.
+    /// </summary>
     public required string Name { get; set; }
 
+    /// <summary>
+        /// Contact email address.
+    /// </summary>
+    [EmailAddress]
     public string? Email { get; set; }
 
     public string? LinkedIn { get; set; }

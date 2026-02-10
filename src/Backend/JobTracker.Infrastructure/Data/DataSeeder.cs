@@ -143,8 +143,7 @@ public static class DataSeeder
                 Name = "Google Hungary",
                 Website = "https://careers.google.com",
                 Industry = "AI / ML",
-                TechStack = string.Join(";", new[] { "Python", "Go", "TensorFlow", "Kubernetes", "C++" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Peter Nagy", Role = "Senior Tech Recruiter", Email = "pnagy@google.com", LinkedIn = "https://linkedin.com/in/peternagy" },
@@ -157,8 +156,7 @@ public static class DataSeeder
                 Name = "Microsoft Hungary",
                 Website = "https://careers.microsoft.com",
                 Industry = "Cloud Infrastructure",
-                TechStack = string.Join(";", new[] { ".NET Core", "Azure", "React", "C#", "CosmosDB" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Anna Kovacs", Role = "Talent Acquisition Lead", Email = "akovacs@microsoft.com", LinkedIn = "https://linkedin.com/in/annakovacs" },
@@ -171,8 +169,7 @@ public static class DataSeeder
                 Name = "EPAM Systems",
                 Website = "https://www.epam.com/careers",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Angular", "AWS" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Gabor Szabo", Role = "Recruitment Specialist", Email = "g_szabo@epam.com" },
@@ -185,8 +182,7 @@ public static class DataSeeder
                 Name = "Morgan Stanley Budapest",
                 Website = "https://www.morganstanley.com/careers",
                 Industry = "Fintech",
-                TechStack = string.Join(";", new[] { "Java", "Scala", "C++", "Angular" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Eva Toth", Role = "HR Business Partner", Email = "eva.toth@morganstanley.com" },
@@ -199,8 +195,7 @@ public static class DataSeeder
                 Name = "Ericsson Hungary",
                 Website = "https://www.ericsson.com/careers",
                 Industry = "Telecommunications",
-                TechStack = string.Join(";", new[] { "C++", "Erlang", "Python", "Cloud Native" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Janos Kiss", Role = "Talent Scout", Email = "janos.kiss@ericsson.com" }
@@ -212,8 +207,7 @@ public static class DataSeeder
                 Name = "Prezi",
                 Website = "https://prezi.com/jobs",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "JavaScript", "Scala", "Haskell", "React" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Zsofia Horvath", Role = "People Ops Lead", Email = "zsofi@prezi.com" },
@@ -226,8 +220,7 @@ public static class DataSeeder
                 Name = "LogMeIn (GoTo)",
                 Website = "https://www.goto.com/company/careers",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Docker", "React", "AWS" }),
-                Priority = "Tier3",
+                Priority = CompanyPriority.LowTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Balazs Molnar", Role = "Senior Recruiter", Email = "bmolnar@goto.com" }
@@ -239,8 +232,7 @@ public static class DataSeeder
                 Name = "Wise",
                 Website = "https://wise.com/careers",
                 Industry = "Fintech",
-                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Kafka", "React" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Sarah Connor", Role = "Lead Recruiter", Email = "sarah.connor@wise.com", LinkedIn = "https://linkedin.com/in/sarahconnor" },
@@ -253,8 +245,7 @@ public static class DataSeeder
                 Name = "SAP Hungary",
                 Website = "https://jobs.sap.com",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Kubernetes", "Angular" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Laszlo Nemeth", Role = "HR Manager", Email = "l.nemeth@sap.com" }
@@ -266,8 +257,7 @@ public static class DataSeeder
                 Name = "Emarsys",
                 Website = "https://emarsys.com/careers",
                 Industry = "AdTech",
-                TechStack = string.Join(";", new[] { "PHP", "Go", "React", "GCP" }),
-                Priority = "Tier3",
+                Priority = CompanyPriority.LowTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Dora Farkas", Role = "Talent Acquisition", Email = "dora.farkas@emarsys.com" }
@@ -431,7 +421,7 @@ public static class DataSeeder
                 WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
                 Priority = priorities[random.Next(priorities.Length)],
                 MatchScore = random.Next(40, 95), // Random but realistic scores
-                SalaryOffer = status == JobApplicationStatus.Offer
+                SalaryOffer = status == JobApplicationStatus.OfferReceived
                     ? random.Next(600000, 1200000)
                     : null
             };

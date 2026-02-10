@@ -5,6 +5,7 @@ using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.Interfaces;
 using JobTracker.Infrastructure.Data;
+using JobTracker.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

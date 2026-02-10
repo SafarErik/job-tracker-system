@@ -9,72 +9,68 @@ namespace JobTracker.Core.Entities;
 /// </summary>
 public class Document
 {
+    /// <summary>
+    /// Unique identifier for the document.
+    /// </summary>
     public Guid Id { get; set; }
-
-    // ============================================
-    // USER OWNERSHIP
-    // ============================================
 
     /// <summary>
     /// Foreign key to the user who uploaded this document.
-    /// Every document must belong to a user.
     /// </summary>
     public required string UserId { get; set; }
 
     /// <summary>
-    /// Navigation property to the document owner
+    /// Navigation property to the document owner.
     /// </summary>
     public ApplicationUser? User { get; set; }
 
-    // ============================================
-    // FILE INFORMATION
-    // ============================================
-
     /// <summary>
-    /// Stored filename on the server (e.g., "a1b2c3d4.pdf")
+    /// Stored filename on the server (e.g., "a1b2c3d4.pdf").
     /// </summary>
     public string FileName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Original filename as uploaded by the user
+    /// Original filename as uploaded by the user.
     /// </summary>
     public string OriginalFileName { get; set; } = string.Empty;
 
     /// <summary>
-    /// File size in bytes
+    /// File size in bytes.
     /// </summary>
     public long FileSize { get; set; }
 
     /// <summary>
-    /// MIME type of the file (e.g., "application/pdf")
+    /// MIME type of the file (e.g., "application/pdf").
     /// </summary>
     public string ContentType { get; set; } = "application/pdf";
 
     /// <summary>
-    /// When the document was uploaded
+    /// Timestamp when the document was uploaded.
     /// </summary>
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
-    /// Document type (CV, CoverLetter, Certificate, etc.)
+    /// The type of document (CV, CoverLetter, Certificate, etc.).
     /// </summary>
     public DocumentType Type { get; set; } = DocumentType.Resume;
 
     /// <summary>
     /// Indicates if this is the user's "Master" credential (e.g. main CV).
-    /// Only one document of a type should be master per user.
     /// </summary>
     public bool IsMaster { get; set; }
 
+    /// <summary>
+    /// Extracted plain text content of the document.
+    /// </summary>
     public string? ParsedContent { get; set; }
-    public string? AiSummary { get; set; }
-
-    // ============================================
-    // NAVIGATION PROPERTIES
-    // ============================================
 
     /// <summary>
-    /// Job applications that use this document
+    /// AI-generated summary of the document content.
+    /// </summary>
+    public string? AiSummary { get; set; }
+
+    /// <summary>
+    /// Job applications that use this document.
     /// </summary>
     public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
 }

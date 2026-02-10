@@ -15,103 +15,84 @@ public class ApplicationUser : IdentityUser
     // ============================================
 
     /// <summary>
-    /// User's first name for personalization
+    /// User's first name for personalization.
     /// </summary>
     public string? FirstName { get; set; }
 
     /// <summary>
-    /// User's last name for personalization
+    /// User's last name for personalization.
     /// </summary>
     public string? LastName { get; set; }
 
     /// <summary>
-    /// URL or path to user's profile picture
-    /// Can be populated from Google OAuth or uploaded manually
+    /// URL or path to user's profile picture.
     /// </summary>
     public string? ProfilePictureUrl { get; set; }
 
-    // ============================================
-    // PROFESSIONAL INFORMATION
-    // ============================================
-
     /// <summary>
-    /// User's current job title (e.g., "Junior Developer", "DevOps Engineer")
-    /// Useful for matching with job applications
+    /// User's current job title (e.g., "Junior Developer").
     /// </summary>
     public string? CurrentJobTitle { get; set; }
 
     /// <summary>
-    /// Years of professional experience
-    /// Can be used for job matching algorithms
+    /// Years of professional experience.
     /// </summary>
     public int? YearsOfExperience { get; set; }
 
     /// <summary>
-    /// Brief professional summary or bio
+    /// Brief professional summary or bio.
     /// </summary>
     public string? Bio { get; set; }
 
-    // ============================================
-    // ACCOUNT METADATA
-    // ============================================
-
     /// <summary>
-    /// Timestamp when the user account was created
+    /// Timestamp when the user account was created.
     /// </summary>
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     /// <summary>
-    /// Timestamp of the user's last login
-    /// Useful for analytics and security
+    /// Timestamp of the user's last login.
     /// </summary>
     public DateTime? LastLoginAt { get; set; }
 
     /// <summary>
-    /// Indicates if the user registered via external provider (Google, etc.)
+    /// Indicates if the user registered via external provider (Google, etc.).
     /// </summary>
     public bool IsExternalAccount { get; set; } = false;
 
     /// <summary>
-    /// The external provider name if registered externally (e.g., "Google")
+    /// The external provider name if registered externally (e.g., "Google").
     /// </summary>
     public string? ExternalProvider { get; set; }
 
-    // ============================================
-    // NAVIGATION PROPERTIES
-    // ============================================
-
     /// <summary>
-    /// User's job applications - one user can have many applications
-    /// This enables tracking all job applications for a specific user
+    /// User's job applications.
     /// </summary>
     public ICollection<JobApplication> JobApplications { get; set; } = new List<JobApplication>();
 
     /// <summary>
-    /// User's skills - many-to-many relationship
-    /// These are the skills the user possesses, which can be compared
-    /// against job requirements extracted via NLP (spaCy)
+    /// User's skills (many-to-many relationship).
     /// </summary>
     public ICollection<Skill> Skills { get; set; } = new List<Skill>();
 
     /// <summary>
-    /// User's uploaded documents (CVs, cover letters, etc.)
+    /// User's uploaded documents (CVs, cover letters, etc.).
     /// </summary>
     public ICollection<Document> Documents { get; set; } = new List<Document>();
 
     /// <summary>
-    /// User's Subscription tier 
+    /// User's current subscription tier.
     /// </summary>
-    public SubscriptionTier SubscriptionTier { get; set; } = SubscriptionTier.Operative; // "Operative" | "Elite"
+    public SubscriptionTier SubscriptionTier { get; set; } = SubscriptionTier.Operative;
 
     /// <summary>
-    /// User's own key
+    /// User's own OpenAI API key ("Bring Your Own Key" support).
     /// </summary>
-    public string? OpenAiApiKey { get; set; } // "Bring Your Own Key" support
+    public string? OpenAiApiKey { get; set; }
 
     /// <summary>
-    /// User's choosen AI persona
+    /// User's chosen AI persona for interactions.
     /// </summary>
-    public AiPersona AiPersona { get; set; } = AiPersona.Professional; // "Professional" | "Aggressive" | "Mentor"
+    public AiPersona AiPersona { get; set; } = AiPersona.Professional;
 
 
     // ============================================

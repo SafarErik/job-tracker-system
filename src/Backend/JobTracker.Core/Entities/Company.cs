@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
 
 namespace JobTracker.Core.Entities;
@@ -14,7 +15,10 @@ public class Company
     // The 'required' keyword means you can't leave this field empty
     public required string Name { get; set; }
 
-    // The ? means nullable, so Website can be null
+    /// <summary>
+    /// The company's official website URL.
+    /// </summary>
+    [Url]
     public string? Website { get; set; }
 
     // User Relationship

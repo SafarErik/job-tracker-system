@@ -41,8 +41,9 @@ public class JobApplication
     public required string Position { get; set; }
 
     /// <summary>
-    /// URL to the original job posting
+    /// URL to the original job posting.
     /// </summary>
+    [Url]
     public string? JobUrl { get; set; }
 
     /// <summary>

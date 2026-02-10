@@ -20,8 +20,8 @@ public class JobApplicationService : IJobApplicationService
     private readonly IUserRepository _userRepository;
     private readonly IAIService _aiService;
     private readonly IDocumentTextExtractor _textExtractor;
+    private readonly IFileStorageService _fileStorageService;
     private readonly ILogger<JobApplicationService> _logger;
-    private readonly string _uploadsPath;
 
     private const string MissingAiInputsMessage = "Please upload a Master Resume and add skills to your profile first.";
 
@@ -31,6 +31,7 @@ public class JobApplicationService : IJobApplicationService
         IUserRepository userRepository,
         IAIService aiService,
         IDocumentTextExtractor textExtractor,
+        IFileStorageService fileStorageService,
         ILogger<JobApplicationService> logger)
     {
         _jobRepository = jobRepository;
@@ -38,10 +39,8 @@ public class JobApplicationService : IJobApplicationService
         _documentRepository = documentRepository;
         _aiService = aiService;
         _textExtractor = textExtractor;
+        _fileStorageService = fileStorageService;
         _logger = logger;
-
-        // Use BaseDirectory for more reliable path resolution in different hosting environments
-        _uploadsPath = Path.Combine(AppContext.BaseDirectory, "uploads");
     }
 
     public async Task<IEnumerable<JobApplicationDto>> GetUserJobsAsync(string userId)
@@ -302,13 +301,20 @@ public class JobApplicationService : IJobApplicationService
 
     private async Task<string> ExtractResumeTextAsync(Document resume)
     {
-        var (fullPath, errorNote) = ValidateResumeFile(resume);
-        if (fullPath == null)
+        if (string.IsNullOrEmpty(resume.FileName))
         {
-            return errorNote!;
+            _logger.LogWarning("Resume document {ResumeId} has no filename", resume.Id);
+            return $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.";
         }
 
-        var resumeText = await _textExtractor.ExtractTextAsync(fullPath);
+        if (!_fileStorageService.FileExists(resume.FileName))
+        {
+            _logger.LogWarning("Resume file not found via storage service: {FileName}", resume.FileName);
+            return $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.";
+        }
+
+        var filePath = _fileStorageService.GetFilePath(resume.FileName);
+        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
 
         if (string.IsNullOrWhiteSpace(resumeText))
         {
@@ -317,41 +323,6 @@ public class JobApplicationService : IJobApplicationService
         }
 
         return resumeText;
-    }
-
-    private (string? FullPath, string? ErrorNote) ValidateResumeFile(Document resume)
-    {
-        if (string.IsNullOrEmpty(resume.FileName))
-        {
-            _logger.LogWarning("Resume document {ResumeId} has no filename", resume.Id);
-            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.");
-        }
-
-        var safeFileName = Path.GetFileName(resume.FileName);
-        var candidatePath = Path.Combine(_uploadsPath, safeFileName);
-        var fullUploadsPath = Path.GetFullPath(_uploadsPath);
-
-        if (!fullUploadsPath.EndsWith(Path.DirectorySeparatorChar))
-        {
-            fullUploadsPath += Path.DirectorySeparatorChar;
-        }
-
-        var fullCandidatePath = Path.GetFullPath(candidatePath);
-
-        if (!fullCandidatePath.StartsWith(fullUploadsPath, StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogError("Path traversal attempt detected! Requested file: {FileName}, Resolved Path: {Path}",
-                resume.FileName, fullCandidatePath);
-            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: Security violation - file access blocked.");
-        }
-
-        if (!File.Exists(fullCandidatePath))
-        {
-            _logger.LogWarning("Resume file not found at {Path}", fullCandidatePath);
-            return (null, $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.");
-        }
-
-        return (fullCandidatePath, null);
     }
 
     private static string BuildAiFeedback(AiAnalysisResult analysisResult)

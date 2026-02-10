@@ -34,6 +34,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Document> Documents { get; set; } = default!;
 
+    public DbSet<ApplicationTimelineEvent> TimelineEvents { get; set; } = default!;
+
     // ============================================
     // MODEL CONFIGURATION
     // ============================================
@@ -158,9 +160,28 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         // INDEXES FOR PERFORMANCE
         // ============================================
 
-        // Index on Skill name for faster lookups during NLP matching
         modelBuilder.Entity<Skill>()
             .HasIndex(s => s.Name)
             .IsUnique();
+
+        // ============================================
+        // TIMELINE EVENT CONFIGURATION
+        // ============================================
+
+        modelBuilder.Entity<ApplicationTimelineEvent>(entity =>
+        {
+            // If the related document is deleted, do not delete the timeline entry.
+            // Just null out the reference to keep the "history" intact.
+            entity.HasOne(e => e.RelatedDocument)
+                  .WithMany() // Document doesn't necessarily need to know about timeline events
+                  .HasForeignKey(e => e.RelatedDocumentId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure relationship with JobApplication
+            entity.HasOne(e => e.JobApplication)
+                  .WithMany(j => j.TimelineEvents)
+                  .HasForeignKey(e => e.JobApplicationId)
+                  .OnDelete(DeleteBehavior.Cascade); // If application is deleted, history goes with it
+        });
     }
 }

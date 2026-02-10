@@ -45,7 +45,7 @@ public static class DatabaseServiceExtensions
             });
         });
 
-        Console.WriteLine("📊 Database Provider: PostgreSQL (Neon)");
+        Console.WriteLine("Database Provider: PostgreSQL");
 
         return services;
     }

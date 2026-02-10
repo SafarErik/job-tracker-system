@@ -24,7 +24,12 @@ public class JobApplicationDto
     public JobType JobType { get; set; }
     public WorkplaceType WorkplaceType { get; set; }
     public JobPriority Priority { get; set; }
+
     public decimal? SalaryOffer { get; set; }
+    public decimal? BaseSalary { get; set; }
+    public decimal? Bonus { get; set; }
+    public decimal? EquityValue { get; set; }
+    public string? Currency { get; set; }
 
     public Guid CompanyId { get; set; }
     public string? CompanyName { get; set; }
@@ -53,7 +58,15 @@ public class CreateJobApplicationDto
     public JobType JobType { get; set; } = JobType.FullTime;
     public WorkplaceType WorkplaceType { get; set; } = WorkplaceType.OnSite;
     public JobPriority Priority { get; set; } = JobPriority.Medium;
+
     public decimal? SalaryOffer { get; set; }
+    public decimal? BaseSalary { get; set; }
+    public decimal? Bonus { get; set; }
+    public decimal? EquityValue { get; set; }
+
+    [StringLength(10)]
+    public string? Currency { get; set; } = "USD";
+
     public int MatchScore { get; set; }
     public Guid? DocumentId { get; set; }
     public Guid? PrimaryContactId { get; set; }
@@ -72,7 +85,15 @@ public class UpdateJobApplicationDto
     public JobType? JobType { get; set; }
     public WorkplaceType? WorkplaceType { get; set; }
     public JobPriority? Priority { get; set; }
+
     public decimal? SalaryOffer { get; set; }
+    public decimal? BaseSalary { get; set; }
+    public decimal? Bonus { get; set; }
+    public decimal? EquityValue { get; set; }
+
+    [StringLength(10)]
+    public string? Currency { get; set; }
+
     public int? MatchScore { get; set; }
     public Guid? DocumentId { get; set; }
     public bool DocumentIdProvided { get; set; }

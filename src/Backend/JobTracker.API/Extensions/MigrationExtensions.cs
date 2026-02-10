@@ -17,11 +17,11 @@ public static class MigrationExtensions
         try 
         {
             await context.Database.MigrateAsync();
-            logger.LogInformation("✅ Database migrations applied successfully.");
+            logger.LogInformation("Database migrations applied successfully.");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "❌ An error occurred while applying database migrations.");
+            logger.LogError(ex, "An error occurred while applying database migrations.");
             throw; // Re-throw to stop application startup if migration fails
         }
     }

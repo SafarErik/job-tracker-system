@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using JobTracker.Core.Enums;
 
 namespace JobTracker.Application.DTOs.Companies;
 
@@ -16,6 +17,14 @@ public class CompanyDto
 
     public string? Address { get; set; }
 
+    public string? LogoUrl { get; set; }
+
+    public string? HqLocation { get; set; }
+
+    public string? Description { get; set; }
+
+    public int CompatibilityScore { get; set; }
+
     /// <summary>
     /// Total number of applications submitted to this company
     /// </summary>
@@ -26,9 +35,9 @@ public class CompanyDto
     public List<string> TechStack { get; set; } = new();
 
     /// <summary>
-    /// Company Priority (Tier1, Tier2, Tier3)
+    /// Company Priority (TopTier, MidTier, LowTier, Archived)
     /// </summary>
-    public string Priority { get; set; } = "LowTier";
+    public CompanyPriority Priority { get; set; } = CompanyPriority.MidTier;
 
     /// <summary>
     /// Recent job applications for this company
@@ -50,6 +59,13 @@ public class CompanyDetailDto
 
     public string? Address { get; set; }
 
+    public string? LogoUrl { get; set; }
+
+    public string? HqLocation { get; set; }
+
+    public string? Description { get; set; }
+
+    public int CompatibilityScore { get; set; }
 
     /// <summary>
     /// Total number of applications to this company
@@ -61,9 +77,9 @@ public class CompanyDetailDto
     public List<string> TechStack { get; set; } = new();
 
     /// <summary>
-    /// Company Priority (Tier1, Tier2, Tier3)
+    /// Company Priority (TopTier, MidTier, LowTier, Archived)
     /// </summary>
-    public string Priority { get; set; } = "LowTier";
+    public CompanyPriority Priority { get; set; } = CompanyPriority.MidTier;
 
     /// <summary>
     /// History of all applications to this company
@@ -109,12 +125,20 @@ public class CreateCompanyDto
 
     public string? Address { get; set; }
 
+    [Url(ErrorMessage = "Invalid logo URL format")]
+    public string? LogoUrl { get; set; }
+
+    [StringLength(150, ErrorMessage = "HQ Location cannot exceed 150 characters")]
+    public string? HqLocation { get; set; }
+
+    public string? Description { get; set; }
 
     public string? Industry { get; set; }
 
     public List<string>? TechStack { get; set; }
 
-    public string Priority { get; set; } = "LowTier";
+    [EnumDataType(typeof(CompanyPriority))]
+    public CompanyPriority Priority { get; set; } = CompanyPriority.MidTier;
 
     /// <summary>
     /// Optional list of contacts to add during creation
@@ -136,12 +160,20 @@ public class UpdateCompanyDto
 
     public string? Address { get; set; }
 
+    [Url(ErrorMessage = "Invalid logo URL format")]
+    public string? LogoUrl { get; set; }
+
+    [StringLength(150, ErrorMessage = "HQ Location cannot exceed 150 characters")]
+    public string? HqLocation { get; set; }
+
+    public string? Description { get; set; }
 
     public string? Industry { get; set; }
 
     public List<string>? TechStack { get; set; }
 
-    public string? Priority { get; set; }
+    [EnumDataType(typeof(CompanyPriority))]
+    public CompanyPriority? Priority { get; set; }
 
     /// <summary>
     /// Optional list of contacts to update or add
@@ -159,8 +191,10 @@ public class CompanyContactDto
     [Required]
     public string Name { get; set; } = string.Empty;
 
+    [EmailAddress]
     public string? Email { get; set; }
 
+    [Url]
     public string? LinkedIn { get; set; }
 
     public string? Role { get; set; }

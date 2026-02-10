@@ -29,29 +29,7 @@ public class CompaniesController : ControllerBase
         }
         var companies = await _repository.GetAllByUserIdAsync(userId);
 
-        // Mapping Entity => DTO
-        var dtos = companies.Select(c => new CompanyDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Website = c.Website,
-            Address = c.Address,
-            Industry = c.Industry,
-            TechStack = c.TechStack?.Select(s => s.Name).ToList() ?? new List<string>(),
-            TotalApplications = c.JobApplications?.Count ?? 0,
-            Priority = c.Priority.ToString(),
-            RecentApplications = c.JobApplications?
-                .OrderByDescending(ja => ja.AppliedAt)
-                .Take(5)
-                .Select(ja => new JobApplicationHistoryDto
-                {
-                    Id = ja.Id,
-                    Position = ja.Position,
-                    AppliedAt = ja.AppliedAt,
-                    Status = ja.Status.ToString(),
-                    SalaryOffer = ja.SalaryOffer
-                }).ToList() ?? new List<JobApplicationHistoryDto>()
-        });
+        var dtos = companies.Select(JobTracker.Application.Mappers.CompanyMapper.MapToDto);
 
         return Ok(dtos);
     }
@@ -76,28 +54,7 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
 
-        var dto = new CompanyDto
-        {
-            Id = company.Id,
-            Name = company.Name,
-            Website = company.Website,
-            Address = company.Address,
-            TotalApplications = company.JobApplications?.Count ?? 0,
-            Priority = company.Priority.ToString(),
-            RecentApplications = company.JobApplications?
-                .OrderByDescending(ja => ja.AppliedAt)
-                .Take(5)
-                .Select(ja => new JobApplicationHistoryDto
-                {
-                    Id = ja.Id,
-                    Position = ja.Position,
-                    AppliedAt = ja.AppliedAt,
-                    Status = ja.Status.ToString(),
-                    SalaryOffer = ja.SalaryOffer
-                }).ToList() ?? new List<JobApplicationHistoryDto>()
-        };
-
-        return Ok(dto);
+        return Ok(JobTracker.Application.Mappers.CompanyMapper.MapToDto(company));
     }
 
     /// <summary>
@@ -123,37 +80,7 @@ public class CompaniesController : ControllerBase
             return NotFound();
         }
 
-        var detailDto = new CompanyDetailDto
-        {
-            Id = company.Id,
-            Name = company.Name,
-            Website = company.Website,
-            Address = company.Address,
-            TotalApplications = company.JobApplications?.Count ?? 0,
-            Priority = company.Priority.ToString(),
-            TechStack = company.TechStack?.Select(s => s.Name).ToList() ?? new List<string>(),
-            ApplicationHistory = company.JobApplications?
-                .OrderByDescending(ja => ja.AppliedAt)
-                .Select(ja => new JobApplicationHistoryDto
-                {
-                    Id = ja.Id,
-                    Position = ja.Position,
-                    AppliedAt = ja.AppliedAt,
-                    Status = ja.Status.ToString(),
-                    SalaryOffer = ja.SalaryOffer
-                })
-                .ToList() ?? new List<JobApplicationHistoryDto>(),
-            Contacts = company.Contacts?.Select(c => new CompanyContactDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Email = c.Email,
-                LinkedIn = c.LinkedIn,
-                Role = c.Role
-            }).ToList() ?? new List<CompanyContactDto>()
-        };
-
-        return Ok(detailDto);
+        return Ok(JobTracker.Application.Mappers.CompanyMapper.MapToDetailDto(company));
     }
 
     [HttpPost]
@@ -165,26 +92,18 @@ public class CompaniesController : ControllerBase
             return Unauthorized();
         }
 
-        CompanyPriority priorityEnum = CompanyPriority.LowTier;
-        if (!string.IsNullOrEmpty(createDto.Priority))
-        {
-            Enum.TryParse(createDto.Priority, true, out priorityEnum);
-        }
-
         var company = new Company
         {
             UserId = userId,
             Name = createDto.Name,
             Website = createDto.Website,
             Address = createDto.Address,
+            LogoUrl = createDto.LogoUrl,
+            HqLocation = createDto.HqLocation,
+            Description = createDto.Description,
             Industry = createDto.Industry,
-            // TechStack mapping for Create needs logic to handle explicit skills or just skip for now as simple string join isn't enough
-            // For MVP, we'll assume TechStack from DTO (List<string>) needs to be mapped to Skills. 
-            // BUT: Company.TechStack is ICollection<Skill>. We can't just assign strings.
-            // Complex mapping required or simplified for now.
-            // Let's defer complex skill mapping and just init empty list for now.
-            TechStack = new List<Skill>(),
-            Priority = priorityEnum,
+            TechStack = new List<Skill>(), // TODO: Implement skill mapping
+            Priority = createDto.Priority,
             Contacts = createDto.Contacts?.Select(c => new CompanyContact
             {
                 Name = c.Name,
@@ -194,19 +113,12 @@ public class CompaniesController : ControllerBase
             }).ToList() ?? new List<CompanyContact>()
         };
 
-        var id = await _repository.AddAsync(company);
+        await _repository.AddAsync(company);
 
-        var dto = new CompanyDto
-        {
-            Id = id,
-            Name = company.Name,
-            Website = company.Website,
-            Address = company.Address,
-            TotalApplications = 0,
-            Priority = company.Priority.ToString()
-        };
-
-        return CreatedAtAction(nameof(Get), new { id }, dto);
+        // Fetch again to ensure all relationships/defaults are set if needed, or just map the entity
+        // Since AddAsync sets the ID, we can map directly. 
+        // Note: TotalApplications will be 0.
+        return CreatedAtAction(nameof(Get), new { id = company.Id }, JobTracker.Application.Mappers.CompanyMapper.MapToDto(company));
     }
 
     [HttpPut("{id}")]
@@ -232,13 +144,13 @@ public class CompaniesController : ControllerBase
         if (!string.IsNullOrEmpty(updateDto.Name)) existingCompany.Name = updateDto.Name;
         if (updateDto.Website != null) existingCompany.Website = updateDto.Website;
         if (updateDto.Address != null) existingCompany.Address = updateDto.Address;
+        if (updateDto.LogoUrl != null) existingCompany.LogoUrl = updateDto.LogoUrl;
+        if (updateDto.HqLocation != null) existingCompany.HqLocation = updateDto.HqLocation;
+        if (updateDto.Description != null) existingCompany.Description = updateDto.Description;
 
-        if (!string.IsNullOrEmpty(updateDto.Priority))
+        if (updateDto.Priority.HasValue)
         {
-            if (Enum.TryParse<CompanyPriority>(updateDto.Priority, true, out var p))
-            {
-                existingCompany.Priority = p;
-            }
+            existingCompany.Priority = updateDto.Priority.Value;
         }
 
         if (updateDto.Industry != null) existingCompany.Industry = updateDto.Industry;

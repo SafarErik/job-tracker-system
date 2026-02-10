@@ -21,15 +21,14 @@ public class UpdateCompanyDtoValidator : AbstractValidator<UpdateCompanyDto>
             .When(x => !string.IsNullOrEmpty(x.Website));
 
         RuleFor(x => x.Priority)
-            .Must(p => new[] { "Tier1", "Tier2", "Tier3" }.Contains(p))
-            .WithMessage("Priority must be one of: Tier1, Tier2, Tier3")
-            .When(x => !string.IsNullOrEmpty(x.Priority));
-            
-        RuleForEach(x => x.Contacts).ChildRules(contact => 
+            .IsInEnum().WithMessage("Invalid priority")
+            .When(x => x.Priority.HasValue);
+
+        RuleForEach(x => x.Contacts).ChildRules(contact =>
         {
             contact.RuleFor(c => c.Name)
                 .NotEmpty().WithMessage("Contact name is required");
-                
+
             contact.RuleFor(c => c.Email)
                 .EmailAddress().WithMessage("Invalid email format")
                 .When(c => !string.IsNullOrEmpty(c.Email));

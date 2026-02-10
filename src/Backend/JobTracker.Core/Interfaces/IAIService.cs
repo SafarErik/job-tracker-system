@@ -18,6 +18,11 @@ public interface IAIService
     /// <summary>
     /// Generates a tailored cover letter based on the job description and user's resume.
     /// </summary>
+    /// <param name="jobDescription">Text content of the job requirement.</param>
+    /// <param name="resumeText">Text content of the candidate's resume.</param>
+    /// <param name="companyName">Name of the target company.</param>
+    /// <param name="position">Title of the target position.</param>
+    /// <returns>The generated cover letter text.</returns>
     Task<string> GenerateCoverLetterAsync(string jobDescription, string resumeText, string companyName, string position);
 
     /// <summary>

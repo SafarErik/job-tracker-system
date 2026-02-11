@@ -30,8 +30,12 @@ export class NotificationService {
   // ── Actions ─────────────────────────────────────────────
 
   /**
-   * Add a persistent notification to the center
-   */
+  * Adds a persistent notification to the history and shows an ephemeral toast.
+  *
+  * @param title - The title of the notification
+  * @param message - The body message
+  * @param type - The type of notification (system, company, ai, etc.)
+  */
   add(title: string, message: string, type: NotificationType = 'system') {
     const newNote: Notification = {
       id: crypto.randomUUID(),
@@ -50,12 +54,19 @@ export class NotificationService {
     else this.info(message, title);
   }
 
+  /**
+   * Marks a single notification as read.
+   * @param id - The ID of the notification
+   */
   markAsRead(id: string) {
     this._notifications.update(notes =>
       notes.map(n => n.id === id ? { ...n, isRead: true } : n)
     );
   }
 
+  /**
+   * Marks all notifications in the history as read.
+   */
   markAllAsRead() {
     this._notifications.update(notes =>
       notes.map(n => ({ ...n, isRead: true }))

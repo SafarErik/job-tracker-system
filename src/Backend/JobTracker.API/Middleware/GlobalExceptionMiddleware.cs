@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using JobTracker.Core.Exceptions;
 
 namespace JobTracker.API.Middleware;
 
@@ -39,6 +41,9 @@ public class GlobalExceptionMiddleware
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
             ArgumentException => (int)HttpStatusCode.BadRequest,
+            InvalidOperationException => (int)HttpStatusCode.BadRequest,
+            ExternalServiceException => (int)HttpStatusCode.BadGateway,
+            DbUpdateConcurrencyException => (int)HttpStatusCode.Conflict,
             FluentValidation.ValidationException => (int)HttpStatusCode.BadRequest,
             _ => (int)HttpStatusCode.InternalServerError
         };
@@ -80,6 +85,8 @@ public class GlobalExceptionMiddleware
             401 => "Unauthorized",
             403 => "Forbidden",
             404 => "Not Found",
+            409 => "Conflict",
+            502 => "Bad Gateway",
             500 => "Internal Server Error",
             _ => "Error"
         };

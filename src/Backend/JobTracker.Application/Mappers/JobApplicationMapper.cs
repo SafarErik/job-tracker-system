@@ -5,8 +5,15 @@ using JobTracker.Core.Entities;
 
 namespace JobTracker.Application.Mappers;
 
+/// <summary>
+/// Provides static mapping methods for converting between JobApplication entities and DTOs.
+/// </summary>
 public static class JobApplicationMapper
 {
+    /// <summary>
+    /// Maps a JobApplication entity to a detailed JobApplicationDto.
+    /// Parses AI feedback strings into structured lists.
+    /// </summary>
     public static JobApplicationDto MapToDto(JobApplication app)
     {
         var dto = new JobApplicationDto
@@ -97,5 +104,58 @@ public static class JobApplicationMapper
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Maps a CreateJobApplicationDto to a new JobApplication entity.
+    /// Default values (like AppliedAt, empty collections) are set here.
+    /// </summary>
+    public static JobApplication MapToEntity(CreateJobApplicationDto dto, string userId)
+    {
+        return new JobApplication
+        {
+            UserId = userId,
+            Position = dto.Position,
+            CompanyId = dto.CompanyId,
+            JobUrl = dto.JobUrl,
+            Description = dto.Description,
+            Status = dto.Status,
+            JobType = dto.JobType,
+            WorkplaceType = dto.WorkplaceType,
+            Priority = dto.Priority,
+            MatchScore = dto.MatchScore,
+            SalaryOffer = dto.SalaryOffer,
+            BaseSalary = dto.BaseSalary,
+            Bonus = dto.Bonus,
+            EquityValue = dto.EquityValue,
+            Currency = dto.Currency,
+            DocumentId = dto.DocumentId,
+            PrimaryContactId = dto.PrimaryContactId,
+            AppliedAt = DateTime.UtcNow
+        };
+    }
+
+    /// <summary>
+    /// Updates an existing JobApplication entity with values from an UpdateJobApplicationDto.
+    /// Only non-null/non-empty values from the DTO are applied (partial update).
+    /// </summary>
+    public static void ApplyUpdate(UpdateJobApplicationDto dto, JobApplication entity)
+    {
+        if (dto.Position != null) entity.Position = dto.Position;
+        if (dto.CompanyId.HasValue) entity.CompanyId = dto.CompanyId.Value;
+        if (dto.JobUrl != null) entity.JobUrl = dto.JobUrl;
+        if (dto.Description != null) entity.Description = dto.Description;
+        if (dto.Status.HasValue) entity.Status = dto.Status.Value;
+        if (dto.JobType.HasValue) entity.JobType = dto.JobType.Value;
+        if (dto.WorkplaceType.HasValue) entity.WorkplaceType = dto.WorkplaceType.Value;
+        if (dto.Priority.HasValue) entity.Priority = dto.Priority.Value;
+        if (dto.MatchScore.HasValue) entity.MatchScore = dto.MatchScore.Value;
+        if (dto.SalaryOffer.HasValue) entity.SalaryOffer = dto.SalaryOffer.Value;
+        if (dto.BaseSalary.HasValue) entity.BaseSalary = dto.BaseSalary.Value;
+        if (dto.Bonus.HasValue) entity.Bonus = dto.Bonus.Value;
+        if (dto.EquityValue.HasValue) entity.EquityValue = dto.EquityValue.Value;
+        if (dto.Currency.HasValue) entity.Currency = dto.Currency.Value;
+        if (dto.DocumentIdProvided) entity.DocumentId = dto.DocumentId;
+        if (dto.PrimaryContactId.HasValue) entity.PrimaryContactId = dto.PrimaryContactId;
     }
 }

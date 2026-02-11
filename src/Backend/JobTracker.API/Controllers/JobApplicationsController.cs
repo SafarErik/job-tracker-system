@@ -7,6 +7,7 @@ using JobTracker.Application.Interfaces;
 using JobTracker.Application.DTOs.JobApplications;
 using JobTracker.Application.DTOs.AI;
 using JobTracker.Application.DTOs.Companies;
+using JobTracker.Application.Mappers;
 
 namespace JobTracker.API.Controllers;
 
@@ -40,43 +41,11 @@ public class JobApplicationsController(
     [HttpGet]
     public async Task<ActionResult<IEnumerable<JobApplicationDto>>> GetAll()
     {
-        // Validate user is authenticated and has valid claim
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized(UserIdNotFoundMessage);
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        // Only get applications belonging to the current user
         var applications = await _repository.GetAllByUserIdAsync(userId);
-
-        var dtos = applications.Select(app => new JobApplicationDto
-        {
-            Id = app.Id,
-            Position = app.Position,
-            JobUrl = app.JobUrl,
-            Description = app.Description,
-            GeneratedCoverLetter = app.GeneratedCoverLetter,
-            AiFeedback = app.AiFeedback,
-            AppliedAt = app.AppliedAt,
-            Status = app.Status,
-            CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company",
-            DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName,
-            WorkplaceType = app.WorkplaceType,
-            Priority = app.Priority,
-            MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer,
-            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
-            {
-                Id = app.PrimaryContact.Id,
-                Name = app.PrimaryContact.Name,
-                Email = app.PrimaryContact.Email,
-                LinkedIn = app.PrimaryContact.LinkedIn,
-                Role = app.PrimaryContact.Role
-            } : null
-        });
+        var dtos = applications.Select(JobApplicationMapper.MapToDto);
 
         return Ok(dtos);
     }
@@ -86,142 +55,35 @@ public class JobApplicationsController(
     [HttpGet("{id}")]
     public async Task<ActionResult<JobApplicationDto>> Get(Guid id)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized(UserIdNotFoundMessage);
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
         var app = await _repository.GetByIdAsync(id);
 
-        if (app == null)
-        {
-            return NotFound();
-        }
+        if (app == null) return NotFound();
 
-        // Security check: Ensure the application belongs to the current user
-        if (app.UserId != userId)
-        {
-            return Forbid(); // 403 - User doesn't own this resource
-        }
+        if (app.UserId != userId) return Forbid();
 
-        var dto = new JobApplicationDto
-        {
-            Id = app.Id,
-            Position = app.Position,
-            JobUrl = app.JobUrl,
-            Description = app.Description,
-            GeneratedCoverLetter = app.GeneratedCoverLetter,
-            AiFeedback = app.AiFeedback,
-            AppliedAt = app.AppliedAt,
-            Status = app.Status,
-            CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company",
-            DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName,
-            JobType = app.JobType,
-            WorkplaceType = app.WorkplaceType,
-            Priority = app.Priority,
-            MatchScore = app.MatchScore,
-            SalaryOffer = app.SalaryOffer,
-            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
-            {
-                Id = app.PrimaryContact.Id,
-                Name = app.PrimaryContact.Name,
-                Email = app.PrimaryContact.Email,
-                LinkedIn = app.PrimaryContact.LinkedIn,
-                Role = app.PrimaryContact.Role
-            } : null
-        };
-
-        return Ok(dto);
+        return Ok(JobApplicationMapper.MapToDto(app));
     }
 
     // POST: api/jobapplications
     [HttpPost]
     public async Task<ActionResult<JobApplicationDto>> Create(CreateJobApplicationDto createDto)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized(UserIdNotFoundMessage);
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        // MAPPING: DTO -> Entity
-        var application = new JobApplication
-        {
-            UserId = userId, // Link to the authenticated user
-            Position = createDto.Position,
-            CompanyId = createDto.CompanyId,
-            JobUrl = createDto.JobUrl,
-            Description = createDto.Description,
-            Status = createDto.Status,
-            JobType = createDto.JobType,
-            WorkplaceType = createDto.WorkplaceType,
-            Priority = createDto.Priority,
-            MatchScore = createDto.MatchScore,
-            SalaryOffer = createDto.SalaryOffer,
-            DocumentId = createDto.DocumentId,
-            PrimaryContactId = createDto.PrimaryContactId,
-            AppliedAt = DateTime.UtcNow
-        };
+        var application = JobApplicationMapper.MapToEntity(createDto, userId);
 
-        // Create the application
         await _repository.AddAsync(application);
 
-        // Reload the application to get populated navigation properties (like PrimaryContact and Document)
-        // AddAsync doesn't automatically populate navigation properties from IDs
+        // Reload to populate navigation properties
         var createdApp = await _repository.GetByIdAsync(application.Id);
 
-        if (createdApp == null)
-        {
-            // Should not happen if add succeeded
-            return StatusCode(500, "Failed to retrieve created application");
-        }
+        if (createdApp == null) return StatusCode(500, "Failed to retrieve created application");
 
-        application = createdApp;
-
-        // Populate DocumentName if a document was associated (if not already loaded by GetByIdAsync)
-        string? documentName = application.Document?.OriginalFileName;
-        if (string.IsNullOrEmpty(documentName) && application.DocumentId.HasValue)
-        {
-            var document = await _documentRepository.GetByIdAsync(application.DocumentId.Value);
-            documentName = document?.OriginalFileName;
-        }
-
-        // We return with the created object
-        var dto = new JobApplicationDto
-        {
-            Id = application.Id,
-            Position = application.Position,
-            JobUrl = application.JobUrl,
-            Description = application.Description,
-            GeneratedCoverLetter = application.GeneratedCoverLetter,
-            AiFeedback = application.AiFeedback,
-            AppliedAt = application.AppliedAt,
-            Status = application.Status,
-            CompanyId = application.CompanyId,
-            CompanyName = application.Company?.Name ?? "Unknown Company",
-            DocumentId = application.DocumentId,
-            DocumentName = documentName,
-            JobType = application.JobType,
-            WorkplaceType = application.WorkplaceType,
-            Priority = application.Priority,
-            MatchScore = application.MatchScore,
-            SalaryOffer = application.SalaryOffer,
-            PrimaryContact = application.PrimaryContact != null ? new CompanyContactDto
-            {
-                Id = application.PrimaryContact.Id,
-                Name = application.PrimaryContact.Name,
-                Email = application.PrimaryContact.Email,
-                LinkedIn = application.PrimaryContact.LinkedIn,
-                Role = application.PrimaryContact.Role
-            } : null
-        };
-
-        return CreatedAtAction(nameof(Get), new { id = application.Id }, dto);
+        return CreatedAtAction(nameof(Get), new { id = createdApp.Id }, JobApplicationMapper.MapToDto(createdApp));
     }
 
     // PUT: api/jobapplications/5
@@ -232,59 +94,16 @@ public class JobApplicationsController(
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, UpdateJobApplicationDto updateDto)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized(UserIdNotFoundMessage);
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
         var existingApp = await _repository.GetByIdAsync(id);
 
         if (existingApp == null) return NotFound();
 
-        // Security check: Only allow owners to update their applications
-        if (existingApp.UserId != userId)
-        {
-            return Forbid();
-        }
+        if (existingApp.UserId != userId) return Forbid();
 
-        // Partial update - only update fields that are provided
-        if (updateDto.Position != null)
-            existingApp.Position = updateDto.Position;
-
-        if (updateDto.CompanyId.HasValue)
-            existingApp.CompanyId = updateDto.CompanyId.Value;
-
-        if (updateDto.JobUrl != null)
-            existingApp.JobUrl = updateDto.JobUrl;
-
-        if (updateDto.Description != null)
-            existingApp.Description = updateDto.Description;
-
-        if (updateDto.Status.HasValue)
-            existingApp.Status = updateDto.Status.Value;
-
-        if (updateDto.JobType.HasValue)
-            existingApp.JobType = updateDto.JobType.Value;
-
-        if (updateDto.WorkplaceType.HasValue)
-            existingApp.WorkplaceType = updateDto.WorkplaceType.Value;
-
-        if (updateDto.Priority.HasValue)
-            existingApp.Priority = updateDto.Priority.Value;
-
-        if (updateDto.MatchScore.HasValue)
-            existingApp.MatchScore = updateDto.MatchScore.Value;
-
-        if (updateDto.SalaryOffer.HasValue)
-            existingApp.SalaryOffer = updateDto.SalaryOffer.Value;
-
-        if (updateDto.DocumentIdProvided)
-            existingApp.DocumentId = updateDto.DocumentId;
-
-        if (updateDto.PrimaryContactId.HasValue)
-            existingApp.PrimaryContactId = updateDto.PrimaryContactId;
+        JobApplicationMapper.ApplyUpdate(updateDto, existingApp);
 
         await _repository.UpdateAsync(existingApp);
 
@@ -298,22 +117,14 @@ public class JobApplicationsController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized(UserIdNotFoundMessage);
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
         var app = await _repository.GetByIdAsync(id);
 
         if (app == null) return NotFound();
 
-        // Security check: Only allow owners to delete their applications
-        if (app.UserId != userId)
-        {
-            return Forbid();
-        }
+        if (app.UserId != userId) return Forbid();
 
         await _repository.DeleteAsync(id);
         return NoContent();
@@ -325,31 +136,15 @@ public class JobApplicationsController(
     /// Analyzes the job description against the user's master resume.
     /// Updates the application with match score and AI feedback.
     /// </summary>
-    /// <param name="id">The job application ID</param>
-    /// <returns>Updated job application with AI analysis results</returns>
     [HttpPost("{id}/analyze")]
     public async Task<ActionResult<JobApplicationDto>> Analyze(Guid id)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized("User ID not found in token");
-        }
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        try
-        {
-            var result = await _jobApplicationService.TriggerAIAnalysisAsync(id, userId);
-            return Ok(result);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound($"Job application {id} not found");
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+        // Exceptions handled by GlobalExceptionMiddleware
+        var result = await _jobApplicationService.TriggerAIAnalysisAsync(id, userId);
+        return Ok(result);
     }
 
     // POST: api/jobapplications/{id}/generate-assets
@@ -360,25 +155,11 @@ public class JobApplicationsController(
     public async Task<ActionResult<AiGeneratedAssetsDto>> GenerateAssets(Guid id)
     {
         var userId = GetUserId();
-        if (userId is null) return Unauthorized();
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        try
-        {
-            var result = await _jobApplicationService.GenerateAssetsAsync(id, userId);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(ex.Message);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+        // Exceptions handled by GlobalExceptionMiddleware
+        var result = await _jobApplicationService.GenerateAssetsAsync(id, userId);
+        return Ok(result);
     }
 
     // POST: api/jobapplications/{id}/cover-letter
@@ -386,15 +167,11 @@ public class JobApplicationsController(
     public async Task<ActionResult<string>> GenerateCoverLetter(Guid id)
     {
         var userId = GetUserId();
-        if (userId is null) return Unauthorized();
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        try
-        {
-            var result = await _jobApplicationService.GenerateCoverLetterAsync(id, userId);
-            return Ok(new { content = result });
-        }
-        catch (KeyNotFoundException) { return NotFound(); }
-        catch (UnauthorizedAccessException) { return Forbid(); }
+        // Exceptions handled by GlobalExceptionMiddleware
+        var result = await _jobApplicationService.GenerateCoverLetterAsync(id, userId);
+        return Ok(new { content = result });
     }
 
     // POST: api/jobapplications/{id}/resume-optimize
@@ -402,14 +179,10 @@ public class JobApplicationsController(
     public async Task<ActionResult<string>> OptimizeResume(Guid id)
     {
         var userId = GetUserId();
-        if (userId is null) return Unauthorized();
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
 
-        try
-        {
-            var result = await _jobApplicationService.OptimizeResumeAsync(id, userId);
-            return Ok(new { content = result });
-        }
-        catch (KeyNotFoundException) { return NotFound(); }
-        catch (UnauthorizedAccessException) { return Forbid(); }
+        // Exceptions handled by GlobalExceptionMiddleware
+        var result = await _jobApplicationService.OptimizeResumeAsync(id, userId);
+        return Ok(new { content = result });
     }
 }

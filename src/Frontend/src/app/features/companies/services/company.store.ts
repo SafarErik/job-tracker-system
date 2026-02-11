@@ -109,7 +109,14 @@ export class CompanyStore {
         );
     }
 
-    /** Update a company with optimistic local update */
+    /**
+     * Updates an existing company.
+     * Performs an optimistic update on the local state before sending the request.
+     * Reverts changes if the API call fails.
+     *
+     * @param id - The ID of the company to update
+     * @param changes - The partial company object with changed fields
+     */
     update(id: string, changes: UpdateCompany): void {
         const originalList = this._companies();
         const originalActive = this._activeCompany();
@@ -137,7 +144,13 @@ export class CompanyStore {
         });
     }
 
-    /** Delete a company with optimistic removal */
+    /**
+     * Deletes a company.
+     * Performs an optimistic delete on the local state.
+     * Reverts changes if the API call fails.
+     *
+     * @param id - The ID of the company to delete
+     */
     delete(id: string): void {
         const originalList = this._companies();
 

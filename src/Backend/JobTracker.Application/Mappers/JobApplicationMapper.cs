@@ -1,3 +1,4 @@
+using JobTracker.Core.Enums;
 using JobTracker.Application.DTOs.Companies;
 using JobTracker.Application.DTOs.JobApplications;
 using JobTracker.Core.Entities;
@@ -29,7 +30,7 @@ public static class JobApplicationMapper
             BaseSalary = app.BaseSalary,
             Bonus = app.Bonus,
             EquityValue = app.EquityValue,
-            Currency = app.Currency,
+            Currency = app.Currency ?? Currency.USD,
             CompanyId = app.CompanyId,
             CompanyName = app.Company?.Name ?? "Unknown Company",
             DocumentId = app.DocumentId,

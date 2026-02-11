@@ -26,7 +26,7 @@ Identify 'Gaps' (missing skills or experience).
 Provide 'StrategicAdvice' for the interview.
 Generate a 'TailoredResume' (Markdown format) that optimizes the original resume for this specific job.
 Generate a 'CoverLetter' (Markdown format).
-Return ONLY a JSON object with these keys: matchScore, gapAnalysis, missingSkills, strategicAdvice, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
+Return a JSON object with these keys: matchScore, gapAnalysis, missingSkills, strategicAdvice, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
 
     /// <summary>
     /// System prompt for generating a professional and persuasive cover letter.

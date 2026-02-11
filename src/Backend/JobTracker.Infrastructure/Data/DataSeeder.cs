@@ -507,7 +507,16 @@ public static class DataSeeder
                 // If offer received
                 if (app.Status == JobApplicationStatus.OfferReceived || app.Status == JobApplicationStatus.Accepted)
                 {
-                    var offerDate = DateTime.UtcNow.AddDays(-random.Next(1, 3));
+                    // Derive offer date from last known event (interview or screening)
+                    var baseDateForOffer = (app.Status is JobApplicationStatus.Interviewing or JobApplicationStatus.OfferReceived or JobApplicationStatus.Accepted)
+                        ? screeningDate.AddDays(random.Next(3, 7)) // Re-calculating interviewDate logic roughly or using a fallback
+                        : screeningDate;
+
+                    // Actually, let's just use the logic from above or a safe offset
+                    var offerDate = screeningDate.AddDays(random.Next(7, 14));
+
+                    if (offerDate > DateTime.UtcNow) offerDate = DateTime.UtcNow;
+
                     events.Add(new ApplicationTimelineEvent
                     {
                         Id = Guid.NewGuid(),

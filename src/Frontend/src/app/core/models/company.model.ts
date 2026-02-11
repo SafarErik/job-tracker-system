@@ -5,8 +5,7 @@ export interface CompanyDto {
     name: string;
     industry?: string;
     website?: string;
-    address?: string; // Corrected from 'location' to 'address' if backend uses 'Address' or kept 'location' if requested? User requested 'hqLocation'.
-    // User requested: logoUrl, hqLocation, description, compatibilityScore
+    address?: string;
     logoUrl?: string;
     hqLocation?: string;
     description?: string;

@@ -108,7 +108,7 @@ public class JobApplicationService : IJobApplicationService
         if (dto.BaseSalaryProvided) existing.BaseSalary = dto.BaseSalary;
         if (dto.BonusProvided) existing.Bonus = dto.Bonus;
         if (dto.EquityValueProvided) existing.EquityValue = dto.EquityValue;
-        if (dto.CurrencyProvided && dto.Currency.HasValue) existing.Currency = dto.Currency.Value;
+        if (dto.CurrencyProvided) existing.Currency = dto.Currency;
 
         if (dto.MatchScore.HasValue) existing.MatchScore = dto.MatchScore.Value;
 

@@ -105,7 +105,7 @@ public class JobApplication
     public decimal? Bonus { get; set; }
     [Range(0, 1000000000)]
     public decimal? EquityValue { get; set; }
-    public Currency Currency { get; set; } = Currency.USD;
+    public Currency? Currency { get; set; }
 
     [ConcurrencyCheck]
     public Guid ConcurrencyToken { get; set; } = Guid.NewGuid();

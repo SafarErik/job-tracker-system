@@ -2,6 +2,7 @@ import { JobApplicationStatus } from '../../features/job-applications/models/app
 import { JobType } from '../../features/job-applications/models/job-type.enum';
 import { WorkplaceType } from '../../features/job-applications/models/workplace-type.enum';
 import { JobPriority } from '../../features/job-applications/models/job-priority.enum';
+import { Currency } from '../../features/job-applications/models/currency.enum';
 import { CompanyContact } from './company-contact.model';
 
 export interface JobApplication {
@@ -25,7 +26,7 @@ export interface JobApplication {
     baseSalary?: number;
     bonus?: number;
     equityValue?: number;
-    currency: string;
+    currency: Currency;
     salaryPeriod?: 'yearly' | 'monthly' | 'hourly';
     jobUrl?: string;
     description?: string;
@@ -58,11 +59,12 @@ export interface CreateJobApplication {
     baseSalary?: number;
     bonus?: number;
     equityValue?: number;
-    currency: string;
+    currency: Currency;
     matchScore: number;
     documentId?: string | null;
     primaryContactId?: string;
 }
+
 export interface UpdateJobApplication {
     concurrencyToken: string;
     position?: string;
@@ -73,12 +75,20 @@ export interface UpdateJobApplication {
     jobType?: JobType;
     workplaceType?: WorkplaceType;
     priority?: JobPriority;
-    salaryOffer?: number;
-    baseSalary?: number;
-    bonus?: number;
-    equityValue?: number;
-    currency?: string;
-    matchScore?: number;
+
+    salaryOffer?: number | null;
+    salaryOfferProvided?: boolean;
+    baseSalary?: number | null;
+    baseSalaryProvided?: boolean;
+    bonus?: number | null;
+    bonusProvided?: boolean;
+    equityValue?: number | null;
+    equityValueProvided?: boolean;
+
+    currency?: Currency | null;
+    currencyProvided?: boolean;
+
+    matchScore?: number | null;
     documentId?: string | null;
     documentIdProvided?: boolean;
     primaryContactId?: string;

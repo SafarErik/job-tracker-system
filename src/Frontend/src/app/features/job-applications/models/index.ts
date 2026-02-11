@@ -6,3 +6,4 @@
 
 export * from './job-application.model';
 export * from './application-status.enum';
+export * from './currency.enum';

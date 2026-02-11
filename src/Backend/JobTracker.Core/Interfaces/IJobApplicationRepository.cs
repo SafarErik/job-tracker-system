@@ -44,4 +44,5 @@ public interface IJobApplicationRepository
     /// <param name="id">The unique identifier of the job application to delete.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task DeleteAsync(Guid id);
+    void SetOriginalConcurrencyToken(JobApplication application, Guid token);
 }

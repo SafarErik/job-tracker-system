@@ -12,9 +12,9 @@ export interface CompanyDto {
     description?: string;
     compatibilityScore: number;
     priority: number; // Enum value
-    techStack?: string[];
-    totalApplications?: number;
-    recentApplications?: JobApplicationHistoryDto[];
+    techStack: string[];
+    totalApplications: number;
+    recentApplications: JobApplicationHistoryDto[];
 }
 
 export interface JobApplicationHistoryDto {
@@ -22,6 +22,7 @@ export interface JobApplicationHistoryDto {
     position: string;
     status: string;
     appliedAt: string;
+    salaryOffer?: number;
 }
 
 export interface CompanyDetailDto extends CompanyDto {

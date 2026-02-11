@@ -190,7 +190,7 @@ public static class ServiceExtensions
     // ──────────────────────────────────────────────
 
     public static IServiceCollection AddCorsConfiguration(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
         var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
         if (allowedOrigins == null || allowedOrigins.Length == 0)
@@ -207,7 +207,7 @@ public static class ServiceExtensions
                     if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
                         return true;
 
-                    if (origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
+                    if (isDevelopment && origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
                         return true;
 
                     return false;

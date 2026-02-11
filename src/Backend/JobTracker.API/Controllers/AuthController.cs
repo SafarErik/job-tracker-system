@@ -95,7 +95,8 @@ public class AuthController : ControllerBase
     [Authorize]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        // Returns current user info via IAuthService.RefreshTokenAsync to validate and fetch user data
+        // Validates the user ID from the ClaimsPrincipal and fetches the user via _authService.GetUserByIdAsync(userId),
+        // returning Unauthorized if no userId or NotFound if the user is missing.
 
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
@@ -194,7 +195,8 @@ public class AuthController : ControllerBase
         }
 
         var returnUrl = SanitizeReturnUrl(authenticateResult.Properties?.Items["returnUrl"]);
-        return Redirect($"{returnUrl}/auth/callback?token={result.Token}");
+        var encodedToken = Uri.EscapeDataString(result.Token ?? "");
+        return Redirect($"{returnUrl}/auth/callback?token={encodedToken}");
     }
 
     /// <summary>

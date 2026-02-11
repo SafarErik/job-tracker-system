@@ -25,7 +25,7 @@ export interface JobApplication {
     baseSalary?: number;
     bonus?: number;
     equityValue?: number;
-    currency?: string;
+    currency: string;
     salaryPeriod?: 'yearly' | 'monthly' | 'hourly';
     jobUrl?: string;
     description?: string;
@@ -58,7 +58,7 @@ export interface CreateJobApplication {
     baseSalary?: number;
     bonus?: number;
     equityValue?: number;
-    currency?: string;
+    currency: string;
     matchScore: number;
     documentId?: string | null;
     primaryContactId?: string;

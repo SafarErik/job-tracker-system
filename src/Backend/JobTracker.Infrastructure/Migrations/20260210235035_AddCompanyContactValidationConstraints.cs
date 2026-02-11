@@ -11,10 +11,17 @@ namespace JobTracker.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "TechStack",
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
                 table: "Companies",
-                newName: "Description");
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.Sql(@"
+                UPDATE ""Companies"" 
+                SET ""Description"" = ""TechStack"" 
+                WHERE ""TechStack"" IS NOT NULL;
+            ");
 
             migrationBuilder.AlterColumn<string>(
                 name: "ProfilePictureUrl",
@@ -83,10 +90,11 @@ namespace JobTracker.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.AddColumn<byte[]>(
-                name: "EncryptedOpenAiApiKey",
+            migrationBuilder.AddColumn<string>(
+                name: "OpenAiApiKey",
                 table: "Users",
-                type: "bytea",
+                type: "character varying(200)",
+                maxLength: 200,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -268,13 +276,7 @@ namespace JobTracker.Infrastructure.Migrations
                 WHERE ""Priority"" ~ '^[a-zA-Z]+$';
             ");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "Priority",
-                table: "Companies",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "text");
+            migrationBuilder.Sql("ALTER TABLE \"Companies\" ALTER COLUMN \"Priority\" TYPE integer USING \"Priority\"::integer;");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
@@ -410,7 +412,7 @@ namespace JobTracker.Infrastructure.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "EncryptedOpenAiApiKey",
+                name: "OpenAiApiKey",
                 table: "Users");
 
             migrationBuilder.DropColumn(
@@ -453,10 +455,9 @@ namespace JobTracker.Infrastructure.Migrations
                 name: "LogoUrl",
                 table: "Companies");
 
-            migrationBuilder.RenameColumn(
+            migrationBuilder.DropColumn(
                 name: "Description",
-                table: "Companies",
-                newName: "TechStack");
+                table: "Companies");
 
             migrationBuilder.AlterColumn<string>(
                 name: "ProfilePictureUrl",
@@ -641,13 +642,17 @@ namespace JobTracker.Infrastructure.Migrations
                 oldMaxLength: 255,
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Priority",
-                table: "Companies",
-                type: "text",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer");
+            migrationBuilder.Sql(@"
+                UPDATE ""Companies"" 
+                SET ""Priority"" = CASE 
+                    WHEN ""Priority"" = '0' THEN 'TopTier'
+                    WHEN ""Priority"" = '1' THEN 'MidTier'
+                    WHEN ""Priority"" = '2' THEN 'LowTier'
+                    ELSE 'MidTier'
+                END;
+            ");
+
+            migrationBuilder.Sql("ALTER TABLE \"Companies\" ALTER COLUMN \"Priority\" TYPE text;");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",

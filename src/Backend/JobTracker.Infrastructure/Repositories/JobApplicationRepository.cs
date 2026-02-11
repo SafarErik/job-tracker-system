@@ -92,4 +92,9 @@ public class JobApplicationRepository : IJobApplicationRepository
             _logger.LogWarning("Attempted to delete JobApplication {Id}, but it was not found.", id);
         }
     }
+    /// <inheritdoc/>
+    public void SetOriginalConcurrencyToken(JobApplication application, Guid token)
+    {
+        _context.Entry(application).Property(x => x.ConcurrencyToken).OriginalValue = token;
+    }
 }

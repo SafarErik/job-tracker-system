@@ -104,11 +104,11 @@ public class JobApplicationService : IJobApplicationService
         if (dto.JobType.HasValue) existing.JobType = dto.JobType.Value;
         if (dto.WorkplaceType.HasValue) existing.WorkplaceType = dto.WorkplaceType.Value;
         if (dto.Priority.HasValue) existing.Priority = dto.Priority.Value;
-        if (dto.SalaryOffer.HasValue) existing.SalaryOffer = dto.SalaryOffer.Value;
-        if (dto.BaseSalary.HasValue) existing.BaseSalary = dto.BaseSalary.Value;
-        if (dto.Bonus.HasValue) existing.Bonus = dto.Bonus.Value;
-        if (dto.EquityValue.HasValue) existing.EquityValue = dto.EquityValue.Value;
-        if (dto.Currency.HasValue) existing.Currency = dto.Currency.Value;
+        if (dto.SalaryOfferProvided) existing.SalaryOffer = dto.SalaryOffer;
+        if (dto.BaseSalaryProvided) existing.BaseSalary = dto.BaseSalary;
+        if (dto.BonusProvided) existing.Bonus = dto.Bonus;
+        if (dto.EquityValueProvided) existing.EquityValue = dto.EquityValue;
+        if (dto.CurrencyProvided && dto.Currency.HasValue) existing.Currency = dto.Currency.Value;
 
         if (dto.MatchScore.HasValue) existing.MatchScore = dto.MatchScore.Value;
 
@@ -117,9 +117,11 @@ public class JobApplicationService : IJobApplicationService
 
         if (dto.PrimaryContactId.HasValue) existing.PrimaryContactId = dto.PrimaryContactId.Value;
 
-        // Update ConcurrencyToken manually to trigger optimisic concurrency check
-        // The client sent 'dto.ConcurrencyToken', which must match 'existing.ConcurrencyToken'.
-        // If they match (EF checks this), we assign a NEW token for the next version.
+        // EF Core will compare this OriginalValue against the database value during SaveChanges
+        // If they differ, a DbUpdateConcurrencyException will be thrown.
+        _jobRepository.SetOriginalConcurrencyToken(existing, dto.ConcurrencyToken);
+
+        // Assign a NEW token for the next version.
         existing.ConcurrencyToken = Guid.NewGuid();
 
         await _jobRepository.UpdateAsync(existing);

@@ -87,11 +87,16 @@ public class UpdateJobApplicationDto
     public JobPriority? Priority { get; set; }
 
     public decimal? SalaryOffer { get; set; }
+    public bool SalaryOfferProvided { get; set; }
     public decimal? BaseSalary { get; set; }
+    public bool BaseSalaryProvided { get; set; }
     public decimal? Bonus { get; set; }
+    public bool BonusProvided { get; set; }
     public decimal? EquityValue { get; set; }
+    public bool EquityValueProvided { get; set; }
 
     public Currency? Currency { get; set; }
+    public bool CurrencyProvided { get; set; }
 
     public int? MatchScore { get; set; }
     public Guid? DocumentId { get; set; }

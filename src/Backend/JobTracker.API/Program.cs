@@ -31,7 +31,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddSwaggerConfiguration();
-builder.Services.AddCorsConfiguration(builder.Configuration);
+builder.Services.AddCorsConfiguration(builder.Configuration, builder.Environment.IsDevelopment());
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

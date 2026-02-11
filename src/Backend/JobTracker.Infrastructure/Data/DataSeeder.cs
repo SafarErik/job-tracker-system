@@ -429,7 +429,7 @@ public static class DataSeeder
                 WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
                 Priority = priorities[random.Next(priorities.Length)],
                 MatchScore = random.Next(40, 95), // Random but realistic scores
-                SalaryOffer = status == JobApplicationStatus.OfferReceived
+                SalaryOffer = (status == JobApplicationStatus.OfferReceived || status == JobApplicationStatus.Accepted)
                     ? random.Next(600000, 1200000)
                     : null,
                 Currency = Enum.GetValues<Currency>()[random.Next(Enum.GetValues<Currency>().Length)]
@@ -514,7 +514,9 @@ public static class DataSeeder
                         JobApplicationId = app.Id,
                         EventType = TimelineEventType.OfferReceived,
                         Title = "Offer Received!",
-                        Description = $"Received an offer details: Salary {app.SalaryOffer:N0} {app.Currency}",
+                        Description = app.SalaryOffer.HasValue
+                            ? $"Received an offer details: Salary {app.SalaryOffer:N0} {app.Currency}"
+                            : "Received an offer.",
                         OccurredAt = offerDate
                     });
                 }

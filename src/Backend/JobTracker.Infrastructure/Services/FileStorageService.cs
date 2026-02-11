@@ -20,12 +20,10 @@ public class FileStorageService : IFileStorageService
 
     // Allowed file types for security
     private static readonly string[] AllowedContentTypes = {
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        "application/pdf"
     };
 
-    private static readonly string[] AllowedExtensions = { ".pdf", ".doc", ".docx" };
+    private static readonly string[] AllowedExtensions = { ".pdf" };
 
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
 
@@ -57,7 +55,7 @@ public class FileStorageService : IFileStorageService
             !AllowedContentTypes.Contains(contentType) ||
             !AllowedExtensions.Contains(fileExtension))
         {
-            throw new ArgumentException("Only PDF and Word documents are allowed");
+            throw new ArgumentException("Only PDF files are allowed");
         }
 
         // 3. Sanitize Filename

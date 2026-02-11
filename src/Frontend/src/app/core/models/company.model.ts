@@ -5,8 +5,13 @@ export interface CompanyDto {
     name: string;
     industry?: string;
     website?: string;
-    location?: string;
+    address?: string; // Corrected from 'location' to 'address' if backend uses 'Address' or kept 'location' if requested? User requested 'hqLocation'.
+    // User requested: logoUrl, hqLocation, description, compatibilityScore
     logoUrl?: string;
+    hqLocation?: string;
+    description?: string;
+    compatibilityScore: number;
+    priority: number; // Enum value
 }
 
 export interface CompanyDetailDto extends CompanyDto {
@@ -18,6 +23,20 @@ export interface CreateCompanyDto {
     name: string;
     industry?: string;
     website?: string;
-    location?: string;
+    address?: string;
+    priority?: number;
     logoUrl?: string;
+    hqLocation?: string;
+    description?: string;
+}
+
+export interface UpdateCompanyDto {
+    name?: string;
+    industry?: string;
+    website?: string;
+    address?: string;
+    priority?: number;
+    logoUrl?: string;
+    hqLocation?: string;
+    description?: string;
 }

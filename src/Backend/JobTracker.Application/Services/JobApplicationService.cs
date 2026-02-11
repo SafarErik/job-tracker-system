@@ -73,6 +73,10 @@ public class JobApplicationService : IJobApplicationService
             WorkplaceType = dto.WorkplaceType,
             Priority = dto.Priority,
             SalaryOffer = dto.SalaryOffer,
+            BaseSalary = dto.BaseSalary,
+            Bonus = dto.Bonus,
+            EquityValue = dto.EquityValue,
+            Currency = dto.Currency,
             MatchScore = dto.MatchScore,
             DocumentId = dto.DocumentId,
             PrimaryContactId = dto.PrimaryContactId,
@@ -101,8 +105,16 @@ public class JobApplicationService : IJobApplicationService
         if (dto.WorkplaceType.HasValue) existing.WorkplaceType = dto.WorkplaceType.Value;
         if (dto.Priority.HasValue) existing.Priority = dto.Priority.Value;
         if (dto.SalaryOffer.HasValue) existing.SalaryOffer = dto.SalaryOffer.Value;
+        if (dto.BaseSalary.HasValue) existing.BaseSalary = dto.BaseSalary.Value;
+        if (dto.Bonus.HasValue) existing.Bonus = dto.Bonus.Value;
+        if (dto.EquityValue.HasValue) existing.EquityValue = dto.EquityValue.Value;
+        if (dto.Currency.HasValue) existing.Currency = dto.Currency.Value;
+
         if (dto.MatchScore.HasValue) existing.MatchScore = dto.MatchScore.Value;
-        if (dto.DocumentId.HasValue) existing.DocumentId = dto.DocumentId.Value;
+
+        // Use DocumentIdProvided to determine if we should update the DocumentId (allows clearing it)
+        if (dto.DocumentIdProvided) existing.DocumentId = dto.DocumentId;
+
         if (dto.PrimaryContactId.HasValue) existing.PrimaryContactId = dto.PrimaryContactId.Value;
 
         existing.RowVersion = dto.RowVersion;

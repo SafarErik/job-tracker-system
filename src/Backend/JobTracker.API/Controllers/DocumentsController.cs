@@ -159,11 +159,11 @@ public class DocumentsController : ControllerBase
 
         try
         {
-            // Delete physical file
-            await _fileStorageService.DeleteFileAsync(document.FileName);
-
-            // Delete from database
+            // Delete from database first to prevent orphans
             await _documentRepository.DeleteAsync(id);
+
+            // Delete physical file (best effort)
+            await _fileStorageService.DeleteFileAsync(document.FileName);
 
             return NoContent();
         }

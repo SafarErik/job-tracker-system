@@ -505,7 +505,7 @@ public static class DataSeeder
                 }
 
                 // If offer received
-                if (app.Status == JobApplicationStatus.OfferReceived)
+                if (app.Status == JobApplicationStatus.OfferReceived || app.Status == JobApplicationStatus.Accepted)
                 {
                     var offerDate = DateTime.UtcNow.AddDays(-random.Next(1, 3));
                     events.Add(new ApplicationTimelineEvent

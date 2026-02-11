@@ -43,7 +43,7 @@ public static class JobApplicationMapper
                 LinkedIn = app.PrimaryContact.LinkedIn,
                 Role = app.PrimaryContact.Role
             } : null,
-            RowVersion = app.RowVersion
+            ConcurrencyToken = app.ConcurrencyToken
         };
 
         ParseAiFeedbackToDto(app.AiFeedback, dto);

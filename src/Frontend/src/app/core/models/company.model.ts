@@ -12,11 +12,21 @@ export interface CompanyDto {
     description?: string;
     compatibilityScore: number;
     priority: number; // Enum value
+    techStack?: string[];
+    totalApplications?: number;
+    recentApplications?: JobApplicationHistoryDto[];
+}
+
+export interface JobApplicationHistoryDto {
+    id: string;
+    position: string;
+    status: string;
+    appliedAt: string;
 }
 
 export interface CompanyDetailDto extends CompanyDto {
     contacts: CompanyContact[];
-    jobApplications: any[]; // Avoid circular dependency or use simplified DTO
+    applicationHistory: JobApplicationHistoryDto[];
 }
 
 export interface CreateCompanyDto {

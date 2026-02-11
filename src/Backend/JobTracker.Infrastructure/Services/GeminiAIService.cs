@@ -148,11 +148,6 @@ Optimize this resume for the job description.";
 
             if (!string.IsNullOrEmpty(part?.Text))
             {
-                return part.Text;
-            }
-
-            if (!string.IsNullOrEmpty(part?.Text))
-            {
                 _logger.LogInformation("Gemini API call succeeded. Length: {Length}", part.Text.Length);
                 return part.Text;
             }

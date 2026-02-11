@@ -42,7 +42,7 @@ export interface JobApplication {
     documentName?: string;
     primaryContactId?: string;
     primaryContact?: CompanyContact;
-    rowVersion?: number; // Concurrency token (mapped from uint)
+    concurrencyToken: string; // Concurrency token (Guid)
 }
 
 export interface CreateJobApplication {
@@ -61,5 +61,25 @@ export interface CreateJobApplication {
     currency?: string;
     matchScore: number;
     documentId?: string | null;
+    primaryContactId?: string;
+}
+export interface UpdateJobApplication {
+    concurrencyToken: string;
+    position?: string;
+    companyId?: string;
+    jobUrl?: string;
+    description?: string;
+    status?: JobApplicationStatus;
+    jobType?: JobType;
+    workplaceType?: WorkplaceType;
+    priority?: JobPriority;
+    salaryOffer?: number;
+    baseSalary?: number;
+    bonus?: number;
+    equityValue?: number;
+    currency?: string;
+    matchScore?: number;
+    documentId?: string | null;
+    documentIdProvided?: boolean;
     primaryContactId?: string;
 }

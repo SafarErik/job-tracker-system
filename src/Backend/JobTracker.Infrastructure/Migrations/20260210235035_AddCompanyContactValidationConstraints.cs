@@ -83,11 +83,10 @@ namespace JobTracker.Infrastructure.Migrations
                 nullable: false,
                 defaultValue: 0);
 
-            migrationBuilder.AddColumn<string>(
-                name: "OpenAiApiKey",
+            migrationBuilder.AddColumn<byte[]>(
+                name: "EncryptedOpenAiApiKey",
                 table: "Users",
-                type: "character varying(200)",
-                maxLength: 200,
+                type: "bytea",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -257,6 +256,18 @@ namespace JobTracker.Infrastructure.Migrations
                 oldType: "text",
                 oldNullable: true);
 
+            // Convert existing string priorities to integers
+            migrationBuilder.Sql(@"
+                UPDATE ""Companies"" 
+                SET ""Priority"" = CASE 
+                    WHEN ""Priority"" = 'TopTier' THEN '0'
+                    WHEN ""Priority"" = 'MidTier' THEN '1'
+                    WHEN ""Priority"" = 'LowTier' THEN '2'
+                    ELSE '1'
+                END
+                WHERE ""Priority"" ~ '^[a-zA-Z]+$';
+            ");
+
             migrationBuilder.AlterColumn<int>(
                 name: "Priority",
                 table: "Companies",
@@ -399,7 +410,7 @@ namespace JobTracker.Infrastructure.Migrations
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "OpenAiApiKey",
+                name: "EncryptedOpenAiApiKey",
                 table: "Users");
 
             migrationBuilder.DropColumn(

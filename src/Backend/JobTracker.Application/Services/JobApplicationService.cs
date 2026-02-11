@@ -117,7 +117,10 @@ public class JobApplicationService : IJobApplicationService
 
         if (dto.PrimaryContactId.HasValue) existing.PrimaryContactId = dto.PrimaryContactId.Value;
 
-        existing.RowVersion = dto.RowVersion;
+        // Update ConcurrencyToken manually to trigger optimisic concurrency check
+        // The client sent 'dto.ConcurrencyToken', which must match 'existing.ConcurrencyToken'.
+        // If they match (EF checks this), we assign a NEW token for the next version.
+        existing.ConcurrencyToken = Guid.NewGuid();
 
         await _jobRepository.UpdateAsync(existing);
         return true;

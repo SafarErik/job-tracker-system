@@ -181,7 +181,9 @@ public class AuthService : IAuthService
                 FirstName = externalUser.FirstName,
                 LastName = externalUser.LastName,
                 ProfilePictureUrl = externalUser.ProfilePictureUrl,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                IsExternalAccount = true,
+                ExternalProvider = externalUser.FirstName != "Unknown" ? "External" : "Unknown" // Or pass provider in DTO
             };
 
             var createResult = await _userManager.CreateAsync(user);
@@ -249,7 +251,10 @@ public class AuthService : IAuthService
             new Claim("lastName", user.LastName ?? "")
         };
 
-        var expirationMinutes = int.Parse(jwtSettings["AccessTokenExpirationMinutes"] ?? "60");
+        if (!int.TryParse(jwtSettings["AccessTokenExpirationMinutes"], out var expirationMinutes))
+        {
+            expirationMinutes = 60;
+        }
 
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],

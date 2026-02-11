@@ -107,7 +107,8 @@ public class JobApplication
     public decimal? EquityValue { get; set; }
     public Currency Currency { get; set; } = Currency.USD;
 
-    public uint RowVersion { get; set; }
+    [ConcurrencyCheck]
+    public Guid ConcurrencyToken { get; set; } = Guid.NewGuid();
 
     // ============================================
     // COMPANY RELATIONSHIP

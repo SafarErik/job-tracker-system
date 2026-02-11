@@ -207,10 +207,6 @@ public static class ServiceExtensions
                     if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
                         return true;
 
-                    if (Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
-                        uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase))
-                        return true;
-
                     if (origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
                         return true;
 

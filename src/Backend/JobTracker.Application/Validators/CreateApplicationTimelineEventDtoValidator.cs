@@ -13,7 +13,7 @@ public class CreateApplicationTimelineEventDtoValidator : AbstractValidator<Crea
 
         RuleFor(x => x.OccurredAt)
             .NotEmpty().WithMessage("Date and time is required")
-            .LessThanOrEqualTo(DateTime.UtcNow.AddMinutes(5)).WithMessage("Event date cannot be in the future");
+            .LessThanOrEqualTo(_ => DateTime.UtcNow.AddMinutes(5)).WithMessage("Event date cannot be in the future");
 
         RuleFor(x => x.EventType)
             .IsInEnum().WithMessage("Invalid event type");

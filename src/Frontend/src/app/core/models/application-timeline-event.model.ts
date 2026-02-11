@@ -19,3 +19,6 @@ export interface CreateApplicationTimelineEventDto {
     dueDate?: string;
     relatedDocumentId?: string;
 }
+
+export type ApplicationTimelineEvent = ApplicationTimelineEventDto;
+export type CreateApplicationTimelineEvent = CreateApplicationTimelineEventDto;

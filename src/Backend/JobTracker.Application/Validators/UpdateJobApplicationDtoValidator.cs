@@ -10,8 +10,8 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
 {
     public UpdateJobApplicationDtoValidator()
     {
-        RuleFor(x => x.RowVersion)
-            .NotEmpty().WithMessage("RowVersion is required for concurrency control");
+        RuleFor(x => x.ConcurrencyToken)
+            .NotEmpty().WithMessage("ConcurrencyToken is required for concurrency control");
 
         RuleFor(x => x.Position)
             .NotEmpty().WithMessage("Position cannot be empty")

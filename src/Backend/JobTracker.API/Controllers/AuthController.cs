@@ -95,15 +95,7 @@ public class AuthController : ControllerBase
     [Authorize]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        // This endpoint might need to fetch fresh data if token is stale but still valid.
-        // However, standard pattern is to rely on token claims or refreshed token.
-        // For simplicity, we decode claims or just use RefreshToken logic if we want fresh data?
-        // Actually, normally 'me' endpoint returns UserDto based on ID.
-        // We can reuse RefreshTokenAsync to get fresh user data + token, OR just get user.
-        // IAuthService doesn't have GetUserById.
-        // But RefreshTokenAsync returns AuthResponseDto with UserDto.
-        // Let's use that or rely on claims.
-        // For now, let's keep it simple and just use RefreshTokenAsync which validates user exists.
+        // Returns current user info via IAuthService.RefreshTokenAsync to validate and fetch user data
 
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId)) return Unauthorized();

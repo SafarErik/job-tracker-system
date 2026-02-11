@@ -38,38 +38,46 @@ class CrawlResponse(BaseModel):
     markdown: str = ""
     error: str = ""
 
+# Simple in-memory cache for demo/local use. 
+# For production, consider Redis or persistent storage.
+cache = {}
+
 @app.post("/crawl", response_model=CrawlResponse)
 async def crawl_url(request: CrawlRequest):
+    # Check cache first
+    if request.url in cache:
+        return CrawlResponse(success=True, markdown=cache[request.url])
+
     try:
         browser_config = BrowserConfig(
             headless=True,
-            # Magic mode on
-            text_mode=False
+            # Disable unnecessary features for speed
+            text_mode=True,
+            extra_args=["--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox"]
         )
         
         run_config = CrawlerRunConfig(
-            cache_mode=CacheMode.BYPASS,
-            # Wait for JS, dynamic content loading
-            # magic=True,
-            # More granular control for cleaning
-            word_count_threshold=10,
+            cache_mode=CacheMode.BYPASS, 
+            # Speed optimizations
+            wait_until="domcontentloaded", # Faster than networkidle
+            word_count_threshold=5,
             remove_overlay_elements=True,
-            process_iframes=True
+            process_iframes=False # Speed up by ignoring iframes unless needed
         )
 
         async with AsyncWebCrawler(config=browser_config) as crawler:
             result = await crawler.arun(
                 url=request.url,
                 config=run_config,
-                # Simple way to use magic mode features if version supports it directly in arun
-                # Otherwise configured via configs above
                 magic=True 
             )
 
             if result.success:
-                # result.markdown is now often a MarkdownGenerationResult object in modern crawl4ai
-                # so we access the raw_markdown property to ensure we get a string.
                 markdown_content = result.markdown.raw_markdown if hasattr(result.markdown, 'raw_markdown') else result.markdown
+                
+                # Store in cache
+                cache[request.url] = markdown_content
+                
                 return CrawlResponse(
                     success=True,
                     markdown=markdown_content

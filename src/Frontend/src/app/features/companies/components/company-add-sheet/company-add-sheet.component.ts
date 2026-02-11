@@ -71,7 +71,7 @@ export class CompanyAddSheetComponent {
     close() {
         this.isOpen.set(false);
     }
-    priority = signal<'Tier1' | 'Tier2' | 'Tier3'>('Tier3');
+    priority = signal<'TopTier' | 'MidTier' | 'LowTier'>('LowTier');
     isDreamTarget = signal(false);
     techStack = signal<string[]>([]);
 
@@ -79,10 +79,10 @@ export class CompanyAddSheetComponent {
     scoutUrl = signal('');
 
     // Priority Options
-    readonly priorities: { value: 'Tier1' | 'Tier2' | 'Tier3'; label: string; color: string }[] = [
-        { value: 'Tier1', label: 'High', color: 'bg-primary text-primary-foreground border-primary' },
-        { value: 'Tier2', label: 'Mid', color: 'bg-muted text-foreground border-border' },
-        { value: 'Tier3', label: 'Low', color: 'bg-muted/50 text-muted-foreground border-border' }
+    readonly priorities: { value: 'TopTier' | 'MidTier' | 'LowTier'; label: string; color: string }[] = [
+        { value: 'TopTier', label: 'High', color: 'bg-primary text-primary-foreground border-primary' },
+        { value: 'MidTier', label: 'Mid', color: 'bg-muted text-foreground border-border' },
+        { value: 'LowTier', label: 'Low', color: 'bg-muted/50 text-muted-foreground border-border' }
     ];
 
     // Industry Options from service
@@ -103,7 +103,8 @@ export class CompanyAddSheetComponent {
                 this.form.patchValue({
                     name: data.companyName,
                     website: url,
-                    industry: data.industry
+                    industry: data.industry,
+                    address: data.hqLocation
                 });
 
                 // Update tech stack if present
@@ -128,7 +129,7 @@ export class CompanyAddSheetComponent {
         });
     }
 
-    setPriority(p: 'Tier1' | 'Tier2' | 'Tier3') {
+    setPriority(p: 'TopTier' | 'MidTier' | 'LowTier') {
         this.priority.set(p);
     }
 
@@ -194,7 +195,7 @@ export class CompanyAddSheetComponent {
 
     resetForm() {
         this.form.reset();
-        this.priority.set('Tier3');
+        this.priority.set('LowTier');
         this.isDreamTarget.set(false);
         this.techStack.set([]);
         this.scoutUrl.set('');

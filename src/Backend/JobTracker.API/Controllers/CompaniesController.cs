@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
-using JobTracker.Application.DTOs.Companies;
 using JobTracker.Core.Enums;
+using JobTracker.Application.DTOs.Companies;
 using System.Security.Claims;
 
 namespace JobTracker.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class CompaniesController : ControllerBase
@@ -24,7 +26,7 @@ public class CompaniesController : ControllerBase
     /// Scouts a company by URL using the Intelligence Engine.
     /// </summary>
     [HttpPost("scout")]
-    public async Task<ActionResult<JobTracker.Core.Interfaces.ScoutedCompanyDto>> Scout(ScoutRequestDto request)
+    public async Task<ActionResult<ScoutedCompanyDto>> Scout(ScoutRequestDto request)
     {
         if (!ModelState.IsValid)
         {
@@ -131,8 +133,8 @@ public class CompaniesController : ControllerBase
             HqLocation = createDto.HqLocation,
             Description = createDto.Description,
             Industry = createDto.Industry,
-            TechStack = new List<Skill>(), // TODO: Implement skill mapping
             Priority = createDto.Priority,
+            TechStack = createDto.TechStack?.Select(s => new Skill { Name = s }).ToList() ?? new List<Skill>(),
             Contacts = createDto.Contacts?.Select(c => new CompanyContact
             {
                 Name = c.Name,

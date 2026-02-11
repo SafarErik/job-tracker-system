@@ -23,6 +23,7 @@ if (!builder.Environment.IsDevelopment())
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
         options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(
             System.Text.Unicode.UnicodeRanges.BasicLatin,
             System.Text.Unicode.UnicodeRanges.Latin1Supplement,

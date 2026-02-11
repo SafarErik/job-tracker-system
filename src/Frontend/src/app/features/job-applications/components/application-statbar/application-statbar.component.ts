@@ -6,7 +6,6 @@ import { lucideBriefcase, lucideTrendingUp, lucideCheckCircle, lucideClock, luci
 
 @Component({
     selector: 'app-application-statbar',
-    standalone: true,
     imports: [CommonModule, NgIcon],
     providers: [provideIcons({ lucideBriefcase, lucideTrendingUp, lucideCheckCircle, lucideClock, lucideInbox })],
     templateUrl: './application-statbar.component.html',

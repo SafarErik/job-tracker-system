@@ -17,7 +17,6 @@ import {
 
 @Component({
   selector: 'app-contact-list',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

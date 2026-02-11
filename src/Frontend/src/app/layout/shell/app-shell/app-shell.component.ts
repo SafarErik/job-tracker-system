@@ -10,7 +10,6 @@ import { ProfileStore } from '../../../features/profile/services/profile.store';
 
 @Component({
   selector: 'app-shell',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,

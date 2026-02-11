@@ -31,7 +31,6 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
 
 @Component({
   selector: 'app-job-list',
-  standalone: true,
   imports: [
     CommonModule,
     ApplicationGridComponent,

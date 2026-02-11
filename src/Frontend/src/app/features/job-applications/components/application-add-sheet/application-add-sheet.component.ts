@@ -22,7 +22,6 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
 
 @Component({
     selector: 'app-application-add-sheet',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -52,10 +51,8 @@ export class ApplicationAddSheetComponent {
         jobUrl: [''],
         position: ['', Validators.required],
         companyName: ['', Validators.required],
-        department: [''], // Optional
         status: [JobApplicationStatus.Applied, Validators.required],
         priority: [JobPriority.Medium, Validators.required],
-        location: [''],
         salaryMin: ['', Validators.pattern(/^\d*\.?\d*$/)],
         salaryMax: ['', Validators.pattern(/^\d*\.?\d*$/)],
     });
@@ -85,8 +82,6 @@ export class ApplicationAddSheetComponent {
                 jobUrl: 'https://careers.google.com/jobs/results/1234',
                 position: 'Senior Frontend Engineer',
                 companyName: 'Google',
-                department: 'YouTube Team',
-                location: 'London, UK (Hybrid)',
                 salaryMin: '120000',
                 salaryMax: '180000'
             });
@@ -100,14 +95,12 @@ export class ApplicationAddSheetComponent {
 
             const application: CreateJobApplication = {
                 position: formData.position,
-                companyName: formData.companyName,
-                department: formData.department,
+                companyId: '', // TODO: Resolve company ID from name or create new company
                 jobUrl: formData.jobUrl,
                 status: formData.status,
                 priority: formData.priority,
-                salaryMin: formData.salaryMin ? Number(formData.salaryMin) : undefined,
-                salaryMax: formData.salaryMax ? Number(formData.salaryMax) : undefined,
-                location: formData.location
+                baseSalary: formData.salaryMin ? Number(formData.salaryMin) : undefined,
+                salaryOffer: formData.salaryMax ? Number(formData.salaryMax) : undefined,
             };
 
             this.store.addApplication(application);

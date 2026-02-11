@@ -8,7 +8,6 @@ import { IntelligenceBriefing } from '../../../models/company.model';
 
 @Component({
   selector: 'app-company-notes',
-  standalone: true,
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
   providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX })],
   templateUrl: './company-notes.html',

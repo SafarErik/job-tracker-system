@@ -8,7 +8,6 @@ import autoAnimate from '@formkit/auto-animate';
 
 @Component({
     selector: 'app-application-grid',
-    standalone: true,
     imports: [CommonModule, JobCardComponent],
     templateUrl: './application-grid.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush

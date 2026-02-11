@@ -6,7 +6,6 @@ import { lucideExternalLink, lucideLoader2, lucideTrendingUp, lucideShieldCheck,
 
 @Component({
   selector: 'app-company-intel',
-  standalone: true,
   imports: [CommonModule, NgIcon],
   providers: [provideIcons({ lucideExternalLink, lucideLoader2, lucideTrendingUp, lucideShieldCheck, lucideAlertCircle, lucideClock, lucideNewspaper, lucideX, lucideLink, lucideZap })],
   templateUrl: './company-intel.html',

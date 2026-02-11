@@ -23,7 +23,6 @@ import {
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [CommonModule, LucideAngularModule],
   providers: [
     {

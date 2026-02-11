@@ -4,7 +4,7 @@
 
   <!-- Priority Indicator (Top Right) -->
   <div class="absolute top-4 right-4 z-10">
-    @if (company().priority === 'Tier1') {
+    @if (company().priority === CompanyPriority.TopTier) {
     <div
       class="flex items-center justify-center h-8 w-8 rounded-full bg-violet-500/10 border border-violet-500/20 group-hover:scale-110 transition-transform">
       <ng-icon name="lucideCrown" class="text-violet-600 dark:text-violet-400 text-lg"></ng-icon>
@@ -12,7 +12,7 @@
     } @else {
     <div class="flex items-center justify-center h-8 w-8 rounded-full group-hover:scale-110 transition-transform">
       <ng-icon name="lucideCrown"
-        [class]="company().priority === 'Tier2' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground/50'"
+        [class]="company().priority === CompanyPriority.MidTier ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground/50'"
         class="text-lg"></ng-icon>
     </div>
     }

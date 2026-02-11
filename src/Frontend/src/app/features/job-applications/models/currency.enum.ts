@@ -1,5 +1,9 @@
+/**
+ * Currency enum matching backend `Currency` enum.
+ * Serialised as strings by the backend `JsonStringEnumConverter`.
+ */
 export enum Currency {
-    USD = 0,
-    EUR = 1,
-    HUF = 2
+    USD = 'USD',
+    EUR = 'EUR',
+    HUF = 'HUF',
 }

@@ -111,7 +111,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
 
     // Lifecycle
     ngOnInit(): void {
-        console.log('SignalsComponent: Initializing...');
         this.loadData();
     }
 
@@ -129,7 +128,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
         const skills = this.userSkills().map(s => s.name);
         const jobTitle = this.profile()?.currentJobTitle || '';
 
-        console.log('SignalsComponent: Loading signals for', { skills, jobTitle });
         this.isLoading.set(true);
 
         // Load signals with cleanup
@@ -137,12 +135,10 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (data) => {
-                    console.log('SignalsComponent: Signals loaded', data);
                     this.signals.set(data);
                     if (this.activeTab() === 'intelligence') this.isLoading.set(false);
                 },
-                error: (err) => {
-                    console.error('Failed to fetch signals', err);
+                error: () => {
                     this.isLoading.set(false);
                 }
             });
@@ -152,11 +148,10 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (data) => {
-                    console.log('SignalsComponent: Opportunities loaded', data);
                     this.opportunities.set(data);
                     if (this.activeTab() === 'careers') this.isLoading.set(false);
                 },
-                error: (err) => console.error('Failed to fetch opportunities', err)
+                error: () => this.isLoading.set(false)
             });
     }
 
@@ -193,16 +188,12 @@ export class SignalsComponent implements OnInit, OnDestroy {
 
     // Career Actions
     acquireTarget(opp: CareerOpportunity) {
-        // Convert to Job Application
+        // TODO: Resolve company name to companyId via CompanyService lookup
         const newApp: CreateJobApplication = {
             position: opp.roleTitle,
-            companyName: opp.company,
-            status: JobApplicationStatus.Applied, // or INTERESTED
-            location: opp.location,
-            source: opp.source,
+            companyId: '', // Requires company lookup by name
+            status: JobApplicationStatus.Applied,
             matchScore: opp.matchScore,
-            // Map other fields as needed
-            jobUrl: '', // need from opp?
             description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`
         };
 
@@ -210,7 +201,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
-                    // Show toast or feedback?
                     alert(`Target Acquired: ${opp.roleTitle}`);
                 },
                 error: () => alert('Failed to acquire target')

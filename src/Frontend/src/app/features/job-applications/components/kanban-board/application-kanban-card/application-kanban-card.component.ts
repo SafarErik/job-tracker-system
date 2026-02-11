@@ -18,7 +18,6 @@ import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
 
 @Component({
     selector: 'app-kanban-card',
-    standalone: true,
     imports: [
         CommonModule,
         LogoPlaceholderComponent,
@@ -59,7 +58,7 @@ export class ApplicationKanbanCardComponent {
     // Computed: Days Since Update (e.g. "2d")
     timeSinceUpdate = computed(() => {
         const app = this.application();
-        const date = new Date(app.updatedAt || app.appliedAt);
+        const date = new Date(app.appliedAt);
         const now = new Date();
         const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 

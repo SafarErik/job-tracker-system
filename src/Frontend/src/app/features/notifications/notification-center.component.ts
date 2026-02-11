@@ -45,7 +45,6 @@ const mockNotifications: Notification[] = [
 
 @Component({
   selector: 'app-notification-center',
-  standalone: true,
   imports: [
     CommonModule,
     HlmButton,

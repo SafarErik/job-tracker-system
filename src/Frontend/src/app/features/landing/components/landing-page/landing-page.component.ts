@@ -34,7 +34,6 @@ import { ThemeService } from '../../../../core/services/theme.service';
 
 @Component({
     selector: 'app-landing-page',
-    standalone: true,
     imports: [RouterLink, LucideAngularModule],
     providers: [
         {

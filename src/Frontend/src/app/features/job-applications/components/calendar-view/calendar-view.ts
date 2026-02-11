@@ -35,7 +35,6 @@ interface CalendarDay {
  */
 @Component({
   selector: 'app-calendar-view',
-  standalone: true,
   imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './calendar-view.html',
 })

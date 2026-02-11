@@ -3,7 +3,6 @@ import { JobType } from '../models/job-type.enum';
 
 @Pipe({
     name: 'jobType',
-    standalone: true
 })
 export class JobTypePipe implements PipeTransform {
     transform(value: JobType | number | undefined): string {

@@ -9,7 +9,6 @@ import autoAnimate from '@formkit/auto-animate';
 
 @Component({
     selector: 'app-application-list',
-    standalone: true,
     imports: [
         CommonModule,
         ApplicationRowComponent

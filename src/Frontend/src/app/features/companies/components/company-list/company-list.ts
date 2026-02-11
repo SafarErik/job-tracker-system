@@ -1,15 +1,13 @@
-import { Component, OnInit, signal, ViewChild, ElementRef, HostListener, computed, effect, inject } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CompanyService } from '../../services/company.service';
-import { Company, ApplicationPreview } from '../../models/company.model';
+import { CompanyStore } from '../../services/company.store';
+import { Company, JobApplicationHistory } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { toast } from 'ngx-sonner';
 import { CompanyCardComponent } from '../company-card/company-card';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { HlmInputImports } from '../../../../../../libs/ui/input';
 import { HlmLabelImports } from '../../../../../../libs/ui/label';
-import { LucideAngularModule } from 'lucide-angular';
 import { provideIcons, NgIcon } from '@ng-icons/core';
 import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp } from '@ng-icons/lucide';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -18,7 +16,6 @@ import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet
 
 @Component({
   selector: 'app-company-list',
-  standalone: true,
   imports: [
     CommonModule,
     ...HlmButtonImports,
@@ -33,17 +30,20 @@ import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet
     provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp })
   ],
   templateUrl: './company-list.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:keydown)': 'handleKeyDown($event)',
+  },
 })
 export class CompanyListComponent implements OnInit {
-  private readonly companyService = inject(CompanyService);
+  private readonly companyStore = inject(CompanyStore);
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
 
-  // Read signals from service
-  // No need for local 'companies' signal, we use the service's one
-  isLoading = this.companyService.isLoading;
-  error = this.companyService.error;
-  companies = this.companyService.companies;
+  // Read signals from store
+  isLoading = this.companyStore.isLoading;
+  error = this.companyStore.error;
+  companies = this.companyStore.companies;
 
   // Local state
   searchTerm = signal('');
@@ -54,7 +54,7 @@ export class CompanyListComponent implements OnInit {
   // Computed: Filtered companies
   filteredCompanies = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    const allCompanies = this.companyService.companies();
+    const allCompanies = this.companyStore.companies();
 
     if (!term) return allCompanies;
 
@@ -94,16 +94,7 @@ export class CompanyListComponent implements OnInit {
     return Math.round((responses / totalWithApps.length) * 100) + '%';
   });
 
-  constructor() { }
-
-  // ============================================
-  // Keyboard Shortcuts
-  // ============================================
-
-  /**
-   * Global keyboard listener for search shortcut (Cmd+K or Ctrl+K)
-   */
-  @HostListener('window:keydown', ['$event'])
+  /** Global keyboard listener for search shortcut (Cmd+K or Ctrl+K) */
   handleKeyDown(event: KeyboardEvent): void {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
       event.preventDefault();
@@ -111,9 +102,7 @@ export class CompanyListComponent implements OnInit {
     }
   }
 
-  /**
-   * Focus the search input field
-   */
+  /** Focus the search input field */
   focusSearch(): void {
     if (this.searchInput) {
       this.searchInput.nativeElement.focus();
@@ -121,8 +110,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initial load
-    this.companyService.loadCompanies();
+    this.companyStore.loadAll();
   }
 
   /**
@@ -144,21 +132,16 @@ export class CompanyListComponent implements OnInit {
    * Retry loading companies
    */
   retry(): void {
-    this.companyService.loadCompanies();
+    this.companyStore.loadAll();
   }
 
-
-  /**
-   * Navigate to edit company
-   */
+  /** Navigate to edit company */
   editCompany(companyId: string, event: Event): void {
     event.stopPropagation();
     this.router.navigate(['/companies/edit', companyId]);
   }
 
-  /**
-   * Delete company
-   */
+  /** Delete company */
   async deleteCompany(company: Company, event: Event): Promise<void> {
     event.stopPropagation();
 
@@ -167,24 +150,9 @@ export class CompanyListComponent implements OnInit {
       'Delete Company',
     );
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
-    this.companyService.deleteCompany(company.id).subscribe({
-      next: () => {
-        toast.success('Company Deleted', {
-          description: `${company.name} has been deleted successfully.`,
-        });
-        // No need to manually reload, the service updates the signal
-      },
-      error: (err) => {
-        toast.error('Delete Failed', {
-          description: 'An error occurred while deleting the company. Please try again.',
-        });
-        console.error(err);
-      },
-    });
+    this.companyStore.delete(company.id);
   }
 
   /**
@@ -245,7 +213,7 @@ export class CompanyListComponent implements OnInit {
   /**
    * Get visible applications (max 2) for display
    */
-  getVisibleApplications(company: Company): ApplicationPreview[] {
+  getVisibleApplications(company: Company): JobApplicationHistory[] {
     return company.recentApplications?.slice(0, 2) || [];
   }
 

@@ -6,7 +6,6 @@ import { lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, luc
 
 @Component({
   selector: 'app-interview-tactics',
-  standalone: true,
   imports: [CommonModule, NgIcon, A11yModule],
   providers: [provideIcons({ lucideSparkles, lucideTarget, lucideLightbulb, lucideMessageSquare, lucideX, lucideChevronRight, lucideQuote, lucideFileText })],
   templateUrl: './interview-tactics.html',

@@ -32,7 +32,6 @@ interface BucketColumn {
 
 @Component({
   selector: 'app-application-kanban',
-  standalone: true,
   imports: [CommonModule, DragDropModule, ApplicationKanbanCardComponent],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
@@ -121,8 +120,8 @@ export class ApplicationKanbanComponent {
         }
 
         // 2. UpdatedAt (Newest First) - with fallback to AppliedAt
-        const dateA = new Date(a.updatedAt || a.appliedAt).getTime();
-        const dateB = new Date(b.updatedAt || b.appliedAt).getTime();
+        const dateA = new Date(a.appliedAt).getTime();
+        const dateB = new Date(b.appliedAt).getTime();
         return dateB - dateA;
       });
     }

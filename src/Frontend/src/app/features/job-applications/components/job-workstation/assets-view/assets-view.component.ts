@@ -22,7 +22,6 @@ import { NotificationService } from '../../../../../core/services/notification.s
 
 @Component({
     selector: 'app-assets-view',
-    standalone: true,
     imports: [CommonModule, NgIcon],
     providers: [
         provideIcons({

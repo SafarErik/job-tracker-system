@@ -259,8 +259,7 @@
       <!-- Left (60%): Briefing -->
       <div class="lg:col-span-6 space-y-8">
         <app-company-notes [mode]="'full'" [notes]="companyNotes()" [briefing]="intelligenceBriefing()"
-          [lastUpdated]="formatDate(details.updatedAt)" (notesChange)="handleNotesChange($event)"
-          (regenerate)="handleRegenerateBriefing()">
+          [lastUpdated]="null" (notesChange)="handleNotesChange($event)" (regenerate)="handleRegenerateBriefing()">
         </app-company-notes>
       </div>
 

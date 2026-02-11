@@ -4,7 +4,6 @@ import { AuthService } from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-auth-callback',
-  standalone: true,
   template: `
     <div class="flex flex-col items-center justify-center space-y-4 animate-in fade-in zoom-in-95 duration-700">
       @if (error()) {

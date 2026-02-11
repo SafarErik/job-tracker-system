@@ -27,7 +27,6 @@ interface PlaybookScript {
 
 @Component({
     selector: 'app-deal-view',
-    standalone: true,
     imports: [CommonModule, NgIcon, ...HlmButtonImports],
     providers: [
         provideIcons({

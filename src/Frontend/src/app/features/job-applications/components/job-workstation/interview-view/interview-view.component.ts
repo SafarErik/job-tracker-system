@@ -27,7 +27,6 @@ interface Message {
 
 @Component({
     selector: 'app-interview-view',
-    standalone: true,
     imports: [CommonModule, NgIcon, FormsModule],
     providers: [
         provideIcons({

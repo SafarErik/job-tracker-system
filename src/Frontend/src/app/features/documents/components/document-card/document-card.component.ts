@@ -17,7 +17,6 @@ import {
 
 @Component({
   selector: 'app-document-card',
-  standalone: true,
   imports: [
     CommonModule,
     HlmButtonImports,

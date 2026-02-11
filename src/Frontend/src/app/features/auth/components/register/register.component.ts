@@ -28,7 +28,6 @@ export function passwordMatchValidator(control: AbstractControl): ValidationErro
 
 @Component({
   selector: 'app-register',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

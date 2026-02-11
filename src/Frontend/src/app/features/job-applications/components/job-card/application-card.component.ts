@@ -99,7 +99,7 @@ export class JobCardComponent {
     // Computed: Days since last activity
     daysSinceUpdate = computed(() => {
         const app = this.application();
-        const lastDate = new Date(app.appliedAt); // Use appliedAt as proxy for lastUpdated
+        const lastDate = new Date(app.appliedAt);
         const now = new Date();
         const diffTime = Math.abs(now.getTime() - lastDate.getTime());
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -133,13 +133,6 @@ export class JobCardComponent {
         this.application().status === JobApplicationStatus.Offer
     );
 
-    // Computed: Is overdue
-    isOverdue = computed(() => {
-        const nextDate = this.application().nextFollowUpDate;
-        if (!nextDate) return false;
-        return new Date(nextDate) < new Date();
-    });
-
     // Computed: Dynamic Container Classes
     containerClasses = computed(() => {
         const base =
@@ -157,13 +150,7 @@ export class JobCardComponent {
         }
 
         if (this.isOffer()) {
-            // Removed under-glow shadows, kept translation and border
             return `${base} border-success/40 hover:-translate-y-1 hover:border-success/60`;
-        }
-
-        if (this.isOverdue()) {
-            // Removed under-glow shadows
-            return `${base} border-warning/40 hover:-translate-y-1 hover:border-warning/60`;
         }
 
         // Standard Card: Removed primary shadow glow
@@ -174,7 +161,6 @@ export class JobCardComponent {
     statusStripColor = computed(() => {
         if (this.isOffer()) return 'bg-success';
         if (this.isDead()) return 'bg-muted-foreground/30';
-        if (this.isOverdue()) return 'bg-warning';
         return 'bg-primary';
     });
 
@@ -423,8 +409,7 @@ export class JobCardComponent {
 
         // Applied status with follow-up logic
         if (status === JobApplicationStatus.Applied) {
-            const lastUpdated = app.updatedAt || app.appliedAt;
-            const updatedAt = new Date(lastUpdated);
+            const updatedAt = new Date(app.appliedAt);
             const now = new Date();
             const diffDays = Math.ceil(Math.abs(now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
 

@@ -4,7 +4,6 @@ import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
   selector: 'app-logo',
-  standalone: true,
   imports: [CommonModule],
   template: `
     <div class="flex items-center gap-2 select-none transition-all duration-300 ease-in-out" 

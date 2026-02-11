@@ -4,7 +4,6 @@ import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle
 
 @Component({
   selector: 'app-auth-layout',
-  standalone: true,
   imports: [RouterOutlet],
   template: `
     <div class="h-screen w-full overflow-hidden">

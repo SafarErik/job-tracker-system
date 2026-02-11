@@ -1,6 +1,8 @@
 using JobTracker.Core.Entities;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobTracker.Infrastructure.Data;
 
@@ -13,7 +15,15 @@ namespace JobTracker.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    private readonly IDataProtector _protector;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IDataProtectionProvider dataProtectionProvider)
+        : base(options)
+    {
+        _protector = dataProtectionProvider.CreateProtector("JobTracker.OpenAiApiKey");
+    }
 
     // ============================================
     // DBSETS - Define tables in the database
@@ -55,11 +65,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
             entity.ToTable("Users");
+
+            // Encrypt OpenAiApiKey using Data Protection
+            var converter = new ValueConverter<string?, string?>(
+                v => v != null ? _protector.Protect(v) : null,
+                v => v != null ? _protector.Unprotect(v) : null);
+
+            entity.Property(u => u.OpenAiApiKey)
+                .HasConversion(converter);
         });
 
         // ============================================
         // JOB APPLICATION CONFIGURATION
         // ============================================
+        // ... (rest of the file)
+
 
         modelBuilder.Entity<JobApplication>(entity =>
         {

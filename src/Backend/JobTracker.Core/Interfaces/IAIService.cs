@@ -29,6 +29,11 @@ public interface IAIService
     /// Provides an optimized version of the resume tailored for a specific job description.
     /// </summary>
     Task<string> OptimizeResumeAsync(string jobDescription, string resumeText);
+
+    /// <summary>
+    /// Generates content using a system and user prompt, optionally in JSON mode.
+    /// </summary>
+    Task<string> GenerateContentAsync(string systemPrompt, string userPrompt, bool useJsonMode = false);
 }
 
 /// <summary>

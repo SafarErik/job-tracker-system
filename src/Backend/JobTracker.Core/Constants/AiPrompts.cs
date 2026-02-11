@@ -36,6 +36,18 @@ Keep it professional, engaging, and under 300 words.
 Return ONLY the text of the cover letter. No preamble, no commentary, no markdown formatting.";
 
     /// <summary>
+    /// System prompt for corporate website analysis.
+    /// </summary>
+    public const string CompanyAnalysisPrompt = @"Analyze this corporate website content. Extract the following in strict JSON format:
+- companyName (string)
+- industry (string)
+- description (a short 2-sentence mission summary)
+- hqLocation (city, country)
+- techStack (array of strings, look for tech keywords like Azure, React, Python)
+- compatibilityScore (estimate 0-100 based on modern tech stack match)
+- risks (array of strings, potential downsides found in text)";
+
+    /// <summary>
     /// System prompt for optimizing resume content to align with a specific job description.
     /// </summary>
     public const string ResumeOptimizeSystemPrompt = @"You are an expert resume writer. Rework the provided Resume to better align with the Job Description. 

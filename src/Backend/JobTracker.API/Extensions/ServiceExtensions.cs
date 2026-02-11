@@ -40,6 +40,7 @@ public static class ServiceExtensions
         services.AddScoped<IJobApplicationService, JobApplicationService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICompanyIntelligenceService, CompanyIntelligenceService>();
 
         // Scraper Service with Typed HttpClient
         var scraperBaseUrl = configuration["ScraperService:BaseUrl"] ?? "http://localhost:8000";

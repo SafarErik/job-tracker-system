@@ -131,6 +131,21 @@ Optimize this resume for the job description.";
         return response ?? "Failed to optimize resume. Please try again.";
     }
 
+    public async Task<string> GenerateContentAsync(string systemPrompt, string userPrompt, bool useJsonMode = false)
+    {
+        GenerateContentConfig? config = null;
+        if (useJsonMode)
+        {
+            config = new GenerateContentConfig
+            {
+                ResponseMimeType = "application/json"
+            };
+        }
+
+        var response = await CallGeminiAsync(systemPrompt, userPrompt, config);
+        return response ?? string.Empty;
+    }
+
     private async Task<string?> CallGeminiAsync(string systemPrompt, string userPrompt, GenerateContentConfig? config = null)
     {
         try

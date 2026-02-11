@@ -22,6 +22,9 @@ export interface JobApplication {
     salaryMin?: number;
     salaryMax?: number;
     salaryOffer?: number;
+    baseSalary?: number;
+    bonus?: number;
+    equityValue?: number;
     currency?: string;
     salaryPeriod?: 'yearly' | 'monthly' | 'hourly';
     jobUrl?: string;
@@ -39,6 +42,7 @@ export interface JobApplication {
     documentName?: string;
     primaryContactId?: string;
     primaryContact?: CompanyContact;
+    rowVersion?: number; // Concurrency token (mapped from uint)
 }
 
 export interface CreateJobApplication {
@@ -51,6 +55,10 @@ export interface CreateJobApplication {
     workplaceType: WorkplaceType;
     priority: JobPriority;
     salaryOffer?: number;
+    baseSalary?: number;
+    bonus?: number;
+    equityValue?: number;
+    currency?: string;
     matchScore: number;
     documentId?: string | null;
     primaryContactId?: string;

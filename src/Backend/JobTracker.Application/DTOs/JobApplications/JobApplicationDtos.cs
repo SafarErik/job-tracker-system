@@ -40,7 +40,7 @@ public class JobApplicationDto
 
     public CompanyContactDto? PrimaryContact { get; set; }
 
-    public byte[] RowVersion { get; set; }
+    public uint RowVersion { get; set; }
 }
 
 public class CreateJobApplicationDto
@@ -74,7 +74,8 @@ public class CreateJobApplicationDto
 public class UpdateJobApplicationDto
 {
 
-    public required byte[] RowVersion { get; set; }
+    [Required]
+    public uint RowVersion { get; set; }
 
     public string? Position { get; set; }
     public Guid? CompanyId { get; set; }

@@ -1,5 +1,4 @@
 using JobTracker.Core.Entities;
-using Microsoft.AspNetCore.Http;
 
 namespace JobTracker.Application.Interfaces;
 
@@ -11,10 +10,12 @@ public interface IFileStorageService
     /// <summary>
     /// Validates and uploads a file to the storage system.
     /// </summary>
-    /// <param name="file">The file to upload.</param>
+    /// <param name="fileStream">The stream of the file to upload.</param>
+    /// <param name="fileName">The original name of the file.</param>
+    /// <param name="contentType">The MIME type of the file.</param>
     /// <param name="userId">The ID of the user uploading the file.</param>
     /// <returns>A Document entity with file metadata.</returns>
-    Task<Document> UploadFileAsync(IFormFile file, string userId);
+    Task<Document> UploadFileAsync(Stream fileStream, string fileName, string contentType, string userId);
 
     /// <summary>
     /// Deletes a file from the storage system.

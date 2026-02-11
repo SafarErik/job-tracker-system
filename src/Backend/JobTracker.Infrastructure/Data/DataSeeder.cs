@@ -514,7 +514,7 @@ public static class DataSeeder
                         JobApplicationId = app.Id,
                         EventType = TimelineEventType.OfferReceived,
                         Title = "Offer Received!",
-                        Description = $"Received an offer details: Salary {app.SalaryOffer:C}",
+                        Description = $"Received an offer details: Salary {app.SalaryOffer:N0} {app.Currency}",
                         OccurredAt = offerDate
                     });
                 }

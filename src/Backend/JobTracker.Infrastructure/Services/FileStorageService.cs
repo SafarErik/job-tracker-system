@@ -38,30 +38,30 @@ public class FileStorageService : IFileStorageService
         _uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
     }
 
-    public async Task<Document> UploadFileAsync(IFormFile file, string userId)
+    public async Task<Document> UploadFileAsync(Stream fileStream, string fileName, string contentType, string userId)
     {
-        if (file == null || file.Length == 0)
+        if (fileStream == null || fileStream.Length == 0)
         {
             throw new ArgumentException("No file uploaded");
         }
 
         // 1. Validate Size
-        if (file.Length > MaxFileSize)
+        if (fileStream.Length > MaxFileSize)
         {
             throw new ArgumentException($"File size must not exceed {MaxFileSize / 1024 / 1024}MB");
         }
 
         // 2. Validate Type
-        var fileExtension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        var fileExtension = Path.GetExtension(fileName)?.ToLowerInvariant();
         if (string.IsNullOrEmpty(fileExtension) ||
-            !AllowedContentTypes.Contains(file.ContentType) ||
+            !AllowedContentTypes.Contains(contentType) ||
             !AllowedExtensions.Contains(fileExtension))
         {
             throw new ArgumentException("Only PDF and Word documents are allowed");
         }
 
         // 3. Sanitize Filename
-        var originalFileName = Path.GetFileName(file.FileName);
+        var originalFileName = Path.GetFileName(fileName);
         if (string.IsNullOrEmpty(originalFileName) ||
             originalFileName.Contains("..") ||
             originalFileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
@@ -75,8 +75,8 @@ public class FileStorageService : IFileStorageService
             Directory.CreateDirectory(_uploadsFolder);
 
             // Generate unique secure filename
-            var fileName = $"{Guid.NewGuid()}{fileExtension}";
-            var filePath = Path.Combine(_uploadsFolder, fileName);
+            var newFileName = $"{Guid.NewGuid()}{fileExtension}";
+            var filePath = Path.Combine(_uploadsFolder, newFileName);
 
             // 4. Security Check: Path Traversal
             if (!IsPathSafe(filePath))
@@ -88,20 +88,20 @@ public class FileStorageService : IFileStorageService
             // 5. Save File
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                await file.CopyToAsync(stream);
+                await fileStream.CopyToAsync(stream);
             }
 
-            _logger.LogInformation("File saved successfully: {FileName}", fileName);
+            _logger.LogInformation("File saved successfully: {FileName}", newFileName);
 
             // 6. Return Document Entity (Not persisted to DB yet, just the object)
             return new Document
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
-                FileName = fileName,
+                FileName = newFileName,
                 OriginalFileName = originalFileName,
-                FileSize = file.Length,
-                ContentType = file.ContentType,
+                FileSize = fileStream.Length,
+                ContentType = contentType,
                 UploadedAt = DateTime.UtcNow,
                 Type = DocumentType.Other
             };

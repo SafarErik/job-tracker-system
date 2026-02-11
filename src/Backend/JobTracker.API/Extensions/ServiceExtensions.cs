@@ -49,11 +49,11 @@ public static class ServiceExtensions
     // ──────────────────────────────────────────────
 
     public static IServiceCollection AddIdentityConfiguration(
-        this IServiceCollection services)
+        this IServiceCollection services, bool isDevelopment)
     {
         services.AddIdentity<ApplicationUser, IdentityRole>(options =>
         {
-            // Password
+            // ... (Password settings remain)
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
@@ -71,7 +71,7 @@ public static class ServiceExtensions
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
             // Sign-in
-            options.SignIn.RequireConfirmedEmail = false; // Set to true in production!
+            options.SignIn.RequireConfirmedEmail = !isDevelopment;
         })
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
@@ -229,7 +229,8 @@ public static class ServiceExtensions
     //  Rate Limiting (AspNetCoreRateLimit)
     // ──────────────────────────────────────────────
 
-    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    public static IServiceCollection AddRateLimiting(
+        this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMemoryCache();
         services.Configure<IpRateLimitOptions>(options =>
@@ -249,7 +250,22 @@ public static class ServiceExtensions
             ];
         });
 
-        services.AddDistributedMemoryCache();
+        // Use Redis if configured (Production), otherwise Memory Cache (Development)
+        var redisConnectionString = configuration.GetConnectionString("Redis");
+
+        if (!string.IsNullOrEmpty(redisConnectionString))
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+                options.InstanceName = "JobTracker_";
+            });
+        }
+        else
+        {
+            services.AddDistributedMemoryCache();
+        }
+
         services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
         services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();

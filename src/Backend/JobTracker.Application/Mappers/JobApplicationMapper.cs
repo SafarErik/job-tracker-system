@@ -78,6 +78,13 @@ public static class JobApplicationMapper
                 continue;
             }
 
+            // Reset section if a new header is found but not recognized
+            if (line.StartsWith("## "))
+            {
+                currentSection = "";
+                continue;
+            }
+
             if (line.StartsWith("- ") && line.Length > 2)
             {
                 var content = line[2..].Trim();

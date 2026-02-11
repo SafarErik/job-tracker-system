@@ -151,7 +151,13 @@ Optimize this resume for the job description.";
                 return part.Text;
             }
 
-            _logger.LogWarning("Gemini API call succeeded but returned no content parts. Response: {Response}", JsonSerializer.Serialize(response));
+            if (!string.IsNullOrEmpty(part?.Text))
+            {
+                _logger.LogInformation("Gemini API call succeeded. Length: {Length}", part.Text.Length);
+                return part.Text;
+            }
+
+            _logger.LogWarning("Gemini API call succeeded but returned no content parts. FinishReason: {FinishReason}", candidate?.FinishReason);
             return null;
         }
         catch (Exception ex)

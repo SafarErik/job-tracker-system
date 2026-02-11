@@ -7,11 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ── Service Registration ─────────────────────
 builder.Services.AddDatabaseContext(builder.Configuration);
-builder.Services.AddIdentityConfiguration();
+builder.Services.AddIdentityConfiguration(builder.Environment.IsDevelopment());
 builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpClient();
-builder.Services.AddRateLimiting();
+builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddValidationConfiguration();
 
 // Application Insights (production only)

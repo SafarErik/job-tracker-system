@@ -1,4 +1,4 @@
-using JobTracker.Application.DTOs.JobApplications;
+using JobTracker.Application.DTOs.ApplicationTimelineEvent;
 using JobTracker.Core.Entities;
 
 namespace JobTracker.Application.Mappers;

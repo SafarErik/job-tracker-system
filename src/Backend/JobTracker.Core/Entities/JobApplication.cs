@@ -107,8 +107,7 @@ public class JobApplication
     public decimal? EquityValue { get; set; }
     public Currency Currency { get; set; } = Currency.USD;
 
-    [Timestamp]
-    public byte[] RowVersion { get; set; } = [];
+    public uint RowVersion { get; set; }
 
     // ============================================
     // COMPANY RELATIONSHIP

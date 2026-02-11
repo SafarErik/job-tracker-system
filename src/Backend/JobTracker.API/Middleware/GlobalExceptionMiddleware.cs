@@ -38,10 +38,16 @@ public class GlobalExceptionMiddleware
         {
             KeyNotFoundException => (int)HttpStatusCode.NotFound,
             UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
-            ArgumentException or InvalidOperationException => (int)HttpStatusCode.BadRequest,
+            ArgumentException => (int)HttpStatusCode.BadRequest,
             FluentValidation.ValidationException => (int)HttpStatusCode.BadRequest,
             _ => (int)HttpStatusCode.InternalServerError
         };
+
+        if (context.Response.HasStarted)
+        {
+            _logger.LogWarning("The response has already started, the exception middleware will not be executed.");
+            return;
+        }
 
         context.Response.StatusCode = statusCode;
 

@@ -97,7 +97,8 @@ public class DocumentsController : ControllerBase
         try
         {
             // Delegate file validation and storage to service
-            var document = await _fileStorageService.UploadFileAsync(file, userId);
+            using var stream = file.OpenReadStream();
+            var document = await _fileStorageService.UploadFileAsync(stream, file.FileName, file.ContentType, userId);
 
             // Persist metadata
             await _documentRepository.CreateAsync(document);

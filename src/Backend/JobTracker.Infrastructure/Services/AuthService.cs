@@ -55,12 +55,13 @@ public class AuthService : IAuthService
             return new AuthResponseDto { Succeeded = false, Message = errors };
         }
 
-        var token = GenerateJwtToken(user);
+        var (token, expiration) = GenerateJwtToken(user);
         return new AuthResponseDto
         {
             Succeeded = true,
             Message = "Registration successful",
             Token = token,
+            TokenExpiration = expiration,
             User = MapUserToDto(user)
         };
     }
@@ -87,12 +88,13 @@ public class AuthService : IAuthService
         user.LastLoginAt = DateTime.UtcNow;
         await _userManager.UpdateAsync(user);
 
-        var token = GenerateJwtToken(user);
+        var (token, expiration) = GenerateJwtToken(user);
         return new AuthResponseDto
         {
             Succeeded = true,
             Message = "Login successful",
             Token = token,
+            TokenExpiration = expiration,
             User = MapUserToDto(user)
         };
     }
@@ -120,7 +122,9 @@ public class AuthService : IAuthService
                     FirstName = payload.GivenName ?? "",
                     LastName = payload.FamilyName ?? "",
                     ProfilePictureUrl = payload.Picture,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    IsExternalAccount = true,
+                    ExternalProvider = "Google"
                 };
 
                 var createResult = await _userManager.CreateAsync(user);
@@ -142,12 +146,13 @@ public class AuthService : IAuthService
             user.LastLoginAt = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
-            var token = GenerateJwtToken(user);
+            var (token, expiration) = GenerateJwtToken(user);
             return new AuthResponseDto
             {
                 Succeeded = true,
                 Message = "Google login successful",
                 Token = token,
+                TokenExpiration = expiration,
                 User = MapUserToDto(user)
             };
         }
@@ -198,12 +203,13 @@ public class AuthService : IAuthService
         user.LastLoginAt = DateTime.UtcNow;
         await _userManager.UpdateAsync(user);
 
-        var token = GenerateJwtToken(user);
+        var (token, expiration) = GenerateJwtToken(user);
         return new AuthResponseDto
         {
             Succeeded = true,
             Message = "External login successful",
             Token = token,
+            TokenExpiration = expiration,
             User = MapUserToDto(user)
         };
     }
@@ -213,17 +219,18 @@ public class AuthService : IAuthService
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null) return new AuthResponseDto { Succeeded = false, Message = "User not found" };
 
-        var token = GenerateJwtToken(user);
+        var (token, expiration) = GenerateJwtToken(user);
         return new AuthResponseDto
         {
             Succeeded = true,
             Message = "Token refreshed",
             Token = token,
+            TokenExpiration = expiration,
             User = MapUserToDto(user)
         };
     }
 
-    public string GenerateJwtToken(ApplicationUser user)
+    public (string Token, DateTime Expiration) GenerateJwtToken(ApplicationUser user)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
         var secretKey = jwtSettings["SecretKey"]
@@ -252,7 +259,13 @@ public class AuthService : IAuthService
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return (new JwtSecurityTokenHandler().WriteToken(token), token.ValidTo);
+    }
+
+    public async Task<UserDto?> GetUserByIdAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        return user == null ? null : MapUserToDto(user);
     }
 
     private static UserDto MapUserToDto(ApplicationUser user)

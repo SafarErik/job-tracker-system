@@ -27,6 +27,7 @@ public class SkillsController(ISkillRepository repository) : ControllerBase
     }
 
     [HttpPost]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<ActionResult<SkillDto>> Create(CreateSkillDto dto)
     {
         var skill = SkillMapper.MapToEntity(dto);
@@ -39,6 +40,7 @@ public class SkillsController(ISkillRepository repository) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
     public async Task<IActionResult> Delete(Guid id)
     {
         var skill = await _repository.GetByIdAsync(id);

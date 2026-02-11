@@ -85,6 +85,8 @@ public class AuthResponseDto
     /// </summary>
     public DateTime? TokenExpiration { get; set; }
 
+
+
     /// <summary>
     /// User information.
     /// Only present on successful authentication.

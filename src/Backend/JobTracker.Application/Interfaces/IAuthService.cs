@@ -21,7 +21,16 @@ public interface IAuthService
     /// <summary>
     /// Generates a JWT token for the specified user.
     /// </summary>
-    string GenerateJwtToken(ApplicationUser user);
+    /// <param name="user">The user to generate the token for.</param>
+    /// <returns>A tuple containing the token string and its expiration time.</returns>
+    (string Token, DateTime Expiration) GenerateJwtToken(ApplicationUser user);
+
+    /// <summary>
+    /// Retrieves a user by their ID.
+    /// </summary>
+    /// <param name="userId">The user ID.</param>
+    /// <returns>The user DTO if found, otherwise null.</returns>
+    Task<UserDto?> GetUserByIdAsync(string userId);
 
     /// <summary>
     /// Authenticates a user via Google OAuth token.

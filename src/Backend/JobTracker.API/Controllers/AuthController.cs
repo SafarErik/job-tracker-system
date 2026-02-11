@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
             return BadRequest(result);
         }
 
-        _logger.LogInformation("New user registered: {Email}", result.User?.Email);
+        _logger.LogInformation("New user registered: {UserId}", result.User?.Id);
         return Ok(result);
     }
 
@@ -75,11 +75,11 @@ public class AuthController : ControllerBase
 
         if (!result.Succeeded)
         {
-            _logger.LogWarning("Failed login attempt for: {Email}", loginDto.Email);
+            _logger.LogWarning("Failed login attempt.");
             return Unauthorized(result);
         }
 
-        _logger.LogInformation("User logged in: {Email}", result.User?.Email);
+        _logger.LogInformation("User logged in: {UserId}", result.User?.Id);
         return Ok(result);
     }
 
@@ -108,11 +108,10 @@ public class AuthController : ControllerBase
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-        // We can just use RefreshToken logic to get current user details
-        var result = await _authService.RefreshTokenAsync(userId);
-        if (!result.Succeeded) return NotFound();
+        var user = await _authService.GetUserByIdAsync(userId);
+        if (user == null) return NotFound();
 
-        return Ok(result.User);
+        return Ok(user);
     }
 
     // ============================================

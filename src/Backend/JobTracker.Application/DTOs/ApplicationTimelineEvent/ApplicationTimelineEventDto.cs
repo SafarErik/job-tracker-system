@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
 
-namespace JobTracker.Application.DTOs.JobApplications;
+namespace JobTracker.Application.DTOs.ApplicationTimelineEvent;
 
 public class ApplicationTimelineEventDto
 {

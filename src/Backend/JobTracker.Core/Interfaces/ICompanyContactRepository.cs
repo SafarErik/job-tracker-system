@@ -23,7 +23,7 @@ public interface ICompanyContactRepository
     Task<CompanyContact?> GetByIdAsync(Guid id);
 
     /// <summary>
-    /// Adds a new contact associate with a company.
+    /// Adds a new contact associated with a company.
     /// </summary>
     /// <param name="contact">The contact entity to add.</param>
     /// <returns>The unique identifier of the newly created contact.</returns>

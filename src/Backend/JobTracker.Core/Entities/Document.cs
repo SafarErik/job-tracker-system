@@ -40,7 +40,7 @@ public class Document
     /// <summary>
     /// File size in bytes.
     /// </summary>
-    [Range(0, 52428800)]
+    [Range(0, 10485760)]
     public long FileSize { get; set; }
 
     /// <summary>

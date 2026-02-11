@@ -4,7 +4,7 @@ namespace JobTracker.Core.Interfaces;
 
 /// <summary>
 /// Repository interface for Company entities.
-/// Provides data access methods for managing companies and their associate data.
+/// Provides data access methods for managing companies and their associated data.
 /// </summary>
 public interface ICompanyRepository
 {

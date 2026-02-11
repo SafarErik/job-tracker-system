@@ -18,6 +18,7 @@ public static class SkillMapper
     public static Skill MapToEntity(CreateSkillDto dto) => new()
     {
         Name = dto.Name,
+        NormalizedName = dto.Name.ToUpperInvariant(),
         Category = dto.Category
     };
 }

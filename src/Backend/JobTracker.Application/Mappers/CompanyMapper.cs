@@ -7,6 +7,8 @@ public static class CompanyMapper
 {
     public static CompanyDto MapToDto(Company company)
     {
+        if (company == null) throw new ArgumentNullException(nameof(company));
+
         return new CompanyDto
         {
             Id = company.Id,

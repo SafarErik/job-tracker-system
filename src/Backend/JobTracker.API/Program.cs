@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDatabaseContext(builder.Configuration);
 builder.Services.AddIdentityConfiguration(builder.Environment.IsDevelopment());
 builder.Services.AddJwtConfiguration(builder.Configuration);
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddHttpClient();
 builder.Services.AddRateLimiting(builder.Configuration);
 builder.Services.AddValidationConfiguration();

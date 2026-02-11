@@ -25,7 +25,7 @@ public static class ServiceExtensions
     //  Repositories & Application Services
     // ──────────────────────────────────────────────
 
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         // Repositories
         services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
@@ -40,6 +40,13 @@ public static class ServiceExtensions
         services.AddScoped<IJobApplicationService, JobApplicationService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IAuthService, AuthService>();
+
+        // Scraper Service with Typed HttpClient
+        var scraperBaseUrl = configuration["ScraperService:BaseUrl"] ?? "http://localhost:8000";
+        services.AddHttpClient<IScraperService, HttpScraperService>(client =>
+        {
+            client.BaseAddress = new Uri(scraperBaseUrl);
+        });
 
         return services;
     }

@@ -7,6 +7,8 @@ import { IntelligenceService, GlobalSignal, CareerOpportunity } from '../../core
 import { ApplicationService } from '../job-applications/services/application.service';
 import { CreateJobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
+import { CompanyStore } from '../companies/services/company.store';
+import { CompanyPriority } from '../companies/models/company-priority.enum';
 
 // Icons
 import { provideIcons, NgIcon } from '@ng-icons/core';
@@ -67,6 +69,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
     private readonly profileStore = inject(ProfileStore);
     private readonly intelligenceService = inject(IntelligenceService);
     private readonly jobApplicationService = inject(ApplicationService);
+    private readonly companyStore = inject(CompanyStore);
 
     // Profile data
     readonly profile = this.profileStore.profile;
@@ -188,10 +191,32 @@ export class SignalsComponent implements OnInit, OnDestroy {
 
     // Career Actions
     acquireTarget(opp: CareerOpportunity) {
-        // TODO: Resolve company name to companyId via CompanyService lookup
+        const companyName = opp.company;
+        const existingCompany = this.companyStore.companies().find(c =>
+            c.name.toLowerCase() === companyName.toLowerCase()
+        );
+
+        if (existingCompany) {
+            this.createSignalApplication(existingCompany.id, opp);
+        } else {
+            this.companyStore.create({
+                name: companyName,
+                priority: CompanyPriority.MidTier
+            } as any).subscribe({
+                next: (company) => {
+                    this.createSignalApplication(company.id, opp);
+                },
+                error: () => {
+                    alert('Failed to create company for target acquisition');
+                }
+            });
+        }
+    }
+
+    private createSignalApplication(companyId: string, opp: CareerOpportunity) {
         const newApp: CreateJobApplication = {
             position: opp.roleTitle,
-            companyId: '', // Requires company lookup by name
+            companyId: companyId,
             status: JobApplicationStatus.Applied,
             matchScore: opp.matchScore,
             description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`

@@ -1,23 +1,12 @@
-import { Injectable, signal } from '@angular/core';
-import type { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
+import { Injectable, signal, computed } from '@angular/core';
 import { toast } from 'ngx-sonner';
-
-/**
- * Notification Message Interface
- */
-export interface Notification {
-  id: number;
-  type: 'success' | 'error' | 'warning' | 'info';
-  title: string;
-  message: string;
-  duration?: number;
-}
+import { Notification, NotificationType } from '../models/notification.model';
+import type { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog';
 
 /**
  * NotificationService
  *
- * A service for displaying toast notifications to users.
- * Now acts as a bridge to ngx-sonner for consistent toast logic.
+ * Manages both ephemeral toasts (ngx-sonner) and persistent notification history (Signal Store).
  */
 @Injectable({
   providedIn: 'root',
@@ -29,8 +18,54 @@ export class NotificationService {
    */
   confirmDialog?: ConfirmDialogComponent;
 
+  // ── State ───────────────────────────────────────────────
+
+  private readonly _notifications = signal<Notification[]>([]);
+  readonly notifications = this._notifications.asReadonly();
+
+  readonly unreadCount = computed(() =>
+    this._notifications().filter(n => !n.isRead).length
+  );
+
+  // ── Actions ─────────────────────────────────────────────
+
+  /**
+   * Add a persistent notification to the center
+   */
+  add(title: string, message: string, type: NotificationType = 'system') {
+    const newNote: Notification = {
+      id: crypto.randomUUID(),
+      title,
+      message,
+      type,
+      timestamp: new Date().toISOString(),
+      isRead: false
+    };
+
+    this._notifications.update(notes => [newNote, ...notes]);
+
+    // Also show toast for immediate feedback
+    if (type === 'error') this.error(message, title);
+    else if (type === 'ai') this.info(message, title, { duration: 6000 });
+    else this.info(message, title);
+  }
+
+  markAsRead(id: string) {
+    this._notifications.update(notes =>
+      notes.map(n => n.id === id ? { ...n, isRead: true } : n)
+    );
+  }
+
+  markAllAsRead() {
+    this._notifications.update(notes =>
+      notes.map(n => ({ ...n, isRead: true }))
+    );
+  }
+
+  // ── Toast Wrappers (Ephemeral) ──────────────────────────
+
   show(
-    type: Notification['type'],
+    type: 'success' | 'error' | 'warning' | 'info',
     message: string,
     title?: string,
     duration = 4000,

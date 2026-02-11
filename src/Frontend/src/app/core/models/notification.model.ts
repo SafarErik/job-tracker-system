@@ -1,4 +1,4 @@
-export type NotificationType = 'ai' | 'company' | 'reminder' | 'system';
+export type NotificationType = 'ai' | 'company' | 'reminder' | 'system' | 'success' | 'error' | 'warning' | 'info';
 
 export interface Notification {
     id: string;

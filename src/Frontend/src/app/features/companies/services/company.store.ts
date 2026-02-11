@@ -5,7 +5,7 @@ import { Company, CompanyDetail } from '../models/company.model';
 import { CompanyPriority } from '../models/company-priority.enum';
 import type { CreateCompany, UpdateCompany } from '../models/company.model';
 import { finalize, tap } from 'rxjs/operators';
-import { catchError, of } from 'rxjs';
+import { catchError, of, Observable } from 'rxjs';
 
 /**
  * CompanyStore — centralised state management for the companies feature.
@@ -92,20 +92,21 @@ export class CompanyStore {
     }
 
     /** Create a new company and append to the list */
-    create(company: CreateCompany): void {
+    create(company: CreateCompany): Observable<Company> {
         this._isLoading.set(true);
 
-        this.companyService.createCompany(company).subscribe({
-            next: newCompany => {
+        return this.companyService.createCompany(company).pipe(
+            tap(newCompany => {
                 this._companies.update(list => [...list, newCompany]);
                 this.notificationService.success('Company created!', 'Success');
                 this._isLoading.set(false);
-            },
-            error: () => {
+            }),
+            catchError(err => {
                 this.notificationService.error('Failed to create company', 'Error');
                 this._isLoading.set(false);
-            },
-        });
+                throw err;
+            })
+        );
     }
 
     /** Update a company with optimistic local update */

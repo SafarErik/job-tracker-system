@@ -13,12 +13,14 @@ export class CompanyService {
   private readonly _companies = signal<Company[]>([]);
   private readonly _activeCompany = signal<CompanyDetail | null>(null);
   private readonly _isLoading = signal<boolean>(false);
+  private readonly _isScanning = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
   // Readonly Exposed Signals
   readonly companies = this._companies.asReadonly();
   readonly activeCompany = this._activeCompany.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
+  readonly isScanning = this._isScanning.asReadonly();
   readonly error = this._error.asReadonly();
 
   // Computed Signals
@@ -155,6 +157,17 @@ export class CompanyService {
   // Helper to directly get a company by ID from the store (synchronous)
   getCompanyByIdSync(id: string): Company | undefined {
     return this.companies().find(c => c.id === id);
+  }
+
+  /**
+   * Scout a company using the Intelligence Engine
+   * @param url Company Website URL
+   */
+  scoutCompany(url: string): Observable<any> {
+    this._isScanning.set(true);
+    return this.http.post<any>(`${this.apiUrl}/scout`, { url }).pipe(
+      finalize(() => this._isScanning.set(false))
+    );
   }
 
   /**

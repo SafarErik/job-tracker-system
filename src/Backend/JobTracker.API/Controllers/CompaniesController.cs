@@ -12,11 +12,40 @@ namespace JobTracker.API.Controllers;
 public class CompaniesController : ControllerBase
 {
     private readonly ICompanyRepository _repository;
+    private readonly ICompanyIntelligenceService _intelligenceService;
 
-    public CompaniesController(ICompanyRepository repository)
+    public CompaniesController(ICompanyRepository repository, ICompanyIntelligenceService intelligenceService)
     {
         _repository = repository;
+        _intelligenceService = intelligenceService;
+    }
 
+    /// <summary>
+    /// Scouts a company by URL using the Intelligence Engine.
+    /// </summary>
+    [HttpPost("scout")]
+    public async Task<ActionResult<JobTracker.Core.Interfaces.ScoutedCompanyDto>> Scout(ScoutRequestDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var result = await _intelligenceService.ScoutCompanyAsync(request.Url);
+
+            if (!result.Success)
+            {
+                return BadRequest(new { message = result.ErrorMessage });
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred during scanning.", details = ex.Message });
+        }
     }
 
     [HttpGet]

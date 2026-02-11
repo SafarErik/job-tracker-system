@@ -89,52 +89,43 @@ export class CompanyAddSheetComponent {
     industryOptions = this.intelligenceService.getIndustryOptions();
 
     /**
-     * Mock "Fetch Data" functionality
+     * Fetch intelligence via the Scraper and AI Engine
      */
     async scanDomain() {
-        if (!this.scoutUrl() || this.isScanning()) return;
+        const url = this.scoutUrl();
+        if (!url || this.isScanning()) return;
 
         this.isScanning.set(true);
 
-        try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+        this.companyService.scoutCompany(url).subscribe({
+            next: (data) => {
+                // Auto-fill form with retrieved data
+                this.form.patchValue({
+                    name: data.companyName,
+                    website: url,
+                    industry: data.industry
+                });
 
-            // Mock Data based on domain
-            const domain = this.scoutUrl().toLowerCase();
-            let mockData: any = {
-                name: '',
-                industry: 'Technology',
-                techStack: ['React', 'TypeScript']
-            };
+                // Update tech stack if present
+                if (data.techStack && Array.isArray(data.techStack)) {
+                    this.techStack.update(current => {
+                        const next = [...current, ...data.techStack];
+                        return [...new Set(next)]; // Unique skills only
+                    });
+                }
 
-            if (domain.includes('google')) {
-                mockData = { name: 'Google', industry: 'Big Tech', techStack: ['Angular', 'Go', 'Python', 'Kubernetes'] };
-            } else if (domain.includes('netflix')) {
-                mockData = { name: 'Netflix', industry: 'Streaming', techStack: ['Java', 'React', 'Node.js', 'AWS'] };
-            } else {
-                // Generic fallback derived from domain
-                const name = domain.split('.')[0];
-                mockData.name = name.charAt(0).toUpperCase() + name.slice(1);
+                toast.success('Intelligence Gathered', {
+                    description: `Data retrieved for ${data.companyName}`
+                });
+                this.isScanning.set(false);
+            },
+            error: (err) => {
+                console.error('Scan failed:', err);
+                const msg = err.error?.message || 'Target intelligence could not be retrieved.';
+                toast.error('Search Failed', { description: msg });
+                this.isScanning.set(false);
             }
-
-            // Auto-fill form
-            this.form.patchValue({
-                name: mockData.name,
-                website: this.scoutUrl(),
-                industry: mockData.industry
-            });
-
-            // Merge tech stack
-            this.techStack.update(stack => [...new Set([...stack, ...mockData.techStack])]);
-
-            toast.success('Intelligence Gathered', { description: `Data retrieved for ${mockData.name}` });
-        } catch (error) {
-            console.error('Scan failed:', error);
-            toast.error('Search Failed', { description: 'Target intelligence could not be retrieved.' });
-        } finally {
-            this.isScanning.set(false);
-        }
+        });
     }
 
     setPriority(p: 'Tier1' | 'Tier2' | 'Tier3') {

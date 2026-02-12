@@ -17,7 +17,6 @@ import { JobType } from '../../models/job-type.enum';
 import { WorkplaceType } from '../../models/workplace-type.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
-import { SalaryFormatterPipe } from '../../pipes/salary-formatter.pipe';
 import { getStatusBadgeClasses, getPriorityBadgeClasses } from '../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -49,7 +48,6 @@ import {
         ...HlmTooltipImports,
         ...BrnTooltipImports,
         LogoPlaceholderComponent,
-        SalaryFormatterPipe,
         NgIcon,
     ],
     providers: [

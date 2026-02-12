@@ -6,7 +6,6 @@ import { UiStateService } from '../../../../../core/services';
 // Services
 import { JobApplicationStore } from '../../../services/job-application.store';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { AuthService } from '../../../../../core/auth/auth.service';
 
 // Models
 import { JobApplication } from '../../../models/job-application.model';
@@ -17,13 +16,8 @@ import { ApplicationKanbanComponent } from '../../kanban-board/kanban-board';
 import { ApplicationGridComponent } from '../application-grid/application-grid.component';
 import { ApplicationListComponent } from '../application-list/application-list.component';
 import { ApplicationStatbarComponent } from '../../application-statbar/application-statbar.component';
-import { CalendarViewComponent } from '../../calendar-view/calendar-view';
-import { DashboardMetricsComponent } from '../../../../../shared/components/dashboard-metrics/dashboard-metrics';
-import { ErrorStateComponent } from '../../../../../shared/components/error-state/error-state.component';
 
 // Spartan UI
-import { HlmInputImports } from '@spartan-ng/helm/input';
-import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
@@ -63,7 +57,6 @@ export class ApplicationsComponent implements OnInit {
   public readonly uiService = inject(UiStateService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
 
   // Local State
   viewMode = signal<'grid' | 'kanban' | 'list'>('grid');

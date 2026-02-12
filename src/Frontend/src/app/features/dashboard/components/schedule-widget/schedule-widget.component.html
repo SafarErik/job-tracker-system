@@ -1,0 +1,32 @@
+<div hlmCard class="xl:col-span-7">
+  <div hlmCardHeader>
+    <div class="flex items-center justify-between">
+      <div>
+        <div hlmCardTitle class="flex items-center gap-2 text-base font-semibold">
+          <lucide-icon name="trending-up" class="h-4 w-4 text-primary"></lucide-icon>
+          Application Pipeline
+        </div>
+        <p class="text-xs text-muted-foreground">
+          Status distribution across all tracked applications
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div hlmCardContent class="space-y-3">
+    @for (status of items(); track status.label) {
+      <div class="space-y-1">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-medium text-foreground">{{ status.label }}</span>
+          <span class="text-muted-foreground">{{ status.count }}</span>
+        </div>
+        <div class="h-2 rounded-full bg-muted">
+          <div
+            class="h-full rounded-full bg-primary transition-all duration-500"
+            [style.width.%]="total() > 0 ? (status.count / total()) * 100 : 0"
+          ></div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

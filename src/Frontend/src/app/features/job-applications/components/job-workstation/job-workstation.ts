@@ -18,10 +18,14 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
-import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../models/status-styles.util';
+import {
+  getStatusBadgeClasses,
+  getStatusStyle,
+  getPriorityBadgeClasses,
+} from '../../models/status-styles.util';
 import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
-import { JobTypePipe } from '../../pipes/job-type.pipe';
 import { JobPriority } from '../../models/job-priority.enum';
+import { StrategyViewComponent, GapAnalysisItem } from './strategy-view/strategy-view.component';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
 import { InterviewViewComponent } from './interview-view/interview-view.component';
 import { DealViewComponent } from './deal-view/deal-view.component';
@@ -75,14 +79,8 @@ import {
   lucideAlertCircle,
   lucideLink,
   lucideSettings,
-  lucideSearch
+  lucideSearch,
 } from '@ng-icons/lucide';
-
-interface GapAnalysisItem {
-  name: string;
-  matched: boolean;
-  suggestion?: string;
-}
 
 @Component({
   selector: 'app-job-workstation',
@@ -101,12 +99,12 @@ interface GapAnalysisItem {
     ...HlmDropdownMenuImports,
     HlmDropdownMenuTrigger,
     JobPriorityPipe,
-    JobTypePipe,
+    StrategyViewComponent,
     AssetsViewComponent,
     InterviewViewComponent,
     DealViewComponent,
     TimelineViewComponent,
-    JobSettingsSheetComponent
+    JobSettingsSheetComponent,
   ],
   providers: [
     provideIcons({
@@ -142,8 +140,8 @@ interface GapAnalysisItem {
       lucideAlertCircle,
       lucideLink,
       lucideSettings,
-      lucideSearch
-    })
+      lucideSearch,
+    }),
   ],
   styleUrls: ['./workstation-animations.css'],
   templateUrl: './job-workstation.html',
@@ -174,30 +172,63 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const phase = this.currentPhase();
     if (phase === 'strategy') {
       return [
-        { id: 'analyze', label: 'Refresh AI Scan', icon: 'lucideRotateCw', action: () => this.triggerAnalysis() },
         {
-          id: 'simulate', label: 'Simulate Top Gap', icon: 'lucideZap', action: () => {
-            const firstGap = this.gapAnalysis().find(g => !g.matched);
+          id: 'analyze',
+          label: 'Refresh AI Scan',
+          icon: 'lucideRotateCw',
+          action: () => this.triggerAnalysis(),
+        },
+        {
+          id: 'simulate',
+          label: 'Simulate Top Gap',
+          icon: 'lucideZap',
+          action: () => {
+            const firstGap = this.gapAnalysis().find((g) => !g.matched);
             if (firstGap) this.simulateImprovement(firstGap.name);
-          }
-        }
+          },
+        },
       ];
     } else if (phase === 'assets') {
       return [
-        { id: 'tailor', label: 'Forge Document', icon: 'lucideSparkles', action: () => this.generateAssets() }
+        {
+          id: 'tailor',
+          label: 'Forge Document',
+          icon: 'lucideSparkles',
+          action: () => this.generateAssets(),
+        },
       ];
     } else if (phase === 'deal') {
       return [
-        { id: 'analyze-offer', label: 'Analyze Offer', icon: 'lucideGavel', action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal') }
+        {
+          id: 'analyze-offer',
+          label: 'Analyze Offer',
+          icon: 'lucideGavel',
+          action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal'),
+        },
       ];
     } else if (phase === 'timeline') {
       return [
-        { id: 'sync', label: 'Sync Calendar', icon: 'lucideRefreshCw', action: () => this.notificationService.info('Syncing mission roadmap...', 'Timeline') },
-        { id: 'add-event', label: 'Add Mission Event', icon: 'lucidePlus', action: () => this.notificationService.info('Opening tactical event form...', 'Timeline') }
+        {
+          id: 'sync',
+          label: 'Sync Calendar',
+          icon: 'lucideRefreshCw',
+          action: () => this.notificationService.info('Syncing mission roadmap...', 'Timeline'),
+        },
+        {
+          id: 'add-event',
+          label: 'Add Mission Event',
+          icon: 'lucidePlus',
+          action: () => this.notificationService.info('Opening tactical event form...', 'Timeline'),
+        },
       ];
     } else {
       return [
-        { id: 'focus', label: 'Combat Focus', icon: 'lucideMaximize2', action: () => this.toggleFocusMode() }
+        {
+          id: 'focus',
+          label: 'Combat Focus',
+          icon: 'lucideMaximize2',
+          action: () => this.toggleFocusMode(),
+        },
       ];
     }
   });
@@ -209,7 +240,19 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const desc = this.store.selectedApplication()?.description;
     if (!desc) return null;
 
-    const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems', 'Architecture', 'UI/UX'];
+    const keywords = [
+      'Angular',
+      'Scalability',
+      'TypeScript',
+      'Performance',
+      'Fintech',
+      'Signals',
+      'Optimization',
+      'Frontend',
+      'Distributed Systems',
+      'Architecture',
+      'UI/UX',
+    ];
 
     // Escape HTML
     let html = desc
@@ -220,7 +263,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       .replaceAll("'", '&#039;')
       .replaceAll('\n', '<br>');
 
-    keywords.forEach(kw => {
+    keywords.forEach((kw) => {
       const regex = new RegExp(`(${kw})`, 'gi');
       html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
     });
@@ -246,12 +289,15 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const advice = app.aiAdvice ?? [];
 
     return [
-      ...goodPoints.map(point => ({ name: point, matched: true } as GapAnalysisItem)),
-      ...gaps.map((gap, index) => ({
-        name: gap,
-        matched: false,
-        suggestion: advice[index]
-      } as GapAnalysisItem))
+      ...goodPoints.map((point) => ({ name: point, matched: true }) as GapAnalysisItem),
+      ...gaps.map(
+        (gap, index) =>
+          ({
+            name: gap,
+            matched: false,
+            suggestion: advice[index],
+          }) as GapAnalysisItem,
+      ),
     ];
   });
 
@@ -261,7 +307,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     Assets: 'assets' as const,
     Interview: 'interview' as const,
     Deal: 'deal' as const,
-    Timeline: 'timeline' as const
+    Timeline: 'timeline' as const,
   };
 
   readonly JobStatus = JobApplicationStatus;
@@ -282,7 +328,10 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       const currentScore = app.matchScore || 0;
       const newScore = Math.min(100, currentScore + 8);
       this.simulatedScore.set(newScore);
-      this.notificationService.info(`Simulating ${skill}... Match Score would increase to ${newScore}%`, 'Simulation Active');
+      this.notificationService.info(
+        `Simulating ${skill}... Match Score would increase to ${newScore}%`,
+        'Simulation Active',
+      );
 
       // Auto-reset after some time
       setTimeout(() => this.simulatedScore.set(null), 5000);
@@ -290,12 +339,12 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   toggleFocusMode(): void {
-    this.isFocusMode.update(v => !v);
+    this.isFocusMode.update((v) => !v);
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id') ||
-      this.route.parent?.snapshot.paramMap.get('id');
+    const id =
+      this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
 
     // Ensure applications are loaded (handles page refresh)
     if (this.store.applications().length === 0) {
@@ -331,7 +380,10 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   onAddWorkstationItem(): void {
-    this.notificationService.info('Adding new items to the workstation is coming soon.', 'Feature Preview');
+    this.notificationService.info(
+      'Adding new items to the workstation is coming soon.',
+      'Feature Preview',
+    );
   }
 
   goBack(): void {
@@ -339,7 +391,8 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   getStatusBadgeClasses(status: JobApplicationStatus | undefined): string {
-    if (status === undefined) return 'bg-muted text-muted-foreground border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
+    if (status === undefined)
+      return 'bg-muted text-muted-foreground border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
     return getStatusBadgeClasses(status);
   }
 

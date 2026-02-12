@@ -4,3 +4,5 @@ export * from './schedule-widget/schedule-widget.component';
 export * from './metric-card/metric-card.component';
 export * from './ai-command-widget/ai-command-widget.component';
 export * from './pipeline-chart/pipeline-chart.component';
+export * from './momentum-gauge/momentum-gauge.component';
+export * from './stat-card/stat-card.component';

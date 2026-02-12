@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
+import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { BrnSwitchImports } from '@spartan-ng/brain/switch';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -51,9 +51,8 @@ interface ChatMessage {
     CommonModule,
     TextFieldModule,
     LucideAngularModule,
-    HlmDropdownMenuTrigger,
     ...HlmButtonImports,
-    ...HlmDropdownMenuImports,
+    ...HlmPopoverImports,
     ...BrnSwitchImports,
     ...HlmSwitchImports,
   ],
@@ -86,6 +85,7 @@ export class AiCommandWidgetComponent {
 
   readonly command = signal('');
   readonly chatMode = signal<ChatMode>('Fast');
+  readonly availableModes: ChatMode[] = ['Fast', 'Deep Reason'];
   readonly sourceToggles = signal<Record<SourceToggleKey, boolean>>({
     webSearch: true,
     myResume: true,
@@ -145,6 +145,11 @@ export class AiCommandWidgetComponent {
 
     return citations;
   });
+  readonly chatModeDescription = computed(() =>
+    this.chatMode() === 'Fast'
+      ? 'Fast mode returns concise answers.'
+      : 'Deep Reason mode returns fuller analysis.',
+  );
 
   trackByInsight(_: number, card: AiInsightCard): string {
     return card.id;
@@ -162,7 +167,7 @@ export class AiCommandWidgetComponent {
       return;
     }
 
-    const response = this.getResponseFor(normalized);
+    const response = this.applyModeToResponse(this.getResponseFor(normalized));
     const citations = this.sourceCitations();
 
     this.messages.update((current) => [
@@ -210,6 +215,14 @@ export class AiCommandWidgetComponent {
 
   toggleMode(): void {
     this.chatMode.update((mode) => (mode === 'Fast' ? 'Deep Reason' : 'Fast'));
+  }
+
+  setMode(mode: ChatMode): void {
+    this.chatMode.set(mode);
+  }
+
+  isModeSelected(mode: ChatMode): boolean {
+    return this.chatMode() === mode;
   }
 
   toggleSource(key: SourceToggleKey): void {
@@ -292,6 +305,15 @@ export class AiCommandWidgetComponent {
 
   private getUnknownCommandResponse(): string {
     return '### I can help with this\nTry one of these prompts:\n- summary\n- next action\n- follow-ups\n- interview prep\n- offer strategy';
+  }
+
+  private applyModeToResponse(response: string): string {
+    if (this.chatMode() === 'Fast') {
+      const concisePart = response.split('\n\n')[0] ?? response;
+      return `${concisePart}\n\n> Mode: Fast`;
+    }
+
+    return `${response}\n\n### Additional Considerations\n- Prioritize high-fit roles first\n- Keep follow-ups time-boxed\n- Track outcomes weekly\n\n> Mode: Deep Reason`;
   }
 
   renderMarkdown(markdown: string): SafeHtml {

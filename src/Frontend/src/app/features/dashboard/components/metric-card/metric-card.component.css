@@ -4,7 +4,7 @@
 
 .metric-card {
   --metric-gradient-start: hsl(var(--primary));
-  --metric-gradient-end: hsl(var(--success));
+  --metric-gradient-end: hsl(var(--info));
   --metric-gradient: linear-gradient(
     90deg,
     var(--metric-gradient-start),
@@ -29,8 +29,7 @@
 }
 
 .metric-glow {
-  color: hsl(var(--primary));
-  text-shadow: 0 0 18px hsl(var(--primary) / 0.38);
+  color: hsl(var(--info));
 }
 
 .metric-gauge {

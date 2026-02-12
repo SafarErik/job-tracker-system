@@ -18,11 +18,11 @@
 }
 
 .pipeline-bar {
-  background-image: linear-gradient(90deg, hsl(var(--primary) / 0.88), hsl(var(--success) / 0.78));
+  background-image: linear-gradient(90deg, hsl(var(--primary) / 0.86), hsl(var(--info) / 0.8));
 }
 
 .ghost-funnel {
-  background-image: linear-gradient(90deg, hsl(var(--primary) / 0.12), hsl(var(--success) / 0.1));
+  background-image: linear-gradient(90deg, hsl(var(--muted) / 0.5), hsl(var(--muted) / 0.3));
 }
 
 .metric-value {

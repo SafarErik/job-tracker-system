@@ -71,7 +71,7 @@ export class IntelligenceService {
         },
         {
             id: '4',
-            headline: 'OpenAI Previews "Operative" - A Tool for Autonomous Workflow Management',
+            headline: 'OpenAI Previews "Member Workspace" - A Tool for Autonomous Workflow Management',
             summary: 'The new model series is designed to handle multi-step reasoning tasks previously reserved for human project managers. Integration with Jira and Slack is native.',
             impactScore: 95,
             source: 'Wired',

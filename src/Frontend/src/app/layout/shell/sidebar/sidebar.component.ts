@@ -75,7 +75,7 @@ export class SidebarComponent {
     { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
     { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
     { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
-    { label: 'Intelligence', icon: 'lucidePieChart', link: '/statistics', exact: false },
+    { label: 'Insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
     { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
     { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];

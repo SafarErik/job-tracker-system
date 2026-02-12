@@ -354,7 +354,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                                         </div>
                                         <div class="space-y-1">
                                             <h5 class="text-sm font-bold text-destructive">Danger Zone: Termination</h5>
-                                            <p class="text-xs text-muted-foreground">This will permanently purge your operative profile and all associated job tracking telemetry from the system.</p>
+                                            <p class="text-xs text-muted-foreground">This will permanently purge your member profile and all associated job tracking telemetry from the system.</p>
                                         </div>
                                     </div>
                                     <button hlmBtn variant="outline" class="w-full h-10 rounded-xl border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all uppercase tracking-widest text-[10px] font-black" 

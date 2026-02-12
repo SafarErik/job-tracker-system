@@ -1,83 +1,175 @@
-<article class="holo-border rounded-2xl p-px">
-  <div
-    class="holo-card rounded-[calc(var(--radius-2xl)-1px)] border border-border/40 bg-linear-to-br from-white to-zinc-50/50 p-5 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.04),0_0_1px_rgba(0,0,0,0.1)] dark:border-border dark:bg-card/80 dark:from-card dark:to-card"
-  >
-    <div class="mb-4 flex items-center gap-3">
-      <div class="orb-wrapper flex h-8 w-8 items-center justify-center rounded-full bg-muted/70">
-        <lucide-icon name="sparkles" class="orb-icon h-4 w-4 text-primary"></lucide-icon>
-      </div>
-      <div>
-        <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-          {{ title() }}
-        </h2>
-        <p class="text-xs text-muted-foreground">Holo-Console</p>
-      </div>
+<article class="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+  <header class="mb-4 flex items-center gap-2">
+    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+      <lucide-icon name="sparkles" class="h-4 w-4 text-primary"></lucide-icon>
     </div>
+    <h2 class="text-sm font-semibold text-foreground">{{ title() }}</h2>
+  </header>
 
-    <div class="space-y-2">
-      <p class="text-xs uppercase tracking-[0.16em] text-muted-foreground">Insight Cards</p>
-
-      @for (card of insightCards(); track trackByInsight($index, card)) {
+  <section class="mb-4 max-h-72 space-y-3 overflow-y-auto rounded-xl border border-border bg-background/80 p-3">
+    @for (message of messages(); track message.id) {
+      <div [class.items-end]="message.role === 'user'" class="flex flex-col gap-1">
         <div
-          class="insight-card flex items-center justify-between rounded-xl bg-zinc-100 px-3 py-2 dark:bg-muted/35"
+          class="max-w-[90%] rounded-xl border border-border px-3 py-2 text-xs leading-relaxed"
+          [class.ml-auto]="message.role === 'user'"
+          [class.bg-primary/10]="message.role === 'user'"
+          [class.bg-card]="message.role === 'assistant'"
         >
-          <div class="flex items-center gap-2 text-sm text-foreground">
-            <span aria-hidden="true" class="text-base leading-none">{{ card.icon }}</span>
-            <span>{{ card.title }}</span>
-          </div>
-
-          <button
-            type="button"
-            class="inline-flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80"
-            (click)="runInsight(card)"
-          >
-            {{ card.action }}
-            <span aria-hidden="true">→</span>
-          </button>
+          @if (message.role === 'assistant') {
+            <div [innerHTML]="renderMarkdown(message.content)"></div>
+          } @else {
+            {{ message.content }}
+          }
         </div>
-      }
-    </div>
 
-    <div class="mt-4">
-      <label for="career-copilot-command" class="sr-only">Career command</label>
-      <div class="command-shell rounded-xl border border-input bg-background/70 px-3 py-2">
-        <span class="mr-2 text-primary">&gt;</span>
-        <input
-          id="career-copilot-command"
-          type="text"
-          [placeholder]="placeholder()"
-          [value]="command()"
-          (input)="updateCommand($any($event.target).value)"
-          (keydown.enter)="runCommand()"
-          class="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden"
-        />
-        <button
-          type="button"
-          class="ml-2 inline-flex items-center rounded-md border border-border px-2 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-muted"
-          (click)="runCommand()"
-        >
-          Run
-        </button>
-        <lucide-icon name="sparkles" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+        @if (message.role === 'assistant' && message.citations.length > 0) {
+          <div class="flex flex-wrap gap-1">
+            @for (citation of message.citations; track citation) {
+              <span
+                class="inline-flex items-center rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] text-muted-foreground"
+              >
+                {{ citation }}
+              </span>
+            }
+          </div>
+        }
       </div>
+    }
+  </section>
 
-      <div class="mt-2 flex flex-wrap gap-2">
-        @for (suggestion of commandSuggestions(); track suggestion) {
+  <div
+    class="rounded-2xl border border-zinc-200 bg-zinc-50 p-3 transition-shadow focus-within:ring-2 focus-within:ring-violet-500/20 dark:border-zinc-800 dark:bg-zinc-900"
+  >
+    <label for="career-copilot-command" class="sr-only">Career command</label>
+    <textarea
+      id="career-copilot-command"
+      cdkTextareaAutosize
+      [cdkAutosizeMinRows]="2"
+      [cdkAutosizeMaxRows]="8"
+      [placeholder]="placeholder()"
+      [value]="command()"
+      (input)="updateCommand($any($event.target).value)"
+      (keydown.enter)="onEnter($event)"
+      class="w-full resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden"
+    ></textarea>
+
+    @if (attachedFiles().length > 0) {
+      <div class="mb-2 flex flex-wrap gap-1.5">
+        @for (file of attachedFiles(); track file) {
           <button
             type="button"
-            class="inline-flex rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            (click)="runSuggestion(suggestion)"
+            hlmBtn
+            variant="outline"
+            size="sm"
+            class="h-6 rounded-full px-2 text-[10px]"
+            (click)="removeAttachment(file)"
           >
-            {{ suggestion }}
+            {{ file }}
           </button>
         }
       </div>
+    }
 
-      <p
-        class="mt-3 rounded-lg border border-border/70 bg-muted/35 px-3 py-2 text-xs text-foreground"
-      >
-        {{ lastResponse() }}
-      </p>
+    <div class="mt-2 flex items-center justify-between gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          hlmBtn
+          variant="outline"
+          size="sm"
+          [hlmDropdownMenuTrigger]="sourcesMenu"
+          class="h-8 rounded-full px-2.5 text-[11px]"
+        >
+          <lucide-icon name="globe" class="mr-1 h-3.5 w-3.5"></lucide-icon>
+          {{ sourceTriggerLabel() }}
+        </button>
+
+        <ng-template #sourcesMenu>
+          <div hlmDropdownMenu class="w-56 rounded-xl border border-border bg-popover p-2">
+            <div class="mb-1 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              Sources
+            </div>
+            <div class="space-y-2 px-2 py-1">
+              <div class="flex items-center justify-between text-xs">
+                <span>Web Search</span>
+                <hlm-switch [checked]="sourceToggles().webSearch" (changed)="toggleSource('webSearch')"></hlm-switch>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span>My Resume</span>
+                <hlm-switch [checked]="sourceToggles().myResume" (changed)="toggleSource('myResume')"></hlm-switch>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <span>Market News</span>
+                <hlm-switch [checked]="sourceToggles().marketNews" (changed)="toggleSource('marketNews')"></hlm-switch>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <input
+          #filePicker
+          type="file"
+          class="hidden"
+          multiple
+          (change)="onAttachFiles($event)"
+        />
+
+        <button
+          type="button"
+          hlmBtn
+          variant="outline"
+          size="icon"
+          class="h-8 w-8 rounded-full"
+          (click)="filePicker.click()"
+          aria-label="Attach file"
+        >
+          <lucide-icon name="paperclip" class="h-4 w-4"></lucide-icon>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          hlmBtn
+          variant="outline"
+          size="sm"
+          class="h-8 rounded-full px-2.5 text-[11px]"
+          (click)="toggleMode()"
+        >
+          <lucide-icon name="circle-dashed" class="mr-1 h-3.5 w-3.5"></lucide-icon>
+          {{ chatMode() }}
+        </button>
+
+        <button
+          type="button"
+          hlmBtn
+          size="icon"
+          class="h-8 w-8 rounded-full text-white"
+          [class.bg-violet-600]="hasCommand()"
+          [class.hover:bg-violet-500]="hasCommand()"
+          [class.bg-muted-foreground]="!hasCommand()"
+          [disabled]="!hasCommand()"
+          (click)="runCommand()"
+          aria-label="Send"
+        >
+          <lucide-icon name="arrow-up" class="h-4 w-4"></lucide-icon>
+        </button>
+      </div>
     </div>
+  </div>
+
+  <div class="mt-3 flex flex-wrap gap-2">
+    @for (prompt of quickPrompts(); track prompt) {
+      <button
+        type="button"
+        hlmBtn
+        variant="outline"
+        size="sm"
+        class="h-7 rounded-full px-2.5 text-[11px]"
+        (click)="runSuggestion(prompt)"
+      >
+        {{ prompt }}
+      </button>
+    }
   </div>
 </article>

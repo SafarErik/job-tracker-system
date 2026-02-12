@@ -12,7 +12,7 @@
         </div>
         <p class="text-muted-foreground text-lg">
             Tailored for your profile as a <span class="text-foreground font-medium">{{ profile()?.currentJobTitle ||
-                'Elite Operative' }}</span>
+                'Member' }}</span>
         </p>
     </header>
 
@@ -281,7 +281,7 @@
                         class="max-w-[85%] p-3 rounded-2xl border text-foreground/90 leading-relaxed shadow-sm">
                         {{ msg.text }}
                     </div>
-                    <span class="text-[10px] text-muted-foreground opacity-50">{{ msg.sender === 'user' ? 'OPERATIVE' :
+                    <span class="text-[10px] text-muted-foreground opacity-50">{{ msg.sender === 'user' ? 'MEMBER' :
                         'SYSTEM' }}</span>
                 </div>
                 }
@@ -359,7 +359,7 @@
                         <h4
                             class="text-xs font-black uppercase tracking-widest text-primary mb-2 flex items-center gap-2">
                             <ng-icon name="lucideTrendingUp" class="w-3 h-3"></ng-icon>
-                            Operative Guidance
+                            Member Guidance
                         </h4>
                         <p class="text-sm font-medium text-foreground">
                             This signal correlates with your expertise in <span class="text-primary">{{ item.tags[0]

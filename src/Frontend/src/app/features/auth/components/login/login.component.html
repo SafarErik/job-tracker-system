@@ -21,7 +21,7 @@
           Welcome back
         </h1>
         <p class="text-muted-foreground text-lg">
-          Enter your credentials to access the command center.
+          Enter your credentials to access your workspace.
         </p>
       </div>
 
@@ -40,10 +40,10 @@
         <div class="space-y-2 group">
           <label hlmLabel for="email"
             class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors">
-            Email Interface
+            Email
           </label>
           <div class="relative">
-            <input hlmInput id="email" type="email" formControlName="email" placeholder="operative@jobtracker.ai"
+            <input hlmInput id="email" type="email" formControlName="email" placeholder="member@jobtracker.ai"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-12 rounded-lg transition-all font-medium" />
             <!-- Validation Signal -->
             @if (form.controls.email.invalid && (form.controls.email.dirty || form.controls.email.touched)) {
@@ -52,7 +52,7 @@
           </div>
           @if (form.controls.email.invalid && (form.controls.email.dirty || form.controls.email.touched)) {
           <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
-            Valid email coordinates required.
+            Valid email required.
           </span>
           }
         </div>
@@ -62,7 +62,7 @@
           <div class="flex items-center justify-between">
             <label hlmLabel for="password"
               class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors">
-              Security Token
+              Password
             </label>
             <a routerLink="/auth/forgot-password"
               class="text-xs font-medium text-primary hover:text-primary/80 transition-colors">

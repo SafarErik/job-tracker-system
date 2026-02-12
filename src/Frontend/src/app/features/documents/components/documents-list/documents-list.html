@@ -31,7 +31,7 @@
       <div class="flex flex-col items-end gap-1.5 w-48">
         <div
           class="flex items-center justify-between w-full text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-          <span>Vault Capacity</span>
+          <span>Library Capacity</span>
           <span>{{ formatFileSize(store.usedStorage()) }} Used</span>
         </div>
         <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
@@ -62,7 +62,7 @@
   }
 
   @if (store.error()) {
-  <app-error-state title="Vault Locked" [message]="store.error()!" icon="lucideFileWarning"
+  <app-error-state title="Library Unavailable" [message]="store.error()!" icon="lucideFileWarning"
     (retry)="store.loadAll()"></app-error-state>
   }
 

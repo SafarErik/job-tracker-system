@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+
+.metric-card {
+  --metric-gradient-start: hsl(var(--primary));
+  --metric-gradient-end: hsl(var(--success));
+  --metric-gradient: linear-gradient(
+    90deg,
+    var(--metric-gradient-start),
+    var(--metric-gradient-end)
+  );
+}
+
+.metric-value {
+  font-family: 'Geist Mono', 'Inter', monospace;
+}
+
+.metric-active {
+  color: hsl(var(--foreground));
+}
+
+.metric-inactive {
+  color: hsl(240 4% 75%);
+}
+
+:host-context(.dark) .metric-inactive {
+  color: hsl(var(--muted-foreground));
+}
+
+.metric-glow {
+  color: hsl(var(--primary));
+  text-shadow: 0 0 18px hsl(var(--primary) / 0.38);
+}
+
+.metric-gauge {
+  --gauge: 0%;
+  background: conic-gradient(hsl(var(--primary)) var(--gauge), hsl(var(--muted)) var(--gauge));
+}

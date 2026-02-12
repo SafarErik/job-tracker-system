@@ -7,43 +7,22 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  BellDot,
-  Briefcase,
-  CircleQuestionMark,
-  Cog,
-  Globe,
-  MapPin,
-  LucideAngularModule,
-  LucideIconProvider,
-  LUCIDE_ICONS,
-  Search,
-  Sparkles,
-  TrendingUp,
-} from 'lucide-angular';
-import { firstValueFrom } from 'rxjs';
-import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmCardImports } from '@spartan-ng/helm/card';
-import { HlmInputImports } from '@spartan-ng/helm/input';
+import { Globe, LucideAngularModule, LucideIconProvider, LUCIDE_ICONS } from 'lucide-angular';
+import { AuthService } from '../../core/auth/auth.service';
 import { Company } from '../companies/models/company.model';
 import { JobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
-import { getStatusStyles } from '../job-applications/models/status-styles.util';
 import { JobApplicationStore } from '../job-applications/services/job-application.store';
 import { CompanyStore } from '../companies/services/company.store';
-import { CareerOpportunity, IntelligenceService } from '../../core/services/intelligence.service';
+import { MetricCardComponent } from './components/metric-card/metric-card.component';
 import {
-  ActivePursuitsWidgetComponent,
-  MarketPulseWidgetComponent,
-  ScheduleWidgetComponent,
-  StatusSummaryItem,
-} from './components';
-
-interface DashboardMetric {
-  label: string;
-  value: number;
-  toneClass: string;
-}
+  AiCommandWidgetComponent,
+  AiInsightCard,
+} from './components/ai-command-widget/ai-command-widget.component';
+import {
+  PipelineChartComponent,
+  PipelineStage,
+} from './components/pipeline-chart/pipeline-chart.component';
 
 interface LocationPoint {
   id: string;
@@ -87,27 +66,16 @@ const LOCATION_COORDINATES: Record<string, { x: number; y: number }> = {
   imports: [
     CommonModule,
     LucideAngularModule,
-    ...HlmCardImports,
-    ...HlmButtonImports,
-    ...HlmInputImports,
-    ScheduleWidgetComponent,
-    MarketPulseWidgetComponent,
-    ActivePursuitsWidgetComponent,
+    MetricCardComponent,
+    PipelineChartComponent,
+    AiCommandWidgetComponent,
   ],
   providers: [
     {
       provide: LUCIDE_ICONS,
       multi: true,
       useValue: new LucideIconProvider({
-        Search,
-        Briefcase,
-        TrendingUp,
-        BellDot,
         Globe,
-        MapPin,
-        Sparkles,
-        Cog,
-        CircleQuestionMark,
       }),
     },
   ],
@@ -118,67 +86,231 @@ const LOCATION_COORDINATES: Record<string, { x: number; y: number }> = {
 export class DashboardComponent implements OnInit {
   private readonly applicationStore = inject(JobApplicationStore);
   private readonly companyStore = inject(CompanyStore);
-  private readonly intelligenceService = inject(IntelligenceService);
+  private readonly authService = inject(AuthService);
 
-  readonly searchTerm = signal('');
-  readonly isLoadingOpportunities = signal(false);
-  readonly opportunities = signal<CareerOpportunity[]>([]);
+  readonly now = signal(new Date());
 
   readonly applications = this.applicationStore.applications;
   readonly companies = this.companyStore.companies;
   readonly metrics = this.applicationStore.metrics;
-  readonly isLoadingApplications = this.applicationStore.isLoading;
 
-  readonly dashboardMetrics = computed<DashboardMetric[]>(() => [
-    { label: 'Total Applications', value: this.metrics().total, toneClass: 'text-foreground' },
-    { label: 'Active Pipeline', value: this.metrics().active, toneClass: 'text-primary' },
-    { label: 'Interviewing', value: this.metrics().interviewing, toneClass: 'text-warning' },
-    { label: 'Offers', value: this.metrics().offers, toneClass: 'text-success' },
-  ]);
+  readonly greetingPeriod = computed(() => {
+    const hour = this.now().getHours();
+    if (hour < 12) {
+      return 'Morning';
+    }
 
-  readonly statusSummary = computed<StatusSummaryItem[]>(() => {
+    if (hour < 18) {
+      return 'Afternoon';
+    }
+
+    return 'Evening';
+  });
+
+  readonly userName = computed(() => {
+    const user = this.authService.user();
+    if (!user) {
+      return 'Operator';
+    }
+
+    const firstName = user.firstName?.trim();
+    if (firstName) {
+      return firstName;
+    }
+
+    return user.email?.split('@')[0] || 'Operator';
+  });
+
+  readonly currentDateLabel = computed(() =>
+    new Intl.DateTimeFormat('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(this.now()),
+  );
+
+  readonly totalApplications = computed(() => this.metrics().total);
+
+  readonly activePipeline = computed(
+    () =>
+      this.applications().filter((app) => app.status === JobApplicationStatus.Interviewing).length,
+  );
+
+  readonly offersCount = computed(() => this.metrics().offers);
+
+  readonly dueFollowUps = computed(
+    () =>
+      this.applications().filter(
+        (app) =>
+          app.status === JobApplicationStatus.Applied ||
+          app.status === JobApplicationStatus.PhoneScreen,
+      ).length,
+  );
+
+  readonly successRate = computed(() => {
+    const total = this.totalApplications();
+    if (total === 0) {
+      return 0;
+    }
+
+    return Math.round((this.offersCount() / total) * 100);
+  });
+
+  readonly nextAction = computed(() => {
+    const interviews = this.activePipeline();
+    if (interviews > 0) {
+      return 'Interview in 2h';
+    }
+
+    const count = this.dueFollowUps() > 0 ? this.dueFollowUps() : 3;
+    return `${count} Follow-ups due`;
+  });
+
+  readonly copilotContext = computed(() => {
+    const latest = [...this.applications()]
+      .sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime())
+      .at(0);
+
+    return {
+      totalApplications: this.totalApplications(),
+      activePipeline: this.activePipeline(),
+      offers: this.offersCount(),
+      dueFollowUps: this.dueFollowUps(),
+      topCompany: latest ? this.getCompanyName(latest) : undefined,
+    };
+  });
+
+  readonly insightCards = computed<AiInsightCard[]>(() => {
+    const cards: AiInsightCard[] = [];
+    const dueFollowUps = this.dueFollowUps();
+    const activePipeline = this.activePipeline();
+    const successRate = this.successRate();
+
+    if (dueFollowUps > 0) {
+      cards.push({
+        id: 'follow-up-sweep',
+        icon: '📬',
+        title: `${dueFollowUps} follow-up${dueFollowUps === 1 ? '' : 's'} pending`,
+        action: 'Run',
+        command: 'follow-ups',
+      });
+    }
+
+    if (activePipeline > 0) {
+      cards.push({
+        id: 'interview-prep',
+        icon: '🧠',
+        title: `Prep pack for ${activePipeline} active interview flow${activePipeline === 1 ? '' : 's'}`,
+        action: 'Launch',
+        command: 'interview prep',
+      });
+    }
+
+    if (successRate < 20 && this.totalApplications() >= 5) {
+      cards.push({
+        id: 'conversion-check',
+        icon: '⚠️',
+        title: 'Conversion rate below target',
+        action: 'Fix',
+        command: 'offer strategy',
+      });
+    }
+
+    if (cards.length < 3) {
+      cards.push({
+        id: 'pipeline-snapshot',
+        icon: '📊',
+        title: 'Pipeline snapshot available',
+        action: 'Open',
+        command: 'summary',
+      });
+    }
+
+    if (cards.length < 3) {
+      cards.push({
+        id: 'priority-action',
+        icon: '🎯',
+        title: "Generate today's next action",
+        action: 'Run',
+        command: 'next action',
+      });
+    }
+
+    return cards.slice(0, 3);
+  });
+
+  readonly sparklinePoints = computed(() => {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const daily = Array.from({ length: 7 }, () => 0);
+
+    for (const app of this.applications()) {
+      const appliedAt = new Date(app.appliedAt);
+      const dayDelta = Math.floor(
+        (startOfToday.getTime() - new Date(appliedAt.setHours(0, 0, 0, 0)).getTime()) /
+          (1000 * 60 * 60 * 24),
+      );
+
+      if (dayDelta >= 0 && dayDelta < 7) {
+        daily[6 - dayDelta] += 1;
+      }
+    }
+
+    const max = Math.max(...daily, 1);
+    const width = 220;
+    const height = 56;
+
+    return daily
+      .map((value, index) => {
+        const x = (index / (daily.length - 1)) * width;
+        const y = height - (value / max) * (height - 8);
+        return `${x},${y}`;
+      })
+      .join(' ');
+  });
+
+  readonly funnelStages = computed<PipelineStage[]>(() => {
     const apps = this.applications();
-    const groups = [
-      JobApplicationStatus.Applied,
-      JobApplicationStatus.PhoneScreen,
-      JobApplicationStatus.Interviewing,
-      JobApplicationStatus.TechnicalTask,
-      JobApplicationStatus.Offer,
-      JobApplicationStatus.Rejected,
-      JobApplicationStatus.Ghosted,
+
+    return [
+      {
+        label: 'Applied',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Applied).length,
+      },
+      {
+        label: 'Screen',
+        count: apps.filter(
+          (app) =>
+            app.status === JobApplicationStatus.PhoneScreen ||
+            app.status === JobApplicationStatus.TechnicalTask,
+        ).length,
+      },
+      {
+        label: 'Interview',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Interviewing).length,
+      },
+      {
+        label: 'Offer',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Offer).length,
+      },
     ];
-
-    return groups.map((status) => ({
-      label: this.getStatusLabel(status),
-      count: apps.filter((app) => app.status === status).length,
-      toneClass: getStatusStyles(status),
-    }));
   });
 
-  readonly recentApplications = computed(() => {
-    const term = this.searchTerm().toLowerCase().trim();
-    const apps = [...this.applications()].sort(
-      (a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime(),
-    );
+  readonly recentApplications = computed(() =>
+    [...this.applications()]
+      .sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime())
+      .slice(0, 9),
+  );
 
-    const filtered = term
-      ? apps.filter((app) =>
-          [app.position, app.companyName, app.description]
-            .filter(Boolean)
-            .some((value) => value!.toLowerCase().includes(term)),
-        )
-      : apps;
-
-    return filtered.slice(0, 8);
-  });
-
-  readonly freshOpportunities = computed(() =>
-    [...this.opportunities()].sort((a, b) => b.matchScore - a.matchScore).slice(0, 5),
+  readonly companyById = computed(
+    () => new Map(this.companies().map((company) => [company.id, company])),
   );
 
   readonly mapPoints = computed<LocationPoint[]>(() => {
     const appPoints = this.buildApplicationPoints(this.applications(), this.companies());
-    const opportunityPoints = this.buildOpportunityPoints(this.opportunities());
+    const opportunityPoints = this.buildOpportunityPoints();
 
     return [...appPoints, ...opportunityPoints].slice(0, 12);
   });
@@ -188,32 +320,65 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.applicationStore.loadAll();
     this.companyStore.loadAll();
-    this.loadOpportunities();
-  }
-
-  onSearchChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm.set(input.value);
-  }
-
-  private getStatusLabel(status: JobApplicationStatus): string {
-    return JobApplicationStatus[status].replaceAll(/([A-Z])/g, ' $1').trim();
   }
 
   trackByLocation(_: number, point: LocationPoint): string {
     return point.id;
   }
 
-  private async loadOpportunities(): Promise<void> {
-    this.isLoadingOpportunities.set(true);
-    try {
-      const items = await firstValueFrom(this.intelligenceService.getCareerOpportunities());
-      this.opportunities.set(items);
-    } catch {
-      this.opportunities.set([]);
-    } finally {
-      this.isLoadingOpportunities.set(false);
+  trackByApplication(_: number, app: JobApplication): string {
+    return app.id;
+  }
+
+  getCompanyName(app: JobApplication): string {
+    return this.companyById().get(app.companyId)?.name || app.companyName || 'Unknown Company';
+  }
+
+  getCompanyLogo(app: JobApplication): string | undefined {
+    return this.companyById().get(app.companyId)?.logoUrl;
+  }
+
+  getCompanyInitials(name: string): string {
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? '')
+      .join('');
+  }
+
+  getStatusBadgeClass(status: JobApplicationStatus): string {
+    switch (status) {
+      case JobApplicationStatus.Offer:
+        return 'border-success/40 bg-success/10 text-success';
+      case JobApplicationStatus.Interviewing:
+        return 'border-primary/40 bg-primary/10 text-primary';
+      case JobApplicationStatus.PhoneScreen:
+      case JobApplicationStatus.TechnicalTask:
+        return 'border-info/40 bg-info/10 text-info';
+      case JobApplicationStatus.Rejected:
+      case JobApplicationStatus.Ghosted:
+        return 'border-destructive/40 bg-destructive/10 text-destructive';
+      case JobApplicationStatus.Applied:
+      default:
+        return 'border-border bg-muted/70 text-foreground';
     }
+  }
+
+  getProbabilityBarClass(score: number): string {
+    if (score < 50) {
+      return 'bg-destructive';
+    }
+
+    if (score > 80) {
+      return 'bg-success';
+    }
+
+    return 'bg-primary';
+  }
+
+  getStatusLabel(status: JobApplicationStatus): string {
+    return JobApplicationStatus[status].replaceAll(/([A-Z])/g, ' $1').trim();
   }
 
   private buildApplicationPoints(
@@ -249,12 +414,18 @@ export class DashboardComponent implements OnInit {
     return [...grouped.values()];
   }
 
-  private buildOpportunityPoints(opportunities: CareerOpportunity[]): LocationPoint[] {
-    return opportunities.slice(0, 6).map((opportunity, index) => {
+  private buildOpportunityPoints(): LocationPoint[] {
+    const staticLocations = [
+      { id: 'nyc-opportunity', company: 'Vantage Systems', location: 'New York, USA' },
+      { id: 'london-opportunity', company: 'Nebula Corp', location: 'London, UK' },
+      { id: 'sf-opportunity', company: 'Cyberdyne', location: 'San Francisco, USA' },
+    ];
+
+    return staticLocations.map((opportunity, index) => {
       const coord = this.resolveLocationCoordinate(opportunity.location);
 
       return {
-        id: `opportunity-${opportunity.id}`,
+        id: opportunity.id,
         label: opportunity.company,
         detail: opportunity.location,
         x: coord.x + (index % 2 === 0 ? 0 : 1.2),

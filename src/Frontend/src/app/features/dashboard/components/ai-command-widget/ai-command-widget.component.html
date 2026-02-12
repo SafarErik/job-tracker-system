@@ -1,0 +1,83 @@
+<article class="holo-border rounded-2xl p-px">
+  <div
+    class="holo-card rounded-[calc(var(--radius-2xl)-1px)] border border-border/40 bg-linear-to-br from-white to-zinc-50/50 p-5 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.04),0_0_1px_rgba(0,0,0,0.1)] dark:border-border dark:bg-card/80 dark:from-card dark:to-card"
+  >
+    <div class="mb-4 flex items-center gap-3">
+      <div class="orb-wrapper flex h-8 w-8 items-center justify-center rounded-full bg-muted/70">
+        <lucide-icon name="sparkles" class="orb-icon h-4 w-4 text-primary"></lucide-icon>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+          {{ title() }}
+        </h2>
+        <p class="text-xs text-muted-foreground">Holo-Console</p>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <p class="text-xs uppercase tracking-[0.16em] text-muted-foreground">Insight Cards</p>
+
+      @for (card of insightCards(); track trackByInsight($index, card)) {
+        <div
+          class="insight-card flex items-center justify-between rounded-xl bg-zinc-100 px-3 py-2 dark:bg-muted/35"
+        >
+          <div class="flex items-center gap-2 text-sm text-foreground">
+            <span aria-hidden="true" class="text-base leading-none">{{ card.icon }}</span>
+            <span>{{ card.title }}</span>
+          </div>
+
+          <button
+            type="button"
+            class="inline-flex items-center gap-1 text-xs font-medium text-primary transition-opacity hover:opacity-80"
+            (click)="runInsight(card)"
+          >
+            {{ card.action }}
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="mt-4">
+      <label for="career-copilot-command" class="sr-only">Career command</label>
+      <div class="command-shell rounded-xl border border-input bg-background/70 px-3 py-2">
+        <span class="mr-2 text-primary">&gt;</span>
+        <input
+          id="career-copilot-command"
+          type="text"
+          [placeholder]="placeholder()"
+          [value]="command()"
+          (input)="updateCommand($any($event.target).value)"
+          (keydown.enter)="runCommand()"
+          class="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden"
+        />
+        <button
+          type="button"
+          class="ml-2 inline-flex items-center rounded-md border border-border px-2 py-1 text-[11px] font-medium text-foreground transition-colors hover:bg-muted"
+          (click)="runCommand()"
+        >
+          Run
+        </button>
+        <lucide-icon name="sparkles" class="h-4 w-4 text-muted-foreground"></lucide-icon>
+      </div>
+
+      <div class="mt-2 flex flex-wrap gap-2">
+        @for (suggestion of commandSuggestions(); track suggestion) {
+          <button
+            type="button"
+            class="inline-flex rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            (click)="runSuggestion(suggestion)"
+          >
+            {{ suggestion }}
+          </button>
+        }
+      </div>
+
+      <p
+        class="mt-3 rounded-lg border border-border/70 bg-muted/35 px-3 py-2 text-xs text-foreground"
+      >
+        {{ lastResponse() }}
+      </p>
+    </div>
+  </div>
+</article>

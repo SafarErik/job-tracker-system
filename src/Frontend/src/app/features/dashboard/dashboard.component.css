@@ -1,3 +1,38 @@
 :host {
   display: block;
 }
+
+.dashboard-shell {
+  position: relative;
+  border-radius: 0.75rem;
+  background: hsl(var(--background));
+}
+
+.noise-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+}
+
+.map-dot {
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.55);
+}
+
+.radar-map {
+  isolation: isolate;
+}
+
+.radar-pattern {
+  background-image:
+    radial-gradient(circle at center, hsl(var(--border) / 0.5) 1px, transparent 1px),
+    linear-gradient(to right, hsl(var(--border) / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.35) 1px, transparent 1px);
+  background-size:
+    16px 16px,
+    32px 32px,
+    32px 32px;
+}

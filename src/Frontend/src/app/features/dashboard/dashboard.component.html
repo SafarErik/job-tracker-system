@@ -1,117 +1,235 @@
-<section class="app-page animate-in fade-in slide-in-from-bottom-2 duration-500">
-  <div class="space-y-4">
-    <header class="surface-card flex flex-wrap items-center justify-between gap-3 p-4">
-      <div>
-        <h1 class="text-xl font-semibold tracking-tight text-foreground">Dashboard</h1>
-        <p class="text-sm text-muted-foreground">
-          Live snapshot of applications, locations, and newly discovered opportunities.
-        </p>
-      </div>
+<section class="dashboard-shell app-page animate-in fade-in slide-in-from-bottom-2 duration-500">
+  <div class="noise-overlay"></div>
 
-      <div class="flex items-center gap-2">
-        <div class="relative min-w-72">
-          <lucide-icon
-            name="search"
-            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-          ></lucide-icon>
-          <input
-            hlmInput
-            type="text"
-            placeholder="Search position, company, or notes"
-            class="pl-9"
-            (input)="onSearchChange($event)"
-          />
+  <div class="relative z-10 space-y-4">
+    <header
+      class="rounded-2xl border border-border/40 bg-linear-to-br from-white to-zinc-50/50 p-5 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.04),0_0_1px_rgba(0,0,0,0.1)] dark:border-border dark:bg-card/80 dark:from-card dark:to-card"
+    >
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Good {{ greetingPeriod() }}, {{ userName() }}.
+          </h1>
+          <p class="mt-1 text-sm text-muted-foreground">
+            Tactical Overview //
+            <span
+              class="font-medium text-foreground"
+              style="font-family: 'Geist Mono', 'Inter', monospace"
+            >
+              {{ currentDateLabel() }}
+            </span>
+          </p>
         </div>
-        <button hlmBtn variant="ghost" size="icon" class="h-9 w-9 rounded-lg">
-          <lucide-icon name="bell-dot" class="h-4 w-4"></lucide-icon>
-        </button>
-        <button hlmBtn variant="ghost" size="icon" class="h-9 w-9 rounded-lg">
-          <lucide-icon name="circle-question-mark" class="h-4 w-4"></lucide-icon>
-        </button>
+
+        <span
+          class="inline-flex items-center gap-2 rounded-full border border-success/40 bg-success/10 px-3 py-1 text-xs font-medium text-success"
+        >
+          <span class="h-2 w-2 animate-pulse rounded-full bg-success"></span>
+          System Online
+        </span>
       </div>
     </header>
 
-    <div class="dense-grid">
-      @for (metric of dashboardMetrics(); track metric.label) {
-        <div hlmCard>
-          <div hlmCardHeader class="pb-2">
-            <p class="text-xs uppercase tracking-wide text-muted-foreground">{{ metric.label }}</p>
-            <div hlmCardTitle class="text-3xl font-bold" [class]="metric.toneClass">
-              {{ metric.value }}
-            </div>
-          </div>
-        </div>
-      }
+    <div class="grid gap-4 xl:grid-cols-4">
+      <app-metric-card
+        label="Total Applications"
+        [value]="totalApplications()"
+        subtitle="7-day activity sparkline"
+        variant="sparkline"
+        [sparklinePoints]="sparklinePoints()"
+        [inactive]="totalApplications() === 0"
+      ></app-metric-card>
+
+      <app-metric-card
+        label="Active Pipeline"
+        [value]="activePipeline()"
+        subtitle="Jobs currently in Interview stage"
+        variant="glow"
+        [inactive]="activePipeline() === 0"
+      ></app-metric-card>
+
+      <app-metric-card
+        label="Success Rate"
+        [value]="successRate() + '%'"
+        subtitle="Offers / Applications"
+        variant="gauge"
+        [gaugeValue]="successRate()"
+        [inactive]="successRate() === 0"
+      ></app-metric-card>
+
+      <app-metric-card
+        label="Next Action"
+        [value]="nextAction()"
+        subtitle="Priority action from live pipeline signals"
+      ></app-metric-card>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
-      <app-schedule-widget
-        [items]="statusSummary()"
-        [total]="metrics().total"
-      ></app-schedule-widget>
+    <div class="grid gap-4 xl:grid-cols-3">
+      <app-pipeline-chart class="xl:col-span-2" [stages]="funnelStages()"></app-pipeline-chart>
 
-      <app-market-pulse-widget
-        [isLoading]="isLoadingOpportunities()"
-        [opportunities]="freshOpportunities()"
-      ></app-market-pulse-widget>
-
-      <div hlmCard class="xl:col-span-5">
-        <div hlmCardHeader>
-          <div hlmCardTitle class="flex items-center gap-2 text-base font-semibold">
-            <lucide-icon name="globe" class="h-4 w-4 text-primary"></lucide-icon>
-            Job Location Map
-          </div>
-          <p class="text-xs text-muted-foreground">
-            {{ totalTrackedLocations() }} tracked locations from applications and new posts
-          </p>
+      <article
+        class="rounded-2xl border border-border/40 bg-linear-to-br from-white to-zinc-50/50 p-5 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.04),0_0_1px_rgba(0,0,0,0.1)] dark:border-border dark:bg-card/80 dark:from-card dark:to-card"
+      >
+        <div class="mb-4 flex items-center gap-2">
+          <lucide-icon name="globe" class="h-4 w-4 text-primary"></lucide-icon>
+          <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+            Global Footprint
+          </h2>
         </div>
-        <div hlmCardContent>
-          <div
-            class="relative h-64 overflow-hidden rounded-xl border border-border bg-linear-to-br from-muted/40 to-card"
-          >
-            <div class="absolute inset-0 opacity-30">
-              <div class="absolute left-[8%] top-[26%] h-14 w-28 rounded-full bg-muted"></div>
-              <div class="absolute left-[40%] top-[22%] h-16 w-32 rounded-full bg-muted"></div>
-              <div class="absolute left-[64%] top-[34%] h-16 w-30 rounded-full bg-muted"></div>
-              <div class="absolute left-[74%] top-[64%] h-14 w-24 rounded-full bg-muted"></div>
-            </div>
 
-            @for (point of mapPoints(); track trackByLocation($index, point)) {
-              <div
-                class="group absolute -translate-x-1/2 -translate-y-1/2"
-                [style.left.%]="point.x"
-                [style.top.%]="point.y"
-                [attr.title]="point.label + ' · ' + point.detail"
-              >
+        <div
+          class="radar-map relative h-64 overflow-hidden rounded-xl border border-border bg-muted/35"
+        >
+          <svg
+            viewBox="0 0 100 100"
+            class="absolute inset-0 h-full w-full opacity-80"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M8 35 Q16 20 29 26 Q37 31 31 44 Q21 45 8 35Z"
+              class="fill-zinc-200 dark:fill-muted"
+            ></path>
+            <path
+              d="M39 28 Q52 18 66 24 Q76 35 68 46 Q52 48 39 39Z"
+              class="fill-zinc-200 dark:fill-muted"
+            ></path>
+            <path
+              d="M67 40 Q78 35 89 41 Q90 53 80 56 Q70 55 67 40Z"
+              class="fill-zinc-200 dark:fill-muted"
+            ></path>
+            <path
+              d="M76 66 Q84 62 90 68 Q88 77 80 79 Q74 75 76 66Z"
+              class="fill-zinc-200 dark:fill-muted"
+            ></path>
+          </svg>
+
+          <div class="absolute inset-0 opacity-45">
+            <div class="radar-pattern h-full w-full"></div>
+          </div>
+
+          @for (point of mapPoints(); track trackByLocation($index, point)) {
+            <div
+              class="absolute -translate-x-1/2 -translate-y-1/2"
+              [style.left.%]="point.x"
+              [style.top.%]="point.y"
+            >
+              <span class="relative flex h-3 w-3">
                 <span
-                  class="flex h-4 w-4 items-center justify-center rounded-full border-2 border-card"
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
                   [class.bg-primary]="point.kind === 'application'"
                   [class.bg-success]="point.kind === 'opportunity'"
                 ></span>
                 <span
-                  class="pointer-events-none absolute left-1/2 top-5 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-popover px-2 py-1 text-[11px] text-popover-foreground shadow-md group-hover:block"
-                >
-                  {{ point.label }} ({{ point.count }})
-                </span>
-              </div>
-            }
-          </div>
-
-          <div class="mt-3 flex items-center gap-4 text-xs text-muted-foreground">
-            <span class="inline-flex items-center gap-1">
-              <span class="h-2.5 w-2.5 rounded-full bg-primary"></span>Applications
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <span class="h-2.5 w-2.5 rounded-full bg-success"></span>New posts
-            </span>
-          </div>
+                  class="map-dot relative inline-flex h-3 w-3 rounded-full border border-background"
+                  [class.bg-primary]="point.kind === 'application'"
+                  [class.bg-success]="point.kind === 'opportunity'"
+                ></span>
+              </span>
+            </div>
+          }
         </div>
-      </div>
 
-      <app-active-pursuits-widget
-        [isLoading]="isLoadingApplications()"
-        [applications]="recentApplications()"
-      ></app-active-pursuits-widget>
+        <p class="mt-3 text-xs text-muted-foreground">
+          {{ totalTrackedLocations() }} tracked location signals
+        </p>
+      </article>
+    </div>
+
+    <div class="grid gap-4 xl:grid-cols-3">
+      <article
+        class="rounded-2xl border border-border/40 bg-linear-to-br from-white to-zinc-50/50 p-5 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.04),0_0_1px_rgba(0,0,0,0.1)] dark:border-border dark:bg-card/80 dark:from-card dark:to-card xl:col-span-2"
+      >
+        <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+          Recent Applications Table
+        </h2>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm text-foreground">
+            <thead>
+              <tr
+                class="border-b border-border text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                <th class="pb-2 text-left font-medium">Company</th>
+                <th class="pb-2 text-left font-medium">Role</th>
+                <th class="pb-2 text-left font-medium">Date</th>
+                <th class="pb-2 text-left font-medium">Status</th>
+                <th class="pb-2 text-left font-medium">Probability</th>
+                <th class="pb-2 text-right font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (app of recentApplications(); track trackByApplication($index, app)) {
+                <tr class="group border-b border-border/80 transition-colors hover:bg-muted/35">
+                  <td class="py-3 pr-3">
+                    <div class="flex items-center gap-2">
+                      @if (getCompanyLogo(app); as logo) {
+                        <img
+                          [src]="logo"
+                          alt=""
+                          class="h-7 w-7 rounded-md border border-border object-cover"
+                        />
+                      } @else {
+                        <div
+                          class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted text-[11px] text-foreground"
+                        >
+                          {{ getCompanyInitials(getCompanyName(app)) }}
+                        </div>
+                      }
+                      <span class="truncate font-medium text-foreground">{{
+                        getCompanyName(app)
+                      }}</span>
+                    </div>
+                  </td>
+                  <td class="py-3 pr-3 text-foreground">{{ app.position }}</td>
+                  <td class="py-3 pr-3 text-muted-foreground">
+                    {{ app.appliedAt | date: 'MMM d, y' }}
+                  </td>
+                  <td class="py-3 pr-3">
+                    <span
+                      class="inline-flex rounded-md border px-2 py-1 text-[11px] font-medium"
+                      [class]="getStatusBadgeClass(app.status)"
+                    >
+                      {{ getStatusLabel(app.status) }}
+                    </span>
+                  </td>
+                  <td class="py-3 pr-3">
+                    <div class="w-36">
+                      <div
+                        class="mb-1 text-[11px] text-muted-foreground"
+                        style="font-family: 'Geist Mono', 'Inter', monospace"
+                      >
+                        {{ app.matchScore }}%
+                      </div>
+                      <div class="h-2 overflow-hidden rounded bg-muted">
+                        <div
+                          class="h-full transition-all"
+                          [class]="getProbabilityBarClass(app.matchScore)"
+                          [style.width.%]="app.matchScore"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3 text-right">
+                    <button
+                      type="button"
+                      class="rounded-md border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      Quick View
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <app-ai-command-widget
+        [insightCards]="insightCards()"
+        [context]="copilotContext()"
+        placeholder="Try: summary, next action, follow-ups"
+      ></app-ai-command-widget>
     </div>
   </div>
 </section>

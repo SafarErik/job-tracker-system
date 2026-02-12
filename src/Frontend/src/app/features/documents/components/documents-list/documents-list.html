@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8 min-h-screen relative" (dragover)="onDragOver($event)"
+<div class="app-page min-h-screen relative" (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
 
   <!-- Upload Progress -->
@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between mb-2">
       <span class="text-sm font-medium text-primary flex items-center gap-2">
         <ng-icon name="lucideLoader2" class="h-4 w-4 animate-spin"></ng-icon>
-        Scanning & Encrypting...
+        Uploading document...
       </span>
       <span class="text-sm text-muted-foreground">{{ uploadProgress() }}%</span>
     </div>
@@ -21,8 +21,8 @@
   <!-- Header -->
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
     <div>
-      <h1 class="text-3xl font-bold tracking-tight text-foreground mb-2">Strategic Asset Library</h1>
-      <p class="text-muted-foreground">Manage your deployed career weaponry and master blueprints.</p>
+      <h1 class="text-3xl font-semibold tracking-tight text-foreground mb-2">Document Library</h1>
+      <p class="text-muted-foreground">Manage master resumes and tailored application documents.</p>
     </div>
 
     <!-- Right Side: Search & Storage -->
@@ -47,7 +47,7 @@
         <button hlmBtn (click)="fileInput.click()"
           class="bg-card border border-border hover:border-primary/50 hover:bg-muted text-foreground gap-2 rounded-xl transition-all">
           <ng-icon name="lucideFileUp" class="h-4 w-4"></ng-icon>
-          Ingest Asset
+          Upload Document
         </button>
       </div>
     </div>
@@ -57,7 +57,7 @@
   @if (store.isLoading()) {
   <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
     <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
-    <p>Decryption in progress...</p>
+    <p>Loading documents...</p>
   </div>
   }
 
@@ -73,7 +73,7 @@
   <section class="mb-16">
     <div class="flex items-center gap-3 mb-4 text-sm font-bold uppercase tracking-widest text-primary/80 pl-1">
       <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
-      The Master Blueprint
+      Master Resume
     </div>
 
     <div
@@ -83,7 +83,7 @@
         <span
           class="flex items-center gap-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
           <ng-icon name="lucideAward" class="h-3 w-3"></ng-icon>
-          Master
+          Primary
         </span>
       </div>
 
@@ -101,10 +101,10 @@
             <span class="w-1 h-1 rounded-full bg-border"></span>
             <span>Updated {{ formatDate(master.uploadedAt) }}</span>
             <span class="w-1 h-1 rounded-full bg-border"></span>
-            <span class="text-primary">Source of Truth</span>
+            <span class="text-primary">Primary Document</span>
           </div>
           <p class="text-sm text-muted-foreground max-w-2xl mt-2">
-            This is your primary source of truth for all AI-powered optimizations. Keep this document comprehensive and
+            This is your primary base document for AI-powered tailoring. Keep this document comprehensive and
             up-to-date.
           </p>
         </div>
@@ -112,7 +112,7 @@
         <div class="flex items-center gap-3">
           <button hlmBtn variant="ghost" class="text-muted-foreground hover:text-foreground"
             (click)="fileInput.click()">Update
-            Master</button>
+            Primary</button>
           <button hlmBtn class="bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-lg"
             (click)="previewDocument(master)">Open Preview</button>
         </div>
@@ -123,7 +123,7 @@
   <!-- Empty Master State -->
   <section class="mb-16">
     <div class="border-2 border-dashed border-border bg-muted/20 rounded-3xl p-12 text-center">
-      <h3 class="text-lg font-bold text-foreground mb-2">No Master Blueprint Set</h3>
+      <h3 class="text-lg font-bold text-foreground mb-2">No Primary Resume Set</h3>
       <p class="text-muted-foreground text-sm mb-6">Select a document from your library to promote it to Master status,
         or
         upload a new one.</p>
@@ -136,7 +136,7 @@
   <section>
     <div class="flex items-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-success/80 pl-1">
       <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
-      Deployed Asset Library
+      Tailored Document Library
     </div>
 
     <!-- Filter / Sub-Nav could go here -->
@@ -165,7 +165,7 @@
               class="text-muted-foreground group-hover:text-primary transition-colors"></ng-icon>
           </div>
           <p class="text-muted-foreground text-xs max-w-[200px] leading-relaxed">
-            No assets deployed yet. Generate a tailored resume in the <span
+            No tailored documents yet. Generate a tailored resume in the <span
               class="text-primary font-medium hover:underline">Application Workstation</span> to see it here.
           </p>
         </div>
@@ -193,8 +193,8 @@
   <!-- EMPTY STATE (overall) -->
   @if (store.filteredDocuments().length === 0) {
   <div class="text-center py-20">
-    <p class="text-muted-foreground">The vault is complete empty.</p>
-    <button class="text-primary hover:underline mt-2" (click)="fileInput.click()">Ingest your first asset</button>
+    <p class="text-muted-foreground">Your library is completely empty.</p>
+    <button class="text-primary hover:underline mt-2" (click)="fileInput.click()">Upload your first document</button>
   </div>
   }
   }
@@ -205,7 +205,7 @@
     class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none animate-in fade-in duration-200">
     <div class="bg-card border border-primary/50 p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
       <ng-icon name="lucideFileUp" class="h-12 w-12 text-primary"></ng-icon>
-      <p class="text-xl font-bold text-foreground">Drop to Ingest</p>
+      <p class="text-xl font-bold text-foreground">Drop to Upload</p>
     </div>
   </div>
   }

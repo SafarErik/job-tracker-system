@@ -1,6 +1,15 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef, HostListener, ChangeDetectionStrategy, computed } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ViewChild,
+  ElementRef,
+  HostListener,
+  ChangeDetectionStrategy,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { DocumentStore } from '../../services/document.store';
 import { DocumentViewModel as Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -10,8 +19,6 @@ import { DocumentCardComponent } from '../document-card/document-card.component'
 import { DocumentService } from '../../services/document.service';
 
 // Spartan UI
-import { HlmInputImports } from '@spartan-ng/helm/input';
-import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
@@ -19,16 +26,7 @@ import { lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 } from '@
 
 @Component({
   selector: 'app-documents-list',
-  imports: [
-    CommonModule,
-    FormsModule,
-    ...HlmInputImports,
-    ...HlmLabelImports,
-    ...HlmButtonImports,
-    NgIcon,
-    ErrorStateComponent,
-    DocumentCardComponent
-  ],
+  imports: [CommonModule, ...HlmButtonImports, NgIcon, ErrorStateComponent, DocumentCardComponent],
   providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 })],
   templateUrl: './documents-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,20 +37,16 @@ export class DocumentsListComponent implements OnInit {
   private readonly documentService = inject(DocumentService);
 
   // Computed State for Layout
-  masterDocument = computed(() =>
-    this.store.filteredDocuments().find(d => d.isMaster)
-  );
+  masterDocument = computed(() => this.store.filteredDocuments().find((d) => d.isMaster));
 
-  deployedDocuments = computed(() =>
-    this.store.filteredDocuments().filter(d => !d.isMaster)
-  );
+  deployedDocuments = computed(() => this.store.filteredDocuments().filter((d) => !d.isMaster));
 
   tailoredResumes = computed(() =>
-    this.deployedDocuments().filter(d => this.inferDocType(d) === 'Resume')
+    this.deployedDocuments().filter((d) => this.inferDocType(d) === 'Resume'),
   );
 
   coverLetters = computed(() =>
-    this.deployedDocuments().filter(d => this.inferDocType(d) === 'Cover Letter')
+    this.deployedDocuments().filter((d) => this.inferDocType(d) === 'Cover Letter'),
   );
 
   // Helper to infer type if not present (simple logic for now)

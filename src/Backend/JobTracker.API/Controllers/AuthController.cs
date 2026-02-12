@@ -106,7 +106,6 @@ public class AuthController : ControllerBase
 
         return Ok(user);
     }
-
     // ============================================
     // REFRESH TOKEN - Get a new token
     // ============================================

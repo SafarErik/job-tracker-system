@@ -1,0 +1,63 @@
+<article class="bento-card flex h-full flex-col p-5">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+            Global Footprint
+        </h2>
+        <span class="text-xs text-muted-foreground">
+            {{ totalLocations() }} location{{ totalLocations() === 1 ? '' : 's' }}
+        </span>
+    </div>
+
+    @if (loading()) {
+    <div class="flex flex-1 items-center justify-center">
+        <div hlmSkeleton class="h-48 w-full rounded-xl"></div>
+    </div>
+    } @else {
+    <div class="relative flex-1 overflow-hidden rounded-xl border border-border bg-muted/20"
+        style="isolation: isolate;">
+        <!-- SVG World Map -->
+        <svg viewBox="0 0 100 100" class="absolute inset-0 h-full w-full opacity-80" preserveAspectRatio="none"
+            aria-hidden="true">
+            <!-- North America -->
+            <path d="M8 35 Q16 20 29 26 Q37 31 31 44 Q21 45 8 35Z" class="fill-muted/60" />
+            <!-- Europe + Africa -->
+            <path d="M39 28 Q52 18 66 24 Q76 35 68 46 Q52 48 39 39Z" class="fill-muted/60" />
+            <!-- Asia -->
+            <path d="M67 40 Q78 35 89 41 Q90 53 80 56 Q70 55 67 40Z" class="fill-muted/60" />
+            <!-- Oceania -->
+            <path d="M76 66 Q84 62 90 68 Q88 77 80 79 Q74 75 76 66Z" class="fill-muted/60" />
+        </svg>
+
+        <!-- Radar grid overlay -->
+        <div class="absolute inset-0 opacity-40">
+            <div class="radar-pattern h-full w-full"></div>
+        </div>
+
+        <!-- Location dots -->
+        @for (point of points(); track trackByPoint($index, point)) {
+        <div class="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer" [style.left.%]="point.x"
+            [style.top.%]="point.y" (mouseenter)="onDotEnter(point)" (mouseleave)="onDotLeave()"
+            (focus)="onDotEnter(point)" (blur)="onDotLeave()" tabindex="0"
+            [attr.aria-label]="point.label + ': ' + point.count + ' active'" role="button">
+            <span class="relative flex h-3 w-3">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
+                    [class.bg-primary]="point.kind === 'application'"
+                    [class.bg-success]="point.kind === 'opportunity'"></span>
+                <span class="map-dot relative inline-flex h-3 w-3 rounded-full border border-background"
+                    [class.bg-primary]="point.kind === 'application'"
+                    [class.bg-success]="point.kind === 'opportunity'"></span>
+            </span>
+        </div>
+        }
+
+        <!-- Hover tooltip -->
+        @if (hoveredPoint(); as hp) {
+        <div class="map-tooltip" [style.left.%]="hp.x" [style.top.%]="hp.y">
+            <span class="font-medium">{{ hp.detail }}</span>:
+            {{ hp.count }} Active {{ hp.kind === 'application' ? 'Application' : 'Opportunity' }}{{ hp.count === 1 ? ''
+            : 's' }}
+        </div>
+        }
+    </div>
+    }
+</article>

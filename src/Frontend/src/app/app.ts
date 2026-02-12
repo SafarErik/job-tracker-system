@@ -22,10 +22,11 @@ import {
   ConfirmDialogComponent,
 } from './shared/components';
 import { ApplicationAddSheetComponent } from './features/job-applications/components/application-add-sheet/application-add-sheet.component';
+import { SpotlightComponent } from './shared/components/spotlight/spotlight.component';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster],
+  imports: [CommonModule, RouterOutlet, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster, SpotlightComponent],
   templateUrl: './app.html',
 })
 export class App implements AfterViewInit {

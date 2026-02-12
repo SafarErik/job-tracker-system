@@ -6,3 +6,7 @@ export * from './ai-command-widget/ai-command-widget.component';
 export * from './pipeline-chart/pipeline-chart.component';
 export * from './momentum-gauge/momentum-gauge.component';
 export * from './stat-card/stat-card.component';
+export * from './skill-radar/skill-radar.component';
+export * from './global-footprint/global-footprint.component';
+export * from './activity-feed/activity-feed.component';
+export * from './pipeline-table-card/pipeline-table-card.component';

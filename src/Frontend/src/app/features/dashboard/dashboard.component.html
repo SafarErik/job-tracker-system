@@ -1,6 +1,4 @@
-<section
-  class="app-page animate-in fade-in slide-in-from-bottom-2 duration-500"
->
+<section class="app-page animate-in fade-in slide-in-from-bottom-2 duration-500">
   <!-- Bento Grid Container -->
   <div class="bento-grid">
 
@@ -8,100 +6,84 @@
          ROW 1 — HERO CARD (spans all 4 columns)
          ═══════════════════════════════════════════ -->
     @if (isLoading()) {
-      <article class="bento-card md:col-span-4 p-6 md:p-8">
-        <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <!-- Left skeleton -->
-          <div class="flex flex-col gap-4 md:w-[70%]">
-            <div hlmSkeleton class="h-8 w-64 rounded-lg"></div>
-            <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
-            <div class="mt-4 flex flex-col gap-3">
-              <div hlmSkeleton class="h-5 w-72 rounded-md"></div>
-              <div hlmSkeleton class="h-5 w-60 rounded-md"></div>
-              <div hlmSkeleton class="h-5 w-52 rounded-md"></div>
-            </div>
-          </div>
-          <!-- Right skeleton (gauge) -->
-          <div class="flex items-center justify-center md:w-[30%]">
-            <div hlmSkeleton class="h-28 w-28 rounded-full"></div>
+    <article class="bento-card md:col-span-4 p-6 md:p-8">
+      <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        <div class="flex flex-col gap-4 md:w-[70%]">
+          <div hlmSkeleton class="h-8 w-64 rounded-lg"></div>
+          <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
+          <div class="mt-4 flex flex-col gap-3">
+            <div hlmSkeleton class="h-5 w-72 rounded-md"></div>
+            <div hlmSkeleton class="h-5 w-60 rounded-md"></div>
+            <div hlmSkeleton class="h-5 w-52 rounded-md"></div>
           </div>
         </div>
-      </article>
+        <div class="flex items-center justify-center md:w-[30%]">
+          <div hlmSkeleton class="h-28 w-28 rounded-full"></div>
+        </div>
+      </div>
+    </article>
     } @else {
-      <article class="bento-card md:col-span-4 p-6 md:p-8">
-        <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <!-- Left: Greeting + Daily Briefing -->
-          <div class="flex flex-col gap-2 md:w-[70%]">
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Good {{ greetingPeriod() }}, {{ userName() }}.
-            </h1>
-            <p class="text-sm text-muted-foreground">
-              Command Center //
-              <span
-                class="font-medium text-foreground"
-                style="font-family: 'Geist Mono', 'Inter', monospace"
-              >
-                {{ currentDateLabel() }}
-              </span>
-            </p>
+    <article class="bento-card md:col-span-4 p-6 md:p-8">
+      <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+        <!-- Left: Greeting + Daily Briefing -->
+        <div class="flex flex-col gap-2 md:w-[70%]">
+          <h1 class="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+            Good {{ greetingPeriod() }}, {{ userName() }}.
+          </h1>
+          <p class="text-sm text-muted-foreground">
+            Command Center //
+            <span class="font-medium text-foreground" style="font-family: 'Geist Mono', 'Inter', monospace">
+              {{ currentDateLabel() }}
+            </span>
+          </p>
 
-            <!-- Daily Briefing -->
-            <div class="mt-4 space-y-2.5" role="list" aria-label="Daily Briefing">
-              @for (item of dailyBriefing(); track item.text) {
-                <div
-                  class="flex items-center gap-2.5 text-sm text-foreground"
-                  role="listitem"
-                >
-                  <span class="text-base" aria-hidden="true">{{ item.icon }}</span>
-                  <span>{{ item.text }}</span>
-                </div>
-              }
+          <div class="mt-4 space-y-2.5" role="list" aria-label="Daily Briefing">
+            @for (item of dailyBriefing(); track item.text) {
+            <div class="flex items-center gap-2.5 text-sm text-foreground" role="listitem">
+              <span class="text-base" aria-hidden="true">{{ item.icon }}</span>
+              <span>{{ item.text }}</span>
             </div>
-          </div>
-
-          <!-- Right: Momentum Gauge -->
-          <div class="flex items-center justify-center md:w-[30%] pt-2">
-            <app-momentum-gauge
-              [score]="momentumScore()"
-              [loading]="false"
-            ></app-momentum-gauge>
+            }
           </div>
         </div>
-      </article>
+
+        <!-- Right: Momentum Gauge -->
+        <div class="flex items-center justify-center md:w-[30%] pt-2">
+          <app-momentum-gauge [score]="momentumScore()" [loading]="false"></app-momentum-gauge>
+        </div>
+      </div>
+    </article>
     }
 
     <!-- ═══════════════════════════════════════════
          ROW 2 — VITAL STAT CARDS (4 × 1 col each)
          ═══════════════════════════════════════════ -->
-    <app-stat-card
-      label="Total Applications"
-      [value]="totalApplications()"
-      [trend]="weeklyTrend()"
-      subtitle="Lifetime tracked"
-      [loading]="isLoading()"
-    ></app-stat-card>
+    <app-stat-card label="Total Applications" [value]="totalApplications()" [trend]="weeklyTrend()"
+      subtitle="Lifetime tracked" [loading]="isLoading()"></app-stat-card>
 
-    <app-stat-card
-      label="Success Rate"
-      [value]="successRate() + '%'"
-      subtitle="Offers / Applications"
-      [loading]="isLoading()"
-    ></app-stat-card>
+    <app-stat-card label="Success Rate" [value]="successRate() + '%'" subtitle="Offers / Applications"
+      [loading]="isLoading()"></app-stat-card>
 
-    <app-stat-card
-      label="Active Pipeline"
-      [value]="activePipeline()"
-      subtitle="Currently interviewing"
-      variant="glow"
-      [loading]="isLoading()"
-    ></app-stat-card>
+    <app-stat-card label="Active Pipeline" [value]="activePipeline()" subtitle="Currently interviewing" variant="glow"
+      [loading]="isLoading()"></app-stat-card>
 
-    <app-stat-card
-      label="Next Action"
-      [value]="nextAction()"
-      subtitle="Priority from live signals"
-      variant="highlight"
-      [loading]="isLoading()"
-    ></app-stat-card>
+    <app-stat-card label="Next Action" [value]="nextAction()" subtitle="Priority from live signals" variant="highlight"
+      [loading]="isLoading()"></app-stat-card>
+
+    <!-- ═══════════════════════════════════════════
+         ROW 3 — VISUAL INTELLIGENCE (2 + 2 cols)
+         ═══════════════════════════════════════════ -->
+    <app-skill-radar class="md:col-span-2" [axes]="skillRadarData()" [loading]="isLoading()"></app-skill-radar>
+
+    <app-global-footprint class="md:col-span-2" [points]="mapPoints()" [loading]="isLoading()"></app-global-footprint>
+
+    <!-- ═══════════════════════════════════════════
+         ROW 4 — EXECUTION LAYER (1 + 3 cols)
+         ═══════════════════════════════════════════ -->
+    <app-activity-feed class="md:col-span-1" [items]="feedItems()" [loading]="isLoading()"></app-activity-feed>
+
+    <app-pipeline-table-card class="md:col-span-3" [stages]="funnelStages()" [applications]="applications()"
+      [companyMap]="companyMap()" [loading]="isLoading()"></app-pipeline-table-card>
 
   </div>
 </section>

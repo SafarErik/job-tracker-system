@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+crawl4ai>=0.7.0,<0.9.0
+pydantic
+playwright

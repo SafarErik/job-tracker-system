@@ -27,13 +27,7 @@
     <div class="flex flex-col">
         @if (application().salaryOffer) {
         <span class="text-xs font-bold text-emerald-500">
-            {{ application().salaryOffer |
-            salaryFormatter:undefined:application().currency:application().salaryPeriod:true }}
-        </span>
-        } @else if (application().salaryMin) {
-        <span class="text-xs text-muted-foreground">
-            {{ application().salaryMin |
-            salaryFormatter:application().salaryMax:application().currency:application().salaryPeriod }}
+            {{ application().salaryOffer | currency: application().currency }}
         </span>
         } @else {
         <span class="italic text-slate-600 text-xs">Not specified</span>

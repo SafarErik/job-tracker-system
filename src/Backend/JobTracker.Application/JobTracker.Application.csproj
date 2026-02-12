@@ -16,6 +16,10 @@
     <ProjectReference Include="..\JobTracker.Core\JobTracker.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <!-- 
     Package References:
     - Identity.Stores: For IdentityUser reference in DTOs

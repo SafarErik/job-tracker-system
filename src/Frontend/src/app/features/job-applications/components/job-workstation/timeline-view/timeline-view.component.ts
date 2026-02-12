@@ -29,7 +29,6 @@ interface TimelineEvent {
 
 @Component({
     selector: 'app-timeline-view',
-    standalone: true,
     imports: [CommonModule, NgIcon, FormsModule],
     providers: [
         provideIcons({

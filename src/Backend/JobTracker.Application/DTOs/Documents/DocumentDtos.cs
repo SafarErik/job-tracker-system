@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Entities;
+using JobTracker.Core.Enums;
 
 namespace JobTracker.Application.DTOs.Documents;
 
@@ -10,32 +11,32 @@ namespace JobTracker.Application.DTOs.Documents;
 public class DocumentDto
 {
     public Guid Id { get; set; }
-    
+
     /// <summary>
     /// Original filename as uploaded by the user
     /// </summary>
     public string OriginalFileName { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// File size in bytes
     /// </summary>
     public long FileSize { get; set; }
-    
+
     /// <summary>
     /// MIME type (e.g., "application/pdf")
     /// </summary>
     public string ContentType { get; set; } = string.Empty;
-    
+
     /// <summary>
     /// When the document was uploaded
     /// </summary>
     public DateTime UploadedAt { get; set; }
-    
+
     /// <summary>
     /// Type of document (Resume, CoverLetter, etc.)
     /// </summary>
     public DocumentType Type { get; set; }
-    
+
     /// <summary>
     /// Number of job applications using this document
     /// </summary>
@@ -57,7 +58,7 @@ public class DocumentUploadResponseDto : DocumentDto
     /// Indicates if the upload was successful
     /// </summary>
     public bool Succeeded { get; set; }
-    
+
     /// <summary>
     /// Message describing the result
     /// </summary>
@@ -75,7 +76,7 @@ public class UpdateDocumentDto
     /// </summary>
     [StringLength(255)]
     public string? DisplayName { get; set; }
-    
+
     /// <summary>
     /// Document type classification
     /// </summary>

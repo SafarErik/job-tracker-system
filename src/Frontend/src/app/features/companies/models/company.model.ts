@@ -1,85 +1,85 @@
+import { CompanyPriority } from './company-priority.enum';
+import type { CompanyContact } from '../../../core/models/company-contact.model';
+
+export type { CompanyContact };
+
+// ── List View ────────────────────────────────────────────
+
+/**
+ * Company summary returned by `GET /api/companies`.
+ * Matches backend `CompanyDto` exactly.
+ */
 export interface Company {
   id: string;
   name: string;
   website?: string;
   address?: string;
-  hrContactName?: string;
-  hrContactEmail?: string;
-  hrContactLinkedIn?: string;
+  logoUrl?: string;
+  hqLocation?: string;
+  description?: string;
   industry?: string;
-  techStack?: string[];
+  compatibilityScore: number;
+  priority: CompanyPriority;
+  techStack: string[];
   totalApplications: number;
-  priority: string;
-  updatedAt?: string;
-  // For rich display in list view
-  recentApplications?: ApplicationPreview[];
+  recentApplications: JobApplicationHistory[];
 }
 
-export interface ApplicationPreview {
-  id: string;
-  position: string;
-  status: string;
+// ── Detail View ──────────────────────────────────────────
+
+/**
+ * Detailed company view returned by `GET /api/companies/:id/details`.
+ * Matches backend `CompanyDetailDto` exactly.
+ */
+export interface CompanyDetail extends Company {
+  notes?: string;
+  contacts: CompanyContact[];
+  applicationHistory: JobApplicationHistory[];
 }
 
+// ── Create / Update ──────────────────────────────────────
+
+/**
+ * Payload for `POST /api/companies`.
+ * Matches backend `CreateCompanyDto`.
+ */
 export interface CreateCompany {
   name: string;
   website?: string;
   address?: string;
+  logoUrl?: string;
+  hqLocation?: string;
+  description?: string;
   industry?: string;
   techStack?: string[];
-  priority?: string;
-  notes?: string;
-  // Mapped to backend DTO
+  priority?: CompanyPriority;
   contacts?: CompanyContact[];
-  // Legacy flat fields (optional, for form internal use)
-  hrContactName?: string;
-  hrContactEmail?: string;
-  hrContactLinkedIn?: string;
 }
 
+/**
+ * Payload for `PUT /api/companies/:id`.
+ * Matches backend `UpdateCompanyDto`.
+ */
 export interface UpdateCompany {
   name?: string;
   website?: string;
   address?: string;
-  hrContactName?: string;
-  hrContactEmail?: string;
-  hrContactLinkedIn?: string;
+  logoUrl?: string;
+  hqLocation?: string;
+  description?: string;
   industry?: string;
-  techStack?: string[];
-  priority?: string;
   notes?: string;
+  techStack?: string[];
+  priority?: CompanyPriority;
   contacts?: CompanyContact[];
 }
 
-export interface CompanyDetail {
-  id: string;
-  name: string;
-  website?: string;
-  address?: string;
-  hrContactName?: string;
-  hrContactEmail?: string;
-  hrContactLinkedIn?: string;
-  industry?: string;
-  techStack?: string[];
-  totalApplications: number;
-  priority: string;
-  updatedAt?: string;
-  applicationHistory: JobApplicationHistory[];
-  // Intelligence fields (mock data for now)
-  contacts?: CompanyContact[];
-  notes?: string;
-  compatibility?: CompatibilityIndex;
-}
+// ── Shared Sub-types ─────────────────────────────────────
 
-export interface CompatibilityIndex {
-  score: number;
-  pros: string[];
-  cons: string[];
-}
-
-import type { CompanyContact } from '../../../core/models/company-contact.model';
-export type { CompanyContact };
-
+/**
+ * Simplified job application snapshot shown in company views.
+ * Matches backend `JobApplicationHistoryDto`.
+ */
 export interface JobApplicationHistory {
   id: string;
   position: string;
@@ -88,7 +88,11 @@ export interface JobApplicationHistory {
   salaryOffer?: number;
 }
 
-// Mock news service types
+/** @deprecated Use `JobApplicationHistory` instead. */
+export type ApplicationPreview = JobApplicationHistory;
+
+// ── Intelligence / UI-only types ─────────────────────────
+
 export interface CompanyNews {
   id: string;
   title: string;
@@ -103,6 +107,11 @@ export interface IntelligenceBriefing {
   risks: string;
 }
 
+export interface CompatibilityIndex {
+  score: number;
+  pros: string[];
+  cons: string[];
+}
 
 export interface TacticalEvent {
   id: string;
@@ -110,8 +119,8 @@ export interface TacticalEvent {
   date: string | Date;
   title: string;
   subtitle?: string;
-  status?: string; // Original status if applicable
-  description?: string; // AI notes or manual notes
+  status?: string;
+  description?: string;
   assets?: EventAsset[];
   meta?: {
     isGhosted?: boolean;

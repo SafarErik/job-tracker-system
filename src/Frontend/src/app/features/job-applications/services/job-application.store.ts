@@ -158,6 +158,12 @@ export class JobApplicationStore {
       .subscribe();
   }
 
+  /**
+   * Selects an application to view details.
+   * Fetches fresh details from the API.
+   *
+   * @param id - The ID of the application to select, or null to clear selection
+   */
   selectApplication(id: string | null) {
     this._selectedApplicationId.set(id);
     if (id === null) {
@@ -178,6 +184,11 @@ export class JobApplicationStore {
     });
   }
 
+  /**
+   * Adds a new job application.
+   *
+   * @param application - The new application data
+   */
   addApplication(application: CreateJobApplication) {
     this._isLoading.set(true);
     // Optimistic? No, creation usually requires backend ID.
@@ -195,6 +206,13 @@ export class JobApplicationStore {
     });
   }
 
+  /**
+   * Updates an existing application.
+   * Performs an optimistic update on local state.
+   *
+   * @param id - The ID of the application
+   * @param changes - The partial changes to apply
+   */
   updateApplication(id: string, changes: Partial<JobApplication>) {
     const originalApps = this._applications();
     const appIndex = originalApps.findIndex((a) => a.id === id);
@@ -223,6 +241,12 @@ export class JobApplicationStore {
     });
   }
 
+  /**
+   * Deletes an application.
+   * Performs an optimistic delete on local state.
+   *
+   * @param id - The ID of the application to delete
+   */
   deleteApplication(id: string) {
     const originalApps = this._applications();
     const originalSelectedId = this._selectedApplicationId();

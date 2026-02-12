@@ -12,9 +12,10 @@ import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideS
 import { ProfileStore } from '../../../../features/profile/services/profile.store';
 import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 
+import { CompanyPriority } from '../../models/company-priority.enum';
+
 @Component({
   selector: 'app-company-card',
-  standalone: true,
   imports: [
     CommonModule,
     NgIcon,
@@ -30,6 +31,7 @@ import { LogoPlaceholderComponent } from '../../../../shared/components/logo-pla
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyCardComponent {
+  protected readonly CompanyPriority = CompanyPriority;
   private readonly profileStore = inject(ProfileStore);
   company = input.required<Company>();
   viewDossier = output<string>();

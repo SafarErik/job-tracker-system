@@ -1,4 +1,5 @@
 using JobTracker.Application.DTOs.Documents;
+using JobTracker.Application.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,16 +18,16 @@ namespace JobTracker.API.Controllers;
 public class DocumentsController : ControllerBase
 {
     private readonly IDocumentRepository _documentRepository;
-    private readonly IWebHostEnvironment _environment;
+    private readonly IFileStorageService _fileStorageService;
     private readonly ILogger<DocumentsController> _logger;
 
     public DocumentsController(
         IDocumentRepository documentRepository,
-        IWebHostEnvironment environment,
+        IFileStorageService fileStorageService,
         ILogger<DocumentsController> logger)
     {
         _documentRepository = documentRepository;
-        _environment = environment;
+        _fileStorageService = fileStorageService;
         _logger = logger;
     }
 
@@ -42,268 +43,127 @@ public class DocumentsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<DocumentDto>>> GetDocuments()
     {
-        // Validate user is authenticated and has valid claim
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized("User ID not found in token");
-        }
-        
-        // Only get documents belonging to the current user
-        var documents = await _documentRepository.GetAllByUserIdAsync(userId);
-        
-        var documentDtos = documents.Select(MapToDto);
+        if (userId is null) return Unauthorized("User ID not found in token");
 
-        return Ok(documentDtos);
+        var documents = await _documentRepository.GetAllByUserIdAsync(userId);
+        return Ok(documents.Select(MapToDto));
     }
 
     // GET: api/Documents/{id}
     [HttpGet("{id}")]
     public async Task<ActionResult<DocumentDto>> GetDocument(Guid id)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized("User ID not found in token");
-        }
+        if (userId is null) return Unauthorized("User ID not found in token");
 
         var document = await _documentRepository.GetByIdAsync(id);
+        if (document == null) return NotFound();
+        if (document.UserId != userId) return Forbid();
 
-        if (document == null)
-        {
-            return NotFound();
-        }
-
-        // Security check: Ensure document belongs to current user
-        if (document.UserId != userId)
-        {
-            return Forbid();
-        }
-
-        var documentDto = MapToDto(document);
-
-        return Ok(documentDto);
+        return Ok(MapToDto(document));
     }
 
     // GET: api/Documents/{id}/download
     [HttpGet("{id}/download")]
     public async Task<IActionResult> DownloadDocument(Guid id)
     {
-        // Validate user is authenticated
         var userId = GetUserId();
-        if (userId is null)
-        {
-            return Unauthorized("User ID not found in token");
-        }
+        if (userId is null) return Unauthorized("User ID not found in token");
 
         var document = await _documentRepository.GetByIdAsync(id);
+        if (document == null) return NotFound();
+        if (document.UserId != userId) return Forbid();
 
-        if (document == null)
+        try
         {
-            return NotFound();
+            var stream = await _fileStorageService.GetFileStreamAsync(document.FileName);
+            return File(stream, document.ContentType, document.OriginalFileName);
         }
-
-        // Security check: Ensure document belongs to current user
-        if (document.UserId != userId)
+        catch (FileNotFoundException)
         {
-            return Forbid();
-        }
-
-        var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
-        var filePath = Path.Combine(uploadsFolder, document.FileName);
-
-        if (!System.IO.File.Exists(filePath))
-        {
-            _logger.LogError("File not found: {FilePath}", filePath);
+            _logger.LogError("File not found on server: {FileName}", document.FileName);
             return NotFound("File not found on server");
         }
-
-        var memory = new MemoryStream();
-        using (var stream = new FileStream(filePath, FileMode.Open))
-        {
-            await stream.CopyToAsync(memory);
-        }
-        memory.Position = 0;
-
-        return File(memory, document.ContentType, document.OriginalFileName);
     }
 
     // POST: api/Documents/upload
     [HttpPost("upload")]
     public async Task<ActionResult<DocumentDto>> UploadDocument(IFormFile file)
     {
-        if (file == null || file.Length == 0)
-        {
-            return BadRequest("No file uploaded");
-        }
-
-        // Validate file size (max 10MB)
-        if (file.Length > 10 * 1024 * 1024)
-        {
-            return BadRequest("File size must not exceed 10MB");
-        }
-
-        // Validate file type using both content type and file extension
-        var allowedContentTypes = new[] { "application/pdf", "application/msword", 
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
-        var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
-        
-        var fileExtension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-        
-        if (!allowedContentTypes.Contains(file.ContentType) || 
-            string.IsNullOrEmpty(fileExtension) ||
-            !allowedExtensions.Contains(fileExtension))
-        {
-            return BadRequest("Only PDF and Word documents are allowed");
-        }
-
-        // Sanitize filename to prevent path traversal attacks
-        var originalFileName = Path.GetFileName(file.FileName);
-        if (string.IsNullOrEmpty(originalFileName) || 
-            originalFileName.Contains("..") ||
-            originalFileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
-        {
-            return BadRequest("Invalid file name");
-        }
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
 
         try
         {
-            var userId = GetUserId();
-            
-            // Check if user is authenticated
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-            
-            // Create uploads folder if it doesn't exist
-            var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
-            Directory.CreateDirectory(uploadsFolder);
+            // Delegate file validation and storage to service
+            using var stream = file.OpenReadStream();
+            var document = await _fileStorageService.UploadFileAsync(stream, file.FileName, file.ContentType, userId);
 
-            // Generate unique filename with sanitized extension
-            var fileName = $"{Guid.NewGuid()}{fileExtension}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
-            
-            // Additional security: Verify the resolved path is still within uploads folder
-            var fullPath = Path.GetFullPath(filePath);
-            var uploadsFullPath = Path.GetFullPath(uploadsFolder);
-            if (!fullPath.StartsWith(uploadsFullPath, StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogError("Path traversal attempt detected: {FilePath}", filePath);
-                return BadRequest("Invalid file path");
-            }
-
-            // Save file to disk with security best practices
-            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                await file.CopyToAsync(stream);
-            }
-            
-            // TODO: In production, integrate with antivirus scanning service
-            // Example: Azure Defender for Storage or third-party API
-            // await AntivirusService.ScanFileAsync(filePath);
-
-            // Create document entity with user ownership
-            var document = new Document
-            {
-                Id = Guid.NewGuid(),
-                UserId = userId, // Link document to authenticated user
-                FileName = fileName,
-                OriginalFileName = originalFileName, // Use sanitized filename
-                FileSize = file.Length,
-                ContentType = file.ContentType,
-                UploadedAt = DateTime.UtcNow
-            };
-
-            // Save to database
+            // Persist metadata
             await _documentRepository.CreateAsync(document);
-            
-            _logger.LogInformation("Document uploaded successfully: {DocumentId} by user {UserId}", 
-                document.Id, userId);
 
-            var documentDto = MapToDto(document);
+            _logger.LogInformation("Document uploaded successfully: {DocumentId} by user {UserId}", document.Id, userId);
 
-            return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, documentDto);
+            return CreatedAtAction(nameof(GetDocument), new { id = document.Id }, MapToDto(document));
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading document for user {UserId}", GetUserId());
+            _logger.LogError(ex, "Error uploading document for user {UserId}", userId);
             return StatusCode(500, "An error occurred while uploading the file");
         }
     }
 
-    // DELETE: api/Documents/{id}
+    // POST: api/Documents/{id}/master
     [HttpPost("{id}/master")]
     public async Task<ActionResult<DocumentDto>> SetMasterDocument(Guid id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized();
 
         var document = await _documentRepository.GetByIdAsync(id);
         if (document == null) return NotFound();
         if (document.UserId != userId) return Forbid();
 
-        // Idempotent: if already master, just return
-        if (document.IsMaster)
-        {
-            return Ok(MapToDto(document));
-        }
+        if (document.IsMaster) return Ok(MapToDto(document));
 
-        // Unset current master of same type if it exists
         var documents = await _documentRepository.GetAllByUserIdAsync(userId);
         var currentMaster = documents.FirstOrDefault(d => d.Type == document.Type && d.IsMaster);
-        
+
         if (currentMaster != null)
         {
             currentMaster.IsMaster = false;
             await _documentRepository.UpdateAsync(currentMaster);
         }
 
-        // Set as master
         document.IsMaster = true;
         await _documentRepository.UpdateAsync(document);
 
         return Ok(MapToDto(document));
     }
 
+    // DELETE: api/Documents/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteDocument(Guid id)
     {
         var userId = GetUserId();
-        
-        // Check if user is authenticated
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-        
+        if (userId == null) return Unauthorized();
+
         var document = await _documentRepository.GetByIdAsync(id);
-
-        if (document == null)
-        {
-            return NotFound();
-        }
-
-        // Security check: Only allow owners to delete their documents
-        if (document.UserId != userId)
-        {
-            return Forbid();
-        }
+        if (document == null) return NotFound();
+        if (document.UserId != userId) return Forbid();
 
         try
         {
-            // Delete physical file
-            var uploadsFolder = Path.Combine(_environment.ContentRootPath, "uploads");
-            var filePath = Path.Combine(uploadsFolder, document.FileName);
-
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
-            }
-
-            // Delete from database
+            // Delete from database first to prevent orphans
             await _documentRepository.DeleteAsync(id);
+
+            // Delete physical file (best effort)
+            await _fileStorageService.DeleteFileAsync(document.FileName);
 
             return NoContent();
         }

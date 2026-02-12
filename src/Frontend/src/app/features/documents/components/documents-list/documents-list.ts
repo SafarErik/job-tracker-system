@@ -19,7 +19,6 @@ import { lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 } from '@
 
 @Component({
   selector: 'app-documents-list',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

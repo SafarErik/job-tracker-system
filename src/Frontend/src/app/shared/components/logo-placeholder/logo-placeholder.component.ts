@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-logo-placeholder',
-    standalone: true,
     imports: [CommonModule],
     template: `
     <div 

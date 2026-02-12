@@ -25,7 +25,6 @@ import { ApplicationAddSheetComponent } from './features/job-applications/compon
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [CommonModule, RouterOutlet, ConfirmDialogComponent, ApplicationAddSheetComponent, NgxSonnerToaster],
   templateUrl: './app.html',
 })

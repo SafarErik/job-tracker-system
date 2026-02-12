@@ -3,7 +3,6 @@ import { JobPriority } from '../models/job-priority.enum';
 
 @Pipe({
     name: 'jobPriority',
-    standalone: true
 })
 export class JobPriorityPipe implements PipeTransform {
     transform(value: JobPriority | number | undefined): string {

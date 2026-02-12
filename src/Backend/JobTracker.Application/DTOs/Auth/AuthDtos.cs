@@ -85,6 +85,8 @@ public class AuthResponseDto
     /// </summary>
     public DateTime? TokenExpiration { get; set; }
 
+
+
     /// <summary>
     /// User information.
     /// Only present on successful authentication.
@@ -174,4 +176,35 @@ public class ChangePasswordDto
     public string NewPassword { get; set; } = string.Empty;
 
     public string ConfirmNewPassword { get; set; } = string.Empty;
+}
+
+public class ExternalUserDto
+{
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string? ProfilePictureUrl { get; set; }
+}
+
+/// <summary>
+/// DTO for receiving Google ID token from frontend
+/// </summary>
+public class GoogleTokenDto
+{
+    /// <summary>
+    /// The ID token received from Google Sign-In
+    /// </summary>
+    public string IdToken { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Response from Google's token info endpoint
+/// </summary>
+public class GoogleTokenInfo
+{
+    public string Email { get; set; } = string.Empty;
+    public string Aud { get; set; } = string.Empty; // Audience (Client ID)
+    public string? GivenName { get; set; }
+    public string? FamilyName { get; set; }
+    public string? Picture { get; set; }
 }

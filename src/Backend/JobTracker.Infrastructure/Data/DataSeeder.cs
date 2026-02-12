@@ -86,6 +86,14 @@ public static class DataSeeder
         await context.SaveChangesAsync();
         Console.WriteLine("✅ 15 job applications created");
 
+        // ============================================
+        // 7. CREATE TIMELINE EVENTS
+        // ============================================
+        var timelineEvents = CreateTimelineEvents(applications);
+        await context.TimelineEvents.AddRangeAsync(timelineEvents);
+        await context.SaveChangesAsync();
+        Console.WriteLine($"✅ {timelineEvents.Count} timeline events created");
+
         Console.WriteLine("🎉 Database seeding completed!");
         Console.WriteLine($"📧 Demo user: {DemoUserEmail}");
         Console.WriteLine($"🔑 Password: {DemoUserPassword}");
@@ -143,8 +151,7 @@ public static class DataSeeder
                 Name = "Google Hungary",
                 Website = "https://careers.google.com",
                 Industry = "AI / ML",
-                TechStack = string.Join(";", new[] { "Python", "Go", "TensorFlow", "Kubernetes", "C++" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Peter Nagy", Role = "Senior Tech Recruiter", Email = "pnagy@google.com", LinkedIn = "https://linkedin.com/in/peternagy" },
@@ -157,8 +164,7 @@ public static class DataSeeder
                 Name = "Microsoft Hungary",
                 Website = "https://careers.microsoft.com",
                 Industry = "Cloud Infrastructure",
-                TechStack = string.Join(";", new[] { ".NET Core", "Azure", "React", "C#", "CosmosDB" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Anna Kovacs", Role = "Talent Acquisition Lead", Email = "akovacs@microsoft.com", LinkedIn = "https://linkedin.com/in/annakovacs" },
@@ -171,8 +177,7 @@ public static class DataSeeder
                 Name = "EPAM Systems",
                 Website = "https://www.epam.com/careers",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Angular", "AWS" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Gabor Szabo", Role = "Recruitment Specialist", Email = "g_szabo@epam.com" },
@@ -185,8 +190,7 @@ public static class DataSeeder
                 Name = "Morgan Stanley Budapest",
                 Website = "https://www.morganstanley.com/careers",
                 Industry = "Fintech",
-                TechStack = string.Join(";", new[] { "Java", "Scala", "C++", "Angular" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Eva Toth", Role = "HR Business Partner", Email = "eva.toth@morganstanley.com" },
@@ -199,8 +203,7 @@ public static class DataSeeder
                 Name = "Ericsson Hungary",
                 Website = "https://www.ericsson.com/careers",
                 Industry = "Telecommunications",
-                TechStack = string.Join(";", new[] { "C++", "Erlang", "Python", "Cloud Native" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Janos Kiss", Role = "Talent Scout", Email = "janos.kiss@ericsson.com" }
@@ -212,8 +215,7 @@ public static class DataSeeder
                 Name = "Prezi",
                 Website = "https://prezi.com/jobs",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "JavaScript", "Scala", "Haskell", "React" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Zsofia Horvath", Role = "People Ops Lead", Email = "zsofi@prezi.com" },
@@ -226,8 +228,7 @@ public static class DataSeeder
                 Name = "LogMeIn (GoTo)",
                 Website = "https://www.goto.com/company/careers",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Docker", "React", "AWS" }),
-                Priority = "Tier3",
+                Priority = CompanyPriority.LowTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Balazs Molnar", Role = "Senior Recruiter", Email = "bmolnar@goto.com" }
@@ -239,8 +240,7 @@ public static class DataSeeder
                 Name = "Wise",
                 Website = "https://wise.com/careers",
                 Industry = "Fintech",
-                TechStack = string.Join(";", new[] { "Java", "Spring Boot", "Kafka", "React" }),
-                Priority = "Tier1",
+                Priority = CompanyPriority.TopTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Sarah Connor", Role = "Lead Recruiter", Email = "sarah.connor@wise.com", LinkedIn = "https://linkedin.com/in/sarahconnor" },
@@ -253,8 +253,7 @@ public static class DataSeeder
                 Name = "SAP Hungary",
                 Website = "https://jobs.sap.com",
                 Industry = "SaaS",
-                TechStack = string.Join(";", new[] { "Java", "Kubernetes", "Angular" }),
-                Priority = "Tier2",
+                Priority = CompanyPriority.MidTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Laszlo Nemeth", Role = "HR Manager", Email = "l.nemeth@sap.com" }
@@ -266,8 +265,7 @@ public static class DataSeeder
                 Name = "Emarsys",
                 Website = "https://emarsys.com/careers",
                 Industry = "AdTech",
-                TechStack = string.Join(";", new[] { "PHP", "Go", "React", "GCP" }),
-                Priority = "Tier3",
+                Priority = CompanyPriority.LowTier,
                 Contacts = new List<CompanyContact>
                 {
                     new CompanyContact { Name = "Dora Farkas", Role = "Talent Acquisition", Email = "dora.farkas@emarsys.com" }
@@ -431,9 +429,10 @@ public static class DataSeeder
                 WorkplaceType = workplaceTypes[random.Next(workplaceTypes.Length)],
                 Priority = priorities[random.Next(priorities.Length)],
                 MatchScore = random.Next(40, 95), // Random but realistic scores
-                SalaryOffer = status == JobApplicationStatus.Offer
+                SalaryOffer = (status == JobApplicationStatus.OfferReceived || status == JobApplicationStatus.Accepted)
                     ? random.Next(600000, 1200000)
-                    : null
+                    : null,
+                Currency = Enum.GetValues<Currency>()[random.Next(Enum.GetValues<Currency>().Length)]
             };
 
             // Add random skills (2-4 per application)
@@ -445,6 +444,95 @@ public static class DataSeeder
         }
 
         return applications;
+    }
+
+    /// <summary>
+    /// Creates timeline events for the seeded job applications
+    /// </summary>
+    private static List<ApplicationTimelineEvent> CreateTimelineEvents(List<JobApplication> applications)
+    {
+        var events = new List<ApplicationTimelineEvent>();
+        var random = new Random(42);
+
+        foreach (var app in applications)
+        {
+            // 1. Applied event (always present)
+            events.Add(new ApplicationTimelineEvent
+            {
+                Id = Guid.NewGuid(),
+                JobApplicationId = app.Id,
+                EventType = TimelineEventType.StatusChange,
+                Title = "Application Submitted",
+                Description = "Applied via company website.",
+                OccurredAt = app.AppliedAt
+            });
+
+            // 2. Add random subsequent events based on status
+            if (app.Status != JobApplicationStatus.Applied)
+            {
+                // Simulate a screening call
+                var screeningDate = app.AppliedAt.AddDays(random.Next(2, 5));
+                if (screeningDate < DateTime.UtcNow)
+                {
+                    events.Add(new ApplicationTimelineEvent
+                    {
+                        Id = Guid.NewGuid(),
+                        JobApplicationId = app.Id,
+                        EventType = TimelineEventType.Email,
+                        Title = "Screening Call Invitation",
+                        Description = "Recruiter reached out to schedule a screening call.",
+                        OccurredAt = screeningDate
+                    });
+                }
+
+                // If interview or later stage
+                if (app.Status is JobApplicationStatus.Interviewing or JobApplicationStatus.OfferReceived or JobApplicationStatus.Accepted)
+                {
+                    var interviewDate = screeningDate.AddDays(random.Next(3, 7));
+                    if (interviewDate < DateTime.UtcNow)
+                    {
+                        events.Add(new ApplicationTimelineEvent
+                        {
+                            Id = Guid.NewGuid(),
+                            JobApplicationId = app.Id,
+                            EventType = TimelineEventType.Interview,
+                            Title = "Technical Interview",
+                            Description = "Technical with the team lead.",
+                            OccurredAt = interviewDate,
+                            DueDate = interviewDate.AddHours(1) // 1 hour duration
+                        });
+                    }
+                }
+
+                // If offer received
+                if (app.Status == JobApplicationStatus.OfferReceived || app.Status == JobApplicationStatus.Accepted)
+                {
+                    // Derive offer date from last known event (interview or screening)
+                    var baseDateForOffer = (app.Status is JobApplicationStatus.Interviewing or JobApplicationStatus.OfferReceived or JobApplicationStatus.Accepted)
+                        ? screeningDate.AddDays(random.Next(3, 7)) // Re-calculating interviewDate logic roughly or using a fallback
+                        : screeningDate;
+
+                    // Actually, let's just use the logic from above or a safe offset
+                    var offerDate = screeningDate.AddDays(random.Next(7, 14));
+
+                    if (offerDate > DateTime.UtcNow) offerDate = DateTime.UtcNow;
+
+                    events.Add(new ApplicationTimelineEvent
+                    {
+                        Id = Guid.NewGuid(),
+                        JobApplicationId = app.Id,
+                        EventType = TimelineEventType.OfferReceived,
+                        Title = "Offer Received!",
+                        Description = app.SalaryOffer.HasValue
+                            ? $"Received an offer details: Salary {app.SalaryOffer:N0} {app.Currency}"
+                            : "Received an offer.",
+                        OccurredAt = offerDate
+                    });
+                }
+            }
+        }
+
+        return events;
     }
 
     /// <summary>

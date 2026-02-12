@@ -22,7 +22,6 @@ import {
 
 @Component({
   selector: 'app-company-header',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, inject, 
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CompanyService } from '../../services/company.service';
+import { CompanyStore } from '../../services/company.store';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { toast } from 'ngx-sonner';
 import { CompanyNews, CompanyContact, IntelligenceBriefing, TacticalEvent, EventAsset } from '../../models/company.model';
+import { CompanyPriority } from '../../models/company-priority.enum';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -44,15 +45,16 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
+  private readonly companyStore = inject(CompanyStore);
   private readonly intelligenceService = inject(CompanyIntelligenceService);
   private readonly notificationService = inject(NotificationService);
   private readonly breadcrumbService = inject(BreadcrumbService);
   private readonly destroyRef = inject(DestroyRef);
 
-  // Read state from service
-  company = this.companyService.activeCompany;
-  isLoading = this.companyService.isLoading;
-  error = this.companyService.error;
+  // Read state from store
+  company = this.companyStore.activeCompany;
+  isLoading = this.companyStore.isLoading;
+  error = this.companyStore.error;
 
   // Local state for Intel (News)
   companyNews = signal<CompanyNews[]>([]);
@@ -130,7 +132,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (!details) return null;
 
     // Simulated intelligence logic
-    const score = details.priority === 'Tier1' ? 94 : details.priority === 'Tier2' ? 78 : 62;
+    const score = details.priority === CompanyPriority.TopTier ? 94 : details.priority === CompanyPriority.MidTier ? 78 : 62;
 
     return {
       score,
@@ -183,7 +185,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.companyService.loadCompanyDetails(id);
+        this.companyStore.loadDetails(id);
       } else {
         this.router.navigate(['/companies']);
       }
@@ -204,7 +206,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     }
 
     // Clear active company state to free memory when leaving detail view
-    this.companyService.clearActiveCompany();
+    this.companyStore.clearActiveCompany();
   }
 
   handleRegenerateBriefing(): void {
@@ -264,10 +266,9 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     const current = this.company();
     if (!current) return;
 
-    toast.info('AI Analyst', { description: 'Synthesizing market intelligence...' });
-    // In a real app, this would call intelligenceService.summarizeNews(this.companyNews())
+    this.notificationService.info('Synthesizing market intelligence...', 'AI Analyst');
     setTimeout(() => {
-      toast.success('Summary Ready', { description: 'News digest updated in Intelligence Lab.' });
+      this.notificationService.success('News digest updated in Intelligence Lab.', 'Summary Ready');
     }, 2000);
   }
 
@@ -282,7 +283,7 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
       meta: { aiInsight: 'High potential for internal referral. Follow up in 3 days.' }
     };
     this.manualEvents.update(events => [newEvent, ...events]);
-    toast.success('Event Logged', { description: 'Tactical timeline updated.' });
+    this.notificationService.success('Tactical timeline updated.', 'Event Logged');
   }
 
   goBack(): void {
@@ -297,30 +298,21 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   handleUpdateName(name: string): void {
     const current = this.company();
     if (current) {
-      this.companyService.updateCompany(current.id, { name }).subscribe({
-        next: () => toast.success('Success', { description: 'Name updated' }),
-        error: () => toast.error('Error', { description: 'Failed to update name' })
-      });
+      this.companyStore.update(current.id, { name });
     }
   }
 
   handleUpdatePriority(priority: string): void {
     const current = this.company();
     if (current) {
-      this.companyService.updateCompany(current.id, { priority }).subscribe({
-        next: () => toast.success('Success', { description: 'Priority updated' }),
-        error: () => toast.error('Error', { description: 'Failed to update priority' })
-      });
+      this.companyStore.update(current.id, { priority: priority as CompanyPriority });
     }
   }
 
   handleUpdateIndustry(industry: string): void {
     const current = this.company();
     if (current) {
-      this.companyService.updateCompany(current.id, { industry }).subscribe({
-        next: () => toast.success('Success', { description: 'Industry updated' }),
-        error: () => toast.error('Error', { description: 'Failed to update industry' })
-      });
+      this.companyStore.update(current.id, { industry });
     }
   }
 
@@ -335,24 +327,19 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     );
 
     if (confirmed) {
-      this.companyService.deleteCompany(current.id).subscribe({
-        next: () => {
-          toast.success('Success', { description: 'Company deleted' });
-          this.router.navigate(['/companies']);
-        },
-        error: () => toast.error('Error', { description: 'Failed to delete company' })
-      });
+      this.companyStore.delete(current.id);
+      this.router.navigate(['/companies']);
     }
   }
 
   handleOpenSettings(): void {
-    toast.info('Settings', { description: 'Asset configuration panel coming soon.' });
+    this.notificationService.info('Asset configuration panel coming soon.', 'Settings');
   }
 
   // Tech Stack Actions
   handleAddTech(skill: string): void {
     if (!skill) {
-      toast.info('Intelligence Collection', { description: 'Skill selection interface is offline. Update system via manual overrides.' });
+      this.notificationService.info('Skill selection interface is offline.', 'Intelligence Collection');
       return;
     }
     const current = this.company();
@@ -361,8 +348,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (stack.includes(skill)) return;
 
     this.companyService.updateCompany(current.id, { techStack: [...stack, skill] }).subscribe({
-      next: () => toast.success('Updated', { description: 'Skill added' }),
-      error: () => toast.error('Error', { description: 'Failed to add skill' })
+      next: () => this.notificationService.success('Skill added', 'Updated'),
+      error: () => this.notificationService.error('Failed to add skill', 'Error')
     });
   }
 
@@ -373,8 +360,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     const newStack = stack.filter(s => s !== skill);
 
     this.companyService.updateCompany(current.id, { techStack: newStack }).subscribe({
-      next: () => toast.success('Updated', { description: 'Skill removed' }),
-      error: () => toast.error('Error', { description: 'Failed to remove skill' })
+      next: () => this.notificationService.success('Skill removed', 'Updated'),
+      error: () => this.notificationService.error('Failed to remove skill', 'Error')
     });
   }
 
@@ -413,10 +400,10 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
 
     this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
       next: () => {
-        this.companyService.loadCompanyDetails(current.id); // Reload to get IDs
-        toast.success('Success', { description: 'Contact saved' });
+        this.companyStore.loadDetails(current.id);
+        this.notificationService.success('Contact saved', 'Success');
       },
-      error: () => toast.error('Error', { description: 'Failed to save contact' })
+      error: () => this.notificationService.error('Failed to save contact', 'Error')
     });
   }
 
@@ -431,8 +418,8 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (confirmed) {
       const newContacts = (current.contacts || []).filter(c => c.id !== contactId);
       this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
-        next: () => toast.success('Success', { description: 'Contact removed' }),
-        error: () => toast.error('Error', { description: 'Failed to remove contact' })
+        next: () => this.notificationService.success('Contact removed', 'Success'),
+        error: () => this.notificationService.error('Failed to remove contact', 'Error')
       });
     }
   }

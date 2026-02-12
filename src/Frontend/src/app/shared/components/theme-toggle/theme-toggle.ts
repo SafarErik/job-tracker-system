@@ -8,7 +8,6 @@ import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm
 
 @Component({
   selector: 'app-theme-toggle',
-  standalone: true,
   imports: [
     CommonModule,
     ...HlmButtonImports,

@@ -1,4 +1,7 @@
 
+using System.ComponentModel.DataAnnotations;
+using JobTracker.Core.Enums;
+
 namespace JobTracker.Core.Entities;
 
 
@@ -10,9 +13,14 @@ public class Company
 
     // This property is required
     // The 'required' keyword means you can't leave this field empty
+    [StringLength(150)]
     public required string Name { get; set; }
 
-    // The ? means nullable, so Website can be null
+    /// <summary>
+    /// The company's official website URL.
+    /// </summary>
+    [Url]
+    [StringLength(255)]
     public string? Website { get; set; }
 
     // User Relationship
@@ -20,18 +28,27 @@ public class Company
     public ApplicationUser? User { get; set; }
 
     // Company's physical address
+    [StringLength(255)]
     public string? Address { get; set; }
 
 
     // Company Domain
+    [StringLength(100)]
     public string? Industry { get; set; }
 
-    // Tech Stack (semicolon separated)
-    public string? TechStack { get; set; }
-
     // Company Priority
-    public string Priority { get; set; } = "Tier3";
+    public CompanyPriority Priority { get; set; } = CompanyPriority.MidTier;
 
+    [Url]
+    [StringLength(255)]
+    public string? LogoUrl { get; set; }
+    [StringLength(150)]
+    public string? HqLocation { get; set; }
+    public string? Description { get; set; }
+    [Range(0, 100)]
+    public int CompatibilityScore { get; set; }
+
+    public ICollection<Skill> TechStack { get; set; } = new List<Skill>();
 
     // Navigation property
     // Defines a one-to-many relationship: one company can have multiple job applications
@@ -39,4 +56,6 @@ public class Company
 
     // Companies can have multiple contacts
     public ICollection<CompanyContact> Contacts { get; set; } = new List<CompanyContact>();
+
+
 }

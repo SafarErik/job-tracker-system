@@ -7,6 +7,8 @@ import { IntelligenceService, GlobalSignal, CareerOpportunity } from '../../core
 import { ApplicationService } from '../job-applications/services/application.service';
 import { CreateJobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
+import { CompanyStore } from '../companies/services/company.store';
+import { CompanyPriority } from '../companies/models/company-priority.enum';
 
 // Icons
 import { provideIcons, NgIcon } from '@ng-icons/core';
@@ -67,6 +69,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
     private readonly profileStore = inject(ProfileStore);
     private readonly intelligenceService = inject(IntelligenceService);
     private readonly jobApplicationService = inject(ApplicationService);
+    private readonly companyStore = inject(CompanyStore);
 
     // Profile data
     readonly profile = this.profileStore.profile;
@@ -111,7 +114,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
 
     // Lifecycle
     ngOnInit(): void {
-        console.log('SignalsComponent: Initializing...');
         this.loadData();
     }
 
@@ -129,7 +131,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
         const skills = this.userSkills().map(s => s.name);
         const jobTitle = this.profile()?.currentJobTitle || '';
 
-        console.log('SignalsComponent: Loading signals for', { skills, jobTitle });
         this.isLoading.set(true);
 
         // Load signals with cleanup
@@ -137,12 +138,10 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (data) => {
-                    console.log('SignalsComponent: Signals loaded', data);
                     this.signals.set(data);
                     if (this.activeTab() === 'intelligence') this.isLoading.set(false);
                 },
-                error: (err) => {
-                    console.error('Failed to fetch signals', err);
+                error: () => {
                     this.isLoading.set(false);
                 }
             });
@@ -152,11 +151,10 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (data) => {
-                    console.log('SignalsComponent: Opportunities loaded', data);
                     this.opportunities.set(data);
                     if (this.activeTab() === 'careers') this.isLoading.set(false);
                 },
-                error: (err) => console.error('Failed to fetch opportunities', err)
+                error: () => this.isLoading.set(false)
             });
     }
 
@@ -193,16 +191,34 @@ export class SignalsComponent implements OnInit, OnDestroy {
 
     // Career Actions
     acquireTarget(opp: CareerOpportunity) {
-        // Convert to Job Application
+        const companyName = opp.company;
+        const existingCompany = this.companyStore.companies().find(c =>
+            c.name.toLowerCase() === companyName.toLowerCase()
+        );
+
+        if (existingCompany) {
+            this.createSignalApplication(existingCompany.id, opp);
+        } else {
+            this.companyStore.create({
+                name: companyName,
+                priority: CompanyPriority.MidTier
+            } as any).subscribe({
+                next: (company) => {
+                    this.createSignalApplication(company.id, opp);
+                },
+                error: () => {
+                    alert('Failed to create company for target acquisition');
+                }
+            });
+        }
+    }
+
+    private createSignalApplication(companyId: string, opp: CareerOpportunity) {
         const newApp: CreateJobApplication = {
             position: opp.roleTitle,
-            companyName: opp.company,
-            status: JobApplicationStatus.Applied, // or INTERESTED
-            location: opp.location,
-            source: opp.source,
+            companyId: companyId,
+            status: JobApplicationStatus.Applied,
             matchScore: opp.matchScore,
-            // Map other fields as needed
-            jobUrl: '', // need from opp?
             description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`
         };
 
@@ -210,7 +226,6 @@ export class SignalsComponent implements OnInit, OnDestroy {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: () => {
-                    // Show toast or feedback?
                     alert(`Target Acquired: ${opp.roleTitle}`);
                 },
                 error: () => alert('Failed to acquire target')

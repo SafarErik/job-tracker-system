@@ -13,7 +13,6 @@ import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
 
 @Component({
     selector: 'tr[app-application-row]',
-    standalone: true,
     imports: [
         CommonModule,
         SalaryFormatterPipe,
@@ -116,8 +115,7 @@ export class ApplicationRowComponent {
         }
 
         if (status === JobApplicationStatus.Applied) {
-            const lastUpdated = app.updatedAt || app.appliedAt;
-            const updatedAt = new Date(lastUpdated);
+            const updatedAt = new Date(app.appliedAt);
             const now = new Date();
             const diffDays = Math.ceil(Math.abs(now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -160,7 +158,7 @@ export class ApplicationRowComponent {
 
     // Computed: Last Activity text
     lastActivity = computed(() => {
-        const lastDate = this.application().updatedAt ?? this.application().appliedAt;
+        const lastDate = this.application().appliedAt;
         const updatedAt = new Date(lastDate);
         const now = new Date();
         const diffTime = Math.abs(now.getTime() - updatedAt.getTime());

@@ -12,6 +12,8 @@ import { UiStateService } from '../../../../core/services/ui-state.service';
 import { NotificationService } from '../../../../core/services';
 import { toast } from 'ngx-sonner';
 import { JobApplicationStore } from '../../services/job-application.store';
+import { CompanyStore } from '../../../companies/services/company.store';
+import { CompanyPriority } from '../../../companies/models/company-priority.enum';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { CreateJobApplication } from '../../models/job-application.model';
@@ -22,7 +24,6 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
 
 @Component({
     selector: 'app-application-add-sheet',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -43,6 +44,7 @@ export class ApplicationAddSheetComponent {
     private fb = inject(FormBuilder);
     public uiState = inject(UiStateService);
     public store = inject(JobApplicationStore);
+    public companyStore = inject(CompanyStore);
     private notificationService = inject(NotificationService);
 
     // Controlled by parent/service now
@@ -52,10 +54,8 @@ export class ApplicationAddSheetComponent {
         jobUrl: [''],
         position: ['', Validators.required],
         companyName: ['', Validators.required],
-        department: [''], // Optional
         status: [JobApplicationStatus.Applied, Validators.required],
         priority: [JobPriority.Medium, Validators.required],
-        location: [''],
         salaryMin: ['', Validators.pattern(/^\d*\.?\d*$/)],
         salaryMax: ['', Validators.pattern(/^\d*\.?\d*$/)],
     });
@@ -85,8 +85,6 @@ export class ApplicationAddSheetComponent {
                 jobUrl: 'https://careers.google.com/jobs/results/1234',
                 position: 'Senior Frontend Engineer',
                 companyName: 'Google',
-                department: 'YouTube Team',
-                location: 'London, UK (Hybrid)',
                 salaryMin: '120000',
                 salaryMax: '180000'
             });
@@ -96,30 +94,59 @@ export class ApplicationAddSheetComponent {
 
     onSubmit() {
         if (this.form.valid) {
+            this.form.disable(); // Prevent multiple submissions
             const formData = this.form.value;
+            const companyName = formData.companyName.trim();
 
-            const application: CreateJobApplication = {
-                position: formData.position,
-                companyName: formData.companyName,
-                department: formData.department,
-                jobUrl: formData.jobUrl,
-                status: formData.status,
-                priority: formData.priority,
-                salaryMin: formData.salaryMin ? Number(formData.salaryMin) : undefined,
-                salaryMax: formData.salaryMax ? Number(formData.salaryMax) : undefined,
-                location: formData.location
-            };
+            // 1. Try to find existing company
+            const existingCompany = this.companyStore.companies().find(c =>
+                c.name.toLowerCase() === companyName.toLowerCase()
+            );
 
-            this.store.addApplication(application);
+            if (existingCompany) {
+                this.createApplication(existingCompany.id, formData);
+            } else {
+                // 2. Create new company
+                const newCompany = {
+                    name: companyName,
+                    priority: JobPriority.Medium // Default to Medium for auto-created
+                } as any; // Cast to avoid strict type checks on partial CreateCompany if needed
 
-            // 1. Close the sheet
-            this.uiState.closeAddAppSheet();
-
-            // 2. Reset form
-            this.form.reset({
-                status: JobApplicationStatus.Applied,
-                priority: JobPriority.Medium
-            });
+                this.companyStore.create({
+                    name: companyName,
+                    priority: CompanyPriority.MidTier
+                } as any).subscribe({
+                    next: (company) => {
+                        this.createApplication(company.id, formData);
+                    },
+                    error: () => {
+                        this.notificationService.error('Failed to create company for application', 'Error');
+                        this.form.enable();
+                    }
+                });
+            }
         }
+    }
+
+    private createApplication(companyId: string, formData: any) {
+        const application: CreateJobApplication = {
+            position: formData.position,
+            companyId: companyId,
+            jobUrl: formData.jobUrl,
+            status: formData.status,
+            priority: formData.priority,
+            baseSalary: formData.salaryMin ? Number(formData.salaryMin) : undefined,
+            salaryOffer: formData.salaryMax ? Number(formData.salaryMax) : undefined,
+        };
+
+        this.store.addApplication(application);
+
+        // Close and Reset
+        this.uiState.closeAddAppSheet();
+        this.form.reset({
+            status: JobApplicationStatus.Applied,
+            priority: JobPriority.Medium
+        });
+        this.form.enable();
     }
 }

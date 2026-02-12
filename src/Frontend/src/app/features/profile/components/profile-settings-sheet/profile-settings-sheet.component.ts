@@ -20,7 +20,6 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 
 @Component({
     selector: 'app-profile-settings-sheet',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,

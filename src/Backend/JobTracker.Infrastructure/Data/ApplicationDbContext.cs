@@ -1,6 +1,8 @@
 using JobTracker.Core.Entities;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobTracker.Infrastructure.Data;
 
@@ -13,7 +15,15 @@ namespace JobTracker.Infrastructure.Data;
 /// </summary>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    private readonly IDataProtector _protector;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options,
+        IDataProtectionProvider dataProtectionProvider)
+        : base(options)
+    {
+        _protector = dataProtectionProvider.CreateProtector("JobTracker.OpenAiApiKey");
+    }
 
     // ============================================
     // DBSETS - Define tables in the database
@@ -34,6 +44,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<Document> Documents { get; set; } = default!;
 
+    public DbSet<ApplicationTimelineEvent> TimelineEvents { get; set; } = default!;
+
     // ============================================
     // MODEL CONFIGURATION
     // ============================================
@@ -53,11 +65,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
             entity.ToTable("Users");
+
+            // Encrypt OpenAiApiKey using Data Protection
+            var converter = new ValueConverter<string?, string?>(
+                v => v != null ? _protector.Protect(v) : null,
+                v => v != null ? _protector.Unprotect(v) : null);
+
+            entity.Property(u => u.OpenAiApiKey)
+                .HasConversion(converter);
         });
 
         // ============================================
         // JOB APPLICATION CONFIGURATION
         // ============================================
+        // ... (rest of the file)
+
 
         modelBuilder.Entity<JobApplication>(entity =>
         {
@@ -94,10 +116,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(j => j.AppliedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-            entity.Property(j => j.RowVersion)
-                  .HasColumnName("xmin")
-                  .HasColumnType("xid")
-                  .IsRowVersion();
         });
 
         // ============================================
@@ -149,13 +167,37 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<Company>()
+       .HasMany(c => c.TechStack)
+       .WithMany(s => s.Companies)
+       .UsingEntity(j => j.ToTable("CompanySkills"));
+
         // ============================================
         // INDEXES FOR PERFORMANCE
         // ============================================
 
-        // Index on Skill name for faster lookups during NLP matching
         modelBuilder.Entity<Skill>()
             .HasIndex(s => s.Name)
             .IsUnique();
+
+        // ============================================
+        // TIMELINE EVENT CONFIGURATION
+        // ============================================
+
+        modelBuilder.Entity<ApplicationTimelineEvent>(entity =>
+        {
+            // If the related document is deleted, do not delete the timeline entry.
+            // Just null out the reference to keep the "history" intact.
+            entity.HasOne(e => e.RelatedDocument)
+                  .WithMany() // Document doesn't necessarily need to know about timeline events
+                  .HasForeignKey(e => e.RelatedDocumentId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure relationship with JobApplication
+            entity.HasOne(e => e.JobApplication)
+                  .WithMany(j => j.TimelineEvents)
+                  .HasForeignKey(e => e.JobApplicationId)
+                  .OnDelete(DeleteBehavior.Cascade); // If application is deleted, history goes with it
+        });
     }
 }

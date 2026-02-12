@@ -18,7 +18,6 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
 
 @Component({
     selector: 'app-tactical-analytics',
-    standalone: true,
     imports: [
         CommonModule,
         HlmIconImports,
@@ -102,7 +101,6 @@ export class TacticalAnalyticsComponent {
     }
 
     startDeepAudit(): void {
-        console.log('Initiating strategic career audit...');
         // Future implementation: trigger AI analysis session
     }
 }

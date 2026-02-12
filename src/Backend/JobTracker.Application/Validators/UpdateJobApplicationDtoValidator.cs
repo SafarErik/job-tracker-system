@@ -10,8 +10,8 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
 {
     public UpdateJobApplicationDtoValidator()
     {
-        RuleFor(x => x.RowVersion)
-            .NotEmpty().WithMessage("RowVersion is required for concurrency control");
+        RuleFor(x => x.ConcurrencyToken)
+            .NotEmpty().WithMessage("ConcurrencyToken is required for concurrency control");
 
         RuleFor(x => x.Position)
             .NotEmpty().WithMessage("Position cannot be empty")
@@ -43,6 +43,18 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
             .GreaterThanOrEqualTo(0).WithMessage("Salary offer must be positive")
             .When(x => x.SalaryOffer.HasValue);
 
+        RuleFor(x => x.BaseSalary)
+            .GreaterThanOrEqualTo(0).WithMessage("Base salary must be positive")
+            .When(x => x.BaseSalary.HasValue);
+
+        RuleFor(x => x.Bonus)
+            .GreaterThanOrEqualTo(0).WithMessage("Bonus must be positive")
+            .When(x => x.Bonus.HasValue);
+
+        RuleFor(x => x.EquityValue)
+            .GreaterThanOrEqualTo(0).WithMessage("Equity value must be positive")
+            .When(x => x.EquityValue.HasValue);
+
         RuleFor(x => x.MatchScore)
             .InclusiveBetween(0, 100).WithMessage("Match score must be between 0 and 100")
             .When(x => x.MatchScore.HasValue);
@@ -54,5 +66,9 @@ public class UpdateJobApplicationDtoValidator : AbstractValidator<UpdateJobAppli
         RuleFor(x => x.PrimaryContactId)
             .NotEqual(Guid.Empty).WithMessage("Invalid primary contact ID")
             .When(x => x.PrimaryContactId.HasValue);
+
+        RuleFor(x => x.Currency)
+            .IsInEnum().WithMessage("Invalid currency")
+            .When(x => x.Currency.HasValue);
     }
 }

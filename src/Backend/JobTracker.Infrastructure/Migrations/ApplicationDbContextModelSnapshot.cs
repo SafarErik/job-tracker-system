@@ -37,6 +37,21 @@ namespace JobTracker.Infrastructure.Migrations
                     b.ToTable("UserSkills", (string)null);
                 });
 
+            modelBuilder.Entity("CompanySkill", b =>
+                {
+                    b.Property<Guid>("CompaniesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TechStackId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CompaniesId", "TechStackId");
+
+                    b.HasIndex("TechStackId");
+
+                    b.ToTable("CompanySkills", (string)null);
+                });
+
             modelBuilder.Entity("JobApplicationSkill", b =>
                 {
                     b.Property<Guid>("JobApplicationsId")
@@ -52,6 +67,45 @@ namespace JobTracker.Infrastructure.Migrations
                     b.ToTable("JobApplicationSkills", (string)null);
                 });
 
+            modelBuilder.Entity("JobTracker.Core.Entities.ApplicationTimelineEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EventType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("JobApplicationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("OccurredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("RelatedDocumentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobApplicationId");
+
+                    b.HasIndex("RelatedDocumentId");
+
+                    b.ToTable("TimelineEvents");
+                });
+
             modelBuilder.Entity("JobTracker.Core.Entities.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -60,8 +114,12 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<int>("AiPersona")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Bio")
-                        .HasColumnType("text");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -71,7 +129,8 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CurrentJobTitle")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -81,10 +140,12 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ExternalProvider")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("IsExternalAccount")
                         .HasColumnType("boolean");
@@ -93,7 +154,8 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -109,6 +171,10 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("OpenAiApiKey")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
 
@@ -119,10 +185,14 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ProfilePictureUrl")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
+
+                    b.Property<int>("SubscriptionTier")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
@@ -153,28 +223,42 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("CompatibilityScore")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("HqLocation")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
                     b.Property<string>("Industry")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("LogoUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Priority")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TechStack")
-                        .HasColumnType("text");
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Website")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
@@ -193,17 +277,21 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("LinkedIn")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Role")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -218,13 +306,18 @@ namespace JobTracker.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AiSummary")
+                        .HasColumnType("text");
+
                     b.Property<string>("ContentType")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
@@ -234,6 +327,10 @@ namespace JobTracker.Infrastructure.Migrations
 
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ParsedContent")
                         .HasColumnType("text");
 
                     b.Property<int>("Type")
@@ -269,14 +366,30 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                    b.Property<decimal?>("BaseSalary")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Bonus")
+                        .HasColumnType("numeric");
+
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("Currency")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<Guid?>("DocumentId")
                         .HasColumnType("uuid");
+
+                    b.Property<decimal?>("EquityValue")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("GeneratedCoverLetter")
                         .HasColumnType("text");
@@ -285,26 +398,22 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("JobUrl")
-                        .HasColumnType("text");
+                        .HasMaxLength(2083)
+                        .HasColumnType("character varying(2083)");
 
                     b.Property<int>("MatchScore")
                         .HasColumnType("integer");
 
                     b.Property<string>("Position")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<Guid?>("PrimaryContactId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
-
-                    b.Property<uint>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
 
                     b.Property<decimal?>("SalaryOffer")
                         .HasColumnType("numeric");
@@ -339,15 +448,18 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Category")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -504,6 +616,21 @@ namespace JobTracker.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CompanySkill", b =>
+                {
+                    b.HasOne("JobTracker.Core.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompaniesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobTracker.Core.Entities.Skill", null)
+                        .WithMany()
+                        .HasForeignKey("TechStackId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("JobApplicationSkill", b =>
                 {
                     b.HasOne("JobTracker.Core.Entities.JobApplication", null)
@@ -517,6 +644,24 @@ namespace JobTracker.Infrastructure.Migrations
                         .HasForeignKey("SkillsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JobTracker.Core.Entities.ApplicationTimelineEvent", b =>
+                {
+                    b.HasOne("JobTracker.Core.Entities.JobApplication", "JobApplication")
+                        .WithMany("TimelineEvents")
+                        .HasForeignKey("JobApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobTracker.Core.Entities.Document", "RelatedDocument")
+                        .WithMany()
+                        .HasForeignKey("RelatedDocumentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("JobApplication");
+
+                    b.Navigation("RelatedDocument");
                 });
 
             modelBuilder.Entity("JobTracker.Core.Entities.Company", b =>
@@ -658,6 +803,11 @@ namespace JobTracker.Infrastructure.Migrations
             modelBuilder.Entity("JobTracker.Core.Entities.Document", b =>
                 {
                     b.Navigation("JobApplications");
+                });
+
+            modelBuilder.Entity("JobTracker.Core.Entities.JobApplication", b =>
+                {
+                    b.Navigation("TimelineEvents");
                 });
 #pragma warning restore 612, 618
         }

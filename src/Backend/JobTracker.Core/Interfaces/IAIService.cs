@@ -18,12 +18,22 @@ public interface IAIService
     /// <summary>
     /// Generates a tailored cover letter based on the job description and user's resume.
     /// </summary>
+    /// <param name="jobDescription">Text content of the job requirement.</param>
+    /// <param name="resumeText">Text content of the candidate's resume.</param>
+    /// <param name="companyName">Name of the target company.</param>
+    /// <param name="position">Title of the target position.</param>
+    /// <returns>The generated cover letter text.</returns>
     Task<string> GenerateCoverLetterAsync(string jobDescription, string resumeText, string companyName, string position);
 
     /// <summary>
     /// Provides an optimized version of the resume tailored for a specific job description.
     /// </summary>
     Task<string> OptimizeResumeAsync(string jobDescription, string resumeText);
+
+    /// <summary>
+    /// Generates content using a system and user prompt, optionally in JSON mode.
+    /// </summary>
+    Task<string> GenerateContentAsync(string systemPrompt, string userPrompt, bool useJsonMode = false);
 }
 
 /// <summary>
@@ -88,8 +98,13 @@ public class AiAnalysisResult
     public string? ErrorMessage { get; set; }
 
     /// <summary>
-    /// Creates a successful analysis result
+    /// Creates a successful analysis result.
     /// </summary>
+    /// <param name="matchScore">The calculated compatibility percentage (0-100).</param>
+    /// <param name="gapAnalysis">Markdown string detailing the identified skill/experience gaps.</param>
+    /// <param name="missingSkills">List of concrete skills required by the job but missing from the resume.</param>
+    /// <param name="strategicAdvice">Actionable advice for the candidate's application strategy.</param>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as successful.</returns>
     public static AiAnalysisResult CreateSuccess(int matchScore, string gapAnalysis, List<string> missingSkills, string strategicAdvice)
     {
         return new AiAnalysisResult
@@ -103,13 +118,16 @@ public class AiAnalysisResult
     }
 
     /// <summary>
-    /// Static factory for empty success result
+    /// Static factory for creating an empty success result.
     /// </summary>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as successful.</returns>
     public static AiAnalysisResult SuccessResult() => new() { Success = true };
 
     /// <summary>
-    /// Creates a failed analysis result with an error message
+    /// Creates a failed analysis result with an error message.
     /// </summary>
+    /// <param name="errorMessage">Human-readable description of why the analysis failed.</param>
+    /// <returns>A new <see cref="AiAnalysisResult"/> instance marked as failed.</returns>
     public static AiAnalysisResult CreateError(string errorMessage)
     {
         return new AiAnalysisResult

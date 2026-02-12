@@ -11,7 +11,6 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

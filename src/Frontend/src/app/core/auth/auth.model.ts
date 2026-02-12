@@ -121,3 +121,17 @@ export const initialAuthState: AuthState = {
   user: null,
   error: null,
 };
+// ============================================================================
+// EXTERNAL AUTH MODELS
+// ============================================================================
+
+export interface ExternalUser {
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePictureUrl?: string;
+}
+
+export interface GoogleTokenDto {
+  idToken: string;
+}

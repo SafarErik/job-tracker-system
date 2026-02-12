@@ -4,11 +4,10 @@ using JobTracker.Application.DTOs.AI;
 using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.Interfaces;
-using JobTracker.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using JobTracker.Core.Enums;
 using Microsoft.Extensions.Logging;
 
-namespace JobTracker.Infrastructure.Services;
+namespace JobTracker.Application.Services;
 
 /// <summary>
 /// Service implementation for job application business logic.
@@ -18,31 +17,30 @@ public class JobApplicationService : IJobApplicationService
 {
     private readonly IJobApplicationRepository _jobRepository;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IAIService _aiService;
     private readonly IDocumentTextExtractor _textExtractor;
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IFileStorageService _fileStorageService;
     private readonly ILogger<JobApplicationService> _logger;
-    private readonly string _uploadsPath;
 
     private const string MissingAiInputsMessage = "Please upload a Master Resume and add skills to your profile first.";
 
     public JobApplicationService(
         IJobApplicationRepository jobRepository,
         IDocumentRepository documentRepository,
+        IUserRepository userRepository,
         IAIService aiService,
         IDocumentTextExtractor textExtractor,
-        ApplicationDbContext dbContext,
+        IFileStorageService fileStorageService,
         ILogger<JobApplicationService> logger)
     {
         _jobRepository = jobRepository;
+        _userRepository = userRepository;
         _documentRepository = documentRepository;
         _aiService = aiService;
         _textExtractor = textExtractor;
-        _dbContext = dbContext;
+        _fileStorageService = fileStorageService;
         _logger = logger;
-
-        // Use BaseDirectory for more reliable path resolution in different hosting environments
-        _uploadsPath = Path.Combine(AppContext.BaseDirectory, "uploads");
     }
 
     public async Task<IEnumerable<JobApplicationDto>> GetUserJobsAsync(string userId)
@@ -75,6 +73,10 @@ public class JobApplicationService : IJobApplicationService
             WorkplaceType = dto.WorkplaceType,
             Priority = dto.Priority,
             SalaryOffer = dto.SalaryOffer,
+            BaseSalary = dto.BaseSalary,
+            Bonus = dto.Bonus,
+            EquityValue = dto.EquityValue,
+            Currency = dto.Currency,
             MatchScore = dto.MatchScore,
             DocumentId = dto.DocumentId,
             PrimaryContactId = dto.PrimaryContactId,
@@ -102,12 +104,25 @@ public class JobApplicationService : IJobApplicationService
         if (dto.JobType.HasValue) existing.JobType = dto.JobType.Value;
         if (dto.WorkplaceType.HasValue) existing.WorkplaceType = dto.WorkplaceType.Value;
         if (dto.Priority.HasValue) existing.Priority = dto.Priority.Value;
-        if (dto.SalaryOffer.HasValue) existing.SalaryOffer = dto.SalaryOffer.Value;
+        if (dto.SalaryOfferProvided) existing.SalaryOffer = dto.SalaryOffer;
+        if (dto.BaseSalaryProvided) existing.BaseSalary = dto.BaseSalary;
+        if (dto.BonusProvided) existing.Bonus = dto.Bonus;
+        if (dto.EquityValueProvided) existing.EquityValue = dto.EquityValue;
+        if (dto.CurrencyProvided) existing.Currency = dto.Currency;
+
         if (dto.MatchScore.HasValue) existing.MatchScore = dto.MatchScore.Value;
-        if (dto.DocumentId.HasValue) existing.DocumentId = dto.DocumentId.Value;
+
+        // Use DocumentIdProvided to determine if we should update the DocumentId (allows clearing it)
+        if (dto.DocumentIdProvided) existing.DocumentId = dto.DocumentId;
+
         if (dto.PrimaryContactId.HasValue) existing.PrimaryContactId = dto.PrimaryContactId.Value;
 
-        existing.RowVersion = dto.RowVersion;
+        // EF Core will compare this OriginalValue against the database value during SaveChanges
+        // If they differ, a DbUpdateConcurrencyException will be thrown.
+        _jobRepository.SetOriginalConcurrencyToken(existing, dto.ConcurrencyToken);
+
+        // Assign a NEW token for the next version.
+        existing.ConcurrencyToken = Guid.NewGuid();
 
         await _jobRepository.UpdateAsync(existing);
         return true;
@@ -277,8 +292,8 @@ public class JobApplicationService : IJobApplicationService
         if (application.UserId != userId) throw new UnauthorizedAccessException("You do not have access to this job application");
         if (string.IsNullOrWhiteSpace(application.Description)) throw new InvalidOperationException(MissingAiInputsMessage);
 
-        // 2. Load User Skills
-        var user = await _dbContext.Users.Include(u => u.Skills).FirstOrDefaultAsync(u => u.Id == userId);
+        // 2. Load User Skills via Repository abstraction (No DbContext)
+        var user = await _userRepository.GetUserWithSkillsAsync(userId);
         if (user == null) throw new UnauthorizedAccessException("User not found");
 
         var skills = user.Skills.Select(s => s.Name).Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
@@ -309,35 +324,14 @@ public class JobApplicationService : IJobApplicationService
             return $"Resume: {resume.OriginalFileName}\n\nNote: Invalid file record.";
         }
 
-        // 1. Get safe filename and join with uploads path
-        var safeFileName = Path.GetFileName(resume.FileName);
-        var candidatePath = Path.Combine(_uploadsPath, safeFileName);
-
-        // 2. Resolve full paths for comparison
-        // Ensure uploadsPath has a trailing separator for reliable StartsWith check
-        var fullUploadsPath = Path.GetFullPath(_uploadsPath);
-        if (!fullUploadsPath.EndsWith(Path.DirectorySeparatorChar))
+        if (!_fileStorageService.FileExists(resume.FileName))
         {
-            fullUploadsPath += Path.DirectorySeparatorChar;
-        }
-
-        var fullCandidatePath = Path.GetFullPath(candidatePath);
-
-        // 3. Verify the candidate path is within the uploads directory
-        if (!fullCandidatePath.StartsWith(fullUploadsPath, StringComparison.OrdinalIgnoreCase))
-        {
-            _logger.LogError("Path traversal attempt detected! Requested file: {FileName}, Resolved Path: {Path}",
-                resume.FileName, fullCandidatePath);
-            return $"Resume: {resume.OriginalFileName}\n\nNote: Security violation - file access blocked.";
-        }
-
-        if (!File.Exists(fullCandidatePath))
-        {
-            _logger.LogWarning("Resume file not found at {Path}", fullCandidatePath);
+            _logger.LogWarning("Resume file not found via storage service: {FileName}", resume.FileName);
             return $"Resume: {resume.OriginalFileName}\n\nNote: File not found on server.";
         }
 
-        var resumeText = await _textExtractor.ExtractTextAsync(fullCandidatePath);
+        var filePath = _fileStorageService.GetFilePath(resume.FileName);
+        var resumeText = await _textExtractor.ExtractTextAsync(filePath);
 
         if (string.IsNullOrWhiteSpace(resumeText))
         {
@@ -409,87 +403,6 @@ public class JobApplicationService : IJobApplicationService
 
     private static JobApplicationDto MapToDto(JobApplication app)
     {
-        var dto = new JobApplicationDto
-        {
-            Id = app.Id,
-            Position = app.Position,
-            JobUrl = app.JobUrl,
-            Description = app.Description,
-            GeneratedCoverLetter = app.GeneratedCoverLetter,
-            AiFeedback = app.AiFeedback,
-            MatchScore = app.MatchScore,
-            AiGoodPoints = new List<string>(),
-            AiGaps = new List<string>(),
-            AiAdvice = new List<string>(),
-            AppliedAt = app.AppliedAt,
-            Status = app.Status,
-            JobType = app.JobType,
-            WorkplaceType = app.WorkplaceType,
-            Priority = app.Priority,
-            SalaryOffer = app.SalaryOffer,
-            CompanyId = app.CompanyId,
-            CompanyName = app.Company?.Name ?? "Unknown Company",
-            DocumentId = app.DocumentId,
-            DocumentName = app.Document?.OriginalFileName,
-            Skills = app.Skills?.Select(s => s.Name).ToList() ?? new List<string>(),
-            PrimaryContact = app.PrimaryContact != null ? new CompanyContactDto
-            {
-                Id = app.PrimaryContact.Id,
-                Name = app.PrimaryContact.Name,
-                Email = app.PrimaryContact.Email,
-                LinkedIn = app.PrimaryContact.LinkedIn,
-                Role = app.PrimaryContact.Role
-            } : null,
-            RowVersion = app.RowVersion
-        };
-
-        // Try to hydrate transient lists from the persisted markdown feedback
-        ParseAiFeedbackToDto(app.AiFeedback, dto);
-
-        return dto;
-    }
-
-    /// <summary>
-    /// Reconstructs the structured lists from the persisted markdown feedback.
-    /// This ensures the UI remains populated even after page refresh.
-    /// </summary>
-    private static void ParseAiFeedbackToDto(string? aiFeedback, JobApplicationDto dto)
-    {
-        if (string.IsNullOrWhiteSpace(aiFeedback)) return;
-
-        var lines = aiFeedback.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                              .Select(l => l.Trim());
-
-        string currentSection = "";
-
-        foreach (var line in lines)
-        {
-            if (line.StartsWith("## Good Points", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "GoodPoints";
-                continue;
-            }
-            if (line.StartsWith("## Gaps", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "Gaps";
-                continue;
-            }
-            if (line.StartsWith("## Strategic Advice", StringComparison.OrdinalIgnoreCase))
-            {
-                currentSection = "Advice";
-                continue;
-            }
-
-            if (line.StartsWith("- ") && line.Length > 2)
-            {
-                var content = line[2..].Trim();
-                switch (currentSection)
-                {
-                    case "GoodPoints": dto.AiGoodPoints.Add(content); break;
-                    case "Gaps": dto.AiGaps.Add(content); break;
-                    case "Advice": dto.AiAdvice.Add(content); break;
-                }
-            }
-        }
+        return Mappers.JobApplicationMapper.MapToDto(app);
     }
 }

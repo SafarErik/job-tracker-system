@@ -21,7 +21,6 @@ import { toast } from 'ngx-sonner';
 
 @Component({
     selector: 'app-job-settings-sheet',
-    standalone: true,
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -54,7 +53,6 @@ export class JobSettingsSheetComponent {
     form: FormGroup = this.fb.group({
         companyName: [{ value: '', disabled: true }],
         position: ['', Validators.required],
-        department: [''],
         jobUrl: [''],
         status: [null, Validators.required],
         priority: [null, Validators.required],
@@ -62,7 +60,6 @@ export class JobSettingsSheetComponent {
         salaryMax: [''],
         currency: ['USD'],
         jobType: [null, Validators.required],
-        location: [''],
         workplaceType: ['Remote'],
         notes: ['']
     });
@@ -109,14 +106,12 @@ export class JobSettingsSheetComponent {
                 this.form.patchValue({
                     companyName: app.companyName,
                     position: app.position,
-                    department: app.department || '',
                     jobUrl: app.jobUrl,
                     status: app.status,
                     priority: app.priority,
-                    salaryMin: app.salaryMin,
-                    salaryMax: app.salaryMax,
+                    salaryMin: app.baseSalary,
+                    salaryMax: app.salaryOffer,
                     jobType: app.jobType,
-                    location: app.location || '',
                     workplaceType: app.workplaceType || 'Remote',
                     notes: app.description
                 });
@@ -130,15 +125,13 @@ export class JobSettingsSheetComponent {
             if (app) {
                 const changes = {
                     position: this.form.get('position')?.value,
-                    department: this.form.get('department')?.value,
                     jobUrl: this.form.get('jobUrl')?.value,
                     status: this.form.get('status')?.value,
                     priority: this.form.get('priority')?.value,
-                    salaryMin: this.form.get('salaryMin')?.value === '' || this.form.get('salaryMin')?.value == null ? undefined : Number(this.form.get('salaryMin')?.value),
-                    salaryMax: this.form.get('salaryMax')?.value === '' || this.form.get('salaryMax')?.value == null ? undefined : Number(this.form.get('salaryMax')?.value),
+                    baseSalary: this.form.get('salaryMin')?.value === '' || this.form.get('salaryMin')?.value == null ? undefined : Number(this.form.get('salaryMin')?.value),
+                    salaryOffer: this.form.get('salaryMax')?.value === '' || this.form.get('salaryMax')?.value == null ? undefined : Number(this.form.get('salaryMax')?.value),
                     currency: this.form.get('currency')?.value,
                     jobType: this.form.get('jobType')?.value,
-                    location: this.form.get('location')?.value,
                     workplaceType: this.form.get('workplaceType')?.value,
                     description: this.form.get('notes')?.value
                 };

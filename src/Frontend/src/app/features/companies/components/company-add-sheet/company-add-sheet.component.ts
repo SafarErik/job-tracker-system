@@ -10,16 +10,18 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { BrnSheetImports } from '@spartan-ng/brain/sheet';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideGlobe, lucideZap, lucideSearch, lucideX, lucideCheck, lucideLoader2, lucidePlus, lucideMail, lucideLinkedin, lucideUsers, lucideSparkles } from '@ng-icons/lucide';
-import { CompanyService } from '../../services/company.service';
+import { CompanyService, ScoutedCompanyDto } from '../../services/company.service';
+import { CompanyStore } from '../../services/company.store';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { SkillSelectorComponent } from '../../../../shared/components/skill-selector/skill-selector';
 import { CreateCompany } from '../../models/company.model';
+import { CompanyPriority } from '../../models/company-priority.enum';
 import { CompanyContact } from '../../../../core/models/company-contact.model';
-import { toast } from 'ngx-sonner';
+import { NotificationService } from '../../../../core/services/notification.service';
 
 @Component({
     selector: 'app-company-add-sheet',
-    standalone: true,
+
     imports: [
         CommonModule,
         ReactiveFormsModule,
@@ -44,9 +46,11 @@ import { toast } from 'ngx-sonner';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompanyAddSheetComponent {
-    private fb = inject(FormBuilder);
-    private companyService = inject(CompanyService);
-    private intelligenceService = inject(CompanyIntelligenceService);
+    private readonly fb = inject(FormBuilder);
+    private readonly companyService = inject(CompanyService);
+    private readonly companyStore = inject(CompanyStore);
+    private readonly intelligenceService = inject(CompanyIntelligenceService);
+    private readonly notificationService = inject(NotificationService);
 
     // Form
     form = this.fb.group({
@@ -71,7 +75,7 @@ export class CompanyAddSheetComponent {
     close() {
         this.isOpen.set(false);
     }
-    priority = signal<'Tier1' | 'Tier2' | 'Tier3'>('Tier3');
+    priority = signal<CompanyPriority>(CompanyPriority.LowTier);
     isDreamTarget = signal(false);
     techStack = signal<string[]>([]);
 
@@ -79,65 +83,52 @@ export class CompanyAddSheetComponent {
     scoutUrl = signal('');
 
     // Priority Options
-    readonly priorities: { value: 'Tier1' | 'Tier2' | 'Tier3'; label: string; color: string }[] = [
-        { value: 'Tier1', label: 'High', color: 'bg-primary text-primary-foreground border-primary' },
-        { value: 'Tier2', label: 'Mid', color: 'bg-muted text-foreground border-border' },
-        { value: 'Tier3', label: 'Low', color: 'bg-muted/50 text-muted-foreground border-border' }
+    readonly priorities: { value: CompanyPriority; label: string; color: string }[] = [
+        { value: CompanyPriority.TopTier, label: 'High', color: 'bg-primary text-primary-foreground border-primary' },
+        { value: CompanyPriority.MidTier, label: 'Mid', color: 'bg-muted text-foreground border-border' },
+        { value: CompanyPriority.LowTier, label: 'Low', color: 'bg-muted/50 text-muted-foreground border-border' }
     ];
 
     // Industry Options from service
     industryOptions = this.intelligenceService.getIndustryOptions();
 
     /**
-     * Mock "Fetch Data" functionality
+     * Fetch intelligence via the Scraper and AI Engine
      */
     async scanDomain() {
-        if (!this.scoutUrl() || this.isScanning()) return;
+        const url = this.scoutUrl();
+        if (!url || this.isScanning()) return;
 
         this.isScanning.set(true);
 
-        try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+        this.companyService.scoutCompany(url).subscribe({
+            next: (data: ScoutedCompanyDto) => {
+                this.form.patchValue({
+                    name: data.companyName,
+                    website: url,
+                    industry: data.industry,
+                    address: data.hqLocation
+                });
 
-            // Mock Data based on domain
-            const domain = this.scoutUrl().toLowerCase();
-            let mockData: any = {
-                name: '',
-                industry: 'Technology',
-                techStack: ['React', 'TypeScript']
-            };
+                if (data.techStack?.length) {
+                    this.techStack.update(current => {
+                        const next = [...current, ...data.techStack];
+                        return [...new Set(next)];
+                    });
+                }
 
-            if (domain.includes('google')) {
-                mockData = { name: 'Google', industry: 'Big Tech', techStack: ['Angular', 'Go', 'Python', 'Kubernetes'] };
-            } else if (domain.includes('netflix')) {
-                mockData = { name: 'Netflix', industry: 'Streaming', techStack: ['Java', 'React', 'Node.js', 'AWS'] };
-            } else {
-                // Generic fallback derived from domain
-                const name = domain.split('.')[0];
-                mockData.name = name.charAt(0).toUpperCase() + name.slice(1);
+                this.notificationService.success(`Data retrieved for ${data.companyName}`, 'Intelligence Gathered');
+                this.isScanning.set(false);
+            },
+            error: (err) => {
+                const msg = err.error?.message || 'Target intelligence could not be retrieved.';
+                this.notificationService.error(msg, 'Scout Failed');
+                this.isScanning.set(false);
             }
-
-            // Auto-fill form
-            this.form.patchValue({
-                name: mockData.name,
-                website: this.scoutUrl(),
-                industry: mockData.industry
-            });
-
-            // Merge tech stack
-            this.techStack.update(stack => [...new Set([...stack, ...mockData.techStack])]);
-
-            toast.success('Intelligence Gathered', { description: `Data retrieved for ${mockData.name}` });
-        } catch (error) {
-            console.error('Scan failed:', error);
-            toast.error('Search Failed', { description: 'Target intelligence could not be retrieved.' });
-        } finally {
-            this.isScanning.set(false);
-        }
+        });
     }
 
-    setPriority(p: 'Tier1' | 'Tier2' | 'Tier3') {
+    setPriority(p: CompanyPriority) {
         this.priority.set(p);
     }
 
@@ -190,20 +181,21 @@ export class CompanyAddSheetComponent {
         this.companyService.createCompany(payload).subscribe({
             next: () => {
                 this.isLoading.set(false);
-                toast.success('Asset Initialized', { description: `${payload.name} added to registry.` });
+                this.notificationService.success(`${payload.name} added to registry.`, 'Asset Initialized');
                 this.resetForm();
+                // Refresh the store list
+                this.companyStore.loadAll();
             },
-            error: (err) => {
-                console.error(err);
+            error: () => {
                 this.isLoading.set(false);
-                toast.error('Initialization Failed', { description: 'Could not create company.' });
+                this.notificationService.error('Could not create company.', 'Initialization Failed');
             }
         });
     }
 
     resetForm() {
         this.form.reset();
-        this.priority.set('Tier3');
+        this.priority.set(CompanyPriority.LowTier);
         this.isDreamTarget.set(false);
         this.techStack.set([]);
         this.scoutUrl.set('');

@@ -7,7 +7,6 @@ import { HlmInputImports } from '../../../../../../../libs/ui/input';
 
 @Component({
   selector: 'app-ai-analyst-chat',
-  standalone: true,
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
   providers: [provideIcons({ lucideSend, lucideHistory, lucideMicroscope, lucideBot })],
   templateUrl: './ai-analyst-chat.html',

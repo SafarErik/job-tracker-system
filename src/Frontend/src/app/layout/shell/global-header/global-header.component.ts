@@ -27,7 +27,6 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
 
 @Component({
     selector: 'app-global-header',
-    standalone: true,
     imports: [
         CommonModule,
         RouterModule,

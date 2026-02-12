@@ -26,13 +26,6 @@ public partial class GeminiAIService : IAIService
         PropertyNameCaseInsensitive = true
     };
 
-    // Regex to find JSON content within markdown code blocks or plain text
-    // Matches ```json? ... ``` or just { ... }
-    [GeneratedRegex(@"```(?:json)?\s*(.*?)```", RegexOptions.Singleline | RegexOptions.IgnoreCase)]
-    private static partial Regex JsonBlockRegex();
-
-    private static readonly Regex _jsonBlockRegex = JsonBlockRegex();
-
     public GeminiAIService(
         IConfiguration configuration,
         ILogger<GeminiAIService> logger)
@@ -58,18 +51,24 @@ public partial class GeminiAIService : IAIService
             }
 
             var systemPrompt = string.Format(AiPrompts.AnalysisSystemPrompt, jobDescription, skillsList, resumeText);
-            var userPrompt = "Return only the JSON object, starting with { and ending with }.";
+            var userPrompt = "Return the analysis in JSON format.";
 
-            var textResponse = await CallGeminiAsync(systemPrompt, userPrompt);
+            // Define the schema for structured output
+            // Note: In strict JSON mode, we trust the model to adhere to the schema implied by the prompt or explicit schema config.
+            // For now, we use responseMimeType = "application/json" which forces valid JSON.
+            var generationConfig = new GenerateContentConfig
+            {
+                ResponseMimeType = "application/json"
+            };
+
+            var textResponse = await CallGeminiAsync(systemPrompt, userPrompt, generationConfig);
 
             if (string.IsNullOrEmpty(textResponse))
             {
                 return AiAnalysisResult.CreateError("AI request failed. The service provided an empty response.");
             }
 
-            var cleanedResponse = ExtractJson(textResponse);
-
-            var analysisResult = JsonSerializer.Deserialize<GeminiAnalysisResponse>(cleanedResponse, _jsonOptions);
+            var analysisResult = JsonSerializer.Deserialize<GeminiAnalysisResponse>(textResponse, _jsonOptions);
 
             if (analysisResult == null)
             {
@@ -132,26 +131,49 @@ Optimize this resume for the job description.";
         return response ?? "Failed to optimize resume. Please try again.";
     }
 
-    private async Task<string?> CallGeminiAsync(string systemPrompt, string userPrompt)
+    public async Task<string> GenerateContentAsync(string systemPrompt, string userPrompt, bool useJsonMode = false)
+    {
+        GenerateContentConfig? config = null;
+        if (useJsonMode)
+        {
+            config = new GenerateContentConfig
+            {
+                ResponseMimeType = "application/json"
+            };
+        }
+
+        var response = await CallGeminiAsync(systemPrompt, userPrompt, config);
+        return response ?? string.Empty;
+    }
+
+    private async Task<string?> CallGeminiAsync(string systemPrompt, string userPrompt, GenerateContentConfig? config = null)
     {
         try
         {
             _logger.LogDebug("Calling Gemini API ({Model})", AiPrompts.GeminiModel);
 
             var response = await _client.Models.GenerateContentAsync(
-                AiPrompts.GeminiModel,
-                systemPrompt + "\n\n" + userPrompt
+                model: AiPrompts.GeminiModel,
+                contents: [
+                    new Content
+                    {
+                        Role = "user",
+                        Parts = [ new Part { Text = systemPrompt + "\n\n" + userPrompt } ]
+                    }
+                ],
+                config: config
             );
 
             var candidate = response?.Candidates?.FirstOrDefault();
             var part = candidate?.Content?.Parts?.FirstOrDefault();
 
-            if (part?.Text != null)
+            if (!string.IsNullOrEmpty(part?.Text))
             {
+                _logger.LogInformation("Gemini API call succeeded. Length: {Length}", part.Text.Length);
                 return part.Text;
             }
 
-            _logger.LogWarning("Gemini API call succeeded but returned no content parts.");
+            _logger.LogWarning("Gemini API call succeeded but returned no content parts. FinishReason: {FinishReason}", candidate?.FinishReason);
             return null;
         }
         catch (Exception ex)
@@ -159,21 +181,6 @@ Optimize this resume for the job description.";
             _logger.LogError(ex, "Error calling Gemini API: {Message}", ex.Message);
             return null;
         }
-    }
-
-    /// <summary>
-    /// Robustly extracts JSON content from a potential Markdown response.
-    /// </summary>
-    private static string ExtractJson(string text)
-    {
-        var match = _jsonBlockRegex.Match(text);
-        if (match.Success)
-        {
-            return match.Groups[1].Value.Trim();
-        }
-
-        // If no code block, assume the whole text is JSON but trim whitespace
-        return text.Trim();
     }
 
     private sealed class GeminiAnalysisResponse

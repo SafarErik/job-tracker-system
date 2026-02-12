@@ -13,47 +13,65 @@ export class ApplicationService {
 
   constructor(private readonly http: HttpClient) { }
 
-  // 1. Lista lekérése
+  /**
+   * Fetch all job applications.
+   */
   getApplications(): Observable<JobApplication[]> {
     return this.http.get<JobApplication[]>(this.apiUrl);
   }
 
-  // 2. Új hozzáadása
-  createApplication(application: CreateJobApplication): Observable<any> {
-    return this.http.post(this.apiUrl, application);
+  /**
+   * Create a new job application.
+   */
+  createApplication(application: CreateJobApplication): Observable<JobApplication> {
+    return this.http.post<JobApplication>(this.apiUrl, application);
   }
 
-  // 3. Törlés
-  deleteApplication(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  /**
+   * Delete an application by ID.
+   */
+  deleteApplication(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // 4. Get single application by ID (for editing)
+  /**
+   * Get a single application by ID.
+   */
   getApplicationById(id: string): Observable<JobApplication> {
     return this.http.get<JobApplication>(`${this.apiUrl}/${id}`);
   }
 
-  // 5. Update application (for editing and status changes)
+  /**
+   * Update an existing application partially.
+   */
   updateApplication(id: string, application: Partial<JobApplication>): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, application);
   }
 
-  // 6. Trigger AI analysis for a job application
+  /**
+   * Trigger AI analysis for a job application.
+   */
   analyzeJob(id: string): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
   }
 
-  // 7. Generate tailored resume + cover letter assets
+  /**
+   * Generate tailored resume and cover letter assets.
+   */
   generateAssets(id: string): Observable<AiGeneratedAssets> {
     return this.http.post<AiGeneratedAssets>(`${this.apiUrl}/${id}/generate-assets`, {});
   }
 
-  // 8. Generate a tailored cover letter
+  /**
+   * Generate a tailored cover letter only.
+   */
   generateCoverLetter(id: string): Observable<{ content: string }> {
     return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/cover-letter`, {});
   }
 
-  // 9. Optimize resume for a specific job
+  /**
+   * Optimize resume for a specific job application.
+   */
   optimizeResume(id: string): Observable<{ content: string }> {
     return this.http.post<{ content: string }>(`${this.apiUrl}/${id}/resume-optimize`, {});
   }

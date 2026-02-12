@@ -1,372 +1,60 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using JobTracker.Infrastructure.Data;
-using JobTracker.Infrastructure.Repositories;
-using JobTracker.Infrastructure.Services;
-using JobTracker.Core.Interfaces;
 using JobTracker.Core.Entities;
 using JobTracker.API.Extensions;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using JobTracker.API.Middleware;
-using AspNetCoreRateLimit;
-using JobTracker.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ============================================
-// DATABASE CONFIGURATION
-// ============================================
-// Uses PostgreSQL for both development (Docker) and production.
-// The provider is selected based on "DatabaseProvider" setting in appsettings.json.
-// See: Extensions/DatabaseServiceExtensions.cs for implementation details.
-
+// ── Service Registration ─────────────────────
 builder.Services.AddDatabaseContext(builder.Configuration);
-
-// ============================================
-// ASP.NET CORE IDENTITY CONFIGURATION
-// ============================================
-
-// AddIdentity registers all Identity services including:
-// - UserManager<ApplicationUser> - for managing users (create, delete, update)
-// - SignInManager<ApplicationUser> - for handling sign-in logic
-// - RoleManager<IdentityRole> - for managing roles (if using role-based auth)
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-{
-    // Password requirements - configure based on your security needs
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 8;
-
-    // Lockout settings - protect against brute force attacks
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
-
-    // User settings
-    options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-
-    // Sign-in settings
-    options.SignIn.RequireConfirmedEmail = false; // Set to true in production!
-})
-.AddEntityFrameworkStores<ApplicationDbContext>() // Use EF Core for storing Identity data
-.AddDefaultTokenProviders(); // Provides tokens for password reset, email confirmation, etc.
-
-// ============================================
-// JWT AUTHENTICATION CONFIGURATION
-// ============================================
-
-// Get JWT settings from configuration
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"]
-    ?? throw new InvalidOperationException("JWT SecretKey is not configured!");
-
-builder.Services.AddAuthentication(options =>
-{
-    // Set JWT Bearer as the default authentication scheme
-    // This means all [Authorize] endpoints will expect a JWT token
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    // Token validation parameters
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        // Validate the signing key
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-
-        // Validate the issuer (who created the token)
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
-
-        // Validate the audience (who the token is intended for)
-        ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
-
-        // Validate the token's lifetime
-        ValidateLifetime = true,
-
-        // Allow for some clock skew between servers
-        ClockSkew = TimeSpan.Zero
-    };
-
-    // Optional: Events for debugging and customization
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-            {
-                context.Response.Headers.Append("Token-Expired", "true");
-            }
-            return Task.CompletedTask;
-        }
-    };
-});
-
-// ============================================
-// GOOGLE OAUTH (Optional - only if configured)
-// ============================================
-// Google OAuth is only registered if ClientId is configured.
-// To enable: Add your Google OAuth credentials to appsettings.json or user secrets.
-// Get credentials from: https://console.cloud.google.com/apis/credentials
-
-var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
-var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-
-if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
-{
-    builder.Services.AddAuthentication()
-        .AddGoogle(options =>
-        {
-            options.ClientId = googleClientId;
-            options.ClientSecret = googleClientSecret;
-
-            // Configure correlation cookie for cross-origin OAuth
-            // Required when frontend and backend are on different domains
-            options.CorrelationCookie.SameSite = SameSiteMode.None;
-            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
-        });
-    Console.WriteLine("✅ Google OAuth enabled");
-}
-else
-{
-    Console.WriteLine("⚠️ Google OAuth not configured - skipping. Set Authentication:Google:ClientId and ClientSecret to enable.");
-}
-
-// ============================================
-// REPOSITORY REGISTRATION (Dependency Injection)
-// ============================================
-
-builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
-builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
-builder.Services.AddScoped<ISkillRepository, SkillRepository>();
-builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
-builder.Services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
-
-// ============================================
-// AI & APPLICATION SERVICES REGISTRATION
-// ============================================
-
-builder.Services.AddScoped<IAIService, JobTracker.Infrastructure.Services.GeminiAIService>();
-builder.Services.AddScoped<IJobApplicationService, JobTracker.Infrastructure.Services.JobApplicationService>();
-
-// ============================================
-// HTTP CLIENT FACTORY REGISTRATION
-// ============================================
-
-// Register IHttpClientFactory for making HTTP requests
-// This is a best practice for connection reuse and proper lifetime management
+builder.Services.AddIdentityConfiguration(builder.Environment.IsDevelopment());
+builder.Services.AddJwtConfiguration(builder.Configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddHttpClient();
+builder.Services.AddRateLimiting(builder.Configuration);
+builder.Services.AddValidationConfiguration();
 
-// ============================================
-// RATE LIMITING CONFIGURATION
-// ============================================
-
-// Configure rate limiting to prevent brute force attacks and DDoS
-builder.Services.AddMemoryCache();
-builder.Services.Configure<AspNetCoreRateLimit.IpRateLimitOptions>(options =>
-{
-    options.EnableEndpointRateLimiting = true;
-    options.StackBlockedRequests = false;
-    options.RealIpHeader = "X-Real-IP";
-    options.ClientIdHeader = "X-ClientId";
-    options.HttpStatusCode = 429; // Too Many Requests
-
-    // General rules for all endpoints
-    options.GeneralRules = new List<AspNetCoreRateLimit.RateLimitRule>
-    {
-        // Global rate limit: 100 requests per minute per IP
-        new AspNetCoreRateLimit.RateLimitRule
-        {
-            Endpoint = "*",
-            Period = "1m",
-            Limit = 100
-        },
-        // Auth endpoints: Stricter limits to prevent brute force
-        new AspNetCoreRateLimit.RateLimitRule
-        {
-            Endpoint = "*/auth/login",
-            Period = "1m",
-            Limit = 5  // Only 5 login attempts per minute
-        },
-        new AspNetCoreRateLimit.RateLimitRule
-        {
-            Endpoint = "*/auth/register",
-            Period = "1h",
-            Limit = 3  // Only 3 registrations per hour per IP
-        },
-        // File upload: Limit to prevent abuse
-        new AspNetCoreRateLimit.RateLimitRule
-        {
-            Endpoint = "*/documents/upload",
-            Period = "1m",
-            Limit = 10
-        }
-    };
-});
-
-// Register distributed cache for rate limiting (supports multi-instance scaling)
-builder.Services.AddDistributedMemoryCache(); // Replace with Redis in production: AddStackExchangeRedisCache()
-
-// Register rate limiting services with distributed stores
-builder.Services.AddSingleton<AspNetCoreRateLimit.IIpPolicyStore, AspNetCoreRateLimit.DistributedCacheIpPolicyStore>();
-builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitCounterStore, AspNetCoreRateLimit.DistributedCacheRateLimitCounterStore>();
-builder.Services.AddSingleton<AspNetCoreRateLimit.IRateLimitConfiguration, AspNetCoreRateLimit.RateLimitConfiguration>();
-builder.Services.AddSingleton<AspNetCoreRateLimit.IProcessingStrategy, AspNetCoreRateLimit.AsyncKeyLockProcessingStrategy>();
-
-// ============================================
-// FLUENT VALIDATION CONFIGURATION
-// ============================================
-
-// Add FluentValidation for input validation
-builder.Services.AddValidatorsFromAssemblyContaining<JobTracker.Application.DTOs.Auth.RegisterDto>();
-builder.Services.AddFluentValidationAutoValidation();
-
-// ============================================
-// APPLICATION INSIGHTS (Production Monitoring)
-// ============================================
-
-// Add Application Insights for Azure monitoring and security event tracking
+// Application Insights (production only)
 if (!builder.Environment.IsDevelopment())
 {
     builder.Services.AddApplicationInsightsTelemetry();
 }
 
-// ============================================
-// API CONFIGURATION
-// ============================================
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // Use safe encoder with explicit Unicode ranges for special characters (á, é, ñ, etc.)
-        // This keeps accented characters unescaped while HTML-sensitive characters stay escaped
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
         options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(
             System.Text.Unicode.UnicodeRanges.BasicLatin,
             System.Text.Unicode.UnicodeRanges.Latin1Supplement,
             System.Text.Unicode.UnicodeRanges.LatinExtendedA,
             System.Text.Unicode.UnicodeRanges.LatinExtendedB);
     });
-builder.Services.AddEndpointsApiExplorer();
 
-// Configure Swagger with JWT authentication support
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
-    {
-        Title = "JobTracker API",
-        Version = "v1",
-        Description = "API for tracking job applications with user authentication"
-    });
+builder.Services.AddSwaggerConfiguration();
+builder.Services.AddCorsConfiguration(builder.Configuration, builder.Environment.IsDevelopment());
 
-    // Add JWT authentication to Swagger UI
-    // Users can click "Authorize" button and enter their JWT token
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.ParameterLocation.Header,
-        Description = "Enter your JWT token. Example: eyJhbGciOiJIUzI1..."
-    });
-
-    // Apply the Bearer security scheme globally to all endpoints in Swagger
-    // This means the "Authorize" token will be sent with every request
-    // In .NET 10, AddSecurityRequirement uses a function that takes the document
-    options.AddSecurityRequirement(_ =>
-    {
-        var requirement = new Microsoft.OpenApi.OpenApiSecurityRequirement();
-        var schemeRef = new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer");
-        requirement.Add(schemeRef, new List<string>());
-        return requirement;
-    });
-});
-
-// Configure CORS for Angular frontend
-// In production, this should be the Azure Static Web App or App Service URL
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
-
-// Treat empty arrays as absent - fall back to default localhost for development
-if (allowedOrigins == null || allowedOrigins.Length == 0)
-{
-    allowedOrigins = new[] { "http://localhost:4200" };
-}
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular", policy =>
-    {
-        policy.SetIsOriginAllowed(origin =>
-               {
-                   // Allow configured origins
-                   if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
-                       return true;
-
-                   // Allow all Vercel preview deployments (*.vercel.app)
-                   if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
-                   {
-                       if (uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase))
-                           return true;
-                   }
-
-                   // Allow localhost for development
-                   if (origin.StartsWith("http://localhost:", StringComparison.OrdinalIgnoreCase))
-                       return true;
-
-                   return false;
-               })
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials(); // Important for authentication cookies
-    });
-});
-
-// Configure forwarded headers for reverse proxy support (Render, Azure, etc.)
-// Required for correct hostname/protocol detection behind load balancers
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
                              | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedHost;
-    // Clear default restrictions to trust any proxy
     options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
 
-// Add health checks for Azure (includes database connectivity check)
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>("database");
 
 var app = builder.Build();
 
-// ============================================
-// DATABASE INITIALIZATION (Development Only)
-// ============================================
-
-// ============================================
-// PRODUCTION SECURITY: Disable dangerous features
-// ============================================
-
+// ── Database Initialization (Development) ────
 var resetDb = args.Contains("--reset-db");
 
-// CRITICAL: Database reset is ONLY allowed in Development
 if (resetDb && !app.Environment.IsDevelopment())
 {
     Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine("❌ ERROR: --reset-db flag can ONLY be used in Development environment!");
-    Console.WriteLine("❌ Deleting production database is FORBIDDEN!");
+    Console.WriteLine("ERROR: --reset-db flag can ONLY be used in Development environment!");
     Console.ResetColor();
     Environment.Exit(1);
 }
@@ -376,92 +64,21 @@ if (app.Environment.IsDevelopment())
     if (resetDb)
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("⚠️  WARNING: Database deletion in 3 seconds...");
+        Console.WriteLine("WARNING: Database deletion in 3 seconds...");
         Console.ResetColor();
         await Task.Delay(3000);
-
         await app.ResetDatabaseAsync();
     }
-}
 
-// Production: Migrations are handled via CI/CD (deploy-database.yml)
-// Development: Migrations are applied automatically on startup
-if (app.Environment.IsDevelopment())
-{
     await app.ApplyMigrationsAsync();
+
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    await DataSeeder.SeedAsync(context, userManager);
 }
 
-if (app.Environment.IsDevelopment())
-{
-    // Seed initial data with demo user (Development only)
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        await DataSeeder.SeedAsync(context, userManager);
-    }
-}
-
-// ============================================
-// HTTP REQUEST PIPELINE
-// ============================================
-
-// Configure forwarded headers for reverse proxy (Render, Azure, etc.)
-// This MUST be the first middleware to correctly identify the original request
-app.UseForwardedHeaders();
-
-// PRODUCTION SECURITY: Swagger only in Development
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-else
-{
-    // Production: Add security headers
-    app.Use(async (context, next) =>
-    {
-        // Prevent clickjacking attacks
-        context.Response.Headers.Append("X-Frame-Options", "DENY");
-        // Prevent MIME type sniffing
-        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-        // Enable XSS protection
-        context.Response.Headers.Append("X-XSS-Protection", "1; mode=block");
-        // Strict Transport Security (HSTS)
-        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-        // Content Security Policy - permissive for Angular SPA with external resources
-        context.Response.Headers.Append("Content-Security-Policy",
-            "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-            "font-src 'self' https://fonts.gstatic.com data:; " +
-            "img-src 'self' data: https: blob:; " +
-            "connect-src 'self' https://jobtracker-api.azurewebsites.net https://jobtracker-frontend.azurewebsites.net; " +
-            "frame-ancestors 'none'");
-        await next();
-    });
-}
-
-app.UseHttpsRedirection();
-
-// Rate limiting must come after routing but before authentication
-app.UseIpRateLimiting();
-
-// CORS must come before authentication
-app.UseCors("AllowAngular");
-
-// Authentication & Authorization middleware
-// IMPORTANT: Order matters! Authentication must come before Authorization
-app.UseAuthentication();
-
-// Security logging middleware for audit trails (must come after authentication)
-app.UseSecurityLogging();
-
-app.UseAuthorization();
-
-// Health check endpoint for Azure App Service
-app.MapHealthChecks("/health");
-
-app.MapControllers();
+// ── HTTP Request Pipeline ────────────────────
+app.UseRequestPipeline();
 
 await app.RunAsync();

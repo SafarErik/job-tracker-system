@@ -5,7 +5,6 @@ import { lucideTrendingUp, lucideTrendingDown } from '@ng-icons/lucide';
 
 @Component({
    selector: 'app-company-stats',
-   standalone: true,
    imports: [CommonModule, NgIcon],
    providers: [
       provideIcons({

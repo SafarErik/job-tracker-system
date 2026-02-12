@@ -40,7 +40,9 @@ public interface IDocumentRepository
     Task<bool> ExistsAsync(Guid id);
 
     /// <summary>
-    /// Updates an existing document
+    /// Updates an existing document's metadata.
     /// </summary>
+    /// <param name="document">The document entity with updated values.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     Task UpdateAsync(Document document);
 }

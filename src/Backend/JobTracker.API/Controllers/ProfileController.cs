@@ -148,7 +148,7 @@ public class ProfileController : ControllerBase
             .CountAsync();
 
         var offersReceived = await _context.JobApplications
-            .Where(ja => ja.UserId == userId && ja.Status == Core.Enums.JobApplicationStatus.Offer)
+            .Where(ja => ja.UserId == userId && ja.Status == Core.Enums.JobApplicationStatus.OfferReceived)
             .CountAsync();
 
         var companiesAppliedTo = await _context.JobApplications

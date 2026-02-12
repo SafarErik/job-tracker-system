@@ -6,7 +6,6 @@ import { lucideWifiOff, lucideRefreshCcw } from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-error-state',
-  standalone: true,
   imports: [CommonModule, HlmButtonImports, NgIcon],
   providers: [provideIcons({ lucideWifiOff, lucideRefreshCcw })],
   template: `

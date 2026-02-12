@@ -28,7 +28,6 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
 
 @Component({
   selector: 'app-sidebar',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,

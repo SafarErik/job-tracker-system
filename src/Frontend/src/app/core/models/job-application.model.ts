@@ -2,6 +2,7 @@ import { JobApplicationStatus } from '../../features/job-applications/models/app
 import { JobType } from '../../features/job-applications/models/job-type.enum';
 import { WorkplaceType } from '../../features/job-applications/models/workplace-type.enum';
 import { JobPriority } from '../../features/job-applications/models/job-priority.enum';
+import { Currency } from '../../features/job-applications/models/currency.enum';
 import { CompanyContact } from './company-contact.model';
 
 export interface JobApplication {
@@ -22,7 +23,10 @@ export interface JobApplication {
     salaryMin?: number;
     salaryMax?: number;
     salaryOffer?: number;
-    currency?: string;
+    baseSalary?: number;
+    bonus?: number;
+    equityValue?: number;
+    currency: Currency;
     salaryPeriod?: 'yearly' | 'monthly' | 'hourly';
     jobUrl?: string;
     description?: string;
@@ -39,6 +43,7 @@ export interface JobApplication {
     documentName?: string;
     primaryContactId?: string;
     primaryContact?: CompanyContact;
+    concurrencyToken: string; // Concurrency token (Guid)
 }
 
 export interface CreateJobApplication {
@@ -51,7 +56,40 @@ export interface CreateJobApplication {
     workplaceType: WorkplaceType;
     priority: JobPriority;
     salaryOffer?: number;
+    baseSalary?: number;
+    bonus?: number;
+    equityValue?: number;
+    currency: Currency;
     matchScore: number;
     documentId?: string | null;
+    primaryContactId?: string;
+}
+
+export interface UpdateJobApplication {
+    concurrencyToken: string;
+    position?: string;
+    companyId?: string;
+    jobUrl?: string;
+    description?: string;
+    status?: JobApplicationStatus;
+    jobType?: JobType;
+    workplaceType?: WorkplaceType;
+    priority?: JobPriority;
+
+    salaryOffer?: number | null;
+    salaryOfferProvided?: boolean;
+    baseSalary?: number | null;
+    baseSalaryProvided?: boolean;
+    bonus?: number | null;
+    bonusProvided?: boolean;
+    equityValue?: number | null;
+    equityValueProvided?: boolean;
+
+    currency?: Currency | null;
+    currencyProvided?: boolean;
+
+    matchScore?: number | null;
+    documentId?: string | null;
+    documentIdProvided?: boolean;
     primaryContactId?: string;
 }

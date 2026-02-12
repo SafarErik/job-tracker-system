@@ -52,13 +52,7 @@
                             placeholder="e.g. Senior Frontend Engineer" />
                     </div>
 
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Team / Department <span
-                                class="font-normal opacity-60">(Optional)</span></label>
-                        <input hlmInput formControlName="department"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                            placeholder="e.g. Core Engineering, Product Design..." />
-                    </div>
+
 
                     <div class="space-y-2">
                         <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Job Posting URL</label>
@@ -171,40 +165,33 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Min Salary</label>
+                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Base Salary</label>
                             <input hlmInput type="number" formControlName="salaryMin"
                                 class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
                                 placeholder="0" />
                         </div>
                         <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Max Salary</label>
+                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Offer /
+                                Target</label>
                             <input hlmInput type="number" formControlName="salaryMax"
                                 class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
                                 placeholder="0" />
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Workplace
-                                Type</label>
-                            <brn-select formControlName="workplaceType">
-                                <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
-                                    <hlm-select-value />
-                                </hlm-select-trigger>
-                                <hlm-select-content class="bg-popover border-border">
-                                    @for (loc of locationOptions; track loc.value) {
-                                    <hlm-option [value]="loc.value">{{ loc.label }}</hlm-option>
-                                    }
-                                </hlm-select-content>
-                            </brn-select>
-                        </div>
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Location</label>
-                            <input hlmInput formControlName="location"
-                                class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                                placeholder="e.g. Remote, UK" />
-                        </div>
+                    <div class="space-y-2">
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Workplace
+                            Type</label>
+                        <brn-select formControlName="workplaceType">
+                            <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
+                                <hlm-select-value />
+                            </hlm-select-trigger>
+                            <hlm-select-content class="bg-popover border-border">
+                                @for (loc of locationOptions; track loc.value) {
+                                <hlm-option [value]="loc.value">{{ loc.label }}</hlm-option>
+                                }
+                            </hlm-select-content>
+                        </brn-select>
                     </div>
                 </div>
             </section>

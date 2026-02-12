@@ -21,29 +21,21 @@ public class JobApplicationRepository : IJobApplicationRepository
         _logger = logger;
     }
 
-    /// <summary>
-    /// Gets all job applications with related entities.
-    /// Use for admin purposes only.
-    /// </summary>
-    public async Task<IEnumerable<JobApplication>> GetAllAsync()
-    {
-        return await _context.JobApplications
-            .AsNoTracking() // We don't follow the changes --> Excelent for reading
-            .AsSplitQuery() // Separate SQL quaries for relations
+    /// <inheritdoc/>
+    public async Task<IEnumerable<JobApplication>> GetAllAsync() =>
+        await _context.JobApplications
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .Include(j => j.PrimaryContact)
+            .Include(j => j.TimelineEvents)
             .ToListAsync();
-    }
 
-    /// <summary>
-    /// Gets all job applications for a specific user.
-    /// This is the primary method for user-specific data access.
-    /// </summary>
-    public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId)
-    {
-        return await _context.JobApplications
+    /// <inheritdoc/>
+    public async Task<IEnumerable<JobApplication>> GetAllByUserIdAsync(string userId) =>
+        await _context.JobApplications
             .AsNoTracking()
             .AsSplitQuery()
             .Where(j => j.UserId == userId)
@@ -51,27 +43,29 @@ public class JobApplicationRepository : IJobApplicationRepository
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .Include(j => j.PrimaryContact)
+            .Include(j => j.TimelineEvents)
             .OrderByDescending(j => j.AppliedAt)
             .ToListAsync();
-    }
 
-    public async Task<JobApplication?> GetByIdAsync(Guid id)
-    {
-        return await _context.JobApplications
+    /// <inheritdoc/>
+    public async Task<JobApplication?> GetByIdAsync(Guid id) =>
+        await _context.JobApplications
             .AsSplitQuery()
             .Include(j => j.Company)
             .Include(j => j.Skills)
             .Include(j => j.Document)
             .Include(j => j.PrimaryContact)
+            .Include(j => j.TimelineEvents)
             .FirstOrDefaultAsync(j => j.Id == id);
-    }
 
+    /// <inheritdoc/>
     public async Task AddAsync(JobApplication application)
     {
         await _context.JobApplications.AddAsync(application);
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc/>
     public async Task UpdateAsync(JobApplication application)
     {
         try
@@ -86,6 +80,7 @@ public class JobApplicationRepository : IJobApplicationRepository
         }
     }
 
+    /// <inheritdoc/>
     public async Task DeleteAsync(Guid id)
     {
         var rowsAffected = await _context.JobApplications
@@ -96,8 +91,10 @@ public class JobApplicationRepository : IJobApplicationRepository
         {
             _logger.LogWarning("Attempted to delete JobApplication {Id}, but it was not found.", id);
         }
-
     }
-
-
+    /// <inheritdoc/>
+    public void SetOriginalConcurrencyToken(JobApplication application, Guid token)
+    {
+        _context.Entry(application).Property(x => x.ConcurrencyToken).OriginalValue = token;
+    }
 }

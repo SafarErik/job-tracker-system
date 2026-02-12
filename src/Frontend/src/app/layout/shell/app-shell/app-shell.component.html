@@ -3,11 +3,13 @@
   <app-profile-settings-sheet />
 
   <!-- MAIN CONTENT -->
-  <main hlmSidebarInset class="flex-1 flex flex-col min-w-0">
-    <header class="flex h-16 items-center gap-2 border-b border-border bg-background px-4 sticky top-0 z-30">
+  <main hlmSidebarInset class="flex min-w-0 flex-1 flex-col bg-background">
+    <header
+      class="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border/80 bg-background/95 px-3 backdrop-blur sm:px-4"
+    >
       <button hlmSidebarTrigger></button>
 
-      <hlm-separator orientation="vertical" hlmClassName="mx-1 h-4 bg-border" />
+      <hlm-separator orientation="vertical" hlmClassName="mx-1 h-4 bg-border/80" />
 
       <app-global-header class="flex-1" />
     </header>
@@ -17,16 +19,16 @@
         <router-outlet />
       </div>
 
-      <footer class="p-6 border-t border-border bg-background/50 text-center">
-        <div class="text-xs font-medium text-muted-foreground tracking-wider mb-2">
-          CAREER COMMAND CENTER © 2026
-        </div>
+      <footer class="border-t border-border/80 bg-background/80 px-4 py-3 text-center sm:px-6">
         <div
-          class="flex items-center justify-center gap-8 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          <a href="#" class="hover:text-primary transition-colors duration-200">Privacy</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">Terms</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">System Status</a>
-          <a href="#" class="hover:text-primary transition-colors duration-200">Support</a>
+          class="flex flex-col items-center justify-between gap-2 text-[11px] text-muted-foreground sm:flex-row"
+        >
+          <span class="font-medium tracking-wide">Career Command Center © 2026</span>
+          <div class="flex items-center gap-4">
+            <a href="#" class="hover:text-foreground transition-colors">Privacy</a>
+            <a href="#" class="hover:text-foreground transition-colors">Terms</a>
+            <a href="#" class="hover:text-foreground transition-colors">Support</a>
+          </div>
         </div>
       </footer>
     </div>

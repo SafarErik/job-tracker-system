@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* 1. Surfaces & Essentials */
@@ -104,6 +104,14 @@
   --destructive: 0 72.2% 50.6%;
   /* red-600 */
   --destructive-foreground: 0 0% 100%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+
+  --chart-1: 262.1 83.3% 57.8%;
+  --chart-2: 217.2 91.2% 59.8%;
+  --chart-3: 160.1 84.1% 39.4%;
+  --chart-4: 37.7 92.1% 50.2%;
+  --chart-5: 0 72.2% 50.6%;
 
   /* Sidebar Variables - Light Mode */
   --sidebar-background: var(--background);
@@ -121,7 +129,11 @@
   /* zinc-200 */
   --sidebar-ring: 262.1 83.3% 57.8%;
 
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 /* ============================================
@@ -179,6 +191,14 @@
   --destructive: 0 84.2% 60.2%;
   /* red-500 */
   --destructive-foreground: 0 0% 100%;
+  --secondary: 240 0% 10%;
+  --secondary-foreground: 240 4.8% 95.9%;
+
+  --chart-1: 262.1 83.3% 62%;
+  --chart-2: 214 95% 63%;
+  --chart-3: 158.1 64.5% 51.6%;
+  --chart-4: 38 92% 58%;
+  --chart-5: 0 84.2% 60.2%;
 
   /* Sidebar Variables - Dark Mode */
   --sidebar-background: var(--background);
@@ -197,13 +217,20 @@
   --sidebar-ring: 262.1 83.3% 57.8%;
 }
 
-
 /* ============================================
    GLOBAL STYLES & TRANSITIONS 
    ============================================ */
 body {
   @apply bg-background text-foreground antialiased selection:bg-primary/30;
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 /* Typography */
@@ -213,11 +240,43 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 * {
   @apply border-border outline-ring/50;
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@utility app-page {
+  @apply mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8;
+}
+
+@utility surface-card {
+  @apply rounded-2xl border border-border bg-card;
+}
+
+@utility dense-grid {
+  @apply grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4;
 }
 
 /* View Transitions */

@@ -1,175 +1,228 @@
-<div class="min-h-screen bg-background text-foreground pb-20 font-sans selection:bg-primary/20 overflow-x-hidden">
-  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-12">
-
-    <!-- Header: Strategic Asset Registry -->
+<div
+  class="min-h-screen bg-background text-foreground pb-20 font-sans selection:bg-primary/20 overflow-x-hidden"
+>
+  <div class="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pt-6 space-y-8">
+    <!-- Header -->
     <div class="space-y-4">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 leading-none">
-        <div class="space-y-3">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 leading-none">
+        <div class="space-y-2">
           <!-- Breadcrumb -->
-          <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
-            <span>Central Intelligence</span>
+          <div
+            class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground"
+          >
+            <span>Career Command Center</span>
             <span class="text-border">/</span>
-            <span class="text-primary/80">Asset Registry</span>
+            <span class="text-primary/80">Company Database</span>
           </div>
 
-          <h1 class="text-4xl md:text-5xl font-serif text-foreground tracking-tight">Companies Database</h1>
+          <h1 class="text-3xl md:text-4xl font-semibold text-foreground tracking-tight">
+            Company Database
+          </h1>
         </div>
 
-        <button hlmBtn size="lg" (click)="addSheetComp.open()"
-          class="gap-3 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-black uppercase tracking-widest px-8 h-14 shadow-lg dark:shadow-primary/20 border-0 transition-all hover:scale-[1.02]">
+        <button
+          hlmBtn
+          size="lg"
+          (click)="addSheetComp.open()"
+          class="gap-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 h-11 shadow-sm border-0 transition-colors"
+        >
           <ng-icon name="lucidePlus" class="h-5 w-5"></ng-icon>
-          Initialize Asset
+          Add Company
         </button>
       </div>
     </div>
 
-    <!-- Metrics Deck: Intelligence Yield -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Total Network -->
+    <!-- Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div
-        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-primary/30 transition-all leading-none">
-        <div class="space-y-3">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Asset Network</p>
-          <h4 class="text-4xl font-serif text-foreground">{{ totalNetwork() }}</h4>
-          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Identified Entities</p>
+        class="bg-card border border-border rounded-2xl p-5 flex items-center justify-between group hover:border-primary/30 transition-all leading-none"
+      >
+        <div class="space-y-2">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            Asset Network
+          </p>
+          <h4 class="text-3xl font-semibold text-foreground">{{ totalNetwork() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">
+            Identified Entities
+          </p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-primary group-hover:border-primary/20 transition-all shadow-sm">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-primary group-hover:border-primary/20 transition-all shadow-sm"
+        >
           <ng-icon name="lucideBuilding2" class="h-8 w-8"></ng-icon>
         </div>
       </div>
 
-      <!-- Active Pursuits -->
       <div
-        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-success/30 transition-all leading-none relative overflow-hidden">
+        class="bg-card border border-border rounded-2xl p-5 flex items-center justify-between group hover:border-success/30 transition-all leading-none relative overflow-hidden"
+      >
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-success/5 blur-3xl rounded-full"></div>
-        <div class="space-y-3 relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Active Pursuits</p>
-          <h4 class="text-4xl font-serif text-success">{{ activePursuits() }}</h4>
-          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Ongoing Infiltrations</p>
+        <div class="space-y-2 relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            Active Pursuits
+          </p>
+          <h4 class="text-3xl font-semibold text-success">{{ activePursuits() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">
+            Open pipelines
+          </p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-success group-hover:border-success/20 transition-all shadow-sm">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-success group-hover:border-success/20 transition-all shadow-sm"
+        >
           <ng-icon name="lucideActivity" class="h-8 w-8"></ng-icon>
         </div>
       </div>
 
-      <!-- Intelligence Yield -->
       <div
-        class="bg-card/40 border border-border rounded-[2rem] p-8 flex items-center justify-between group hover:border-info/30 transition-all leading-none relative overflow-hidden">
+        class="bg-card border border-border rounded-2xl p-5 flex items-center justify-between group hover:border-info/30 transition-all leading-none relative overflow-hidden"
+      >
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-info/5 blur-3xl rounded-full"></div>
-        <div class="space-y-3 relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Intelligence Yield</p>
-          <h4 class="text-4xl font-serif text-info">{{ responseRate() }}</h4>
-          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">Sector Success rate</p>
+        <div class="space-y-2 relative z-10">
+          <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            Response Rate
+          </p>
+          <h4 class="text-3xl font-semibold text-info">{{ responseRate() }}</h4>
+          <p class="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest">
+            Market performance
+          </p>
         </div>
         <div
-          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-info group-hover:border-info/20 transition-all shadow-sm">
+          class="h-16 w-16 rounded-2xl bg-muted border border-border flex items-center justify-center text-muted-foreground/50 group-hover:text-info group-hover:border-info/20 transition-all shadow-sm"
+        >
           <ng-icon name="lucideTrendingUp" class="h-8 w-8"></ng-icon>
         </div>
       </div>
     </div>
 
-    <!-- Search Hub: Command Center -->
-    <div class="space-y-6">
+    <!-- Search -->
+    <div class="space-y-4">
       <div class="max-w-3xl">
         <div class="relative group">
           <div
-            class="absolute -inset-1 bg-linear-to-r from-primary/20 to-info/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500">
-          </div>
+            class="absolute -inset-1 bg-linear-to-r from-primary/20 to-info/20 rounded-[2.5rem] blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500"
+          ></div>
 
           <div
-            class="relative flex items-center p-2 rounded-[2.5rem] border border-border bg-card/60 backdrop-blur-xl transition-all duration-300 focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/20 shadow-xl">
+            class="relative flex items-center p-2 rounded-[2.5rem] border border-border bg-card/60 backdrop-blur-xl transition-all duration-300 focus-within:border-primary/30 focus-within:ring-1 focus-within:ring-primary/20 shadow-xl"
+          >
             <!-- Search Icon -->
             <div
-              class="absolute left-6 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors">
+              class="absolute left-6 flex items-center justify-center text-muted-foreground group-focus-within:text-primary transition-colors"
+            >
               <ng-icon name="lucideSearch" class="h-6 w-6"></ng-icon>
             </div>
 
             <!-- Input -->
-            <input #searchInput type="text" [value]="searchTerm()" (input)="onSearchChange($event)"
-              placeholder="Query Asset Registry (Name, Industry, Domain)..."
+            <input
+              #searchInput
+              type="text"
+              [value]="searchTerm()"
+              (input)="onSearchChange($event)"
+              placeholder="Search company, industry, or domain..."
               class="h-14 w-full rounded-2xl bg-transparent pl-16 pr-24 text-sm font-medium focus:outline-none text-foreground placeholder:text-muted-foreground placeholder:font-mono placeholder:uppercase placeholder:tracking-widest"
-              id="company-search">
+              id="company-search"
+            />
 
             <!-- Terminal Hint -->
             <div class="absolute right-6 hidden md:flex items-center gap-2">
-              <span class="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest">Shortcut:</span>
+              <span class="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest"
+                >Shortcut:</span
+              >
               <kbd
-                class="flex h-7 px-2 items-center gap-1 rounded-lg border border-border bg-muted text-[10px] font-mono text-muted-foreground shadow-sm">
+                class="flex h-7 px-2 items-center gap-1 rounded-lg border border-border bg-muted text-[10px] font-mono text-muted-foreground shadow-sm"
+              >
                 <span>⌘</span>K
               </kbd>
             </div>
           </div>
 
           @if (searchTerm()) {
-          <div
-            class="mt-4 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-2 duration-500">
-            <span class="text-muted-foreground">Matches Found: <span class="text-foreground">{{
-                filteredCompanies().length
-                }}</span></span>
-            <button (click)="searchTerm.set('')" class="text-primary hover:text-primary/80 transition-colors">Abort
-              Query</button>
-          </div>
+            <div
+              class="mt-4 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-top-2 duration-500"
+            >
+              <span class="text-muted-foreground"
+                >Matches Found:
+                <span class="text-foreground">{{ filteredCompanies().length }}</span></span
+              >
+              <button
+                (click)="searchTerm.set('')"
+                class="text-primary hover:text-primary/80 transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
           }
         </div>
       </div>
     </div>
 
-    <!-- Grid: Data Visualization -->
-    <div class="space-y-12">
+    <div class="space-y-8">
       <!-- Loading Registry -->
       @if (isLoading()) {
-      <div class="flex flex-col items-center justify-center py-32 gap-6 text-muted-foreground">
-        <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-primary"></ng-icon>
-        <p class="text-[11px] font-black uppercase tracking-[0.3em] animate-pulse">Establishing Secure Connection...</p>
-      </div>
+        <div class="flex flex-col items-center justify-center py-32 gap-6 text-muted-foreground">
+          <ng-icon name="lucideLoader2" class="h-10 w-10 animate-spin text-primary"></ng-icon>
+          <p class="text-[11px] font-black uppercase tracking-[0.3em] animate-pulse">
+            Loading company data...
+          </p>
+        </div>
       }
 
       <!-- Error State -->
       @if (error()) {
-      <div class="py-20 max-w-lg mx-auto">
-        <app-error-state title="Connection Segfault" [message]="error()!" icon="lucideBuilding2" (retry)="retry()">
-        </app-error-state>
-      </div>
+        <div class="py-20 max-w-lg mx-auto">
+          <app-error-state
+            title="Connection Segfault"
+            [message]="error()!"
+            icon="lucideBuilding2"
+            (retry)="retry()"
+          >
+          </app-error-state>
+        </div>
       }
 
       @if (!isLoading() && !error()) {
-      <div class="space-y-12">
-        @if (filteredCompanies().length === 0) {
-        <div
-          class="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed border-border bg-muted/10 text-muted-foreground">
-          <ng-icon name="lucideAlertTriangle" class="h-12 w-12 mb-6 text-muted-foreground/30"></ng-icon>
-          <h3 class="text-lg font-black uppercase tracking-widest text-muted-foreground/50 mb-2">No Signal Detected</h3>
-          <p class="text-sm font-medium">
-            @if (searchTerm()) {
-            Zero matches for current query. Refine parameters.
-            } @else {
-            Asset registry is empty. Initialize new companies to begin.
-            }
-          </p>
-        </div>
-        } @else {
-        <!-- Asset Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          @for (company of filteredCompanies(); track company.id) {
-          <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+        <div class="space-y-12">
+          @if (filteredCompanies().length === 0) {
+            <div
+              class="flex flex-col items-center justify-center py-32 rounded-[3rem] border-2 border-dashed border-border bg-muted/10 text-muted-foreground"
+            >
+              <ng-icon
+                name="lucideAlertTriangle"
+                class="h-12 w-12 mb-6 text-muted-foreground/30"
+              ></ng-icon>
+              <h3
+                class="text-lg font-black uppercase tracking-widest text-muted-foreground/50 mb-2"
+              >
+                No Companies Found
+              </h3>
+              <p class="text-sm font-medium">
+                @if (searchTerm()) {
+                  No results for this search. Adjust the query and try again.
+                } @else {
+                  Your company database is empty. Add your first company to start tracking.
+                }
+              </p>
+            </div>
+          } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              @for (company of filteredCompanies(); track company.id) {
+                <app-company-card [company]="company" (viewDossier)="viewCompanyDetails($event)" />
+              }
+            </div>
+
+            <div class="flex items-center justify-center py-8 border-t border-border">
+              <div
+                class="px-6 py-2 rounded-full bg-card/50 border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground"
+              >
+                Showing: <span class="text-foreground">{{ filteredCompanies().length }}</span> /
+                Total:
+                <span class="text-foreground">{{ companies().length }}</span>
+              </div>
+            </div>
           }
         </div>
-
-        <!-- Registry Footer -->
-        <div class="flex items-center justify-center py-10 border-t border-border">
-          <div
-            class="px-6 py-2 rounded-full bg-card/50 border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-            Catalogued Assets: <span class="text-foreground">{{ filteredCompanies().length }}</span> / Total Registry:
-            <span class="text-foreground">{{ companies().length }}</span>
-          </div>
-        </div>
-        }
-      </div>
       }
     </div>
-
   </div>
 </div>
 

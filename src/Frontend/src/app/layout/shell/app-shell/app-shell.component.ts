@@ -7,6 +7,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GlobalHeaderComponent } from '../global-header/global-header.component';
 import { ProfileSettingsSheetComponent } from '../../../features/profile/components/profile-settings-sheet/profile-settings-sheet.component';
 import { ProfileStore } from '../../../features/profile/services/profile.store';
+import { AiDrawerComponent } from '../../../shared/components/ai-drawer/ai-drawer.component';
 
 @Component({
   selector: 'app-shell',
@@ -18,6 +19,7 @@ import { ProfileStore } from '../../../features/profile/services/profile.store';
     HlmSidebarImports,
     HlmSeparatorImports,
     ProfileSettingsSheetComponent,
+    AiDrawerComponent,
   ],
   templateUrl: './app-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

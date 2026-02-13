@@ -78,11 +78,14 @@
     <app-global-footprint class="md:col-span-2" [points]="mapPoints()" [loading]="isLoading()"></app-global-footprint>
 
     <!-- ═══════════════════════════════════════════
-         ROW 4 — EXECUTION LAYER (1 + 3 cols)
+         ROW 4 — EXECUTION LAYER (1 + 1 + 2 cols)
          ═══════════════════════════════════════════ -->
     <app-activity-feed class="md:col-span-1" [items]="feedItems()" [loading]="isLoading()"></app-activity-feed>
 
-    <app-pipeline-table-card class="md:col-span-3" [stages]="funnelStages()" [applications]="applications()"
+    <app-tactical-priority class="md:col-span-1" [items]="priorityItems()"
+      [loading]="isLoading()"></app-tactical-priority>
+
+    <app-pipeline-table-card class="md:col-span-2" [stages]="funnelStages()" [applications]="applications()"
       [companyMap]="companyMap()" [loading]="isLoading()"></app-pipeline-table-card>
 
   </div>

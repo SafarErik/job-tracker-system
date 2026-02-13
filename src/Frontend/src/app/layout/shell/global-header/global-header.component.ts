@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
@@ -14,6 +14,10 @@ import {
   lucideSettings,
   lucideMail,
   lucidePlus,
+  lucideSparkles,
+  lucideBrain,
+  lucideZap,
+  lucideMessageSquare,
 } from '@ng-icons/lucide';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
@@ -49,10 +53,17 @@ import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/th
       lucideSettings,
       lucideMail,
       lucidePlus,
+      lucideSparkles,
+      lucideBrain,
+      lucideZap,
+      lucideMessageSquare,
     }),
   ],
   templateUrl: './global-header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:keydown)': 'onKeyDown($event)',
+  },
 })
 export class GlobalHeaderComponent {
   public readonly isOpen = signal(false);
@@ -60,7 +71,6 @@ export class GlobalHeaderComponent {
   public readonly breadcrumbService = inject(BreadcrumbService);
   private readonly router = inject(Router);
 
-  @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
       event.preventDefault();
@@ -76,5 +86,10 @@ export class GlobalHeaderComponent {
   openSettings() {
     this.isOpen.set(false);
     this.uiService.openProfileSettings();
+  }
+
+  openAiDrawer() {
+    this.isOpen.set(false);
+    this.uiService.openAiDrawer();
   }
 }

@@ -19,6 +19,7 @@ import { SkillRadarComponent, SkillRadarAxis } from './components/skill-radar/sk
 import { GlobalFootprintComponent, LocationPoint } from './components/global-footprint/global-footprint.component';
 import { ActivityFeedComponent, FeedItem } from './components/activity-feed/activity-feed.component';
 import { PipelineTableCardComponent } from './components/pipeline-table-card/pipeline-table-card.component';
+import { TacticalPriorityComponent, PriorityItem } from './components/tactical-priority/tactical-priority.component';
 import { PipelineStage } from './components/pipeline-chart/pipeline-chart.component';
 
 interface BriefingItem {
@@ -56,6 +57,7 @@ const LOCATION_COORDINATES: Record<string, { x: number; y: number }> = {
     GlobalFootprintComponent,
     ActivityFeedComponent,
     PipelineTableCardComponent,
+    TacticalPriorityComponent,
     ...HlmSkeletonImports,
   ],
   templateUrl: './dashboard.component.html',
@@ -305,6 +307,45 @@ export class DashboardComponent implements OnInit {
       map.set(c.id, { name: c.name, logoUrl: c.logoUrl });
     }
     return map;
+  });
+
+  // ── Row 5: Tactical Priority ─────────────────────────────
+
+  readonly priorityItems = computed<PriorityItem[]>(() => {
+    const apps = this.applications();
+    const companyLookup = this.companyMap();
+
+    const items: PriorityItem[] = [];
+
+    for (const app of apps) {
+      let kind: 'interview' | 'offer' | 'follow-up' | null = null;
+
+      switch (app.status) {
+        case JobApplicationStatus.Interviewing:
+          kind = 'interview';
+          break;
+        case JobApplicationStatus.Offer:
+          kind = 'offer';
+          break;
+        case JobApplicationStatus.Applied:
+        case JobApplicationStatus.PhoneScreen:
+          kind = 'follow-up';
+          break;
+      }
+
+      if (kind) {
+        items.push({
+          id: app.id,
+          position: app.position,
+          company: companyLookup.get(app.companyId)?.name ?? app.companyName ?? 'Company',
+          kind,
+        });
+      }
+    }
+
+    // Sort: interviews first, then offers, then follow-ups
+    const order: Record<string, number> = { 'interview': 0, 'offer': 1, 'follow-up': 2 };
+    return items.sort((a, b) => order[a.kind] - order[b.kind]).slice(0, 10);
   });
 
   ngOnInit(): void {

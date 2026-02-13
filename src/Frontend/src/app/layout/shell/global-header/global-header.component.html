@@ -6,71 +6,57 @@
           <a hlmBreadcrumbLink [link]="'/dashboard'">Dashboard</a>
         </li>
         @for (
-          breadcrumb of breadcrumbService.breadcrumbs();
-          track breadcrumb.url;
-          let last = $last
+        breadcrumb of breadcrumbService.breadcrumbs();
+        track breadcrumb.url;
+        let last = $last
         ) {
-          <li hlmBreadcrumbSeparator></li>
-          <li hlmBreadcrumbItem>
-            @if (last) {
-              <span hlmBreadcrumbPage>{{ breadcrumb.label }}</span>
-            } @else {
-              <a hlmBreadcrumbLink [link]="breadcrumb.url">{{ breadcrumb.label }}</a>
-            }
-          </li>
+        <li hlmBreadcrumbSeparator></li>
+        <li hlmBreadcrumbItem>
+          @if (last) {
+          <span hlmBreadcrumbPage>{{ breadcrumb.label }}</span>
+          } @else {
+          <a hlmBreadcrumbLink [link]="breadcrumb.url">{{ breadcrumb.label }}</a>
+          }
+        </li>
         }
       </ol>
     </nav>
     <div class="truncate text-sm font-medium text-foreground lg:hidden">
       {{
-        breadcrumbService.breadcrumbs().length
-          ? breadcrumbService.breadcrumbs()[breadcrumbService.breadcrumbs().length - 1].label
-          : 'Dashboard'
+      breadcrumbService.breadcrumbs().length
+      ? breadcrumbService.breadcrumbs()[breadcrumbService.breadcrumbs().length - 1].label
+      : 'Dashboard'
       }}
     </div>
   </div>
 
   <div class="hidden items-center justify-center lg:flex">
-    <button
-      (click)="isOpen.set(true)"
-      hlmBtn
-      variant="outline"
-      type="button"
-      class="group relative h-9 w-64 justify-start overflow-hidden rounded-xl border-border bg-card text-sm font-normal text-muted-foreground shadow-none transition-all hover:bg-muted/60 hover:text-foreground"
-    >
+    <button (click)="isOpen.set(true)" hlmBtn variant="outline" type="button"
+      class="group relative h-9 w-64 justify-start overflow-hidden rounded-xl border-border bg-card text-sm font-normal text-muted-foreground shadow-none transition-all hover:bg-muted/60 hover:text-foreground">
       <ng-icon hlm name="lucideSearch" class="mr-2 h-4 w-4" />
       <span class="inline-flex relative z-10">Search or ask Career Copilot...</span>
       <kbd
-        class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex text-muted-foreground"
-      >
+        class="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-6 select-none items-center gap-1 rounded border border-border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex text-muted-foreground">
         <span class="text-xs">⌘</span>K
       </kbd>
     </button>
   </div>
 
   <div class="flex items-center justify-end gap-1">
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon"
-      type="button"
-      (click)="isOpen.set(true)"
-      class="h-9 w-9 lg:hidden"
-      aria-label="Open command menu"
-    >
+    <button hlmBtn variant="ghost" size="icon" type="button" (click)="isOpen.set(true)" class="h-9 w-9 lg:hidden"
+      aria-label="Open command menu">
       <ng-icon hlm name="lucideSearch" class="h-4 w-4" />
     </button>
 
-    <button
-      hlmBtn
-      variant="ghost"
-      size="icon"
-      type="button"
-      (click)="uiService.openAddAppSheet()"
-      class="h-9 w-9"
-      aria-label="Add application"
-    >
+    <button hlmBtn variant="ghost" size="icon" type="button" (click)="uiService.openAddAppSheet()" class="h-9 w-9"
+      aria-label="Add application">
       <ng-icon hlm name="lucidePlus" class="h-5 w-5" />
+    </button>
+
+    <!-- AI Assistant Toggle -->
+    <button hlmBtn variant="ghost" size="icon" type="button" (click)="uiService.toggleAiDrawer()" class="h-9 w-9"
+      [class.text-primary]="uiService.isAiDrawerOpen()" aria-label="Toggle AI Assistant">
+      <ng-icon hlm name="lucideSparkles" class="h-5 w-5" />
     </button>
 
     <app-notification-center />
@@ -78,25 +64,16 @@
     <app-theme-toggle />
   </div>
 
-  <!-- Command Palette Dialog -->
+  <!-- Command Palette Dialog (z-100) -->
   <hlm-dialog [state]="isOpen() ? 'open' : 'closed'" (closed)="isOpen.set(false)">
     <ng-template brnDialogContent>
-      <hlm-dialog-content
-        hlmCommandDialog
-        class="max-w-[90vw] md:max-w-2xl bg-popover/95 backdrop-blur-xl border border-border p-0 overflow-hidden shadow-2xl dark:shadow-primary/5"
-      >
+      <hlm-dialog-content hlmCommandDialog
+        class="max-w-[90vw] md:max-w-2xl bg-popover/95 backdrop-blur-xl border border-border p-0 overflow-hidden shadow-2xl dark:shadow-primary/5 z-100">
         <hlm-command hlmClassName="bg-transparent border-none">
-          <input
-            hlmCommandSearchInput
-            placeholder="Type a command, route, or ask AI..."
-            class="h-12 border-b border-border"
-          />
+          <input hlmCommandSearchInput placeholder="Type a command, route, or ask AI..."
+            class="h-12 border-b border-border" />
           <hlm-command-list hlmClassName="max-h-[300px] overflow-y-auto scrollbar-hide py-2 px-2">
-            <div
-              *hlmCommandEmptyState
-              hlmCommandEmpty
-              class="py-6 text-center text-sm text-muted-foreground"
-            >
+            <div *hlmCommandEmptyState hlmCommandEmpty class="py-6 text-center text-sm text-muted-foreground">
               No results found.
             </div>
 
@@ -123,11 +100,7 @@
                 <span>Profile</span>
                 <hlm-command-shortcut>⌘P</hlm-command-shortcut>
               </button>
-              <button
-                hlmCommandItem
-                value="copilot"
-                (click)="uiService.openAddAppSheet(); isOpen.set(false)"
-              >
+              <button hlmCommandItem value="copilot" (click)="uiService.openAddAppSheet(); isOpen.set(false)">
                 <ng-icon hlm name="lucideMail" hlmCommandIcon />
                 <span>Add New Application</span>
                 <hlm-command-shortcut>⌘N</hlm-command-shortcut>
@@ -136,6 +109,24 @@
                 <ng-icon hlm name="lucideSettings" hlmCommandIcon />
                 <span>Settings</span>
                 <hlm-command-shortcut>⌘S</hlm-command-shortcut>
+              </button>
+            </hlm-command-group>
+
+            <hlm-command-separator />
+
+            <!-- AI Assistant Section -->
+            <hlm-command-group label="AI Assistant">
+              <button hlmCommandItem value="ai-open" (click)="openAiDrawer()">
+                <ng-icon hlm name="lucideSparkles" hlmCommandIcon />
+                <span>Open AI Assistant</span>
+              </button>
+              <button hlmCommandItem value="ai-summary" (click)="openAiDrawer()">
+                <ng-icon hlm name="lucideBrain" hlmCommandIcon />
+                <span>Pipeline Summary</span>
+              </button>
+              <button hlmCommandItem value="ai-next" (click)="openAiDrawer()">
+                <ng-icon hlm name="lucideZap" hlmCommandIcon />
+                <span>Next Best Action</span>
               </button>
             </hlm-command-group>
           </hlm-command-list>

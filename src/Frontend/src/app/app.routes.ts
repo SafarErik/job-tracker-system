@@ -17,9 +17,8 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth';
+import { authGuard, guestGuard } from './core/guards';
 // import { SignalsComponent } from './features/signals/signals.component'; // Managed via lazy load
-
 
 export const routes: Routes = [
   // ============================================
@@ -57,14 +56,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         title: 'Dashboard - VantageCursus',
-        data: { breadcrumb: 'Dashboard' }
+        data: { breadcrumb: 'Dashboard' },
       },
       {
         path: 'applications',
         loadComponent: () =>
-          import('./features/job-applications/components/job-list/applications/applications.component').then((m) => m.ApplicationsComponent),
+          import('./features/job-applications/components/job-list/applications/applications.component').then(
+            (m) => m.ApplicationsComponent,
+          ),
         title: 'Applications - VantageCursus',
-        data: { breadcrumb: 'Applications' }
+        data: { breadcrumb: 'Applications' },
       },
       {
         path: 'new',
@@ -73,7 +74,7 @@ export const routes: Routes = [
             (m) => m.AddJobFormComponent,
           ),
         title: 'New Application - VantageCursus',
-        data: { breadcrumb: 'New Application' }
+        data: { breadcrumb: 'New Application' },
       },
       {
         // Application Workstation - full page view with tabs
@@ -83,7 +84,7 @@ export const routes: Routes = [
             (m) => m.JobWorkstationComponent,
           ),
         title: 'Application Workstation - VantageCursus',
-        data: { breadcrumb: 'Workstation' }
+        data: { breadcrumb: 'Workstation' },
       },
       {
         // Keep view/:id as alias for backwards compatibility
@@ -93,7 +94,7 @@ export const routes: Routes = [
             (m) => m.JobWorkstationComponent,
           ),
         title: 'View Application - VantageCursus',
-        data: { breadcrumb: 'View Application' }
+        data: { breadcrumb: 'View Application' },
       },
 
       // Companies
@@ -104,7 +105,7 @@ export const routes: Routes = [
             (m) => m.CompanyListComponent,
           ),
         title: 'Companies - VantageCursus',
-        data: { breadcrumb: 'Companies' }
+        data: { breadcrumb: 'Companies' },
       },
       {
         path: 'companies/edit/:id',
@@ -113,7 +114,7 @@ export const routes: Routes = [
             (m) => m.CompanyFormComponent,
           ),
         title: 'Edit Company - VantageCursus',
-        data: { breadcrumb: 'Edit Company' }
+        data: { breadcrumb: 'Edit Company' },
       },
       {
         path: 'companies/:id',
@@ -122,7 +123,7 @@ export const routes: Routes = [
             (m) => m.CompanyDetailsComponent,
           ),
         title: 'Company Details - VantageCursus',
-        data: { breadcrumb: 'Company Details' }
+        data: { breadcrumb: 'Company Details' },
       },
 
       // Documents
@@ -133,7 +134,7 @@ export const routes: Routes = [
             (m) => m.DocumentsListComponent,
           ),
         title: 'Documents - VantageCursus',
-        data: { breadcrumb: 'Documents' }
+        data: { breadcrumb: 'Documents' },
       },
 
       // Profile
@@ -142,24 +143,26 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
         title: 'Profile - VantageCursus',
-        data: { breadcrumb: 'Profile' }
+        data: { breadcrumb: 'Profile' },
       },
 
       // Statistics & Intelligence
       {
         path: 'statistics',
-        loadChildren: () => import('./features/statistics/statistics.routes').then(m => m.STATISTICS_ROUTES),
+        loadChildren: () =>
+          import('./features/statistics/statistics.routes').then((m) => m.STATISTICS_ROUTES),
         title: 'Intelligence Analytics - VantageCursus',
-        data: { breadcrumb: 'Intelligence' }
+        data: { breadcrumb: 'Intelligence' },
       },
 
       // Global Signals
       {
         path: 'signals',
-        loadComponent: () => import('./features/signals/signals.component').then(m => m.SignalsComponent),
+        loadComponent: () =>
+          import('./features/signals/signals.component').then((m) => m.SignalsComponent),
 
         title: 'Global Feed - VantageCursus',
-        data: { breadcrumb: 'Global Signals' }
+        data: { breadcrumb: 'Global Signals' },
       },
 
       // Compatibility Redirects

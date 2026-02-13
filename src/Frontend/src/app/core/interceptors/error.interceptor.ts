@@ -32,7 +32,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       let message = 'An unknown error occurred';
       let title = 'Error';
 
-      if (error.error instanceof ErrorEvent) {
+      // Handle network errors (status 0)
+      if (error.status === 0) {
+        message = 'Unable to connect to the server. Please check your internet connection.';
+        title = 'Network Error';
+      } else if (error.error instanceof ErrorEvent) {
         // Client-side error
         message = error.error.message;
       } else {

@@ -285,6 +285,9 @@ export class CompanyDetailsComponent implements OnDestroy {
       if (requestId === this.latestBriefingRequestId) {
         this.intelligenceBriefing.set(briefing);
       }
+    } catch (error) {
+      console.error('Failed to generate intelligence briefing:', error);
+      this.notificationService.error('Failed to generate briefing', 'Please try again');
     } finally {
       if (requestId === this.latestBriefingRequestId) {
         this.briefingLoading.set(false);

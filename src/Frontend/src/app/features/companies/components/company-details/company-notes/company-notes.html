@@ -239,7 +239,7 @@
             Strategic Alignment
           </h3>
           <ul class="space-y-4">
-            @for (fit of briefing()?.fit; track $index) {
+            @for (fit of briefing()?.fit ?? []; track $index) {
               <li
                 class="flex gap-4 text-base text-foreground bg-muted/30 p-4 rounded-xl border border-border/50"
               >

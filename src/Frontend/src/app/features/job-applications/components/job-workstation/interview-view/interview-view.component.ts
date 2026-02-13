@@ -108,12 +108,19 @@ export class InterviewViewComponent {
     this.toggleParentFocus(true);
   }
 
+  // Store timeout IDs for cleanup
+  private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
+
   toggleRecording() {
     this.isRecording.update((v) => !v);
 
     if (this.isRecording()) {
+      // Clear any existing timeouts from previous recording
+      this.pendingTimeouts.forEach((t) => clearTimeout(t));
+      this.pendingTimeouts = [];
+
       // Simulate voice input processing after 3 seconds
-      setTimeout(() => {
+      const timeout1 = setTimeout(() => {
         if (this.isRecording()) {
           this.addMessage(
             'user',
@@ -122,14 +129,16 @@ export class InterviewViewComponent {
           this.isRecording.set(false);
 
           // Simulate AI response
-          setTimeout(() => {
+          const timeout2 = setTimeout(() => {
             this.addMessage(
               'ai',
               'Interesting. How would you handle state synchronization across those decoupled services?',
             );
           }, 1000);
+          this.pendingTimeouts.push(timeout2);
         }
       }, 3000);
+      this.pendingTimeouts.push(timeout1);
     }
   }
 
@@ -144,16 +153,24 @@ export class InterviewViewComponent {
     this.addMessage('user', text);
     this.responseText.set('');
 
+    // Clear any existing AI response timeouts
+    this.pendingTimeouts.forEach((t) => clearTimeout(t));
+
     // Simulate AI response
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.addMessage(
         'ai',
         'That sounds like a solid approach. Can you elaborate on how you would measure the success of that strategy?',
       );
     }, 1500);
+    this.pendingTimeouts.push(timeout);
   }
 
   endSession() {
+    // Clear all pending timeouts
+    this.pendingTimeouts.forEach((t) => clearTimeout(t));
+    this.pendingTimeouts = [];
+
     this.messages.set([]);
     this.isRecording.set(false);
     this.isFocusMode.set(false);
@@ -183,9 +200,9 @@ export class InterviewViewComponent {
     // Mock metric updates
     if (sender === 'user') {
       this.metrics.update((m) => ({
-        clarity: Math.min(100, m.clarity + (Math.random() * 5 - 2)),
-        tone: Math.min(100, m.tone + (Math.random() * 4 - 1)),
-        density: Math.min(100, m.density + (Math.random() * 6 - 3)),
+        clarity: Math.max(0, Math.min(100, m.clarity + (Math.random() * 5 - 2))),
+        tone: Math.max(0, Math.min(100, m.tone + (Math.random() * 4 - 1))),
+        density: Math.max(0, Math.min(100, m.density + (Math.random() * 6 - 3))),
       }));
     }
   }

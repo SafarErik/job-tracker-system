@@ -316,7 +316,111 @@ export class AiCommandWidgetComponent {
     return `${response}\n\n### Additional Considerations\n- Prioritize high-fit roles first\n- Keep follow-ups time-boxed\n- Track outcomes weekly\n\n> Mode: Deep Reason`;
   }
 
-  renderMarkdown(markdown: string): SafeHtml {
+  renderMarkdown(markdown: string): string {
+    // First escape to prevent XSS
+    const escaped = markdown
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+
+    // Then apply markdown transformations to safe HTML tags
+    const withHeadings = escaped
+      .replaceAll(
+        /^###\s(.+)$/gm,
+        '<h4 class="mb-2 mt-1 text-sm font-semibold text-foreground">$1</h4>',
+      )
+      .replaceAll(
+        /^##\s(.+)$/gm,
+        '<h3 class="mb-2 mt-2 text-base font-semibold text-foreground">$1</h3>',
+      );
+
+    const withInline = withHeadings
+      .replaceAll(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+      .replaceAll(/`(.+?)`/g, '<code class="rounded bg-muted px-1 py-0.5 text-[11px]">$1</code>');
+
+    const withLists = withInline
+      .replaceAll(/^-\s(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+      .replaceAll(
+        /(<li class="ml-4 list-disc">.*?<\/li>\n?)+/gs,
+        '<ul class="mb-2 space-y-1 text-xs text-muted-foreground">  renderMarkdown(markdown: string): string {
+    // First escape to prevent XSS
+    const escaped = markdown
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+
+    // Then apply markdown transformations to safe HTML tags
+    const withHeadings = escaped
+      .replaceAll(
+        /^###\s(.+)$/gm,
+        '<h4 class="mb-2 mt-1 text-sm font-semibold text-foreground">$1</h4>',
+      )
+      .replaceAll(
+        /^##\s(.+)$/gm,
+        '<h3 class="mb-2 mt-2 text-base font-semibold text-foreground">$1</h3>',
+      );
+
+    const withInline = withHeadings
+      .replaceAll(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+      .replaceAll(/`(.+?)`/g, '<code class="rounded bg-muted px-1 py-0.5 text-[11px]">$1</code>');
+
+    const withLists = withInline
+      .replaceAll(/^-\s(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+      .replaceAll(
+        /(<li class="ml-4 list-disc">.*?<\/li>\n?)+/gs,
+        '<ul class="mb-2 space-y-1 text-xs text-muted-foreground">  renderMarkdown(markdown: string): string {
+    // First escape to prevent XSS
+    const escaped = markdown
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+
+    // Then apply markdown transformations to safe HTML tags
+    const withHeadings = escaped
+      .replaceAll(
+        /^###\s(.+)$/gm,
+        '<h4 class="mb-2 mt-1 text-sm font-semibold text-foreground">$1</h4>',
+      )
+      .replaceAll(
+        /^##\s(.+)$/gm,
+        '<h3 class="mb-2 mt-2 text-base font-semibold text-foreground">$1</h3>',
+      );
+
+    const withInline = withHeadings
+      .replaceAll(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+      .replaceAll(/`(.+?)`/g, '<code class="rounded bg-muted px-1 py-0.5 text-[11px]">$1</code>');
+
+    const withLists = withInline
+      .replaceAll(/^-\s(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+      .replaceAll(
+        /(<li class="ml-4 list-disc">.*?<\/li>\n?)+/gs,
+        '<ul class="mb-2 space-y-1 text-xs text-muted-foreground">  renderMarkdown(markdown: string): string {
+    // First escape to prevent XSS
+    const escaped = markdown
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;');
+
+    // Then apply markdown transformations to safe HTML tags
+    const withHeadings = escaped
+      .replaceAll(
+        /^###\s(.+)$/gm,
+        '<h4 class="mb-2 mt-1 text-sm font-semibold text-foreground">$1</h4>',
+      )
+      .replaceAll(
+        /^##\s(.+)$/gm,
+        '<h3 class="mb-2 mt-2 text-base font-semibold text-foreground">$1</h3>',
+      );
+
+    const withInline = withHeadings
+      .replaceAll(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+      .replaceAll(/`(.+?)`/g, '<code class="rounded bg-muted px-1 py-0.5 text-[11px]">$1</code>');
+
+    const withLists = withInline
+      .replaceAll(/^-\s(.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+      .replaceAll(
+        /(<li class="ml-4 list-disc">.*?<\/li>\n?)+/gs,
+        '<ul class="mb-2 space-y-1 text-xs text-muted-foreground">  renderMarkdown(markdown: string): SafeHtml {
     const escaped = markdown
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')
@@ -346,5 +450,36 @@ export class AiCommandWidgetComponent {
     const html = withLists.replaceAll('\n\n', '<br><br>').replaceAll('\n', '<br>');
 
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }</ul>',
+      );
+
+    const html = withLists.replaceAll('\n\n', '<br><br>').replaceAll('\n', '<br>');
+
+    // Return plain string - Angular's [innerHTML] will sanitize automatically
+    return html;
+  }
+}</ul>',
+      );
+
+    const html = withLists.replaceAll('\n\n', '<br><br>').replaceAll('\n', '<br>');
+
+    // Return plain string - Angular's [innerHTML] will sanitize automatically
+    return html;
+  }
+}</ul>',
+      );
+
+    const html = withLists.replaceAll('\n\n', '<br><br>').replaceAll('\n', '<br>');
+
+    // Return plain string - Angular's [innerHTML] will sanitize automatically
+    return html;
+  }
+}</ul>',
+      );
+
+    const html = withLists.replaceAll('\n\n', '<br><br>').replaceAll('\n', '<br>');
+
+    // Return plain string - Angular's [innerHTML] will sanitize automatically
+    return html;
   }
 }

@@ -64,7 +64,7 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
 })
 export class SidebarComponent {
   private themeService = inject(ThemeService);
-  private authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   public uiService = inject(UiStateService);
 
   onLogout() {

@@ -265,7 +265,7 @@
           <app-assets-view />
         }
         @case (Phase.Interview) {
-          <app-interview-view />
+          <app-interview-view (focusModeChange)="isFocusMode.set($event)" />
         }
         @case (Phase.Deal) {
           <app-deal-view />

@@ -1,6 +1,5 @@
 <div
-  [class.h-screen]="isFocusMode()"
-  [class.h-[calc(100vh-280px)]]="!isFocusMode()"
+  [ngClass]="{ 'h-screen': isFocusMode(), 'h-[calc(100vh-280px)]': !isFocusMode() }"
   class="flex flex-col bg-card rounded-[40px] border border-border overflow-hidden relative group/dojo focus-transition"
 >
   <!-- AI Listening Badge -->

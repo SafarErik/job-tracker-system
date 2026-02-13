@@ -15,11 +15,23 @@ import { JobApplicationStore } from '../job-applications/services/job-applicatio
 import { CompanyStore } from '../companies/services/company.store';
 import { MomentumGaugeComponent } from './components/momentum-gauge/momentum-gauge.component';
 import { StatCardComponent } from './components/stat-card/stat-card.component';
-import { SkillRadarComponent, SkillRadarAxis } from './components/skill-radar/skill-radar.component';
-import { GlobalFootprintComponent, LocationPoint } from './components/global-footprint/global-footprint.component';
-import { ActivityFeedComponent, FeedItem } from './components/activity-feed/activity-feed.component';
+import {
+  SkillRadarComponent,
+  SkillRadarAxis,
+} from './components/skill-radar/skill-radar.component';
+import {
+  GlobalFootprintComponent,
+  LocationPoint,
+} from './components/global-footprint/global-footprint.component';
+import {
+  ActivityFeedComponent,
+  FeedItem,
+} from './components/activity-feed/activity-feed.component';
 import { PipelineTableCardComponent } from './components/pipeline-table-card/pipeline-table-card.component';
-import { TacticalPriorityComponent, PriorityItem } from './components/tactical-priority/tactical-priority.component';
+import {
+  TacticalPriorityComponent,
+  PriorityItem,
+} from './components/tactical-priority/tactical-priority.component';
 import { PipelineStage } from './components/pipeline-chart/pipeline-chart.component';
 
 interface BriefingItem {
@@ -29,22 +41,22 @@ interface BriefingItem {
 
 /** Map hqLocation strings to approximate percentage coordinates on our SVG map */
 const LOCATION_COORDINATES: Record<string, { x: number; y: number }> = {
-  'London': { x: 47, y: 28 },
+  London: { x: 47, y: 28 },
   'New York': { x: 26, y: 35 },
   'San Francisco': { x: 12, y: 37 },
-  'Berlin': { x: 51, y: 27 },
-  'Amsterdam': { x: 49, y: 26 },
-  'Paris': { x: 48, y: 30 },
-  'Dublin': { x: 44, y: 26 },
-  'Singapore': { x: 80, y: 55 },
-  'Sydney': { x: 85, y: 72 },
-  'Tokyo': { x: 88, y: 36 },
-  'Toronto': { x: 23, y: 30 },
+  Berlin: { x: 51, y: 27 },
+  Amsterdam: { x: 49, y: 26 },
+  Paris: { x: 48, y: 30 },
+  Dublin: { x: 44, y: 26 },
+  Singapore: { x: 80, y: 55 },
+  Sydney: { x: 85, y: 72 },
+  Tokyo: { x: 88, y: 36 },
+  Toronto: { x: 23, y: 30 },
   'Los Angeles': { x: 11, y: 39 },
-  'Chicago': { x: 21, y: 33 },
-  'Seattle': { x: 11, y: 32 },
-  'Austin': { x: 18, y: 41 },
-  'Remote': { x: 50, y: 50 },
+  Chicago: { x: 21, y: 33 },
+  Seattle: { x: 11, y: 32 },
+  Austin: { x: 18, y: 41 },
+  Remote: { x: 50, y: 50 },
 };
 
 @Component({
@@ -131,17 +143,19 @@ export class DashboardComponent implements OnInit {
 
   readonly nextAction = computed(() => {
     const interviews = this.activePipeline();
-    if (interviews > 0) return 'Interview in 2h';
-    const count = this.dueFollowUps() > 0 ? this.dueFollowUps() : 3;
-    return `${count} Follow-ups due`;
+    if (interviews > 0) {
+      const label = interviews === 1 ? 'Interview pending' : 'Interviews pending';
+      return label;
+    }
+    const count = this.dueFollowUps();
+    if (count === 0) return 'No follow-ups due';
+    return `${count} Follow-up(s) due`;
   });
 
   readonly weeklyTrend = computed(() => {
     const now = this.now();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const count = this.applications().filter(
-      (app) => new Date(app.appliedAt) >= oneWeekAgo,
-    ).length;
+    const count = this.applications().filter((app) => new Date(app.appliedAt) >= oneWeekAgo).length;
     return count > 0 ? `+${count} this week` : 'No new this week';
   });
 
@@ -161,10 +175,16 @@ export class DashboardComponent implements OnInit {
     const offers = this.offersCount();
 
     if (pipeline > 0) {
-      items.push({ icon: '🎯', text: `${pipeline} active interview${pipeline === 1 ? '' : 's'} in pipeline` });
+      items.push({
+        icon: '🎯',
+        text: `${pipeline} active interview${pipeline === 1 ? '' : 's'} in pipeline`,
+      });
     }
     if (followUps > 0) {
-      items.push({ icon: '📬', text: `${followUps} follow-up${followUps === 1 ? '' : 's'} pending` });
+      items.push({
+        icon: '📬',
+        text: `${followUps} follow-up${followUps === 1 ? '' : 's'} pending`,
+      });
     }
     if (offers > 0) {
       items.push({ icon: '🏆', text: `${offers} offer${offers === 1 ? '' : 's'} received` });
@@ -180,17 +200,58 @@ export class DashboardComponent implements OnInit {
   readonly skillRadarData = computed<SkillRadarAxis[]>(() => {
     const apps = this.applications();
     const skillBuckets: Record<string, number> = {
-      'Frontend': 0,
-      'Backend': 0,
-      'DevOps': 0,
+      Frontend: 0,
+      Backend: 0,
+      DevOps: 0,
       'Soft Skills': 0,
-      'Product': 0,
+      Product: 0,
     };
 
-    const frontendKeywords = ['react', 'angular', 'vue', 'css', 'html', 'typescript', 'javascript', 'frontend', 'ui', 'ux'];
-    const backendKeywords = ['node', 'python', 'java', 'c#', '.net', 'api', 'backend', 'sql', 'database', 'rust', 'go'];
-    const devopsKeywords = ['docker', 'kubernetes', 'ci/cd', 'aws', 'azure', 'gcp', 'devops', 'terraform', 'linux'];
-    const productKeywords = ['product', 'agile', 'scrum', 'jira', 'management', 'strategy', 'analytics'];
+    const frontendKeywords = [
+      'react',
+      'angular',
+      'vue',
+      'css',
+      'html',
+      'typescript',
+      'javascript',
+      'frontend',
+      'ui',
+      'ux',
+    ];
+    const backendKeywords = [
+      'node',
+      'python',
+      'java',
+      'c#',
+      '.net',
+      'api',
+      'backend',
+      'sql',
+      'database',
+      'rust',
+      'go',
+    ];
+    const devopsKeywords = [
+      'docker',
+      'kubernetes',
+      'ci/cd',
+      'aws',
+      'azure',
+      'gcp',
+      'devops',
+      'terraform',
+      'linux',
+    ];
+    const productKeywords = [
+      'product',
+      'agile',
+      'scrum',
+      'jira',
+      'management',
+      'strategy',
+      'analytics',
+    ];
 
     for (const app of apps) {
       const allSkills = app.skills.map((s) => s.toLowerCase());
@@ -207,11 +268,31 @@ export class DashboardComponent implements OnInit {
     const max = Math.max(...Object.values(skillBuckets), 1);
 
     return [
-      { label: 'Frontend', userScore: Math.round((skillBuckets['Frontend'] / max) * 100), marketScore: 75 },
-      { label: 'Backend', userScore: Math.round((skillBuckets['Backend'] / max) * 100), marketScore: 82 },
-      { label: 'DevOps', userScore: Math.round((skillBuckets['DevOps'] / max) * 100), marketScore: 60 },
-      { label: 'Soft Skills', userScore: Math.round((skillBuckets['Soft Skills'] / max) * 100), marketScore: 55 },
-      { label: 'Product', userScore: Math.round((skillBuckets['Product'] / max) * 100), marketScore: 45 },
+      {
+        label: 'Frontend',
+        userScore: Math.round((skillBuckets['Frontend'] / max) * 100),
+        marketScore: 75,
+      },
+      {
+        label: 'Backend',
+        userScore: Math.round((skillBuckets['Backend'] / max) * 100),
+        marketScore: 82,
+      },
+      {
+        label: 'DevOps',
+        userScore: Math.round((skillBuckets['DevOps'] / max) * 100),
+        marketScore: 60,
+      },
+      {
+        label: 'Soft Skills',
+        userScore: Math.round((skillBuckets['Soft Skills'] / max) * 100),
+        marketScore: 55,
+      },
+      {
+        label: 'Product',
+        userScore: Math.round((skillBuckets['Product'] / max) * 100),
+        marketScore: 45,
+      },
     ];
   });
 
@@ -233,9 +314,25 @@ export class DashboardComponent implements OnInit {
       locationMap.get(key)!.count++;
     }
 
+    // Deterministic hash function for consistent offsets
+    const stableSeededOffset = (key: string): { x: number; y: number } => {
+      let hash = 0;
+      for (let i = 0; i < key.length; i++) {
+        hash = (hash << 5) - hash + key.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      // Normalize to range [-10, 10] for x and [-8, 8] for y
+      const x = (Math.abs(hash) % 20) - 10;
+      const y = ((hash >> 2) % 16) - 8;
+      return { x, y };
+    };
+
     const points: LocationPoint[] = [];
     for (const [key, data] of locationMap) {
-      const coords = LOCATION_COORDINATES[key] ?? { x: 50 + (Math.random() - 0.5) * 20, y: 40 + (Math.random() - 0.5) * 20 };
+      const coords = LOCATION_COORDINATES[key] ?? {
+        x: 50 + stableSeededOffset(key).x,
+        y: 40 + stableSeededOffset(key).y,
+      };
       points.push({
         id: key,
         label: key,
@@ -269,14 +366,22 @@ export class DashboardComponent implements OnInit {
 
       switch (app.status) {
         case JobApplicationStatus.Interviewing:
-          icon = '🎙️'; type = 'status'; break;
+          icon = '🎙️';
+          type = 'status';
+          break;
         case JobApplicationStatus.Offer:
-          icon = '🏆'; type = 'status'; break;
+          icon = '🏆';
+          type = 'status';
+          break;
         case JobApplicationStatus.Rejected:
         case JobApplicationStatus.Ghosted:
-          icon = '⚠️'; type = 'alert'; break;
+          icon = '⚠️';
+          type = 'alert';
+          break;
         default:
-          icon = '📄'; type = 'match'; break;
+          icon = '📄';
+          type = 'match';
+          break;
       }
 
       return {
@@ -294,9 +399,22 @@ export class DashboardComponent implements OnInit {
     const apps = this.applications();
 
     return [
-      { label: 'Applied', count: apps.filter((a) => a.status === JobApplicationStatus.Applied).length },
-      { label: 'Screen', count: apps.filter((a) => a.status === JobApplicationStatus.PhoneScreen || a.status === JobApplicationStatus.TechnicalTask).length },
-      { label: 'Interview', count: apps.filter((a) => a.status === JobApplicationStatus.Interviewing).length },
+      {
+        label: 'Applied',
+        count: apps.filter((a) => a.status === JobApplicationStatus.Applied).length,
+      },
+      {
+        label: 'Screen',
+        count: apps.filter(
+          (a) =>
+            a.status === JobApplicationStatus.PhoneScreen ||
+            a.status === JobApplicationStatus.TechnicalTask,
+        ).length,
+      },
+      {
+        label: 'Interview',
+        count: apps.filter((a) => a.status === JobApplicationStatus.Interviewing).length,
+      },
       { label: 'Offer', count: apps.filter((a) => a.status === JobApplicationStatus.Offer).length },
     ];
   });
@@ -344,7 +462,7 @@ export class DashboardComponent implements OnInit {
     }
 
     // Sort: interviews first, then offers, then follow-ups
-    const order: Record<string, number> = { 'interview': 0, 'offer': 1, 'follow-up': 2 };
+    const order: Record<string, number> = { interview: 0, offer: 1, 'follow-up': 2 };
     return items.sort((a, b) => order[a.kind] - order[b.kind]).slice(0, 10);
   });
 

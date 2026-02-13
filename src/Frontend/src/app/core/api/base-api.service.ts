@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, of } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { Observable, throwError, timer } from 'rxjs';
+import { catchError, retryWhen, delayWhen, take } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 /**
@@ -82,9 +82,22 @@ export abstract class BaseApiService {
       });
     }
 
-    return this.http
-      .get<T>(`${this.baseUrl}${endpoint}`, { params: httpParams })
-      .pipe(retry({ count: 2, delay: 1000 }), catchError(this.handleError));
+    return this.http.get<T>(`${this.baseUrl}${endpoint}`, { params: httpParams }).pipe(
+      retryWhen((errors) =>
+        errors.pipe(
+          take(2),
+          delayWhen((error: HttpErrorResponse, index) => {
+            const isRetriable = error.status === 0 || (error.status >= 500 && error.status <= 599);
+            if (!isRetriable) {
+              throw error;
+            }
+            console.warn(`Retry attempt ${index + 1} for ${endpoint}`);
+            return timer(1000);
+          }),
+        ),
+      ),
+      catchError(this.handleError),
+    );
   }
 
   /**

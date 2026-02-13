@@ -1,24 +1,24 @@
 <article class="bento-card flex h-full flex-col p-5">
-    @if (loading()) {
+  @if (loading()) {
     <div class="flex flex-col gap-4">
-        <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
-        <div class="space-y-3">
-            @for (i of skeletonRows; track i) {
-            <div hlmSkeleton class="h-8 w-full rounded-lg"></div>
-            }
-        </div>
-        <div hlmSkeleton class="h-px w-full"></div>
-        <div class="space-y-3">
-            @for (i of skeletonRows; track i) {
-            <div class="flex items-center gap-3">
-                <div hlmSkeleton class="h-7 w-7 rounded-md"></div>
-                <div hlmSkeleton class="h-3 w-32 rounded-md"></div>
-                <div hlmSkeleton class="ml-auto h-3 w-16 rounded-md"></div>
-            </div>
-            }
-        </div>
+      <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
+      <div class="space-y-3">
+        @for (i of skeletonRows; track i) {
+          <div hlmSkeleton class="h-8 w-full rounded-lg"></div>
+        }
+      </div>
+      <div hlmSkeleton class="h-px w-full"></div>
+      <div class="space-y-3">
+        @for (i of skeletonRows; track i) {
+          <div class="flex items-center gap-3">
+            <div hlmSkeleton class="h-7 w-7 rounded-md"></div>
+            <div hlmSkeleton class="h-3 w-32 rounded-md"></div>
+            <div hlmSkeleton class="ml-auto h-3 w-16 rounded-md"></div>
+          </div>
+        }
+      </div>
     </div>
-    } @else {
+  } @else {
     <!-- Pipeline Funnel -->
     <app-pipeline-chart [stages]="stages()"></app-pipeline-chart>
 
@@ -27,65 +27,76 @@
 
     <!-- Recent Applications Table -->
     <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-        Recent Applications
+      Recent Applications
     </h3>
 
     <div class="table-scroll overflow-x-auto overflow-y-auto">
-        <table class="min-w-full text-sm text-foreground">
-            <thead>
-                <tr class="border-b border-border text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-                    <th class="pb-2 text-left font-medium">Company</th>
-                    <th class="pb-2 text-left font-medium">Role</th>
-                    <th class="pb-2 text-left font-medium">Date</th>
-                    <th class="pb-2 text-left font-medium">Status</th>
-                    <th class="pb-2 text-right font-medium">Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (app of recentApps(); track trackByApp($index, app)) {
-                <tr class="group border-b border-border/60 transition-colors hover:bg-muted/30">
-                    <td class="py-2.5 pr-3">
-                        <div class="flex items-center gap-2">
-                            @if (getCompanyLogo(app); as logo) {
-                            <img [src]="logo" alt="" class="h-6 w-6 rounded-md border border-border object-cover" />
-                            } @else {
-                            <div
-                                class="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-muted text-[10px] font-medium text-foreground">
-                                {{ getCompanyInitials(getCompanyName(app)) }}
-                            </div>
-                            }
-                            <span class="max-w-[120px] truncate text-xs font-medium text-foreground">
-                                {{ getCompanyName(app) }}
-                            </span>
-                        </div>
-                    </td>
-                    <td class="py-2.5 pr-3 text-xs text-foreground">
-                        <span class="max-w-[140px] truncate">{{ app.position }}</span>
-                    </td>
-                    <td class="py-2.5 pr-3 text-xs text-muted-foreground">
-                        {{ app.appliedAt | date: 'MMM d' }}
-                    </td>
-                    <td class="py-2.5 pr-3">
-                        <span class="inline-flex rounded-md border px-1.5 py-0.5 text-[10px] font-medium"
-                            [class]="getStatusBadgeClass(app.status)">
-                            {{ getStatusLabel(app.status) }}
-                        </span>
-                    </td>
-                    <td class="py-2.5 text-right">
-                        <span class="metric-mono text-xs text-muted-foreground">
-                            {{ app.matchScore }}%
-                        </span>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+      <table class="min-w-full text-sm text-foreground">
+        <thead>
+          <tr
+            class="border-b border-border text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+          >
+            <th class="pb-2 text-left font-medium">Company</th>
+            <th class="pb-2 text-left font-medium">Role</th>
+            <th class="pb-2 text-left font-medium">Date</th>
+            <th class="pb-2 text-left font-medium">Status</th>
+            <th class="pb-2 text-right font-medium">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (app of recentApps(); track trackByApp($index, app)) {
+            <tr class="group border-b border-border/60 transition-colors hover:bg-muted/30">
+              <td class="py-2.5 pr-3">
+                <div class="flex items-center gap-2">
+                  @if (getCompanyLogo(app); as logo) {
+                    <img
+                      [src]="logo"
+                      alt=""
+                      class="h-6 w-6 rounded-md border border-border object-cover"
+                    />
+                  } @else {
+                    <div
+                      class="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-muted text-[10px] font-medium text-foreground"
+                    >
+                      {{ getCompanyInitials(getCompanyName(app)) }}
+                    </div>
+                  }
+                  <span
+                    class="inline-block max-w-[120px] truncate text-xs font-medium text-foreground"
+                  >
+                    {{ getCompanyName(app) }}
+                  </span>
+                </div>
+              </td>
+              <td class="py-2.5 pr-3 text-xs text-foreground">
+                <span class="inline-block max-w-[140px] truncate">{{ app.position }}</span>
+              </td>
+              <td class="py-2.5 pr-3 text-xs text-muted-foreground">
+                {{ app.appliedAt | date: 'MMM d' }}
+              </td>
+              <td class="py-2.5 pr-3">
+                <span
+                  class="inline-flex rounded-md border px-1.5 py-0.5 text-[10px] font-medium"
+                  [class]="getStatusBadgeClass(app.status)"
+                >
+                  {{ getStatusLabel(app.status) }}
+                </span>
+              </td>
+              <td class="py-2.5 text-right">
+                <span class="metric-mono text-xs text-muted-foreground">
+                  {{ app.matchScore }}%
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
 
-        @if (recentApps().length === 0) {
+      @if (recentApps().length === 0) {
         <p class="py-6 text-center text-xs text-muted-foreground">
-            No applications yet. Start applying to populate your table.
+          No applications yet. Start applying to populate your table.
         </p>
-        }
+      }
     </div>
-    }
+  }
 </article>

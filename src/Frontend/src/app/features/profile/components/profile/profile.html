@@ -201,6 +201,8 @@
                     hlmInput
                     type="number"
                     formControlName="yearsOfExperience"
+                    min="0"
+                    max="50"
                     class="h-5 w-12 text-center p-0 bg-transparent border-none focus:ring-0 text-foreground font-bold"
                     (blur)="saveField('yearsOfExperience')"
                     (keydown.enter)="saveField('yearsOfExperience')"
@@ -362,7 +364,8 @@
 
         <!-- AI Career Insights (Wide Card, Bottom Right) -->
         <div
-          class="lg:col-span-2 hlmCard border-violet-500/20 bg-violet-500/5 p-8 relative overflow-hidden group"
+          hlmCard
+          class="lg:col-span-2 border-violet-500/20 bg-violet-500/5 p-8 relative overflow-hidden group"
         >
           <div
             class="absolute top-0 right-0 p-32 bg-violet-600/5 rounded-full blur-[80px] pointer-events-none group-hover:bg-violet-600/10 transition-colors"
@@ -448,7 +451,7 @@
         </div>
 
         <!-- Skills Engine (Right Sidebar Style / Full Row on Mobile) -->
-        <div class="lg:col-span-4 hlmCard border-border bg-card/40 overflow-hidden">
+        <div hlmCard class="lg:col-span-4 border-border bg-card/40 overflow-hidden">
           <div class="p-8 space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div class="space-y-1">

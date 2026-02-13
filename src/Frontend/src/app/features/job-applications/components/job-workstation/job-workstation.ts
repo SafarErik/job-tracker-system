@@ -80,6 +80,9 @@ import {
   lucideLink,
   lucideSettings,
   lucideSearch,
+  lucideGavel,
+  lucideRefreshCw,
+  lucideMaximize2,
 } from '@ng-icons/lucide';
 
 @Component({
@@ -141,6 +144,9 @@ import {
       lucideLink,
       lucideSettings,
       lucideSearch,
+      lucideGavel,
+      lucideRefreshCw,
+      lucideMaximize2,
     }),
   ],
   styleUrls: ['./workstation-animations.css'],

@@ -131,7 +131,7 @@ export class ErrorHandlerService implements ErrorHandler {
 
           <p class="error-message">{{ errorHandler.error()?.message }}</p>
 
-          @if (showDetails) {
+          @if (showDetails()) {
             <pre class="error-details">{{ errorHandler.error()?.stack }}</pre>
           }
 
@@ -139,7 +139,7 @@ export class ErrorHandlerService implements ErrorHandler {
             <button class="btn-retry" (click)="retry()">Try Again</button>
             <button class="btn-home" (click)="goHome()">Go to Dashboard</button>
             <button class="btn-details" (click)="toggleDetails()">
-              {{ showDetails ? 'Hide Details' : 'Show Details' }}
+              {{ showDetails() ? 'Hide Details' : 'Show Details' }}
             </button>
           </div>
         </div>
@@ -241,24 +241,14 @@ export class ErrorHandlerService implements ErrorHandler {
     `,
   ],
 })
-export class ErrorBoundaryComponent implements OnInit, OnDestroy {
+export class ErrorBoundaryComponent {
   readonly errorHandler = inject(ErrorHandlerService);
   private readonly router = inject(Router);
 
-  showDetails = false;
-
-  ngOnInit(): void {
-    // Auto-clear error when component initializes
-    // This is useful for route-level errors
-  }
-
-  ngOnDestroy(): void {
-    // Optionally clear error on destroy
-    // this.errorHandler.clearError();
-  }
+  showDetails = signal<boolean>(false);
 
   retry(): void {
-    this.showDetails = false;
+    this.showDetails.set(false);
     this.errorHandler.clearError();
     // The parent should handle re-rendering
     window.location.reload();
@@ -270,6 +260,6 @@ export class ErrorBoundaryComponent implements OnInit, OnDestroy {
   }
 
   toggleDetails(): void {
-    this.showDetails = !this.showDetails;
+    this.showDetails.update((s) => !s);
   }
 }

@@ -66,12 +66,14 @@
         <hlm-avatar
           hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:h-9"
         >
-          <span hlmAvatarFallback hlmClassName="bg-primary text-primary-foreground text-[10px]"
-            >JD</span
-          >
+          <span hlmAvatarFallback hlmClassName="bg-primary text-primary-foreground text-[10px]">{{
+            authService.userInitials() || 'JD'
+          }}</span>
         </hlm-avatar>
         <div class="flex-1 text-left group-data-[collapsible=icon]:hidden">
-          <p class="text-sm font-semibold text-sidebar-foreground">John Doe</p>
+          <p class="text-sm font-semibold text-sidebar-foreground">
+            {{ authService.userFullName() || 'User' }}
+          </p>
           <p class="text-[10px] text-sidebar-foreground/50 font-medium tracking-wide">ELITE PLAN</p>
         </div>
         <ng-icon

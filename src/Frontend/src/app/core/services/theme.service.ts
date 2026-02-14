@@ -75,16 +75,16 @@ export class ThemeService {
   }
 
   toggle() {
-    // Check if the browser supports View Transitions
-    if (!(this._document as any).startViewTransition) {
+    // Use View Transitions API for smooth theme changes (supported in modern browsers)
+    const transition = document.startViewTransition;
+    
+    if (transition) {
+      transition(() => {
+        this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+      });
+    } else {
       this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
-      return;
     }
-
-    // Cinematic fade transition
-    (this._document as any).startViewTransition(() => {
-      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
-    });
   }
 
   setTheme(theme: Theme) {

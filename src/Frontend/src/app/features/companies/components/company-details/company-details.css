@@ -1,145 +1,144 @@
 /* Intelligence Dossier - Company Details Animations */
 
 @keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in-up {
-    animation: fade-in-up 0.5s ease-out forwards;
+  animation: fade-in-up 0.5s ease-out forwards;
 }
 
 @keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-    0%,
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-
-    50% {
-        opacity: 0.8;
-        transform: scale(1.05);
-    }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
 }
 
 .animate-pulse-soft {
-    animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Staggered animation delays for Bento grid items */
 .delay-1 {
-    animation-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .delay-2 {
-    animation-delay: 0.15s;
+  animation-delay: 0.15s;
 }
 
 .delay-3 {
-    animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 .delay-4 {
-    animation-delay: 0.25s;
+  animation-delay: 0.25s;
 }
 
 .delay-5 {
-    animation-delay: 0.3s;
+  animation-delay: 0.3s;
 }
 
 /* "Confidential" Styling for Strategy Notes */
 .confidential-stamp {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid hsl(var(--destructive) / 0.5);
-    color: hsl(var(--destructive) / 0.7);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    border-radius: 0.25rem;
-    transform: rotate(3deg);
-    pointer-events: none;
-    z-index: 10;
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid hsl(var(--destructive) / 0.5);
+  color: hsl(var(--destructive) / 0.7);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 0.25rem;
+  transform: rotate(3deg);
+  pointer-events: none;
+  z-index: 10;
 }
 
 /* Glassmorphism for news items */
 .news-item {
-    transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .news-item:hover {
-    background-color: hsl(var(--muted) / 0.5);
-    transform: translateX(4px);
+  background-color: hsl(var(--muted) / 0.5);
+  transform: translateX(4px);
 }
 
-/* Vantage Refactor - Visual Polish */
+/* Horizon Refactor - Visual Polish */
 :host {
-    --serif-stack: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --serif-stack: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
 .font-serif {
-    font-family: var(--serif-stack) !important;
+  font-family: var(--serif-stack) !important;
 }
 
 /* Strategic Whitespace & Layout */
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Fix Line Overlaps in Personnel Radar (Contact List) */
-::ng-deep app-contact-list>div {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
+::ng-deep app-contact-list > div {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 /* Section Header Support (Legacy/Common) */
 .section-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .application-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .application-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
 }
 
 /* Custom Scrollbar for Notes and Lists */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.2);
-    border-radius: 10px;
+  background: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.4);
+  background: hsl(var(--primary) / 0.4);
 }

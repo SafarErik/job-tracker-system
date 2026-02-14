@@ -16,7 +16,7 @@ export const COMPANIES_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/company-list/company-list').then((m) => m.CompanyListComponent),
     canActivate: [authGuard],
-    title: 'Companies - VantageCursus',
+    title: 'Companies - Horizon',
   },
 
   {
@@ -24,13 +24,13 @@ export const COMPANIES_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/company-form/company-form').then((m) => m.CompanyFormComponent),
     canActivate: [authGuard],
-    title: 'Edit Company - VantageCursus',
+    title: 'Edit Company - Horizon',
   },
   {
     path: ':id',
     loadComponent: () =>
       import('./components/company-details/company-details').then((m) => m.CompanyDetailsComponent),
     canActivate: [authGuard],
-    title: 'Company Details - VantageCursus',
+    title: 'Company Details - Horizon',
   },
 ];

@@ -31,7 +31,7 @@ export const routes: Routes = [
         (m) => m.LandingPageComponent,
       ),
     pathMatch: 'full',
-    title: 'VantageCursus - Your Career, Autopilot Engaged',
+    title: 'Horizon - Your Career, Autopilot Engaged',
   },
 
   // ============================================
@@ -55,7 +55,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-        title: 'Dashboard - VantageCursus',
+        title: 'Dashboard - Horizon',
         data: { breadcrumb: 'Dashboard' },
       },
       {
@@ -64,7 +64,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-list/applications/applications.component').then(
             (m) => m.ApplicationsComponent,
           ),
-        title: 'Applications - VantageCursus',
+        title: 'Applications - Horizon',
         data: { breadcrumb: 'Applications' },
       },
       {
@@ -73,7 +73,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/add-job-form/add-job-form').then(
             (m) => m.AddJobFormComponent,
           ),
-        title: 'New Application - VantageCursus',
+        title: 'New Application - Horizon',
         data: { breadcrumb: 'New Application' },
       },
       {
@@ -83,7 +83,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-workstation/job-workstation').then(
             (m) => m.JobWorkstationComponent,
           ),
-        title: 'Application Workstation - VantageCursus',
+        title: 'Application Workstation - Horizon',
         data: { breadcrumb: 'Workstation' },
       },
       {
@@ -93,7 +93,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-workstation/job-workstation').then(
             (m) => m.JobWorkstationComponent,
           ),
-        title: 'View Application - VantageCursus',
+        title: 'View Application - Horizon',
         data: { breadcrumb: 'View Application' },
       },
 
@@ -104,7 +104,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-list/company-list').then(
             (m) => m.CompanyListComponent,
           ),
-        title: 'Companies - VantageCursus',
+        title: 'Companies - Horizon',
         data: { breadcrumb: 'Companies' },
       },
       {
@@ -113,7 +113,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-form/company-form').then(
             (m) => m.CompanyFormComponent,
           ),
-        title: 'Edit Company - VantageCursus',
+        title: 'Edit Company - Horizon',
         data: { breadcrumb: 'Edit Company' },
       },
       {
@@ -122,7 +122,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-details/company-details').then(
             (m) => m.CompanyDetailsComponent,
           ),
-        title: 'Company Details - VantageCursus',
+        title: 'Company Details - Horizon',
         data: { breadcrumb: 'Company Details' },
       },
 
@@ -133,7 +133,7 @@ export const routes: Routes = [
           import('./features/documents/components/documents-list/documents-list').then(
             (m) => m.DocumentsListComponent,
           ),
-        title: 'Documents - VantageCursus',
+        title: 'Documents - Horizon',
         data: { breadcrumb: 'Documents' },
       },
 
@@ -142,7 +142,7 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-        title: 'Profile - VantageCursus',
+        title: 'Profile - Horizon',
         data: { breadcrumb: 'Profile' },
       },
 
@@ -151,7 +151,7 @@ export const routes: Routes = [
         path: 'statistics',
         loadChildren: () =>
           import('./features/statistics/statistics.routes').then((m) => m.STATISTICS_ROUTES),
-        title: 'Intelligence Analytics - VantageCursus',
+        title: 'Intelligence Analytics - Horizon',
         data: { breadcrumb: 'Intelligence' },
       },
 
@@ -161,7 +161,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/signals/signals.component').then((m) => m.SignalsComponent),
 
-        title: 'Global Feed - VantageCursus',
+        title: 'Global Feed - Horizon',
         data: { breadcrumb: 'Global Signals' },
       },
 

@@ -13,9 +13,12 @@ import { authGuard } from '../../core/auth';
 export const JOB_APPLICATIONS_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./components/job-list/applications/applications.component').then((m) => m.ApplicationsComponent),
+    loadComponent: () =>
+      import('./components/job-list/applications/applications.component').then(
+        (m) => m.ApplicationsComponent,
+      ),
     canActivate: [authGuard],
-    title: 'Applications - VantageCursus',
+    title: 'Applications - Horizon',
   },
   {
     // Workstation route - full page view with tabs
@@ -23,7 +26,7 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'Application Workstation - VantageCursus',
+    title: 'Application Workstation - Horizon',
   },
   {
     // Keep edit/:id as alias to workstation for backwards compatibility
@@ -31,7 +34,7 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'Edit Application - VantageCursus',
+    title: 'Edit Application - Horizon',
   },
   {
     // Keep view/:id as alias to workstation for backwards compatibility
@@ -39,7 +42,6 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'View Application - VantageCursus',
+    title: 'View Application - Horizon',
   },
 ];
-

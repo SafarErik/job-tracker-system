@@ -23,7 +23,7 @@ import { ThemeService } from '../../../core/services/theme.service';
         <img src="assets/logo.png" 
              [style.width.px]="imgSize()" 
              [style.height.px]="imgSize()"
-             alt="Vantage Logo"
+             alt="Horizon Logo"
              class="relative z-10 object-contain drop-shadow-sm transition-all duration-300 scale-150"
              [class.grayscale]="mono()"
              [class.brightness-200]="mono() && isDark()"
@@ -41,7 +41,7 @@ import { ThemeService } from '../../../core/services/theme.service';
            
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
           <span class="font-[900] tracking-tight leading-none text-foreground font-sans">
-            VANTAGE
+            HORIZON
           </span>
         </div>
       </div>

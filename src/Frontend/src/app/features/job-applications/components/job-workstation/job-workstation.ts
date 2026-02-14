@@ -172,6 +172,10 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'>('strategy');
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
+  commandBarFocusedIndex = signal(-1); // -1 means no item focused, keyboard nav starts at 0
+
+  // Number of quick action buttons in command bar
+  readonly commandBarButtonCount = 3;
   manualPasteText = signal('');
   isFocusMode = signal(false);
 
@@ -394,6 +398,43 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   closeCommandBar(): void {
     this.isCommandBarOpen.set(false);
+    this.commandBarFocusedIndex.set(-1);
+  }
+
+  onCommandBarKeydown(event: KeyboardEvent): void {
+    const buttonCount = this.commandBarButtonCount;
+    const currentIndex = this.commandBarFocusedIndex();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.commandBarFocusedIndex.set((currentIndex + 1) % buttonCount);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.commandBarFocusedIndex.set(currentIndex <= 0 ? buttonCount - 1 : currentIndex - 1);
+        break;
+      case 'Enter':
+        event.preventDefault();
+        this.executeCommandBarAction(currentIndex);
+        break;
+    }
+  }
+
+  executeCommandBarAction(index: number): void {
+    switch (index) {
+      case 0: // Analyze Job Description
+        this.triggerAnalysis();
+        this.closeCommandBar();
+        break;
+      case 1: // Generate Cover Letter
+        this.generateAssets();
+        this.closeCommandBar();
+        break;
+      case 2: // Prepare for Interview
+        this.toggleCommandBar(); // Close current and switch to interview
+        break;
+    }
   }
 
   onAddWorkstationItem(): void {

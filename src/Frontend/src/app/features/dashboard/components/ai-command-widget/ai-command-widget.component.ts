@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { DomSanitizer } from '@angular/platform-browser';
 import { HlmPopoverImports } from '@spartan-ng/helm/popover';
 import { BrnSwitchImports } from '@spartan-ng/brain/switch';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
@@ -76,8 +75,6 @@ interface ChatMessage {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiCommandWidgetComponent {
-  private readonly sanitizer = inject(DomSanitizer);
-
   title = input('AI Assistant');
   insightCards = input.required<AiInsightCard[]>();
   placeholder = input('Ask anything about your career or companies...');

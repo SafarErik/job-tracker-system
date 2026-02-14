@@ -217,7 +217,8 @@ export class SignalsComponent implements OnInit, OnDestroy {
         .create({
           name: companyName,
           priority: CompanyPriority.MidTier,
-        } as any)
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (company) => {
             this.createSignalApplication(company.id, opp);

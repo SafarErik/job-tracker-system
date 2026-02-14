@@ -2,7 +2,6 @@ import {
   Component,
   ErrorHandler,
   Injectable,
-  Injector,
   inject,
   signal,
   ChangeDetectionStrategy,
@@ -30,8 +29,6 @@ export interface ErrorInfo {
   providedIn: 'root',
 })
 export class ErrorHandlerService implements ErrorHandler {
-  private readonly injector = inject(Injector);
-
   // Error state
   private readonly _hasError = signal<boolean>(false);
   private readonly _error = signal<ErrorInfo | null>(null);
@@ -152,7 +149,7 @@ export class ErrorHandlerService implements ErrorHandler {
         justify-content: center;
         min-height: 400px;
         padding: 2rem;
-        background-color: #fff5f5;
+        background-color: var(--color-error-bg, #fff5f5);
         border-radius: 8px;
         margin: 1rem;
       }
@@ -163,25 +160,25 @@ export class ErrorHandlerService implements ErrorHandler {
       }
 
       .error-icon {
-        color: #e53e3e;
+        color: var(--color-error, #e53e3e);
         margin-bottom: 1rem;
       }
 
       h2 {
-        color: #1a202c;
+        color: var(--color-text, #1a202c);
         margin-bottom: 0.5rem;
         font-size: 1.5rem;
       }
 
       .error-message {
-        color: #4a5568;
+        color: var(--color-text-muted, #4a5568);
         margin-bottom: 1.5rem;
         font-size: 1rem;
       }
 
       .error-details {
-        background: #1a202c;
-        color: #e2e8f0;
+        background: var(--color-bg-secondary, #1a202c);
+        color: var(--color-text-light, #e2e8f0);
         padding: 1rem;
         border-radius: 4px;
         overflow-x: auto;
@@ -209,30 +206,30 @@ export class ErrorHandlerService implements ErrorHandler {
       }
 
       .btn-retry {
-        background-color: #3182ce;
+        background-color: var(--color-primary, #3182ce);
         color: white;
       }
 
       .btn-retry:hover {
-        background-color: #2c5282;
+        background-color: var(--color-primary-dark, #2c5282);
       }
 
       .btn-home {
-        background-color: #38a169;
+        background-color: var(--color-success, #38a169);
         color: white;
       }
 
       .btn-home:hover {
-        background-color: #276749;
+        background-color: var(--color-success-dark, #276749);
       }
 
       .btn-details {
-        background-color: #718096;
+        background-color: var(--color-muted, #718096);
         color: white;
       }
 
       .btn-details:hover {
-        background-color: #4a5568;
+        background-color: var(--color-muted-dark, #4a5568);
       }
     `,
   ],

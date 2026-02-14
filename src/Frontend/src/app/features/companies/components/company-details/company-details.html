@@ -42,13 +42,17 @@
       ></app-company-header>
 
       <!-- Sub-Navigation Bar -->
-      <!-- Sub-Navigation Bar -->
       <div
         class="sticky top-0 z-20 bg-background/80 backdrop-blur-md flex items-center justify-between border-b border-border/50 pb-4 pt-2"
       >
-        <div class="flex items-center gap-1 p-1 bg-card/50 rounded-2xl border border-border">
+        <div
+          class="flex items-center gap-1 p-1 bg-card/50 rounded-2xl border border-border"
+          role="tablist"
+        >
           <button
             (click)="activeTab.set('overview')"
+            role="tab"
+            [attr.aria-selected]="activeTab() === 'overview'"
             [class]="
               activeTab() === 'overview'
                 ? 'bg-muted text-foreground'
@@ -61,6 +65,8 @@
           </button>
           <button
             (click)="activeTab.set('intelligence')"
+            role="tab"
+            [attr.aria-selected]="activeTab() === 'intelligence'"
             [class]="
               activeTab() === 'intelligence'
                 ? 'bg-muted text-foreground'
@@ -73,6 +79,8 @@
           </button>
           <button
             (click)="activeTab.set('marketPulse')"
+            role="tab"
+            [attr.aria-selected]="activeTab() === 'marketPulse'"
             [class]="
               activeTab() === 'marketPulse'
                 ? 'bg-muted text-foreground'
@@ -85,6 +93,8 @@
           </button>
           <button
             (click)="activeTab.set('ecosystem')"
+            role="tab"
+            [attr.aria-selected]="activeTab() === 'ecosystem'"
             [class]="
               activeTab() === 'ecosystem'
                 ? 'bg-muted text-foreground'
@@ -98,6 +108,7 @@
         </div>
 
         <div class="flex items-center gap-4">
+          <!-- Hardcoded status indicator - reflects user's global job search setting -->
           <div class="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl">
             <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
             <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground"

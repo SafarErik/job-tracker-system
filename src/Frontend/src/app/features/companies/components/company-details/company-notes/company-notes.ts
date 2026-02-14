@@ -1,15 +1,51 @@
-import { Component, input, output, ChangeDetectionStrategy, signal, computed, effect, inject, DestroyRef } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  effect,
+  inject,
+  DestroyRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX } from '@ng-icons/lucide';
+import {
+  lucideSend,
+  lucideMessageSquare,
+  lucideCommand,
+  lucideHistory,
+  lucideWand2,
+  lucidePencil,
+  lucideSave,
+  lucideFileText,
+  lucideShieldAlert,
+  lucideMaximize2,
+  lucideX,
+} from '@ng-icons/lucide';
 import { IntelligenceBriefing } from '../../../models/company.model';
 
 @Component({
   selector: 'app-company-notes',
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
-  providers: [provideIcons({ lucideSend, lucideMessageSquare, lucideCommand, lucideHistory, lucideWand2, lucidePencil, lucideSave, lucideFileText, lucideShieldAlert, lucideMaximize2, lucideX })],
+  providers: [
+    provideIcons({
+      lucideSend,
+      lucideMessageSquare,
+      lucideCommand,
+      lucideHistory,
+      lucideWand2,
+      lucidePencil,
+      lucideSave,
+      lucideFileText,
+      lucideShieldAlert,
+      lucideMaximize2,
+      lucideX,
+    }),
+  ],
   templateUrl: './company-notes.html',
   styleUrls: ['./company-notes.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,14 +71,12 @@ export class CompanyNotesComponent {
   displayedStrategicFit = signal<string[]>([]);
   displayedRisksIntel = signal('');
 
-
-
   handleRegeneration(): void {
     this.regenerate.emit();
   }
 
   toggleExpansion(): void {
-    this.isBriefingExpanded.update(v => !v);
+    this.isBriefingExpanded.update((v) => !v);
   }
 
   // Listen for Escape key to close expansion
@@ -68,7 +102,9 @@ export class CompanyNotesComponent {
           if (e.key === 'Tab') {
             const modal = document.querySelector('[role="dialog"]');
             if (modal) {
-              const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+              const focusable = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+              );
               const first = focusable[0] as HTMLElement;
               const last = focusable[focusable.length - 1] as HTMLElement;
 
@@ -146,7 +182,12 @@ export class CompanyNotesComponent {
     this.isScanning.set(false);
   }
 
-  private typewriter(section: 'mission' | 'fit' | 'risks', text: string | null | undefined, index?: number, generation?: number): Promise<void> {
+  private typewriter(
+    section: 'mission' | 'fit' | 'risks',
+    text: string | null | undefined,
+    index?: number,
+    generation?: number,
+  ): Promise<void> {
     return new Promise((resolve) => {
       this.pendingResolvers.push(resolve);
       let current = '';
@@ -164,7 +205,7 @@ export class CompanyNotesComponent {
           if (section === 'mission') this.displayedMissionContext.set(current);
           if (section === 'risks') this.displayedRisksIntel.set(current);
           if (section === 'fit' && index !== undefined) {
-            this.displayedStrategicFit.update(prev => {
+            this.displayedStrategicFit.update((prev) => {
               const next = [...prev];
               next[index] = current;
               return next;
@@ -187,10 +228,10 @@ export class CompanyNotesComponent {
   }
 
   private clearAllIntervals(): void {
-    this.activeIntervals.forEach(id => clearInterval(id));
+    this.activeIntervals.forEach((id) => clearInterval(id));
     this.activeIntervals = [];
     // Resolve all pending promises to prevent hanging
-    this.pendingResolvers.forEach(resolve => resolve());
+    this.pendingResolvers.forEach((resolve) => resolve());
     this.pendingResolvers = [];
   }
 
@@ -204,9 +245,13 @@ export class CompanyNotesComponent {
   }
 
   saveNotes(): void {
-    // Emit current notes value to trigger debounced save in parent
-    this.notesChange.emit(this.notes());
-    // Exit edit mode
-    this.isEditingNotes.set(false);
+    if (this.isEditingNotes()) {
+      // Already in edit mode - save and exit
+      this.notesChange.emit(this.notes());
+      this.isEditingNotes.set(false);
+    } else {
+      // Not in edit mode - enter edit mode
+      this.isEditingNotes.set(true);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, computed } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export type HorizonCardVariant = 'default' | 'elevated' | 'inset' | 'bordered';
@@ -69,11 +69,11 @@ export type HorizonCardSize = 'sm' | 'md' | 'lg';
   ],
 })
 export class HorizonCardComponent {
-  @Input() variant: HorizonCardVariant = 'default';
-  @Input() size: HorizonCardSize = 'md';
+  variant = input<HorizonCardVariant>('default');
+  size = input<HorizonCardSize>('md');
 
   cardClasses = computed(() => {
     const base = 'horizon-card';
-    return `${base} horizon-card--${this.variant} horizon-card--${this.size}`;
+    return `${base} horizon-card--${this.variant()} horizon-card--${this.size()}`;
   });
 }

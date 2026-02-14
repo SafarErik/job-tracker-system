@@ -51,6 +51,7 @@
               type="text"
               formControlName="firstName"
               placeholder="Jane"
+              aria-describedby="firstName-error"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-11 rounded-lg transition-all font-medium"
             />
             @if (
@@ -58,7 +59,8 @@
               (form.controls.firstName.dirty || form.controls.firstName.touched)
             ) {
               <span
-                class="text-[10px] text-destructive font-medium block animate-in slide-in-from-top-1"
+                id="firstName-error"
+                class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1"
                 >Required</span
               >
             }
@@ -77,6 +79,7 @@
               type="text"
               formControlName="lastName"
               placeholder="Doe"
+              aria-describedby="lastName-error"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-11 rounded-lg transition-all font-medium"
             />
             @if (
@@ -84,7 +87,8 @@
               (form.controls.lastName.dirty || form.controls.lastName.touched)
             ) {
               <span
-                class="text-[10px] text-destructive font-medium block animate-in slide-in-from-top-1"
+                id="lastName-error"
+                class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1"
                 >Required</span
               >
             }
@@ -106,13 +110,17 @@
             type="email"
             formControlName="email"
             placeholder="member@jobtracker.ai"
+            aria-describedby="email-error"
             class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-11 rounded-lg transition-all font-medium"
           />
           @if (
             form.controls.email.invalid &&
             (form.controls.email.dirty || form.controls.email.touched)
           ) {
-            <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
+            <span
+              id="email-error"
+              class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1"
+            >
               Valid email required.
             </span>
           }
@@ -134,6 +142,7 @@
               id="register-password"
               formControlName="password"
               placeholder="Create a strong password"
+              aria-describedby="password-error"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-11 rounded-lg pr-12 transition-all font-medium"
             />
             <button
@@ -187,7 +196,10 @@
             form.controls.password.invalid &&
             (form.controls.password.dirty || form.controls.password.touched)
           ) {
-            <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
+            <span
+              id="password-error"
+              class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1"
+            >
               At least 6 characters required.
             </span>
           }
@@ -209,6 +221,7 @@
               id="confirmPassword"
               formControlName="confirmPassword"
               placeholder="Repeat password"
+              aria-describedby="confirmPassword-error"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-11 rounded-lg pr-12 transition-all font-medium"
             />
             <button

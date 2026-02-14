@@ -103,7 +103,8 @@
 }
 
 /* Fix Line Overlaps in Personnel Radar (Contact List) */
-::ng-deep app-contact-list > div {
+/* Using descendant selector with :host context for Angular 17+ */
+:host ::ng-deep app-contact-list > div {
   background: transparent !important;
   border: none !important;
   padding: 0 !important;

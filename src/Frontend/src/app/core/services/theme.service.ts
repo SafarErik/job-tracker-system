@@ -52,7 +52,7 @@ export class ThemeService {
   }
 
   /**
-   * The "Sync" core logic. 
+   * The "Sync" core logic.
    * Updates the HTML class and the color-scheme meta tag.
    */
   private syncTheme(theme: Theme) {
@@ -76,14 +76,17 @@ export class ThemeService {
 
   toggle() {
     // Use View Transitions API for smooth theme changes (supported in modern browsers)
-    const transition = document.startViewTransition;
-    
-    if (transition) {
-      transition(() => {
-        this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+    const win = this._document.defaultView as Window & {
+      startViewTransition?: (callback: () => void) => ViewTransition;
+    };
+    const startViewTransition = win?.startViewTransition;
+
+    if (startViewTransition) {
+      startViewTransition.call(win, () => {
+        this.themeSetting.update((t) => (t === 'dark' ? 'light' : 'dark'));
       });
     } else {
-      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+      this.themeSetting.update((t) => (t === 'dark' ? 'light' : 'dark'));
     }
   }
 

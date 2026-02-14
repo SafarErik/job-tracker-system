@@ -680,10 +680,6 @@ export class ProfileSettingsSheetComponent {
   // State
   isLoading = signal(false);
 
-  ngOnChanges() {
-    // Handled by effect
-  }
-
   open() {
     this.uiService.openProfileSettings();
   }
@@ -715,7 +711,8 @@ export class ProfileSettingsSheetComponent {
   toggleJobBoard(board: string) {
     const boardsControl = this.form.get('jobBoards');
     if (boardsControl) {
-      const currentBoards = boardsControl.value as string[];
+      const value = boardsControl.value;
+      const currentBoards = Array.isArray(value) ? value : [];
       if (currentBoards.includes(board)) {
         boardsControl.setValue(currentBoards.filter((b) => b !== board));
       } else {

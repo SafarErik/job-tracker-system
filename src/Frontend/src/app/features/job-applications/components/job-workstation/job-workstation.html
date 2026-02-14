@@ -281,11 +281,17 @@
   @if (isCommandBarOpen()) {
     <div
       (click)="closeCommandBar()"
+      (keydown.escape)="closeCommandBar()"
       class="fixed inset-0 z-100 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300"
+      tabindex="-1"
     >
       <div
         (click)="$event.stopPropagation()"
+        (keydown)="onCommandBarKeydown($event)"
         class="w-full max-w-2xl bg-popover border border-border rounded-3xl shadow-2xl overflow-hidden scale-in duration-300"
+        tabindex="0"
+        role="dialog"
+        aria-label="Command bar"
       >
         <div class="p-6 flex items-center gap-4 border-b border-border">
           <ng-icon name="lucideSearch" class="text-2xl text-primary" aria-hidden="true"></ng-icon>
@@ -312,8 +318,10 @@
           <div class="mt-2 space-y-1">
             <button
               (click)="triggerAnalysis(); toggleCommandBar()"
+              (mouseenter)="commandBarFocusedIndex.set(0)"
               [disabled]="service.isProcessing()"
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50"
+              [class.bg-muted]="commandBarFocusedIndex() === 0"
             >
               @if (service.isProcessing()) {
                 <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
@@ -327,8 +335,10 @@
             </button>
             <button
               (click)="generateAssets(); toggleCommandBar()"
+              (mouseenter)="commandBarFocusedIndex.set(1)"
               [disabled]="service.isProcessing()"
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50"
+              [class.bg-muted]="commandBarFocusedIndex() === 1"
             >
               @if (service.isProcessing()) {
                 <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
@@ -341,7 +351,9 @@
               <span class="text-foreground">Generate Cover Letter</span>
             </button>
             <button
+              (mouseenter)="commandBarFocusedIndex.set(2)"
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group"
+              [class.bg-muted]="commandBarFocusedIndex() === 2"
             >
               <ng-icon
                 name="lucideMic2"

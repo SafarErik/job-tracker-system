@@ -360,13 +360,17 @@
                       class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2"
                       >Primary Domain</span
                     >
-                    <a
-                      [href]="details.website"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-base font-bold text-primary hover:underline block truncate"
-                      >{{ details.website || 'N/A' }}</a
-                    >
+                    @if (details.website) {
+                      <a
+                        [href]="normalizeWebsiteUrl(details.website)"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-base font-bold text-primary hover:underline block truncate"
+                        >{{ details.website }}</a
+                      >
+                    } @else {
+                      <span class="text-base font-bold text-muted-foreground">N/A</span>
+                    }
                   </div>
                   <div
                     class="p-6 rounded-2xl bg-muted/30 border border-zinc-200 dark:border-zinc-800 md:col-span-2"

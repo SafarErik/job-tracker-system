@@ -202,4 +202,11 @@ export class CompanyNotesComponent {
   onNotesChange(value: string): void {
     this.notesChange.emit(value);
   }
+
+  saveNotes(): void {
+    // Emit current notes value to trigger debounced save in parent
+    this.notesChange.emit(this.notes());
+    // Exit edit mode
+    this.isEditingNotes.set(false);
+  }
 }

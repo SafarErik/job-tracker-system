@@ -6,6 +6,8 @@ import {
   computed,
   ChangeDetectionStrategy,
   inject,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -172,6 +174,9 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   isPastingManually = signal(false);
   manualPasteText = signal('');
   isFocusMode = signal(false);
+
+  // Command bar input element for programmatic focus
+  @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
 
   // Context-aware Commands
   commands = computed(() => {
@@ -379,6 +384,12 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   toggleCommandBar(): void {
     this.isCommandBarOpen.update((v: boolean) => !v);
+    // Focus the input when opening the command bar
+    if (this.isCommandBarOpen()) {
+      setTimeout(() => {
+        this.commandBarInput?.nativeElement?.focus();
+      }, 0);
+    }
   }
 
   closeCommandBar(): void {

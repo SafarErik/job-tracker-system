@@ -707,7 +707,8 @@ export class ProfileSettingsSheetComponent {
   }
 
   isJobBoardChecked(board: string): boolean {
-    const boards = this.form.get('jobBoards')?.value as string[];
+    const value = this.form.get('jobBoards')?.value;
+    const boards = Array.isArray(value) ? value : [];
     return boards.includes(board);
   }
 
@@ -733,23 +734,23 @@ export class ProfileSettingsSheetComponent {
 
   deleteProfile() {
     if (confirm('CRITICAL: This will permanently wipe your profile. Continue?')) {
-      toast.error('Identity Purged', {
-        description: 'All records have been erased from the neural core.',
+      // TODO: Wire up to actual deletion API when backend endpoint is available
+      // For now, show informational message instead of misleading success
+      toast.info('Not Yet Implemented', {
+        description: 'Profile deletion is not yet available. This feature is coming soon.',
       });
-      this.close();
     }
   }
 
   save() {
     this.isLoading.set(true);
-    // Mock save logic
-    setTimeout(() => {
-      this.isLoading.set(false);
-      toast.success('System Overwritten', {
-        description: 'Core parameters have been synchronized across all sectors.',
-        // icon: 'lucideCheck' // Removed: Type string is not assignable to Type<unknown>
-      });
-      this.close();
-    }, 1500);
+
+    // TODO: Replace with actual ProfileService.updateProfile call when ready
+    // For now, use mock with notification to indicate this is a mock action
+    toast.info('Save (mock)', {
+      description: 'Profile save is not yet connected to the backend. This is a mock action.',
+    });
+    this.isLoading.set(false);
+    this.close();
   }
 }

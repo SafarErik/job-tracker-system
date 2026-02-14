@@ -622,7 +622,7 @@
         </p>
         <a
           routerLink="/auth/register"
-          class="inline-flex px-12 py-5 bg-linear-to-r from-violet-600 to-indigo-600 text-white hover:scale-105 rounded-full font-bold text-xl transition-all shadow-[0_0_30px_rgba(139,92,246,0.5)] active:scale-95 animate-pulse relative overflow-hidden group"
+          class="inline-flex px-12 py-5 bg-linear-to-r from-violet-600 to-indigo-600 text-white hover:scale-105 rounded-full font-bold text-xl transition-all shadow-[0_0_30px_rgba(139,92,246,0.5)] active:scale-95 relative overflow-hidden group"
         >
           <span class="relative z-10">Secure Access</span>
           <div
@@ -656,10 +656,20 @@
       </div>
 
       <div class="flex items-center gap-6">
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+        <a
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted-foreground hover:text-foreground transition-colors"
+        >
           <lucide-icon [name]="icons.Twitter" class="size-5"></lucide-icon>
         </a>
-        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors">
+        <a
+          href="https://linkedin.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted-foreground hover:text-foreground transition-colors"
+        >
           <lucide-icon [name]="icons.Linkedin" class="size-5"></lucide-icon>
         </a>
         <a
@@ -670,7 +680,7 @@
           <lucide-icon [name]="icons.Github" class="size-5"></lucide-icon>
         </a>
         <a
-          href="#"
+          routerLink="/privacy"
           class="text-muted-foreground text-sm hover:text-foreground transition-colors ml-4"
           >Privacy Policy</a
         >

@@ -157,10 +157,14 @@
   <!-- Action Footer -->
   <div class="mt-auto pt-6 border-t border-border relative z-10 flex items-center justify-between">
     <button
-      (click)="isEditingNotes.set(!isEditingNotes())"
+      (click)="saveNotes()"
       class="flex items-center gap-2 px-4 py-2 rounded-xl bg-muted border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all active:scale-95 text-[9px] font-black uppercase tracking-[0.2em]"
     >
-      <ng-icon [name]="isEditingNotes() ? 'lucideSave' : 'lucidePencil'" class="h-3 w-3"></ng-icon>
+      <ng-icon
+        [name]="isEditingNotes() ? 'lucideSave' : 'lucidePencil'"
+        class="h-3 w-3"
+        aria-hidden="true"
+      ></ng-icon>
       {{ isEditingNotes() ? 'Save Field Notes' : 'Edit Technical Notes' }}
     </button>
 

@@ -6,9 +6,6 @@ import {
   inject,
   signal,
   ChangeDetectionStrategy,
-  OnInit,
-  OnDestroy,
-  NgZone,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -34,7 +31,6 @@ export interface ErrorInfo {
 })
 export class ErrorHandlerService implements ErrorHandler {
   private readonly injector = inject(Injector);
-  private readonly ngZone = inject(NgZone);
 
   // Error state
   private readonly _hasError = signal<boolean>(false);

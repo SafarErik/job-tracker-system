@@ -36,11 +36,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 0) {
         message = 'Unable to connect to the server. Please check your internet connection.';
         title = 'Network Error';
-      } else if (error.error instanceof ErrorEvent) {
-        // Client-side error
-        message = error.error.message;
       } else {
-        // Server-side error
+        // Server-side error or other errors
         const problemDetails = error.error;
 
         if (problemDetails && typeof problemDetails === 'object') {

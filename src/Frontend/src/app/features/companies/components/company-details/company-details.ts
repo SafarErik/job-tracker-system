@@ -169,6 +169,19 @@ export class CompanyDetailsComponent implements OnDestroy {
     return domain ? `https://logo.clearbit.com/${domain}` : null;
   });
 
+  normalizeWebsiteUrl(website: string | null | undefined): string | null {
+    if (!website) return null;
+    try {
+      let urlStr = website;
+      if (!urlStr.startsWith('http')) urlStr = `https://${urlStr}`;
+      // Validate URL is valid
+      new URL(urlStr);
+      return urlStr;
+    } catch {
+      return null;
+    }
+  }
+
   activeApplications = computed(() => {
     const details = this.company();
     return details?.applicationHistory || [];

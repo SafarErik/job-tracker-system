@@ -37,7 +37,7 @@
     }
   </section>
 
-  <div class="rounded-2xl border border-border bg-background p-3 transition-shadow focus-within:ring-2 focus-within:ring-violet-500/20">
+  <div class="rounded-2xl border border-border bg-background p-3 transition-shadow focus-within:ring-2 focus-within:ring-primary/20">
     <label for="career-copilot-command" class="sr-only">Career command</label>
     <textarea
       id="career-copilot-command"
@@ -152,8 +152,8 @@
           hlmBtn
           size="icon"
           class="h-8 w-8 rounded-full text-white"
-          [class.bg-violet-600]="hasCommand()"
-          [class.hover:bg-violet-500]="hasCommand()"
+          [class.bg-primary]="hasCommand()"
+          [class.hover:bg-primary/90]="hasCommand()"
           [class.bg-muted-foreground]="!hasCommand()"
           [disabled]="!hasCommand()"
           (click)="runCommand()"

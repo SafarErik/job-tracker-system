@@ -61,9 +61,9 @@ export class DealViewComponent {
     });
 
     compBreakdown = signal([
-        { label: 'Base', value: 70, color: '#10b981' }, // Emerald-500
-        { label: 'Equity', value: 20, color: '#3b82f6' }, // Blue-500
-        { label: 'Bonus', value: 10, color: '#f59e0b' }  // Amber-500
+        { label: 'Base', value: 70, color: 'hsl(var(--success))' },
+        { label: 'Equity', value: 20, color: 'hsl(var(--accent))' },
+        { label: 'Bonus', value: 10, color: 'hsl(var(--warning))' }
     ]);
 
     playbook = signal<PlaybookScript[]>([

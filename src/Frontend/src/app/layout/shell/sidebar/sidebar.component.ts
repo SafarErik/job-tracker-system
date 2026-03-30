@@ -22,7 +22,7 @@ import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
-import { ThemeService, UiStateService } from '../../../core/services';
+import { UiStateService } from '../../../core/services';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LogoComponent } from '../../../shared/components/logo/logo';
 
@@ -63,7 +63,6 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
   },
 })
 export class SidebarComponent {
-  private themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
   readonly uiService = inject(UiStateService);
 
@@ -79,12 +78,4 @@ export class SidebarComponent {
     { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
     { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];
-
-  get isDarkMode() {
-    return this.themeService.isDark();
-  }
-
-  toggleTheme() {
-    this.themeService.toggle();
-  }
 }

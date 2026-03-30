@@ -61,6 +61,8 @@
   --sidebar-accent-foreground: 215 25% 10%;
   --sidebar-border: 214 32% 91%;
   --sidebar-ring: 217 91% 60%;
+  --scrollbar-thumb: 214 32% 82%;
+  --scrollbar-thumb-hover: 215 20% 65%;
 
   color-scheme: light;
 }
@@ -121,6 +123,8 @@
   --sidebar-accent-foreground: 210 40% 98%;
   --sidebar-border: 215 25% 17%;
   --sidebar-ring: 217 91% 60%;
+  --scrollbar-thumb: 215 25% 24%;
+  --scrollbar-thumb-hover: 215 20% 36%;
 
   color-scheme: dark;
 }
@@ -225,14 +229,12 @@
    ============================================ */
 body {
   @apply bg-background text-foreground antialiased;
-  transition:
-    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html,
 body {
   min-height: 100%;
+  background-color: hsl(var(--background));
 }
 
 h1,
@@ -253,6 +255,14 @@ h6 {
 :focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
+}
+
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+  animation: none !important;
+  caret-color: transparent !important;
 }
 
 /* Reduced motion */
@@ -307,6 +317,26 @@ h6 {
   @apply rounded-[var(--radius-input)] bg-surface-inset border border-border/30;
 }
 
+@utility panel-surface {
+  @apply rounded-[2.5rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-xl;
+}
+
+@utility panel-surface-muted {
+  @apply rounded-[2.5rem] border border-border/40 bg-muted/30;
+}
+
+@utility field-surface {
+  @apply border border-border/60 bg-muted/40 text-sm font-bold placeholder:text-muted-foreground/40 focus:ring-2 focus:ring-primary/20;
+}
+
+@utility field-surface-compact {
+  @apply border border-border/30 bg-muted/20 text-sm font-bold focus:bg-card focus:ring-1 focus:ring-primary/20;
+}
+
+@utility floating-popover {
+  @apply rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl;
+}
+
 /* ============================================
    VIEW TRANSITIONS
    ============================================ */
@@ -348,20 +378,12 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: hsl(var(--scrollbar-thumb));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: hsl(var(--scrollbar-thumb-hover));
 }
 
 /* ============================================

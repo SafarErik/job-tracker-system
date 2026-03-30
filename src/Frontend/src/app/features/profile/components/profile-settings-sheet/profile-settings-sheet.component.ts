@@ -273,7 +273,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                   >
                     <div class="flex items-center gap-4">
                       <div
-                        class="h-10 w-10 flex items-center justify-center bg-blue-500/10 rounded-xl text-blue-500"
+                    class="h-10 w-10 flex items-center justify-center rounded-xl bg-accent/10 text-accent"
                       >
                         <ng-icon name="lucideLink" class="h-5 w-5"></ng-icon>
                       </div>

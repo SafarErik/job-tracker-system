@@ -30,7 +30,7 @@ export interface DashboardMetric {
         @for (metric of metrics(); track metric.label) {
           @if (metric.label === 'Active') {
             <!-- PREMIUM ACTIVE CARD (Premium Gradient) -->
-            <div class="relative overflow-hidden min-w-[160px] flex-1 rounded-2xl bg-gradient-to-br from-[#6D5DF6] to-[#5b4ddb] p-5 text-white shadow-lg shadow-primary/20 ring-1 ring-white/10 transition-all scale-105 z-10">
+            <div class="relative z-10 min-w-[160px] flex-1 scale-105 overflow-hidden rounded-2xl bg-linear-to-br from-primary to-accent p-5 text-white shadow-lg shadow-primary/20 ring-1 ring-white/10 transition-all">
               
               <!-- Subtle decoration circle in background -->
               <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl"></div>
@@ -92,8 +92,8 @@ export class DashboardMetricsComponent {
     {
       label: 'Interview',
       value: this.interviews(),
-      colorClass: 'text-violet-500',
-      indicatorColorClass: 'border-l-violet-500'
+      colorClass: 'text-primary',
+      indicatorColorClass: 'border-l-primary'
     },
     {
       label: 'Offers',

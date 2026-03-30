@@ -7,7 +7,7 @@
  * Contains the navigation header, router outlet, and global components.
  */
 
-import { Component, ViewChild, AfterViewInit, inject, signal, effect } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject, signal } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs';
@@ -31,11 +31,11 @@ import { ApplicationAddSheetComponent } from './features/job-applications/compon
 export class App implements AfterViewInit {
   @ViewChild(ConfirmDialogComponent) confirmDialog?: ConfirmDialogComponent;
   private readonly _router = inject(Router);
+  readonly themeService = inject(ThemeService);
   readonly isAuthPage = signal<boolean>(false);
 
   constructor(
     private readonly notificationService: NotificationService,
-    private readonly themeService: ThemeService,
     private readonly profileStore: ProfileStore,
   ) {
     // Initialize profile and skills globally

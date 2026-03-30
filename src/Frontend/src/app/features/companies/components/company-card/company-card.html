@@ -11,9 +11,9 @@
   <div class="absolute right-3 top-3 z-10">
     @if (company().priority === CompanyPriority.TopTier) {
       <div
-        class="flex h-7 w-7 items-center justify-center rounded-full border border-violet-500/20 bg-violet-500/10 transition-transform"
+        class="flex h-7 w-7 items-center justify-center rounded-full border border-primary/20 bg-primary/10 text-primary transition-transform"
       >
-        <ng-icon name="lucideCrown" class="text-violet-600 dark:text-violet-400 text-lg"></ng-icon>
+        <ng-icon name="lucideCrown" class="text-lg"></ng-icon>
       </div>
     } @else {
       <div class="flex h-7 w-7 items-center justify-center rounded-full transition-transform">
@@ -21,7 +21,7 @@
           name="lucideCrown"
           [class]="
             company().priority === CompanyPriority.MidTier
-              ? 'text-blue-600 dark:text-blue-400'
+              ? 'text-accent'
               : 'text-muted-foreground/50'
           "
           class="text-base"

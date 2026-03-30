@@ -3,7 +3,7 @@
 >
   <!-- Animated Grid Background -->
   <div
-    class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.08),transparent_45%)] pointer-events-none"
+    class="absolute inset-0 bg-[radial-gradient(circle_at_top,hsl(var(--primary)/0.08),transparent_45%)] pointer-events-none"
   ></div>
 
   <!-- Sticky Nav -->
@@ -14,7 +14,7 @@
       <!-- Brand -->
       <div class="flex items-center gap-2">
         <div
-          class="size-8 bg-card border border-border rounded-lg flex items-center justify-center shadow-lg shadow-violet-500/10"
+          class="size-8 bg-card border border-border rounded-lg flex items-center justify-center shadow-lg shadow-primary/10"
         >
           <lucide-icon [name]="icons.Zap" class="size-5 text-foreground"></lucide-icon>
         </div>
@@ -61,7 +61,7 @@
         @if (isAuthenticated()) {
           <a
             routerLink="/dashboard"
-            class="px-5 py-2 bg-card hover:bg-accent border border-border text-foreground rounded-full font-medium transition-all shadow-lg shadow-violet-500/10"
+            class="px-5 py-2 bg-card hover:bg-accent border border-border text-foreground rounded-full font-medium transition-all shadow-lg shadow-primary/10"
           >
             Dashboard
           </a>
@@ -73,7 +73,7 @@
           >
           <a
             routerLink="/auth/register"
-            class="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium transition-all shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+            class="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full font-medium transition-all shadow-[0_0_15px_hsl(var(--primary)/0.5)]"
           >
             Get Access
           </a>
@@ -91,7 +91,7 @@
         <div
           class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card/50 border border-border text-muted-foreground text-xs font-mono mb-6 backdrop-blur-md"
         >
-          <lucide-icon [name]="icons.Sparkles" class="size-3 text-violet-400"></lucide-icon>
+          <lucide-icon [name]="icons.Sparkles" class="size-3 text-primary"></lucide-icon>
           PROFESSIONAL CAREER INSIGHTS
         </div>
         <h1
@@ -131,11 +131,11 @@
         <div class="relative w-full aspect-square max-w-[500px] mx-auto group">
           <!-- Scanner Container -->
           <div
-            class="relative w-full h-full bg-background/80 backdrop-blur-xl border border-border rounded-2xl overflow-hidden shadow-2xl shadow-violet-900/20"
+            class="relative w-full h-full bg-background/80 backdrop-blur-xl border border-border rounded-2xl overflow-hidden shadow-2xl shadow-primary/10"
           >
             <!-- Scanning Line -->
             <div
-              class="absolute top-0 left-0 w-full h-[2px] bg-violet-500 shadow-[0_0_20px_#8b5cf6] z-20 animate-scan"
+              class="absolute top-0 left-0 z-20 h-[2px] w-full bg-primary shadow-[0_0_20px_hsl(var(--primary)/0.7)] animate-scan"
             ></div>
 
             <div class="grid grid-cols-2 h-full">
@@ -157,7 +157,7 @@
               <!-- Right: AI Insights -->
               <div class="p-6 bg-muted/30 flex flex-col justify-center">
                 <div
-                  class="mb-4 flex items-center gap-2 text-violet-400 font-mono text-xs animate-in fade-in slide-in-from-bottom-2 duration-700 delay-500 fill-mode-both"
+                  class="mb-4 flex items-center gap-2 text-primary font-mono text-xs animate-in fade-in slide-in-from-bottom-2 duration-700 delay-500 fill-mode-both"
                 >
                   <lucide-icon [name]="icons.Zap" class="size-3"></lucide-icon>
                   ANALYSIS_AX-92
@@ -182,10 +182,10 @@
                   <div
                     class="font-mono text-sm text-foreground leading-relaxed relative animate-in fade-in slide-in-from-bottom-2 duration-700 delay-1000 fill-mode-both"
                   >
-                    <span class="text-violet-400">>></span>
+                    <span class="text-primary">>></span>
                     Strong alignment with Senior Backend requirements. Suggested edit: Emphasize
                     "System Architecture" over "Maintenance".
-                    <span class="typewriter-cursor text-violet-500"></span>
+                    <span class="typewriter-cursor text-primary"></span>
                   </div>
                 </div>
               </div>
@@ -194,7 +194,7 @@
             <!-- Decorative UI -->
             <div class="absolute bottom-4 right-4 flex gap-2">
               <div class="size-2 rounded-full bg-muted animate-pulse"></div>
-              <div class="size-2 rounded-full bg-violet-500 animate-pulse delay-75"></div>
+              <div class="size-2 rounded-full bg-primary animate-pulse delay-75"></div>
             </div>
           </div>
         </div>
@@ -255,22 +255,22 @@
 
         <!-- Horizon (Right) -->
         <div
-          class="group relative bg-card border border-violet-500/20 rounded-2xl p-8 overflow-hidden shadow-[0_0_0_1px_rgba(139,92,246,0.1)] hover:shadow-[0_0_30px_rgba(139,92,246,0.2)] hover:border-violet-500/50 transition-all duration-500"
+          class="group relative rounded-2xl border border-primary/20 bg-card p-8 overflow-hidden shadow-[0_0_0_1px_hsl(var(--primary)/0.1)] hover:border-primary/50 hover:shadow-[0_0_30px_hsl(var(--primary)/0.2)] transition-all duration-500"
         >
           <div
-            class="absolute top-4 right-4 text-violet-400 font-mono text-sm uppercase font-bold tracking-wider"
+            class="absolute top-4 right-4 text-primary font-mono text-sm uppercase font-bold tracking-wider"
           >
             Professional Workspace
           </div>
           <div
-            class="mb-8 p-4 bg-violet-950/10 rounded-xl border border-violet-500/20 flex items-center gap-4"
+            class="mb-8 flex items-center gap-4 rounded-xl border border-primary/20 bg-primary/5 p-4"
           >
-            <div class="size-12 rounded-lg bg-violet-900/20 flex items-center justify-center">
-              <lucide-icon [name]="icons.Zap" class="text-violet-400 size-6"></lucide-icon>
+            <div class="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
+              <lucide-icon [name]="icons.Zap" class="size-6 text-primary"></lucide-icon>
             </div>
             <div>
               <div class="font-bold text-foreground">Company Analysis</div>
-              <div class="text-sm text-violet-400/70">"3 Active Targets. 94% Readiness."</div>
+              <div class="text-sm text-primary/70">"3 Active Targets. 94% Readiness."</div>
             </div>
           </div>
           <!-- Horizon UI Snippet -->
@@ -281,12 +281,12 @@
                 Google Interview Prep
               </div>
             </div>
-            <div class="bg-violet-600/10 border border-violet-500/20 p-3 rounded-lg">
-              <div class="text-[10px] text-violet-300 mb-1 font-bold">STATUS</div>
-              <div class="text-xs font-bold leading-tight text-violet-200">Execution Phase</div>
+            <div class="rounded-lg border border-primary/20 bg-primary/10 p-3">
+              <div class="mb-1 text-[10px] font-bold text-primary">STATUS</div>
+              <div class="text-xs font-bold leading-tight text-primary/80">Execution Phase</div>
             </div>
           </div>
-          <div class="mt-8 text-violet-200/60 text-sm">
+          <div class="mt-8 text-sm text-primary/60">
             Automated tracking. AI strategy. Complete control.
           </div>
         </div>
@@ -304,7 +304,7 @@
       <div class="grid md:grid-cols-3 gap-8">
         <!-- Documents Library -->
         <div
-          class="bg-card/20 border border-border hover:border-violet-500/30 rounded-2xl p-8 transition-colors group"
+          class="bg-card/20 border border-border hover:border-primary/30 rounded-2xl p-8 transition-colors group"
         >
           <div
             class="size-12 rounded-lg bg-muted flex items-center justify-center mb-6 group-hover:scale-110 transition-transform"
@@ -361,10 +361,10 @@
       <div class="grid lg:grid-cols-3 gap-6">
         <!-- Large Card: Resume Tailor -->
         <div
-          class="lg:col-span-2 relative h-[400px] bg-card/40 border border-border rounded-3xl p-10 overflow-hidden group hover:border-violet-500/50 transition-all duration-500"
+          class="lg:col-span-2 relative h-[400px] bg-card/40 border border-border rounded-3xl p-10 overflow-hidden group hover:border-primary/50 transition-all duration-500"
         >
           <div
-            class="absolute inset-0 bg-linear-to-br from-violet-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+            class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"
           ></div>
 
           <div class="relative z-10 flex flex-col justify-between h-full">
@@ -383,15 +383,15 @@
               <!-- Professional Bullet Points -->
               <ul class="mt-6 space-y-2">
                 <li class="flex items-center gap-2 text-sm text-foreground/80">
-                  <div class="size-1.5 bg-violet-500 rounded-full"></div>
+                  <div class="size-1.5 rounded-full bg-primary"></div>
                   Keyword Optimization
                 </li>
                 <li class="flex items-center gap-2 text-sm text-foreground/80">
-                  <div class="size-1.5 bg-violet-500 rounded-full"></div>
+                  <div class="size-1.5 rounded-full bg-primary"></div>
                   Format Sanitation
                 </li>
                 <li class="flex items-center gap-2 text-sm text-foreground/80">
-                  <div class="size-1.5 bg-violet-500 rounded-full"></div>
+                  <div class="size-1.5 rounded-full bg-primary"></div>
                   Content Rewrite
                 </li>
               </ul>
@@ -549,16 +549,16 @@
 
       <!-- Elite -->
       <div
-        class="bg-card border border-violet-500 rounded-3xl p-8 flex flex-col relative overflow-hidden shadow-2xl shadow-violet-900/10"
+        class="relative flex flex-col overflow-hidden rounded-3xl border border-primary bg-card p-8 shadow-2xl shadow-primary/10"
       >
         <div
-          class="absolute top-0 right-0 bg-violet-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider"
+          class="absolute top-0 right-0 rounded-bl-xl bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
         >
           Recommended
         </div>
 
         <div class="mb-8">
-          <h3 class="text-lg font-bold text-violet-400 mb-2 font-mono uppercase tracking-wider">
+          <h3 class="mb-2 text-lg font-bold font-mono uppercase tracking-wider text-primary">
             Elite
           </h3>
           <div class="flex items-baseline gap-1">
@@ -571,25 +571,25 @@
         </div>
         <ul class="space-y-4 mb-8 flex-1">
           <li class="flex items-center gap-3 text-sm text-foreground">
-            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-violet-500"></lucide-icon>
+            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-primary"></lucide-icon>
             Deep Market Radar
           </li>
           <li class="flex items-center gap-3 text-sm text-foreground">
-            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-violet-500"></lucide-icon>
+            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-primary"></lucide-icon>
             Unlimited AI Resumes
           </li>
           <li class="flex items-center gap-3 text-sm text-foreground">
-            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-violet-500"></lucide-icon>
+            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-primary"></lucide-icon>
             Interview Studio Access
           </li>
           <li class="flex items-center gap-3 text-sm text-foreground">
-            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-violet-500"></lucide-icon>
+            <lucide-icon [name]="icons.CheckCircle" class="size-4 text-primary"></lucide-icon>
             Priority Support
           </li>
         </ul>
         <a
           routerLink="/auth/register"
-          class="w-full py-4 rounded-xl bg-violet-600/90 text-white font-bold hover:bg-violet-600 transition-colors text-center shadow-lg shadow-violet-900/20"
+          class="w-full rounded-xl bg-primary/90 py-4 text-center font-bold text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary"
         >
           Get Elite
         </a>
@@ -600,17 +600,17 @@
   <!-- Final Call (Secure Access) -->
   <section class="container mx-auto px-6 py-24">
     <div
-      class="bg-background border border-violet-500/30 rounded-[3rem] p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl shadow-violet-900/20"
+      class="relative overflow-hidden rounded-[3rem] border border-primary/30 bg-background p-12 text-center shadow-2xl shadow-primary/10 lg:p-24"
     >
       <!-- Decor -->
       <div class="absolute inset-0 bg-grid-white/[0.05] pointer-events-none"></div>
-      <div class="absolute top-0 right-0 p-8 text-violet-500/20 font-mono text-xs">
+      <div class="absolute top-0 right-0 p-8 text-primary/20 font-mono text-xs">
         SECURE_LINK::ENABLED
       </div>
 
-      <div class="absolute -top-24 -left-24 size-64 bg-violet-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute -top-24 -left-24 size-64 rounded-full bg-primary/10 blur-3xl"></div>
       <div
-        class="absolute -bottom-24 -right-24 size-64 bg-violet-500/10 rounded-full blur-3xl"
+        class="absolute -bottom-24 -right-24 size-64 rounded-full bg-primary/10 blur-3xl"
       ></div>
 
       <div class="relative z-10">
@@ -622,11 +622,11 @@
         </p>
         <a
           routerLink="/auth/register"
-          class="inline-flex px-12 py-5 bg-linear-to-r from-violet-600 to-indigo-600 text-white hover:scale-105 rounded-full font-bold text-xl transition-all shadow-[0_0_30px_rgba(139,92,246,0.5)] active:scale-95 relative overflow-hidden group"
+          class="group relative inline-flex overflow-hidden rounded-full bg-linear-to-r from-primary to-accent px-12 py-5 text-xl font-bold text-white transition-all shadow-[0_0_30px_hsl(var(--primary)/0.5)] active:scale-95 hover:scale-105"
         >
           <span class="relative z-10">Secure Access</span>
           <div
-            class="absolute inset-0 bg-linear-to-r from-indigo-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            class="absolute inset-0 bg-linear-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           ></div>
         </a>
       </div>

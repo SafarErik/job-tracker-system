@@ -1,7 +1,7 @@
 <hlm-sidebar
   collapsible="icon"
   variant="sidebar"
-  class="h-full border-r border-border bg-background transition-[width] duration-300 ease-in-out"
+  class="h-full border-r border-sidebar-border bg-sidebar transition-[width,background-color,border-color,color] duration-200 ease-in-out"
 >
   <div
     hlmSidebarHeader
@@ -91,7 +91,7 @@
 <ng-template #userMenu>
   <div
     hlmDropdownMenu
-    class="w-64 bg-popover/95 backdrop-blur-xl border border-border p-2 rounded-2xl shadow-2xl dark:shadow-primary/5 animate-in fade-in zoom-in-95"
+    class="w-64 rounded-2xl border border-border bg-popover/95 p-2 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95"
   >
     <div
       hlmDropdownMenuLabel
@@ -123,7 +123,7 @@
     <button
       hlmDropdownMenuItem
       (click)="onLogout()"
-      class="text-red-400 focus:text-red-400 focus:bg-red-500/10 rounded-lg"
+      class="rounded-lg text-destructive focus:bg-destructive/10 focus:text-destructive"
     >
       <ng-icon hlm name="lucideLogOut" hlmDropdownMenuIcon />
       <span>Log out</span>

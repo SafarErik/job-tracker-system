@@ -36,7 +36,7 @@
 
                 <!-- 1. Role Core Card (Span 8) -->
                 <div
-                    class="lg:col-span-8 flex flex-col gap-6 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden">
+                    class="panel-surface lg:col-span-8 flex flex-col gap-6 p-8 relative overflow-hidden">
                     <div
                         class="absolute top-0 right-0 p-8 opacity-[0.03] text-foreground pointer-events-none select-none">
                         <ng-icon name="lucideBuilding2" size="120"></ng-icon>
@@ -56,7 +56,7 @@
                             <hlm-autocomplete [(search)]="companySearch">
                                 <hlm-autocomplete-input formControlName="companyName" placeholder="e.g. Google"
                                     showClear
-                                    class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
+                                    class="field-surface h-14 w-full rounded-2xl px-5 transition-all"
                                     [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched" />
 
                                 <div *brnPopoverContent hlmAutocompleteContent
@@ -81,7 +81,7 @@
                             <hlm-autocomplete [(search)]="positionSearch">
                                 <hlm-autocomplete-input formControlName="position" placeholder="e.g. Senior Frontend"
                                     showClear
-                                    class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40"
+                                    class="field-surface h-14 w-full rounded-2xl px-5 transition-all"
                                     [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched" />
 
                                 <div *brnPopoverContent hlmAutocompleteContent
@@ -111,13 +111,13 @@
                             class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Archive
                             Link</label>
                         <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
-                            class="h-14 w-full rounded-2xl bg-white/5 dark:bg-white/5 bg-muted/40 border-border/60 focus:ring-2 focus:ring-primary/20 transition-all px-5 text-sm font-bold placeholder:text-muted-foreground/40" />
+                            class="field-surface h-14 w-full rounded-2xl px-5 transition-all" />
                     </div>
                 </div>
 
                 <!-- 2. Logistics Panel (Span 4) -->
                 <div
-                    class="lg:col-span-4 flex flex-col gap-6 p-8 bg-muted/30 rounded-[2.5rem] border border-border/40 h-full relative group/logistics">
+                    class="panel-surface-muted lg:col-span-4 flex flex-col gap-6 p-8 h-full relative group/logistics">
                     <div class="flex items-center gap-3 mb-2">
                         <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params
@@ -224,7 +224,7 @@
 
                 <!-- 3. Asset Upload (Span 7) -->
                 <div
-                    class="lg:col-span-7 p-8 bg-card/60 backdrop-blur-xl rounded-[2.5rem] border border-border/40 shadow-xl relative overflow-hidden group/assets">
+                    class="panel-surface lg:col-span-7 p-8 relative overflow-hidden group/assets">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-1.5 h-1.5 rounded-full bg-success"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Assets
@@ -270,9 +270,9 @@
 
                 <!-- 4. AI Insight (Span 5) -->
                 <div
-                    class="lg:col-span-5 p-8 bg-card rounded-[2.5rem] border border-border/40 shadow-sm flex flex-col justify-between group/assessment">
+                    class="lg:col-span-5 flex flex-col justify-between rounded-[2.5rem] border border-border/40 bg-card p-8 shadow-sm group/assessment">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Self-Assessment
                         </h3>
                     </div>
@@ -293,7 +293,7 @@
 
                     <div class="w-full space-y-2">
                         <div class="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/10">
-                            <div class="h-full bg-gradient-to-r from-violet-600 to-primary transition-all duration-1000 ease-out"
+                            <div class="h-full bg-linear-to-r from-primary to-accent transition-all duration-1000 ease-out"
                                 [style.width.%]="form.get('matchScore')?.value || 0"></div>
                         </div>
                     </div>

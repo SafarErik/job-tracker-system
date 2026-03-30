@@ -14,7 +14,7 @@ import { ThemeService } from '../../../core/services/theme.service';
       <div class="relative flex items-center justify-center shrink-0 transition-all duration-300" [class]="sizeClasses()">
         
         <!-- Optional Glow -->
-        <div class="absolute inset-0 bg-violet-600/20 rounded-full blur-xl transition-opacity duration-500"
+        <div class="absolute inset-0 rounded-full bg-primary/20 blur-xl transition-opacity duration-500"
              [class.opacity-0]="!withGlow()"
              [class.opacity-100]="withGlow()"></div>
 

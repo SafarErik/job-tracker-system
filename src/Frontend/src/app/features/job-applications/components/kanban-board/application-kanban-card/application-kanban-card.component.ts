@@ -70,7 +70,7 @@ export class ApplicationKanbanCardComponent {
     // Computed: Priority Color for Left Strip
     priorityClass = computed(() => {
         switch (this.application().priority) {
-            case JobPriority.High: return 'bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.4)]';
+      case JobPriority.High: return 'bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.4)]';
             case JobPriority.Medium: return 'bg-zinc-600';
             default: return 'bg-transparent';
         }

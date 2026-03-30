@@ -5,58 +5,80 @@
 >
   <div
     hlmSidebarHeader
-    class="h-16 flex items-center px-4 overflow-hidden whitespace-nowrap group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center transition-all duration-300"
+    class="overflow-hidden border-b border-sidebar-border/80 px-4 py-4 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
   >
     <div
-      class="flex w-full items-center gap-2 overflow-hidden transition-all group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:justify-center"
+      class="flex w-full items-center gap-3 overflow-hidden rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-3 transition-all group-data-[collapsible=icon]:w-12 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0"
     >
-      <app-logo class="transition-all duration-300" size="sm" [withGlow]="false"></app-logo>
+      <app-logo class="transition-all duration-300" size="sm" [withGlow]="true"></app-logo>
+      <div class="min-w-0 group-data-[collapsible=icon]:hidden">
+        <p class="truncate text-xs font-semibold uppercase tracking-[0.22em] text-sidebar-foreground/55">
+          Horizon OS
+        </p>
+        <p class="truncate text-sm font-semibold text-sidebar-foreground">Career command layer</p>
+      </div>
     </div>
   </div>
 
   <div hlmSidebarContent>
-    <div hlmSidebarGroup>
+    <div hlmSidebarGroup class="px-2 py-3">
       <div
         hlmSidebarGroupLabel
-        hlmClassName="text-sidebar-foreground/50 uppercase tracking-widest text-[10px] font-bold px-4 mb-2"
+        hlmClassName="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.24em] text-sidebar-foreground/45"
       >
-        Main Navigation
+        Workspace
       </div>
       <div hlmSidebarGroupContent>
-        <ul hlmSidebarMenu class="px-2 group-data-[collapsible=icon]:px-0">
+        <ul hlmSidebarMenu class="px-0">
           @for (item of navItems; track item.label) {
             <li hlmSidebarMenuItem>
               <a
                 hlmSidebarMenuButton
                 [routerLink]="item.link"
-                routerLinkActive="bg-sidebar-accent text-sidebar-accent-foreground"
+                routerLinkActive="bg-sidebar-primary/12 text-sidebar-foreground border-sidebar-primary/30 shadow-[0_12px_30px_hsl(var(--sidebar-primary)/0.08)]"
                 [routerLinkActiveOptions]="{ exact: item.exact }"
-                class="group rounded-lg mb-1 justify-start group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:px-0"
+                class="group mb-1 flex justify-start rounded-2xl border border-transparent px-3 py-3 text-sidebar-foreground/72 transition-all hover:border-sidebar-border hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0"
               >
                 <ng-icon
                   hlm
                   [name]="item.icon"
-                  hlmClassName="w-5 h-5 group-hover:text-primary transition-colors"
+                  hlmClassName="h-5 w-5 shrink-0 transition-colors group-hover:text-sidebar-primary"
                 />
-                <span class="group-data-[collapsible=icon]:hidden">{{ item.label }}</span>
+                <div class="min-w-0 group-data-[collapsible=icon]:hidden">
+                  <span class="block truncate text-sm font-semibold">{{ item.label }}</span>
+                  <span class="block truncate text-[11px] text-sidebar-foreground/45">
+                    {{ item.description }}
+                  </span>
+                </div>
               </a>
             </li>
           }
         </ul>
       </div>
     </div>
+
+    <div class="px-4 pb-4 pt-2 group-data-[collapsible=icon]:hidden">
+      <div class="rounded-[1.6rem] border border-sidebar-border/70 bg-sidebar-accent/35 p-4">
+        <p class="text-[10px] font-semibold uppercase tracking-[0.22em] text-sidebar-foreground/45">
+          AI Assist
+        </p>
+        <p class="mt-2 text-sm font-semibold text-sidebar-foreground">
+          Use Copilot to draft follow-ups and next-step plans faster.
+        </p>
+      </div>
+    </div>
   </div>
 
   <div
     hlmSidebarFooter
-    class="p-4 group-data-[collapsible=icon]:p-2! border-t border-sidebar-border overflow-hidden"
+    class="overflow-hidden border-t border-sidebar-border p-4 group-data-[collapsible=icon]:p-2!"
   >
-    <div class="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center">
+    <div class="flex w-full items-center gap-3 group-data-[collapsible=icon]:justify-center">
       <button
         [hlmDropdownMenuTrigger]="userMenu"
         hlmBtn
         variant="ghost"
-        class="relative flex items-center gap-3 p-2 h-auto w-full justify-start group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-12 group-data-[collapsible=icon]:h-12 hover:bg-sidebar-accent rounded-xl border border-transparent hover:border-sidebar-border transition-all group"
+        class="group relative flex h-auto w-full items-center justify-start gap-3 rounded-xl border border-transparent p-2 transition-all hover:border-sidebar-border hover:bg-sidebar-accent group-data-[collapsible=icon]:justify-center! group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:h-12 group-data-[collapsible=icon]:w-12 group-data-[collapsible=icon]:p-0"
       >
         <ng-icon
           hlm
@@ -64,7 +86,7 @@
           hlmClassName="hidden group-data-[collapsible=icon]:block absolute -top-2 text-sidebar-foreground/60"
         />
         <hlm-avatar
-          hlmClassName="w-8 h-8 rounded-lg ring-2 ring-sidebar-border group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:h-9"
+          hlmClassName="h-8 w-8 rounded-lg ring-2 ring-sidebar-border group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9"
         >
           <span hlmAvatarFallback hlmClassName="bg-primary text-primary-foreground text-[10px]">{{
             authService.userInitials() || 'JD'
@@ -74,7 +96,9 @@
           <p class="text-sm font-semibold text-sidebar-foreground">
             {{ authService.userFullName() || 'User' }}
           </p>
-          <p class="text-[10px] text-sidebar-foreground/50 font-medium tracking-wide">ELITE PLAN</p>
+          <p class="text-[10px] font-medium uppercase tracking-[0.2em] text-sidebar-foreground/50">
+            Elite Plan
+          </p>
         </div>
         <ng-icon
           hlm
@@ -105,7 +129,7 @@
       <button hlmDropdownMenuItem routerLink="/profile" hlmClassName="rounded-lg">
         <ng-icon hlm name="lucideUser" hlmDropdownMenuIcon />
         <span>Profile</span>
-        <span hlmDropdownMenuShortcut>⌘P</span>
+        <span hlmDropdownMenuShortcut>Ctrl+P</span>
       </button>
       <button
         hlmDropdownMenuItem
@@ -114,7 +138,7 @@
       >
         <ng-icon hlm name="lucideSettings" hlmDropdownMenuIcon />
         <span>Settings</span>
-        <span hlmDropdownMenuShortcut>⌘S</span>
+        <span hlmDropdownMenuShortcut>Ctrl+S</span>
       </button>
     </div>
 

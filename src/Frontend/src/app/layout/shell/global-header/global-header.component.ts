@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
@@ -27,6 +27,7 @@ import { UiStateService, BreadcrumbService } from '../../../core/services';
 import { inject } from '@angular/core';
 import { NotificationCenterComponent } from '../../../features/notifications/notification-center.component';
 import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-global-header',
@@ -69,7 +70,13 @@ export class GlobalHeaderComponent {
   public readonly isOpen = signal(false);
   public readonly uiService = inject(UiStateService);
   public readonly breadcrumbService = inject(BreadcrumbService);
+  public readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+
+  readonly currentSection = computed(() => {
+    const breadcrumbs = this.breadcrumbService.breadcrumbs();
+    return breadcrumbs.length ? breadcrumbs[breadcrumbs.length - 1].label : 'Dashboard';
+  });
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {

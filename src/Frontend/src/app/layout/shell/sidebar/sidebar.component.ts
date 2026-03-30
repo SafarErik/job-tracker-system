@@ -26,6 +26,14 @@ import { UiStateService } from '../../../core/services';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LogoComponent } from '../../../shared/components/logo/logo';
 
+interface NavItem {
+  label: string;
+  icon: string;
+  link: string;
+  exact: boolean;
+  description: string;
+}
+
 @Component({
   selector: 'app-sidebar',
   imports: [
@@ -59,7 +67,7 @@ import { LogoComponent } from '../../../shared/components/logo/logo';
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'border-r border-sidebar-border bg-background block h-full relative z-20',
+    class: 'block h-full relative z-20',
   },
 })
 export class SidebarComponent {
@@ -70,12 +78,48 @@ export class SidebarComponent {
     this.authService.logout();
   }
 
-  navItems = [
-    { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
-    { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
-    { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
-    { label: 'Insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
-    { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
-    { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
+  navItems: NavItem[] = [
+    {
+      label: 'Dashboard',
+      icon: 'lucideLayoutDashboard',
+      link: '/dashboard',
+      exact: true,
+      description: 'Mission control',
+    },
+    {
+      label: 'Applications',
+      icon: 'lucideBriefcase',
+      link: '/applications',
+      exact: false,
+      description: 'Pipeline and actions',
+    },
+    {
+      label: 'Companies',
+      icon: 'lucideBuilding2',
+      link: '/companies',
+      exact: false,
+      description: 'Targets and research',
+    },
+    {
+      label: 'Insights',
+      icon: 'lucidePieChart',
+      link: '/statistics',
+      exact: false,
+      description: 'Performance trends',
+    },
+    {
+      label: 'Signals',
+      icon: 'lucideRadio',
+      link: '/signals',
+      exact: false,
+      description: 'Live opportunities',
+    },
+    {
+      label: 'Documents',
+      icon: 'lucideFileText',
+      link: '/documents',
+      exact: false,
+      description: 'CVs and assets',
+    },
   ];
 }

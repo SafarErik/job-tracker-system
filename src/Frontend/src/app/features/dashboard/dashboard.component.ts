@@ -39,7 +39,18 @@ interface BriefingItem {
   text: string;
 }
 
-/** Map hqLocation strings to approximate percentage coordinates on our SVG map */
+interface SuggestedAction {
+  eyebrow: string;
+  title: string;
+  meta: string;
+}
+
+interface PipelineStageSummary {
+  label: string;
+  count: number;
+  helper: string;
+}
+
 const LOCATION_COORDINATES: Record<string, { x: number; y: number }> = {
   London: { x: 47, y: 28 },
   'New York': { x: 26, y: 35 },
@@ -91,8 +102,6 @@ export class DashboardComponent implements OnInit {
     () => this.applicationStore.isLoading() || this.companyStore.isLoading(),
   );
 
-  // ── Hero Section ─────────────────────────────────────────
-
   readonly greetingPeriod = computed(() => {
     const hour = this.now().getHours();
     if (hour < 12) return 'Morning';
@@ -114,8 +123,6 @@ export class DashboardComponent implements OnInit {
       year: 'numeric',
     }).format(this.now()),
   );
-
-  // ── Stat Card Metrics ────────────────────────────────────
 
   readonly totalApplications = computed(() => this.metrics().total);
 
@@ -144,9 +151,9 @@ export class DashboardComponent implements OnInit {
   readonly nextAction = computed(() => {
     const interviews = this.activePipeline();
     if (interviews > 0) {
-      const label = interviews === 1 ? 'Interview pending' : 'Interviews pending';
-      return label;
+      return interviews === 1 ? 'Interview pending' : 'Interviews pending';
     }
+
     const count = this.dueFollowUps();
     if (count === 0) return 'No follow-ups due';
     return `${count} Follow-up(s) due`;
@@ -162,9 +169,11 @@ export class DashboardComponent implements OnInit {
   readonly momentumScore = computed(() => {
     const total = this.totalApplications();
     if (total === 0) return 0;
+
     const pipelineWeight = Math.min(this.activePipeline() * 15, 40);
     const offerWeight = Math.min(this.offersCount() * 20, 30);
     const activityWeight = Math.min(total * 2, 30);
+
     return Math.min(100, pipelineWeight + offerWeight + activityWeight);
   });
 
@@ -176,26 +185,34 @@ export class DashboardComponent implements OnInit {
 
     if (pipeline > 0) {
       items.push({
-        icon: '🎯',
+        icon: 'Target',
         text: `${pipeline} active interview${pipeline === 1 ? '' : 's'} in pipeline`,
       });
     }
+
     if (followUps > 0) {
       items.push({
-        icon: '📬',
+        icon: 'Follow-up',
         text: `${followUps} follow-up${followUps === 1 ? '' : 's'} pending`,
       });
     }
+
     if (offers > 0) {
-      items.push({ icon: '🏆', text: `${offers} offer${offers === 1 ? '' : 's'} received` });
+      items.push({
+        icon: 'Offer',
+        text: `${offers} offer${offers === 1 ? '' : 's'} received`,
+      });
     }
+
     if (items.length === 0) {
-      items.push({ icon: '🚀', text: 'Ready to launch — start applying today' });
+      items.push({
+        icon: 'Launch',
+        text: 'Ready to launch, start applying today',
+      });
     }
+
     return items.slice(0, 3);
   });
-
-  // ── Row 3: Skill Radar ──────────────────────────────────
 
   readonly skillRadarData = computed<SkillRadarAxis[]>(() => {
     const apps = this.applications();
@@ -255,13 +272,13 @@ export class DashboardComponent implements OnInit {
 
     for (const app of apps) {
       const allSkills = app.skills.map((s) => s.toLowerCase());
-      const pos = app.position.toLowerCase();
-      const combined = [...allSkills, pos].join(' ');
+      const position = app.position.toLowerCase();
+      const combined = [...allSkills, position].join(' ');
 
-      if (frontendKeywords.some((k) => combined.includes(k))) skillBuckets['Frontend']++;
-      if (backendKeywords.some((k) => combined.includes(k))) skillBuckets['Backend']++;
-      if (devopsKeywords.some((k) => combined.includes(k))) skillBuckets['DevOps']++;
-      if (productKeywords.some((k) => combined.includes(k))) skillBuckets['Product']++;
+      if (frontendKeywords.some((keyword) => combined.includes(keyword))) skillBuckets['Frontend']++;
+      if (backendKeywords.some((keyword) => combined.includes(keyword))) skillBuckets['Backend']++;
+      if (devopsKeywords.some((keyword) => combined.includes(keyword))) skillBuckets['DevOps']++;
+      if (productKeywords.some((keyword) => combined.includes(keyword))) skillBuckets['Product']++;
       skillBuckets['Soft Skills'] += allSkills.length > 0 ? 1 : 0;
     }
 
@@ -296,35 +313,34 @@ export class DashboardComponent implements OnInit {
     ];
   });
 
-  // ── Row 3: Global Footprint ─────────────────────────────
-
   readonly mapPoints = computed<LocationPoint[]>(() => {
     const apps = this.applications();
     const companyList = this.companies();
     const locationMap = new Map<string, { count: number; label: string }>();
 
     for (const app of apps) {
-      const company = companyList.find((c) => c.id === app.companyId);
+      const company = companyList.find((candidate) => candidate.id === app.companyId);
       const location = company?.hqLocation || 'Remote';
       const key = location.split(',')[0].trim();
 
       if (!locationMap.has(key)) {
         locationMap.set(key, { count: 0, label: key });
       }
+
       locationMap.get(key)!.count++;
     }
 
-    // Deterministic hash function for consistent offsets
     const stableSeededOffset = (key: string): { x: number; y: number } => {
       let hash = 0;
-      for (let i = 0; i < key.length; i++) {
-        hash = (hash << 5) - hash + key.charCodeAt(i);
-        hash = hash & hash; // Convert to 32bit integer
+      for (let index = 0; index < key.length; index++) {
+        hash = (hash << 5) - hash + key.charCodeAt(index);
+        hash &= hash;
       }
-      // Normalize to range [-10, 10] for x and [-8, 8] for y
-      const x = (Math.abs(hash) % 20) - 10;
-      const y = ((hash >> 2) % 16) - 8;
-      return { x, y };
+
+      return {
+        x: (Math.abs(hash) % 20) - 10,
+        y: ((hash >> 2) % 16) - 8,
+      };
     };
 
     const points: LocationPoint[] = [];
@@ -333,6 +349,7 @@ export class DashboardComponent implements OnInit {
         x: 50 + stableSeededOffset(key).x,
         y: 40 + stableSeededOffset(key).y,
       };
+
       points.push({
         id: key,
         label: key,
@@ -347,17 +364,15 @@ export class DashboardComponent implements OnInit {
     return points;
   });
 
-  // ── Row 4: Activity Feed ────────────────────────────────
-
   readonly feedItems = computed<FeedItem[]>(() => {
     const apps = [...this.applications()]
-      .sort((a, b) => new Date(b.appliedAt).getTime() - new Date(a.appliedAt).getTime())
+      .sort((left, right) => new Date(right.appliedAt).getTime() - new Date(left.appliedAt).getTime())
       .slice(0, 10);
 
     return apps.map((app) => {
       const now = this.now();
-      const d = new Date(app.appliedAt);
-      const diffMs = now.getTime() - d.getTime();
+      const appliedDate = new Date(app.appliedAt);
+      const diffMs = now.getTime() - appliedDate.getTime();
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const time = diffDays === 0 ? 'Today' : diffDays === 1 ? 'Yesterday' : `${diffDays}d ago`;
 
@@ -366,34 +381,32 @@ export class DashboardComponent implements OnInit {
 
       switch (app.status) {
         case JobApplicationStatus.Interviewing:
-          icon = '🎙️';
+          icon = 'Interview';
           type = 'status';
           break;
         case JobApplicationStatus.Offer:
-          icon = '🏆';
+          icon = 'Offer';
           type = 'status';
           break;
         case JobApplicationStatus.Rejected:
         case JobApplicationStatus.Ghosted:
-          icon = '⚠️';
+          icon = 'Alert';
           type = 'alert';
           break;
         default:
-          icon = '📄';
+          icon = 'Applied';
           type = 'match';
           break;
       }
 
       return {
         icon,
-        label: `${app.position} — ${app.companyName || 'Company'}`,
+        label: `${app.position} - ${app.companyName || 'Company'}`,
         time,
         type,
       };
     });
   });
-
-  // ── Row 4: Pipeline Table ───────────────────────────────
 
   readonly funnelStages = computed<PipelineStage[]>(() => {
     const apps = this.applications();
@@ -401,38 +414,53 @@ export class DashboardComponent implements OnInit {
     return [
       {
         label: 'Applied',
-        count: apps.filter((a) => a.status === JobApplicationStatus.Applied).length,
+        count: apps.filter((app) => app.status === JobApplicationStatus.Applied).length,
       },
       {
         label: 'Screen',
         count: apps.filter(
-          (a) =>
-            a.status === JobApplicationStatus.PhoneScreen ||
-            a.status === JobApplicationStatus.TechnicalTask,
+          (app) =>
+            app.status === JobApplicationStatus.PhoneScreen ||
+            app.status === JobApplicationStatus.TechnicalTask,
         ).length,
       },
       {
         label: 'Interview',
-        count: apps.filter((a) => a.status === JobApplicationStatus.Interviewing).length,
+        count: apps.filter((app) => app.status === JobApplicationStatus.Interviewing).length,
       },
-      { label: 'Offer', count: apps.filter((a) => a.status === JobApplicationStatus.Offer).length },
+      {
+        label: 'Offer',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Offer).length,
+      },
     ];
+  });
+
+  readonly pipelineStageSummaries = computed<PipelineStageSummary[]>(() => {
+    const stageCopy: Record<string, string> = {
+      Applied: 'Outbound volume',
+      Screen: 'Warm conversations',
+      Interview: 'Active loops',
+      Offer: 'Decision zone',
+    };
+
+    return this.funnelStages().map((stage) => ({
+      label: stage.label,
+      count: stage.count,
+      helper: stageCopy[stage.label] ?? 'Pipeline stage',
+    }));
   });
 
   readonly companyMap = computed(() => {
     const map = new Map<string, { name: string; logoUrl?: string }>();
-    for (const c of this.companies()) {
-      map.set(c.id, { name: c.name, logoUrl: c.logoUrl });
+    for (const company of this.companies()) {
+      map.set(company.id, { name: company.name, logoUrl: company.logoUrl });
     }
     return map;
   });
 
-  // ── Row 5: Tactical Priority ─────────────────────────────
-
   readonly priorityItems = computed<PriorityItem[]>(() => {
     const apps = this.applications();
     const companyLookup = this.companyMap();
-
     const items: PriorityItem[] = [];
 
     for (const app of apps) {
@@ -461,9 +489,43 @@ export class DashboardComponent implements OnInit {
       }
     }
 
-    // Sort: interviews first, then offers, then follow-ups
     const order: Record<string, number> = { interview: 0, offer: 1, 'follow-up': 2 };
-    return items.sort((a, b) => order[a.kind] - order[b.kind]).slice(0, 10);
+    return items.sort((left, right) => order[left.kind] - order[right.kind]).slice(0, 10);
+  });
+
+  readonly suggestedActions = computed<SuggestedAction[]>(() => {
+    const priority = this.priorityItems().slice(0, 2);
+
+    if (priority.length > 0) {
+      return priority.map((item) => ({
+        eyebrow:
+          item.kind === 'interview'
+            ? 'Prepare now'
+            : item.kind === 'offer'
+              ? 'Decision lane'
+              : 'Follow-up',
+        title: `${item.position} at ${item.company}`,
+        meta:
+          item.kind === 'interview'
+            ? 'High-leverage prep window open'
+            : item.kind === 'offer'
+              ? 'Review package and response timing'
+              : 'Keep the thread warm and visible',
+      }));
+    }
+
+    return [
+      {
+        eyebrow: 'Start momentum',
+        title: 'Add your next target company',
+        meta: 'Fresh opportunities create better signal quality',
+      },
+      {
+        eyebrow: 'Sharpen profile',
+        title: 'Refresh CV and portfolio narrative',
+        meta: 'Make your materials ready before volume increases',
+      },
+    ];
   });
 
   ngOnInit(): void {

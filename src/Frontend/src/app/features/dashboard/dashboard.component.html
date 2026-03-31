@@ -2,17 +2,14 @@
   <div class="dashboard-grid">
     @if (isLoading()) {
       <article class="dashboard-hero md:col-span-3">
-        <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div class="flex flex-col gap-4 md:w-[70%]">
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4">
             <div hlmSkeleton class="h-8 w-64 rounded-lg"></div>
             <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
             <div class="mt-4 flex flex-col gap-3">
-              <div hlmSkeleton class="h-24 w-full rounded-[1.5rem]"></div>
-              <div hlmSkeleton class="h-24 w-full rounded-[1.5rem]"></div>
+              <div hlmSkeleton class="h-20 w-full rounded-[1.5rem]"></div>
+              <div hlmSkeleton class="h-20 w-full rounded-[1.5rem]"></div>
             </div>
-          </div>
-          <div class="flex items-center justify-center md:w-[30%]">
-            <div hlmSkeleton class="h-40 w-full rounded-[1.75rem]"></div>
           </div>
         </div>
       </article>
@@ -22,12 +19,12 @@
         <div class="relative z-10 flex h-full flex-col gap-6">
           <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p class="dashboard-eyebrow">AI-suggested next steps</p>
+              <p class="dashboard-eyebrow">Important right now</p>
               <h1 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                 Good {{ greetingPeriod() }}, {{ userName() }}.
               </h1>
               <p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-                Highest-leverage moves for your pipeline on
+                Focus on the few things that can move your search forward today, last updated on
                 <span class="dashboard-mono font-medium text-foreground">{{ currentDateLabel() }}</span>
               </p>
             </div>
@@ -57,7 +54,7 @@
         <div>
           <p class="dashboard-eyebrow">Momentum</p>
           <p class="mt-2 text-sm text-muted-foreground">
-            Live reading of how active and healthy your search is.
+            A quick health check for your current search rhythm.
           </p>
         </div>
         <span
@@ -73,7 +70,7 @@
 
       <div class="mt-6 grid grid-cols-2 gap-3">
         <div class="dashboard-mini-stat">
-          <span class="dashboard-mini-stat__label">Interviews</span>
+          <span class="dashboard-mini-stat__label">Open loops</span>
           <span class="dashboard-mini-stat__value">{{ activePipeline() }}</span>
         </div>
         <div class="dashboard-mini-stat">
@@ -82,37 +79,6 @@
         </div>
       </div>
     </article>
-
-    <app-stat-card
-      label="Total Applications"
-      [value]="totalApplications()"
-      [trend]="weeklyTrend()"
-      subtitle="Lifetime tracked"
-      [loading]="isLoading()"
-    ></app-stat-card>
-
-    <app-stat-card
-      label="Success Rate"
-      [value]="successRate() + '%'"
-      subtitle="Offers / Applications"
-      [loading]="isLoading()"
-    ></app-stat-card>
-
-    <app-stat-card
-      label="Active Pipeline"
-      [value]="activePipeline()"
-      subtitle="Currently interviewing"
-      variant="glow"
-      [loading]="isLoading()"
-    ></app-stat-card>
-
-    <app-stat-card
-      label="Next Action"
-      [value]="nextAction()"
-      subtitle="Priority from live signals"
-      variant="highlight"
-      [loading]="isLoading()"
-    ></app-stat-card>
 
     <article class="dashboard-pipeline md:col-span-4">
       <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -140,18 +106,15 @@
       </div>
     </article>
 
-    <app-skill-radar
-      class="md:col-span-2"
-      [axes]="skillRadarData()"
-      [loading]="isLoading()"
-    ></app-skill-radar>
-
     <app-pipeline-table-card
       class="md:col-span-2"
       [stages]="funnelStages()"
       [applications]="applications()"
       [companyMap]="companyMap()"
       [loading]="isLoading()"
+      [showFunnel]="false"
+      title="Recent Applications"
+      subtitle="Latest companies and roles you've touched recently"
     ></app-pipeline-table-card>
 
     <app-global-footprint
@@ -159,17 +122,5 @@
       [points]="mapPoints()"
       [loading]="isLoading()"
     ></app-global-footprint>
-
-    <app-activity-feed
-      class="md:col-span-1"
-      [items]="feedItems()"
-      [loading]="isLoading()"
-    ></app-activity-feed>
-
-    <app-tactical-priority
-      class="md:col-span-1"
-      [items]="priorityItems()"
-      [loading]="isLoading()"
-    ></app-tactical-priority>
   </div>
 </section>

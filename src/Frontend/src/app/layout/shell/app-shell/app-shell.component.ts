@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
-import { HlmSeparatorImports } from '@spartan-ng/helm/separator';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GlobalHeaderComponent } from '../global-header/global-header.component';
 import { ProfileSettingsSheetComponent } from '../../../features/profile/components/profile-settings-sheet/profile-settings-sheet.component';
@@ -17,7 +16,6 @@ import { AiDrawerComponent } from '../../../shared/components/ai-drawer/ai-drawe
     SidebarComponent,
     GlobalHeaderComponent,
     HlmSidebarImports,
-    HlmSeparatorImports,
     ProfileSettingsSheetComponent,
     AiDrawerComponent,
   ],

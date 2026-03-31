@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
@@ -9,21 +9,10 @@ import {
   lucideBriefcase,
   lucideBuilding2,
   lucideFileText,
-  lucideUser,
-  lucideSettings,
-  lucideLogOut,
-  lucideChevronUp,
-  lucideSun,
-  lucideMoon,
   lucidePieChart,
   lucideRadio,
+  lucidePanelLeftClose,
 } from '@ng-icons/lucide';
-import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
-import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
-import { HlmSwitchImports } from '@spartan-ng/helm/switch';
-import { UiStateService } from '../../../core/services';
-import { AuthService } from '../../../core/auth/auth.service';
 import { LogoComponent } from '../../../shared/components/logo/logo';
 
 interface NavItem {
@@ -31,37 +20,20 @@ interface NavItem {
   icon: string;
   link: string;
   exact: boolean;
-  description: string;
 }
 
 @Component({
   selector: 'app-sidebar',
-  imports: [
-    CommonModule,
-    RouterModule,
-    HlmSidebarImports,
-    HlmIconImports,
-    HlmButton,
-    HlmAvatarImports,
-    HlmDropdownMenuImports,
-    HlmDropdownMenuTrigger,
-    HlmSwitchImports,
-    LogoComponent,
-  ],
+  imports: [CommonModule, RouterModule, HlmSidebarImports, HlmIconImports, LogoComponent],
   providers: [
     provideIcons({
       lucideLayoutDashboard,
       lucideBriefcase,
       lucideBuilding2,
       lucideFileText,
-      lucideUser,
-      lucideSettings,
-      lucideLogOut,
-      lucideChevronUp,
-      lucideSun,
-      lucideMoon,
       lucidePieChart,
       lucideRadio,
+      lucidePanelLeftClose,
     }),
   ],
   templateUrl: './sidebar.component.html',
@@ -71,55 +43,12 @@ interface NavItem {
   },
 })
 export class SidebarComponent {
-  readonly authService = inject(AuthService);
-  readonly uiService = inject(UiStateService);
-
-  onLogout() {
-    this.authService.logout();
-  }
-
   navItems: NavItem[] = [
-    {
-      label: 'Dashboard',
-      icon: 'lucideLayoutDashboard',
-      link: '/dashboard',
-      exact: true,
-      description: 'Mission control',
-    },
-    {
-      label: 'Applications',
-      icon: 'lucideBriefcase',
-      link: '/applications',
-      exact: false,
-      description: 'Pipeline and actions',
-    },
-    {
-      label: 'Companies',
-      icon: 'lucideBuilding2',
-      link: '/companies',
-      exact: false,
-      description: 'Targets and research',
-    },
-    {
-      label: 'Insights',
-      icon: 'lucidePieChart',
-      link: '/statistics',
-      exact: false,
-      description: 'Performance trends',
-    },
-    {
-      label: 'Signals',
-      icon: 'lucideRadio',
-      link: '/signals',
-      exact: false,
-      description: 'Live opportunities',
-    },
-    {
-      label: 'Documents',
-      icon: 'lucideFileText',
-      link: '/documents',
-      exact: false,
-      description: 'CVs and assets',
-    },
+    { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
+    { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
+    { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
+    { label: 'Insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
+    { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
+    { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];
 }

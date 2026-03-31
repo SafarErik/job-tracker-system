@@ -19,16 +19,23 @@
       </div>
     </div>
   } @else {
-    <!-- Pipeline Funnel -->
-    <app-pipeline-chart [stages]="stages()"></app-pipeline-chart>
-
-    <!-- Separator -->
-    <div hlmSeparator class="my-4"></div>
-
-    <!-- Recent Applications Table -->
-    <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-      Recent Applications
-    </h3>
+    @if (showFunnel()) {
+      <app-pipeline-chart [stages]="stages()"></app-pipeline-chart>
+      <div hlmSeparator class="my-4"></div>
+      <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+        Recent Applications
+      </h3>
+    } @else {
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+            {{ title() }}
+          </h3>
+          <p class="mt-1 text-xs text-muted-foreground">{{ subtitle() }}</p>
+        </div>
+        <span class="text-xs text-muted-foreground">{{ recentApps().length }} items</span>
+      </div>
+    }
 
     @if (recentApps().length > 0) {
       <div class="table-scroll overflow-x-auto overflow-y-auto">
@@ -85,7 +92,7 @@
                 </td>
                 <td class="py-2.5 text-right">
                   <span class="metric-mono text-xs text-muted-foreground">
-                    {{ app.matchScore != null ? app.matchScore + '%' : '—' }}
+                    {{ app.matchScore != null ? app.matchScore + '%' : '-' }}
                   </span>
                 </td>
               </tr>

@@ -59,6 +59,7 @@
 
 .dashboard-focus-panel {
   padding: 1.5rem;
+  min-height: 100%;
 }
 
 .dashboard-eyebrow {

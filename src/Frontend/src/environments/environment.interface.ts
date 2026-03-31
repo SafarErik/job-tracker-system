@@ -11,6 +11,9 @@ export interface AppEnvironment {
 
   /** Development token for Clearbit logo API (development only) */
   logoDevToken?: string;
+
+  /** Optional Mapbox token for client-side geocoding and globe search */
+  mapboxAccessToken?: string;
 }
 
 /**
@@ -20,6 +23,7 @@ export const devEnvironment: AppEnvironment = {
   production: false,
   apiBaseUrl: 'http://localhost:5053/api',
   logoDevToken: 'pk_mcaO5iQcTZ-sCZhRe8hF1Q',
+  mapboxAccessToken: '',
 };
 
 /**
@@ -29,4 +33,5 @@ export const devEnvironment: AppEnvironment = {
 export const prodEnvironment: AppEnvironment = {
   production: true,
   apiBaseUrl: '/api', // Configure via Azure App Service environment variables
+  mapboxAccessToken: '',
 };

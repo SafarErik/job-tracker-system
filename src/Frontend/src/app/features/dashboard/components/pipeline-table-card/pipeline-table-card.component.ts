@@ -99,8 +99,19 @@ export class PipelineTableCardComponent {
     }
   }
 
-  getStatusLabel(status: JobApplicationStatus): string {
-    return JobApplicationStatus[status].replaceAll(/([A-Z])/g, ' $1').trim();
+  getStatusLabel(status: JobApplicationStatus | string): string {
+    const rawStatus =
+      typeof status === 'number'
+        ? JobApplicationStatus[status]
+        : typeof status === 'string'
+          ? status
+          : 'Applied';
+
+    if (typeof rawStatus !== 'string' || !rawStatus.length) {
+      return 'Applied';
+    }
+
+    return rawStatus.replace(/([A-Z])/g, ' $1').trim();
   }
 
   trackByApp(_: number, app: JobApplication): string {

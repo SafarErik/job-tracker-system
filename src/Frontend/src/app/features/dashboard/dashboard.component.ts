@@ -14,7 +14,10 @@ import { JobApplicationStatus } from '../job-applications/models/application-sta
 import { JobApplicationStore } from '../job-applications/services/job-application.store';
 import { CompanyStore } from '../companies/services/company.store';
 import { MomentumGaugeComponent } from './components/momentum-gauge/momentum-gauge.component';
-import { FootprintLocation, GlobalFootprintComponent } from './components/global-footprint/global-footprint.component';
+import {
+  FootprintLocation,
+  GlobalFootprintComponent,
+} from './components/global-footprint/global-footprint.component';
 import { PipelineTableCardComponent } from './components/pipeline-table-card/pipeline-table-card.component';
 import { PipelineStage } from './components/pipeline-chart/pipeline-chart.component';
 import { buildFootprintLocations } from './data/footprint-locations';
@@ -115,8 +118,10 @@ export class DashboardComponent implements OnInit {
     const followUps = this.dueFollowUps();
     const offers = this.offersCount();
 
-    if (pipeline > 0) items.push({ text: `${pipeline} active interview${pipeline === 1 ? '' : 's'} in pipeline` });
-    if (followUps > 0) items.push({ text: `${followUps} follow-up${followUps === 1 ? '' : 's'} pending` });
+    if (pipeline > 0)
+      items.push({ text: `${pipeline} active interview${pipeline === 1 ? '' : 's'} in pipeline` });
+    if (followUps > 0)
+      items.push({ text: `${followUps} follow-up${followUps === 1 ? '' : 's'} pending` });
     if (offers > 0) items.push({ text: `${offers} offer${offers === 1 ? '' : 's'} received` });
     if (items.length === 0) items.push({ text: 'Ready to launch, start applying today' });
 
@@ -127,7 +132,10 @@ export class DashboardComponent implements OnInit {
     const apps = this.applications();
 
     return [
-      { label: 'Applied', count: apps.filter((app) => app.status === JobApplicationStatus.Applied).length },
+      {
+        label: 'Applied',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Applied).length,
+      },
       {
         label: 'Screen',
         count: apps.filter(
@@ -136,8 +144,14 @@ export class DashboardComponent implements OnInit {
             app.status === JobApplicationStatus.TechnicalTask,
         ).length,
       },
-      { label: 'Interview', count: apps.filter((app) => app.status === JobApplicationStatus.Interviewing).length },
-      { label: 'Offer', count: apps.filter((app) => app.status === JobApplicationStatus.Offer).length },
+      {
+        label: 'Interview',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Interviewing).length,
+      },
+      {
+        label: 'Offer',
+        count: apps.filter((app) => app.status === JobApplicationStatus.Offer).length,
+      },
     ];
   });
 

@@ -170,7 +170,10 @@ export class GlobalFootprintComponent {
     return {
       total: locations.length,
       applicationHubs: locations.filter((location) => location.applications.length > 0).length,
-      totalNearbyRoles: locations.reduce((total, location) => total + location.nearbyRoles.length, 0),
+      totalNearbyRoles: locations.reduce(
+        (total, location) => total + location.nearbyRoles.length,
+        0,
+      ),
     };
   });
 

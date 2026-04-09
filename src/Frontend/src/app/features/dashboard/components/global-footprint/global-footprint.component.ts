@@ -10,6 +10,8 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
 import { FootprintGeocodingService } from './footprint-geocoding.service';
@@ -18,7 +20,8 @@ import { FootprintLocation } from './global-footprint.models';
 export type { FootprintLocation, FootprintSignalCard } from './global-footprint.models';
 
 type FootprintFilter = 'all' | 'applications' | 'nearby';
-type GlobeMode = 'preview' | 'expanded';
+type GlobeMode = 'preview' | 'screen';
+type FootprintPresentation = 'card' | 'screen';
 
 interface GlobePoint {
   id: string;
@@ -67,7 +70,10 @@ interface GlobeInstance {
   showAtmosphere(value: boolean): GlobeInstance;
   atmosphereColor(value: string): GlobeInstance;
   atmosphereAltitude(value: number): GlobeInstance;
-  pointOfView(view: { lat?: number; lng?: number; altitude?: number }, transitionMs?: number): GlobeInstance;
+  pointOfView(
+    view: { lat?: number; lng?: number; altitude?: number },
+    transitionMs?: number,
+  ): GlobeInstance;
   pointsData(data: GlobePoint[]): GlobeInstance;
   pointLat(value: string | ((point: GlobePoint) => number)): GlobeInstance;
   pointLng(value: string | ((point: GlobePoint) => number)): GlobeInstance;
@@ -101,27 +107,34 @@ const EARTH_BUMP_TEXTURE_URL = 'https://unpkg.com/three-globe/example/img/earth-
 
 @Component({
   selector: 'app-global-footprint',
-  imports: [...HlmSkeletonImports, ...HlmButtonImports],
+  imports: [CommonModule, ...HlmSkeletonImports, ...HlmButtonImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './global-footprint.component.html',
   styleUrl: './global-footprint.component.css',
+  host: {
+    class: 'block',
+  },
 })
 export class GlobalFootprintComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly geocodingService = inject(FootprintGeocodingService);
+  private readonly router = inject(Router);
 
   readonly locations = input<FootprintLocation[]>([]);
   readonly loading = input(false);
+  readonly mode = input<FootprintPresentation>('card');
 
   readonly previewGlobeHost = viewChild<ElementRef<HTMLElement>>('previewGlobeHost');
-  readonly expandedGlobeHost = viewChild<ElementRef<HTMLElement>>('expandedGlobeHost');
+  readonly screenGlobeHost = viewChild<ElementRef<HTMLElement>>('screenGlobeHost');
 
   readonly activeFilter = signal<FootprintFilter>('all');
   readonly selectedLocationId = signal<string | null>(null);
   readonly hoveredLocationId = signal<string | null>(null);
-  readonly isExpanded = signal(false);
   readonly autoOrbitEnabled = signal(true);
   readonly resolvedLocations = signal<FootprintLocation[]>([]);
+
+  readonly isCardMode = computed(() => this.mode() === 'card');
+  readonly isScreenMode = computed(() => this.mode() === 'screen');
 
   readonly filteredLocations = computed(() => {
     const filter = this.activeFilter();
@@ -157,10 +170,7 @@ export class GlobalFootprintComponent {
     return {
       total: locations.length,
       applicationHubs: locations.filter((location) => location.applications.length > 0).length,
-      totalNearbyRoles: locations.reduce(
-        (total, location) => total + location.nearbyRoles.length,
-        0,
-      ),
+      totalNearbyRoles: locations.reduce((total, location) => total + location.nearbyRoles.length, 0),
     };
   });
 
@@ -172,7 +182,7 @@ export class GlobalFootprintComponent {
 
   private globeModulePromise: Promise<GlobeConstructor> | null = null;
   private previewGlobe: GlobeInstance | null = null;
-  private expandedGlobe: GlobeInstance | null = null;
+  private screenGlobe: GlobeInstance | null = null;
   private geocodeVersion = 0;
 
   constructor() {
@@ -203,7 +213,8 @@ export class GlobalFootprintComponent {
           return;
         }
 
-        if (!this.selectedLocationId()) {
+        const currentSelection = this.selectedLocationId();
+        if (!currentSelection || !locations.some((location) => location.id === currentSelection)) {
           this.selectedLocationId.set(locations[0].id);
         }
       },
@@ -214,8 +225,9 @@ export class GlobalFootprintComponent {
       const host = this.previewGlobeHost()?.nativeElement;
       const loading = this.loading();
       const locations = this.filteredLocations();
+      const isCardMode = this.isCardMode();
 
-      if (!host || loading || !locations.length) {
+      if (!isCardMode || !host || loading || !locations.length) {
         return;
       }
 
@@ -223,16 +235,16 @@ export class GlobalFootprintComponent {
     });
 
     effect(() => {
-      const host = this.expandedGlobeHost()?.nativeElement;
-      const expanded = this.isExpanded();
+      const host = this.screenGlobeHost()?.nativeElement;
       const loading = this.loading();
       const locations = this.filteredLocations();
+      const isScreenMode = this.isScreenMode();
 
-      if (!expanded || !host || loading || !locations.length) {
+      if (!isScreenMode || !host || loading || !locations.length) {
         return;
       }
 
-      void this.ensureGlobe('expanded', host);
+      void this.ensureGlobe('screen', host);
     });
 
     effect(() => {
@@ -240,14 +252,23 @@ export class GlobalFootprintComponent {
       this.selectedLocationKey();
       this.hoveredLocationKey();
       this.autoOrbitEnabled();
+      this.mode();
 
       this.updateGlobeScene('preview');
-      this.updateGlobeScene('expanded');
+      this.updateGlobeScene('screen');
     });
 
+    const resizeHandler = () => {
+      this.updateGlobeScene('preview');
+      this.updateGlobeScene('screen');
+    };
+
+    window.addEventListener('resize', resizeHandler, { passive: true });
+
     this.destroyRef.onDestroy(() => {
+      window.removeEventListener('resize', resizeHandler);
       this.previewGlobe?._destructor?.();
-      this.expandedGlobe?._destructor?.();
+      this.screenGlobe?._destructor?.();
     });
   }
 
@@ -255,17 +276,16 @@ export class GlobalFootprintComponent {
     this.activeFilter.set(filter);
   }
 
-  openExpandedView(): void {
+  openScreenView(): void {
     if (!this.filteredLocations().length) {
       return;
     }
 
-    this.autoOrbitEnabled.set(true);
-    this.isExpanded.set(true);
+    void this.router.navigate(['/mission/global-footprint']);
   }
 
-  closeExpandedView(): void {
-    this.isExpanded.set(false);
+  leaveScreen(): void {
+    void this.router.navigate(['/dashboard']);
   }
 
   toggleAutoOrbit(): void {
@@ -276,7 +296,12 @@ export class GlobalFootprintComponent {
     this.selectedLocationId.set(location.id);
     this.hoveredLocationId.set(location.id);
     this.autoOrbitEnabled.set(false);
-    this.flyToLocation(this.expandedGlobe, location, 1200, true);
+    this.flyToLocation(this.screenGlobe, location, 1200, true);
+  }
+
+  resetWorldView(): void {
+    this.autoOrbitEnabled.set(true);
+    this.hoveredLocationId.set(null);
   }
 
   onLocationEnter(locationId: string): void {
@@ -294,7 +319,7 @@ export class GlobalFootprintComponent {
   }
 
   private async ensureGlobe(mode: GlobeMode, host: HTMLElement): Promise<void> {
-    const existing = mode === 'preview' ? this.previewGlobe : this.expandedGlobe;
+    const existing = mode === 'preview' ? this.previewGlobe : this.screenGlobe;
     if (existing) {
       this.resizeGlobe(existing, host);
       this.updateGlobeScene(mode);
@@ -307,7 +332,7 @@ export class GlobalFootprintComponent {
     }
 
     const globe = new Globe(host, {
-      animateIn: mode === 'expanded',
+      animateIn: mode === 'screen',
       waitForGlobeReady: true,
       rendererConfig: { antialias: true, alpha: true },
     });
@@ -318,7 +343,7 @@ export class GlobalFootprintComponent {
       .bumpImageUrl(EARTH_BUMP_TEXTURE_URL)
       .showAtmosphere(true)
       .atmosphereColor('#4b8dff')
-      .atmosphereAltitude(mode === 'expanded' ? 0.2 : 0.12)
+      .atmosphereAltitude(mode === 'screen' ? 0.2 : 0.12)
       .pointLat('lat')
       .pointLng('lng')
       .pointAltitude((point) => point.altitude)
@@ -334,7 +359,7 @@ export class GlobalFootprintComponent {
       .ringRepeatPeriod((ring) => ring.repeatPeriod)
       .onPointHover((point) => this.hoveredLocationId.set(point?.location.id ?? null));
 
-    if (mode === 'expanded') {
+    if (mode === 'screen') {
       globe.onPointClick((point) => this.focusLocation(point.location));
     } else {
       const controls = globe.controls();
@@ -348,28 +373,29 @@ export class GlobalFootprintComponent {
     controls.autoRotate = mode === 'preview' ? true : this.autoOrbitEnabled();
     controls.autoRotateSpeed = mode === 'preview' ? 0.45 : 0.7;
     controls.enablePan = false;
-    controls.enableZoom = mode === 'expanded';
-    controls.rotateSpeed = mode === 'expanded' ? 0.9 : 0;
-    controls.zoomSpeed = mode === 'expanded' ? 0.85 : 0;
+    controls.enableZoom = mode === 'screen';
+    controls.rotateSpeed = mode === 'screen' ? 0.9 : 0;
+    controls.zoomSpeed = mode === 'screen' ? 0.85 : 0;
     controls.minDistance = 140;
-    controls.maxDistance = mode === 'expanded' ? 420 : 260;
+    controls.maxDistance = mode === 'screen' ? 420 : 260;
 
     this.resizeGlobe(globe, host);
 
     if (mode === 'preview') {
       this.previewGlobe = globe;
     } else {
-      this.expandedGlobe = globe;
+      this.screenGlobe = globe;
     }
 
     this.updateGlobeScene(mode);
   }
 
   private updateGlobeScene(mode: GlobeMode): void {
-    const globe = mode === 'preview' ? this.previewGlobe : this.expandedGlobe;
-    const host = mode === 'preview'
-      ? this.previewGlobeHost()?.nativeElement
-      : this.expandedGlobeHost()?.nativeElement;
+    const globe = mode === 'preview' ? this.previewGlobe : this.screenGlobe;
+    const host =
+      mode === 'preview'
+        ? this.previewGlobeHost()?.nativeElement
+        : this.screenGlobeHost()?.nativeElement;
 
     if (!globe || !host) {
       return;
@@ -494,9 +520,7 @@ function getLocationView(location: FootprintLocation, closeUp: boolean): GlobeCa
     location.city.toLowerCase() === 'remote' || location.country.toLowerCase() === 'distributed';
 
   if (isRemoteCluster) {
-    return closeUp
-      ? { lat: 20, lng: -12, altitude: 2.1 }
-      : getWorldView();
+    return closeUp ? { lat: 20, lng: -12, altitude: 2.1 } : getWorldView();
   }
 
   return {

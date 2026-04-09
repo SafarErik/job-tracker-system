@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.global-footprint-screen {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, hsl(var(--primary) / 0.16), transparent 28%),
+    linear-gradient(180deg, hsl(var(--background)), hsl(var(--surface-raised) / 0.98));
+}
+
+.global-footprint-screen__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, hsl(var(--accent) / 0.12), transparent 20%),
+    radial-gradient(circle at 84% 12%, hsl(var(--primary) / 0.12), transparent 24%),
+    radial-gradient(circle at 50% 100%, hsl(var(--primary) / 0.1), transparent 28%);
+  pointer-events: none;
+}
+
+.global-footprint-screen__content {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.global-footprint-screen__frame {
+  min-height: calc(100vh - 2rem);
+  margin: 0 auto;
+  max-width: 1780px;
+}
+
+@media (max-width: 1023px) {
+  .global-footprint-screen__content {
+    padding: 0.75rem;
+  }
+
+  .global-footprint-screen__frame {
+    min-height: calc(100vh - 1.5rem);
+  }
+}

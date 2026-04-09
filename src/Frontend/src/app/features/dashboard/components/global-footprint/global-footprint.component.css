@@ -129,24 +129,10 @@
     linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(var(--surface-raised) / 0.9));
 }
 
-.global-footprint-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background:
-    radial-gradient(circle at top, hsl(var(--primary) / 0.12), transparent 32%),
-    hsl(var(--background) / 0.72);
-  backdrop-filter: blur(14px);
-}
-
 .global-footprint-shell {
-  width: min(96vw, 1500px);
-  max-height: 92vh;
-  overflow: hidden;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
   border: 1px solid hsl(var(--border) / 0.75);
   border-radius: 2rem;
   background:
@@ -169,7 +155,7 @@
   filter: saturate(1.08) contrast(1.05);
 }
 
-.global-footprint-canvas--expanded {
+.global-footprint-canvas--screen {
   position: absolute;
   inset: 0;
 }
@@ -296,12 +282,6 @@
   }
 
   .global-footprint-shell {
-    width: 96vw;
-    max-height: 94vh;
     padding: 1rem;
-  }
-
-  .global-footprint-overlay {
-    padding: 0.75rem;
   }
 }

@@ -46,6 +46,15 @@ export const routes: Routes = [
   // PROTECTED APP SHELL
   // ============================================
   {
+    path: 'mission/global-footprint',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/dashboard/pages/global-footprint-screen/global-footprint-screen.component').then(
+        (m) => m.GlobalFootprintScreenComponent,
+      ),
+    title: 'Global Footprint - Horizon',
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/app-shell/app-shell.component').then((m) => m.AppShellComponent),

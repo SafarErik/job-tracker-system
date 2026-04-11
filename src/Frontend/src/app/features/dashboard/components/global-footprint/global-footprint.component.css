@@ -18,6 +18,24 @@
     0 18px 50px hsl(var(--background) / 0.28);
 }
 
+:host(.dashboard-map-card) .global-footprint-card {
+  background: hsl(var(--card) / 0.68);
+}
+
+:host(.dashboard-map-card) .global-footprint-preview {
+  min-height: 16rem;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--foreground) / 0.03),
+    0 12px 32px hsl(var(--brand-midnight) / 0.08);
+}
+
+:host(.dashboard-map-card) .global-footprint-preview:hover {
+  transform: none;
+  box-shadow:
+    inset 0 1px 0 hsl(var(--foreground) / 0.04),
+    0 16px 40px hsl(var(--brand-midnight) / 0.1);
+}
+
 .global-footprint-preview:hover {
   border-color: hsl(var(--primary) / 0.3);
   transform: translateY(-2px);

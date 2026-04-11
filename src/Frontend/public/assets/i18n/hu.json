@@ -19,7 +19,13 @@
     },
     "states": {
       "loading": "Betöltés...",
-      "noResults": "Nincs találat."
+      "noResults": "Nincs találat.",
+      "unknown": "Ismeretlen"
+    },
+    "time": {
+      "today": "Ma",
+      "dayAgo": "1 napja",
+      "daysAgo": "{{count}} napja"
     }
   },
   "language": {
@@ -50,6 +56,10 @@
       "dark": "Sötét",
       "system": "Rendszer",
       "logout": "Kijelentkezés",
+      "account": {
+        "workspaceName": "Horizon munkaterület",
+        "workspaceGroup": "Munkaterület"
+      },
       "descriptions": {
         "dashboard": "Lásd, mi számít most, és hol érdemes lépned.",
         "applications": "Kövesd az aktív jelentkezéseket és reagálj gyorsan.",
@@ -183,17 +193,251 @@
     }
   },
   "dashboard": {
-    "hero": {
-      "eyebrow": "Most fontos",
-      "greeting": "Szép {{period}}, {{name}}.",
-      "subtitle": "Arra fókuszálj, ami ma előreviheti az álláskeresést. Utolsó frissítés: {{date}}"
-    },
+    "fallbackUser": "neked",
     "period": {
       "morning": "reggelt",
       "afternoon": "délutánt",
       "evening": "estét"
     },
-    "fallbackUser": "neked"
+    "actions": {
+      "addOpportunity": "Lehetőség hozzáadása"
+    },
+    "focus": {
+      "eyebrow": "Mai fókusz",
+      "title": "Ami most figyelmet kér",
+      "updated": "Frissítve: {{date}}.",
+      "summary": {
+        "empty": "Még nincs követett lehetőség. Adj hozzá egy szerepet, hogy elinduljon a jelépítés.",
+        "offers": "Ajánlati szakaszban: {{count}}. Most a döntés minősége számít, nem a több zaj.",
+        "interviews": "Aktív interjúkör: {{count}}. Ez vezesse a mai munkát.",
+        "followUps": "Függő jelentkezés: {{count}}. Utánkövetés nélkül ezek könnyen kihűlnek.",
+        "default": "Követett jelentkezés: {{count}}. Nincs sürgős kör, építsd a következő jelet."
+      },
+      "briefing": {
+        "interviews": "Aktív interjúk a folyamatban: {{count}}",
+        "followUps": "Függő utánkövetés: {{count}}",
+        "offers": "Érkezett ajánlat: {{count}}",
+        "empty": "Adj hozzá egy célzott szerepet, hogy elinduljon a jelépítés"
+      }
+    },
+    "momentum": {
+      "title": "Lendület",
+      "badge": "Útmutatás",
+      "recommendation": "Javaslat",
+      "states": {
+        "noSignal": {
+          "label": "Még nincs jel",
+          "body": "A lendület akkor indul, amikor a Horizon kap egy valódi követhető lehetőséget.",
+          "recommendation": "Adj hozzá egy szerepet, amit tényleg megpályáznál, és a Horizon felépíti a következő lépést."
+        },
+        "decision": {
+          "label": "Döntési lendület",
+          "body": "Ajánlati szakaszban van jel. Most a válasz minősége számít, nem a nagyobb volumen.",
+          "recommendation": "Válasz előtt nézd át a kompenzációt, az időzítést és a tárgyalási jegyzeteket.",
+          "cta": "Ajánlatok áttekintése"
+        },
+        "noLoops": {
+          "label": "Aktivitás interjúkör nélkül",
+          "body": "Van jelentkezési aktivitás, de még nincs aktív interjúkör.",
+          "recommendation": "Erősítsd az illeszkedési elemzést, és kövesd után a melegebb jelentkezéseket, mielőtt újabb zajt adnál hozzá.",
+          "cta": "Folyamat áttekintése"
+        },
+        "thinFunnel": {
+          "label": "Vékony a tölcsér eleje",
+          "body": "A lendület azért alacsony, mert kevés célzott lehetőség van mozgásban.",
+          "recommendation": "Adj hozzá három jól illeszkedő szerepet ezen a héten, mielőtt részleteket optimalizálsz."
+        },
+        "interview": {
+          "label": "Interjúelőny",
+          "body": "A legerősebb jel az aktív interjúkörökben van.",
+          "recommendation": "Készülj szerepspecifikus történetekkel és kérdésekkel, mielőtt több jelentkezést küldenél.",
+          "cta": "Felkészülés most"
+        },
+        "healthy": {
+          "label": "Egészséges ritmus",
+          "body": "A folyamatban van hasznos aktivitás. Tartsd stabilan a tempót."
+        },
+        "building": {
+          "label": "Épül a lendület",
+          "body": "A profilkészültség javul, de a jelentkezési tempón még érdemes dolgozni.",
+          "recommendation": "Védd a következő lépést: utánkövetés, egy dokumentum célzása, vagy egy erős szerep hozzáadása."
+        }
+      }
+    },
+    "pipeline": {
+      "title": "Folyamatstratégia",
+      "stages": {
+        "applied": {
+          "label": "Jelentkezve",
+          "helper": "Célzott szerepek hozzáadva",
+          "actionMore": "Még {{count}} ezen a héten",
+          "actionMaintain": "Minőség tartása"
+        },
+        "screen": {
+          "label": "Előszűrés",
+          "helper": "Recruiter beszélgetések",
+          "actionImprove": "Kezdeti illeszkedés javítása",
+          "actionKeepWarm": "Tartsd melegen"
+        },
+        "interview": {
+          "label": "Interjú",
+          "helper": "Aktív körök",
+          "actionPrepare": "Készülj a következő screen előtt",
+          "actionPractice": "Válaszok gyakorlása"
+        },
+        "offer": {
+          "label": "Ajánlat",
+          "helper": "Döntési zóna",
+          "actionNotYet": "Még nincs itt",
+          "actionReview": "Válasz áttekintése"
+        }
+      },
+      "insights": {
+        "empty": {
+          "label": "Még nincs folyamat",
+          "body": "Kezdj egy lehetőséggel. A Horizon vezetett munkafolyamattá alakítja.",
+          "recommendation": "Adj hozzá egy szerepet valódi állásleírással.",
+          "target": "Heti cél: 3 minőségi szerep"
+        },
+        "decision": {
+          "label": "Döntési szakasz",
+          "body": "Ajánlati szakaszú tapadásod van. Előbb csökkents kockázatot, aztán optimalizálj volument.",
+          "recommendation": "Nézd át a kompenzációt, az időzítést és a tárgyalási jegyzeteket.",
+          "target": "Cél: egy tiszta válaszút"
+        },
+        "topHeavy": {
+          "label": "Felül nehéz folyamat",
+          "body": "A jelentkezések még nem alakulnak beszélgetésekké.",
+          "recommendation": "Nézd át az illeszkedést, erősítsd a CV szögét, és kövesd után a melegebb szerepeket.",
+          "target": "Cél: 1 recruiter beszélgetés"
+        },
+        "screening": {
+          "label": "Előszűrési szűk keresztmetszet",
+          "body": "Vannak korai beszélgetések, de még nincs aktív interjúkör.",
+          "recommendation": "Készülj élesebb történetekkel és szerepspecifikus kérdésekkel.",
+          "target": "Cél: egy screen átváltása"
+        },
+        "activeLoop": {
+          "label": "Aktív kör",
+          "body": "A legerősebb jel már mozgásban van.",
+          "recommendation": "Interjúfelkészülést priorizálj, mielőtt több jelentkezést adnál hozzá.",
+          "target": "Cél: egy felkészített kör"
+        },
+        "forming": {
+          "label": "Alakul az áramlás",
+          "body": "Van aktivitás, de még nincs tiszta nyomáspont.",
+          "recommendation": "Tarts mozgásban hetente egy utánkövetést és egy új szerepet.",
+          "target": "Cél: stabil heti ritmus"
+        }
+      }
+    },
+    "suggestedActions": {
+      "roleAtCompany": "{{role}} itt: {{company}}",
+      "interview": {
+        "eyebrow": "Készülj most",
+        "meta": "Nagy hatású felkészülési ablak nyitva",
+        "cta": "Felkészülés"
+      },
+      "offer": {
+        "eyebrow": "Döntési sáv",
+        "meta": "Csomag és válaszidőzítés áttekintése",
+        "cta": "Áttekintés"
+      },
+      "followUp": {
+        "eyebrow": "Utánkövetés",
+        "meta": "Kövesd után, mielőtt a lehetőség kihűl",
+        "cta": "Utánkövetés"
+      },
+      "empty": {
+        "add": {
+          "eyebrow": "Lendület indítása",
+          "title": "Add hozzá a következő lehetőséget",
+          "meta": "A friss lehetőségek jobb útmutatást és kontextust adnak",
+          "cta": "Szerep hozzáadása"
+        },
+        "documents": {
+          "eyebrow": "Profil élesítése",
+          "title": "Frissítsd a CV-t és a portfóliónarratívát",
+          "meta": "Legyenek készen az anyagaid, mielőtt növeled a volument",
+          "cta": "Dokumentumok megnyitása"
+        }
+      }
+    },
+    "readiness": {
+      "title": "Készültség",
+      "heading": "Készen a következő lépésre",
+      "body": "Tartsd közel az anyagokat és a gyakorlást azokhoz a lehetőségekhez, amelyek számítanak.",
+      "openDocuments": "Dokumentumsegítő megnyitása",
+      "items": {
+        "documents": {
+          "label": "Dokumentumok",
+          "ready": "A szerephez tartozó anyagok a folyamat egy részéhez csatolva vannak.",
+          "empty": "Csatolj vagy generálj célzott CV-t a következő erős szerephez."
+        },
+        "fit": {
+          "label": "Illeszkedési jel",
+          "ready": "A magas illeszkedésű lehetőségek fókuszált felkészülést érdemelnek.",
+          "empty": "Futtass illeszkedési elemzést, mielőtt több generikus jelentkezést küldenél."
+        },
+        "practice": {
+          "label": "Gyakorlás",
+          "ready": "Az interjúkörökhöz előkészített történetek és kérdések kellenek.",
+          "empty": "Még nincs aktív interjúkör. Előbb építs jelet."
+        }
+      }
+    },
+    "workQueue": {
+      "title": "Jelentkezési munkasor",
+      "subtitle": "Következő lépések, kihűlő elemek, aktív körök",
+      "open": "Munkasor megnyitása",
+      "companyFallback": "Cég",
+      "itemCount": "{{count}} elem",
+      "columns": {
+        "opportunity": "Lehetőség",
+        "signal": "Jel",
+        "nextAction": "Következő lépés",
+        "age": "Kor",
+        "fit": "Illeszkedés"
+      },
+      "empty": {
+        "title": "Kezdj egy lehetőséggel.",
+        "body": "A Horizon vezetett munkafolyamattá alakítja illeszkedéssel, dokumentumokkal, utánkövetéssel és interjúfelkészüléssel.",
+        "cta": "Első szerep hozzáadása"
+      },
+      "status": {
+        "Applied": "Jelentkezve",
+        "PhoneScreen": "Telefonos előszűrés",
+        "TechnicalTask": "Technikai feladat",
+        "Interviewing": "Interjú folyamatban",
+        "Offer": "Ajánlat",
+        "Rejected": "Elutasítva",
+        "Ghosted": "Válasz nélkül",
+        "Accepted": "Elfogadva"
+      },
+      "attention": {
+        "decision": "Döntés szükséges",
+        "activeLoop": "Aktív kör",
+        "followUp": "Utánkövetés esedékes",
+        "promisingFit": "Ígéretes illeszkedés",
+        "archive": "Archiválható jelölt",
+        "nextStep": "Következő lépés nyitva"
+      },
+      "nextAction": {
+        "offer": "Ajánlati válasz áttekintése",
+        "interview": "Interjútörténetek előkészítése",
+        "technicalTask": "Technikai feladat megtervezése",
+        "phoneScreen": "Recruiter screen előkészítése",
+        "followUp": "Utánkövetés küldése",
+        "applied": "Figyelés és illeszkedés finomítása",
+        "archive": "Archiválás vagy tanulság rögzítése"
+      },
+      "priority": {
+        "label": "prioritás",
+        "high": "Magas",
+        "medium": "Közepes",
+        "low": "Alacsony"
+      }
+    }
   },
   "ai": {
     "drawer": {

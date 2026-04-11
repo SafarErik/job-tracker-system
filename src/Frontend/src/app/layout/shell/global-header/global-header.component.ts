@@ -20,6 +20,8 @@ import {
   lucideLaptop,
   lucideLogOut,
   lucideSparkles,
+  lucideCheck,
+  lucideLanguages,
 } from '@ng-icons/lucide';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
@@ -65,6 +67,8 @@ import { Theme, ThemeService } from '../../../core/services/theme.service';
       lucideLaptop,
       lucideLogOut,
       lucideSparkles,
+      lucideCheck,
+      lucideLanguages,
     }),
   ],
   templateUrl: './global-header.component.html',
@@ -96,6 +100,17 @@ export class GlobalHeaderComponent {
     const section = this.currentSection();
     return this.sectionDescriptionKey(section);
   });
+
+  readonly themeOptions: Array<{ value: Theme; labelKey: string; icon: string }> = [
+    { value: 'light', labelKey: 'shell.header.light', icon: 'lucideSun' },
+    { value: 'dark', labelKey: 'shell.header.dark', icon: 'lucideMoon' },
+    { value: 'system', labelKey: 'shell.header.system', icon: 'lucideLaptop' },
+  ];
+
+  readonly languageOptions: Array<{ value: 'en' | 'hu'; labelKey: string }> = [
+    { value: 'en', labelKey: 'language.english' },
+    { value: 'hu', labelKey: 'language.hungarian' },
+  ];
 
   private sectionTitleKey(section: string): string {
     switch (section) {
@@ -169,6 +184,14 @@ export class GlobalHeaderComponent {
 
   setLanguage(locale: 'en' | 'hu') {
     this.languageService.setLocale(locale);
+  }
+
+  isThemeSelected(theme: Theme): boolean {
+    return this.themeService.themeSetting() === theme;
+  }
+
+  isLanguageSelected(locale: 'en' | 'hu'): boolean {
+    return this.languageService.locale() === locale;
   }
 
   logout() {

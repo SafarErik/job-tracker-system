@@ -1,133 +1,168 @@
 <section class="app-page animate-in fade-in slide-in-from-bottom-2 duration-500">
   <div class="dashboard-grid">
     @if (isLoading()) {
-      <article class="dashboard-hero md:col-span-3">
-        <div class="flex flex-col gap-6">
-          <div class="flex flex-col gap-4">
-            <div hlmSkeleton class="h-8 w-64 rounded-lg"></div>
-            <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
-            <div class="mt-4 flex flex-col gap-3">
-              <div hlmSkeleton class="h-20 w-full rounded-[1.5rem]"></div>
-              <div hlmSkeleton class="h-20 w-full rounded-[1.5rem]"></div>
+      <article class="dashboard-focus md:col-span-4">
+        <div class="grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+          <div class="space-y-4">
+            <div hlmSkeleton class="h-5 w-36 rounded-md"></div>
+            <div hlmSkeleton class="h-8 w-72 rounded-md"></div>
+            <div hlmSkeleton class="h-16 w-full rounded-lg"></div>
+            <div class="grid gap-3 md:grid-cols-3">
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
             </div>
           </div>
+          <div hlmSkeleton class="h-full min-h-64 rounded-lg"></div>
         </div>
       </article>
     } @else {
-      <article class="dashboard-hero md:col-span-3">
-        <div class="dashboard-hero__glow"></div>
-        <div class="relative z-10 flex h-full flex-col gap-6">
-          <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p class="dashboard-eyebrow">{{ 'dashboard.hero.eyebrow' | transloco }}</p>
-              <h1 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-                {{
-                  'dashboard.hero.greeting'
-                    | transloco
-                      : {
-                          period: (greetingPeriod() | transloco),
-                          name: userName() || ('dashboard.fallbackUser' | transloco),
-                        }
-                }}
-              </h1>
-              <p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-                {{
-                  'dashboard.hero.subtitle'
-                    | transloco: { date: currentDateLabel() }
-                }}
-              </p>
-            </div>
+      <article class="dashboard-focus md:col-span-4">
+        <div class="dashboard-focus__topline">
+          <div>
+            <p class="dashboard-eyebrow">{{ 'dashboard.focus.eyebrow' | transloco }}</p>
+            <h1 class="mt-2 font-display text-2xl font-semibold text-foreground sm:text-3xl">
+              {{ 'dashboard.focus.title' | transloco }}
+            </h1>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+              {{ stateSummary() }} {{ 'dashboard.focus.updated' | transloco: { date: currentDateLabel() } }}
+            </p>
+          </div>
 
-            <div class="flex flex-wrap items-center gap-2">
+          <a routerLink="/new" class="dashboard-primary-cta">
+            {{ 'dashboard.actions.addOpportunity' | transloco }}
+          </a>
+        </div>
+
+        <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+          <div>
+            <div class="mb-3 flex flex-wrap items-center gap-2">
               @for (item of dailyBriefing(); track item.text) {
                 <span class="dashboard-chip">{{ item.text }}</span>
               }
             </div>
+
+            <div class="grid gap-3 md:grid-cols-3">
+              @for (item of suggestedActions(); track item.title) {
+                <article class="dashboard-action-card" [ngClass]="getActionClass(item.tone)">
+                  <p class="dashboard-action-card__eyebrow">{{ item.eyebrow }}</p>
+                  <h2 class="mt-3 text-base font-semibold leading-6 text-foreground">{{ item.title }}</h2>
+                  <p class="mt-2 min-h-10 text-sm leading-6 text-muted-foreground">{{ item.meta }}</p>
+                  <a [routerLink]="item.route" class="dashboard-action-card__link">
+                    {{ item.cta }}
+                  </a>
+                </article>
+              }
+            </div>
           </div>
 
-          <div class="grid gap-4 lg:grid-cols-2">
-            @for (item of suggestedActions(); track item.title) {
-              <article class="dashboard-action-card">
-                <p class="dashboard-action-card__eyebrow">{{ item.eyebrow }}</p>
-                <h2 class="mt-2 text-lg font-semibold text-foreground">{{ item.title }}</h2>
-                <p class="mt-2 text-sm text-muted-foreground">{{ item.meta }}</p>
-              </article>
-            }
-          </div>
+          <aside class="momentum-panel">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="dashboard-eyebrow">{{ 'dashboard.momentum.title' | transloco }}</p>
+                <h2 class="mt-2 text-lg font-semibold text-foreground">
+                  {{ momentumDiagnosis().label }}
+                </h2>
+              </div>
+              <span class="momentum-panel__badge">{{ 'dashboard.momentum.badge' | transloco }}</span>
+            </div>
+
+            <div class="mt-5 grid items-center gap-5 sm:grid-cols-[9rem_1fr] lg:grid-cols-1 xl:grid-cols-[8.5rem_1fr]">
+              <app-momentum-gauge [score]="momentumScore()" [loading]="isLoading()"></app-momentum-gauge>
+              <div>
+                <p class="text-sm leading-6 text-muted-foreground">
+                  {{ momentumDiagnosis().body }}
+                </p>
+                <div class="mt-4 rounded-lg border border-primary/20 bg-primary/10 p-3">
+                  <p class="text-xs font-semibold uppercase text-primary">
+                    {{ 'dashboard.momentum.recommendation' | transloco }}
+                  </p>
+                  <p class="mt-2 text-sm leading-6 text-foreground">
+                    {{ momentumDiagnosis().recommendation }}
+                  </p>
+                </div>
+                <a [routerLink]="momentumDiagnosis().route" class="momentum-panel__link">
+                  {{ momentumDiagnosis().cta }}
+                </a>
+              </div>
+            </div>
+          </aside>
         </div>
       </article>
     }
 
-    <article class="dashboard-focus-panel md:col-span-1">
-      <div class="flex items-start justify-between gap-4">
+    <article class="dashboard-pipeline md:col-span-4">
+      <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
         <div>
-          <p class="dashboard-eyebrow">Momentum</p>
-          <p class="mt-2 text-sm text-muted-foreground">
-            A quick health check for your current search rhythm.
+          <p class="dashboard-eyebrow">{{ 'dashboard.pipeline.title' | transloco }}</p>
+          <h2 class="mt-2 font-display text-xl font-semibold tracking-tight text-foreground">
+            {{ pipelineInsight().label }}
+          </h2>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+            {{ pipelineInsight().body }}
           </p>
         </div>
-        <span
-          class="rounded-full border border-primary/25 bg-primary/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary"
-        >
-          Signal
-        </span>
-      </div>
 
-      <div class="mt-6 flex items-center justify-center">
-        <app-momentum-gauge [score]="momentumScore()" [loading]="isLoading()"></app-momentum-gauge>
-      </div>
-
-      <div class="mt-6 grid grid-cols-2 gap-3">
-        <div class="dashboard-mini-stat">
-          <span class="dashboard-mini-stat__label">Open loops</span>
-          <span class="dashboard-mini-stat__value">{{ activePipeline() }}</span>
+        <div class="pipeline-insight">
+          <p class="pipeline-insight__target">{{ pipelineInsight().target }}</p>
+          <p class="mt-2 text-sm leading-6 text-foreground">{{ pipelineInsight().recommendation }}</p>
         </div>
-        <div class="dashboard-mini-stat">
-          <span class="dashboard-mini-stat__label">Offers</span>
-          <span class="dashboard-mini-stat__value">{{ offersCount() }}</span>
-        </div>
-      </div>
-    </article>
-
-    <article class="dashboard-pipeline md:col-span-4">
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="dashboard-eyebrow">Application pipeline</p>
-          <h2 class="mt-2 text-xl font-semibold tracking-tight text-foreground">
-            See where your process has traction and where it still needs volume.
-          </h2>
-        </div>
-        <p class="text-sm text-muted-foreground">{{ totalApplications() }} total tracked applications</p>
       </div>
 
       <div class="mt-6 grid gap-3 lg:grid-cols-4">
-        @for (stage of pipelineStageSummaries(); track stage.label; let first = $first; let last = $last) {
-          <div
-            class="pipeline-stage"
-            [class.pipeline-stage--active]="first"
-            [class.pipeline-stage--last]="last"
-          >
+        @for (stage of pipelineStageSummaries(); track stage.label) {
+          <div class="pipeline-stage" [ngClass]="getStageClass(stage.state)">
             <p class="pipeline-stage__label">{{ stage.label }}</p>
-            <p class="pipeline-stage__count dashboard-mono">{{ stage.count }}</p>
+            <div class="mt-4 flex items-end justify-between gap-3">
+              <p class="pipeline-stage__count dashboard-mono">{{ stage.count }}</p>
+              <span class="pipeline-stage__state">{{ stage.state }}</span>
+            </div>
             <p class="pipeline-stage__helper">{{ stage.helper }}</p>
+            <p class="pipeline-stage__action">{{ stage.action }}</p>
           </div>
         }
       </div>
     </article>
 
     <app-pipeline-table-card
-      class="md:col-span-2"
+      class="md:col-span-3"
       [stages]="funnelStages()"
       [applications]="applications()"
       [companyMap]="companyMap()"
       [loading]="isLoading()"
       [showFunnel]="false"
-      title="Recent Applications"
-      subtitle="Latest companies and roles you've touched recently"
+      [title]="'dashboard.workQueue.title' | transloco"
+      [subtitle]="'dashboard.workQueue.subtitle' | transloco"
     ></app-pipeline-table-card>
 
+    <article class="readiness-panel md:col-span-1">
+      <p class="dashboard-eyebrow">{{ 'dashboard.readiness.title' | transloco }}</p>
+      <h2 class="mt-2 text-lg font-semibold text-foreground">
+        {{ 'dashboard.readiness.heading' | transloco }}
+      </h2>
+      <p class="mt-2 text-sm leading-6 text-muted-foreground">
+        {{ 'dashboard.readiness.body' | transloco }}
+      </p>
+
+      <div class="mt-5 space-y-3">
+        @for (item of readinessItems(); track item.label) {
+          <div class="readiness-item" [ngClass]="getReadinessClass(item.state)">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-foreground">{{ item.label }}</p>
+              <span class="dashboard-mono text-sm font-semibold text-foreground">{{ item.value }}</span>
+            </div>
+            <p class="mt-2 text-xs leading-5 text-muted-foreground">{{ item.body }}</p>
+          </div>
+        }
+      </div>
+
+      <a routerLink="/documents" class="readiness-panel__link">
+        {{ 'dashboard.readiness.openDocuments' | transloco }}
+      </a>
+    </article>
+
     <app-global-footprint
-      class="md:col-span-2"
+      class="dashboard-map-card md:col-span-4"
       [locations]="footprintLocations()"
       [loading]="isLoading()"
     ></app-global-footprint>

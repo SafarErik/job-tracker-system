@@ -23,17 +23,21 @@
       <app-pipeline-chart [stages]="stages()"></app-pipeline-chart>
       <div hlmSeparator class="my-4"></div>
       <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-        Recent Applications
+        {{ 'dashboard.workQueue.title' | transloco }}
       </h3>
     } @else {
       <div class="mb-4 flex items-center justify-between gap-3">
         <div>
           <h3 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
-            {{ title() }}
+            {{ title() || ('dashboard.workQueue.title' | transloco) }}
           </h3>
-          <p class="mt-1 text-xs text-muted-foreground">{{ subtitle() }}</p>
+          <p class="mt-1 text-xs text-muted-foreground">
+            {{ subtitle() || ('dashboard.workQueue.subtitle' | transloco) }}
+          </p>
         </div>
-        <span class="text-xs text-muted-foreground">{{ recentApps().length }} items</span>
+        <span class="text-xs text-muted-foreground">
+          {{ 'dashboard.workQueue.itemCount' | transloco: { count: recentApps().length } }}
+        </span>
       </div>
     }
 
@@ -44,56 +48,75 @@
             <tr
               class="border-b border-border text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
             >
-              <th class="pb-2 text-left font-medium">Company</th>
-              <th class="pb-2 text-left font-medium">Role</th>
-              <th class="pb-2 text-left font-medium">Date</th>
-              <th class="pb-2 text-left font-medium">Status</th>
-              <th class="pb-2 text-right font-medium">Score</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.opportunity' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.signal' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.nextAction' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.age' | transloco }}</th>
+              <th class="pb-3 text-right font-medium">{{ 'dashboard.workQueue.columns.fit' | transloco }}</th>
             </tr>
           </thead>
           <tbody>
             @for (app of recentApps(); track trackByApp($index, app)) {
-              <tr class="group border-b border-border/60 transition-colors hover:bg-muted/30">
-                <td class="py-2.5 pr-3">
-                  <div class="flex items-center gap-2">
+              <tr class="queue-row group border-b border-border/60">
+                <td class="py-3 pr-4">
+                  <div class="flex items-center gap-3">
                     @if (getCompanyLogo(app); as logo) {
                       <img
                         [src]="logo"
                         alt=""
-                        class="h-6 w-6 rounded-md border border-border object-cover"
+                        class="h-8 w-8 rounded-lg border border-border object-cover"
                       />
                     } @else {
                       <div
-                        class="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-muted text-[10px] font-medium text-foreground"
+                        class="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-[10px] font-semibold text-foreground"
                       >
                         {{ getCompanyInitials(getCompanyName(app)) }}
                       </div>
                     }
-                    <span
-                      class="inline-block max-w-[120px] truncate text-xs font-medium text-foreground"
-                    >
-                      {{ getCompanyName(app) }}
-                    </span>
+                    <div class="min-w-0">
+                      <a
+                        [routerLink]="['/applications', app.id]"
+                        class="block max-w-[12rem] truncate text-sm font-semibold text-foreground hover:text-primary"
+                      >
+                        {{ getCompanyName(app) }}
+                      </a>
+                      <p class="mt-0.5 max-w-[13rem] truncate text-xs text-muted-foreground">
+                        {{ app.position }}
+                      </p>
+                    </div>
                   </div>
                 </td>
-                <td class="py-2.5 pr-3 text-xs text-foreground">
-                  <span class="inline-block max-w-[140px] truncate">{{ app.position }}</span>
-                </td>
-                <td class="py-2.5 pr-3 text-xs text-muted-foreground">
-                  {{ app.appliedAt | date: 'MMM d' }}
-                </td>
-                <td class="py-2.5 pr-3">
+                <td class="py-3 pr-4">
                   <span
-                    class="inline-flex rounded-md border px-1.5 py-0.5 text-[10px] font-medium"
-                    [ngClass]="getStatusBadgeClass(app.status)"
+                    class="inline-flex rounded-full border px-2 py-1 text-[10px] font-semibold"
+                    [ngClass]="getAttentionClass(app)"
                   >
-                    {{ getStatusLabel(app.status) }}
+                    {{ getAttentionLabel(app) }}
                   </span>
+                  <p class="mt-1 text-[11px] text-muted-foreground">{{ getStatusLabel(app.status) }}</p>
                 </td>
-                <td class="py-2.5 text-right">
+                <td class="py-3 pr-4">
+                  <p class="max-w-[12rem] text-xs font-semibold text-foreground">
+                    {{ getNextAction(app) }}
+                  </p>
+                  <p class="mt-1 text-[11px]" [ngClass]="getPriorityClass(app.priority)">
+                    {{ getPriorityLabel(app.priority) }} {{ 'dashboard.workQueue.priority.label' | transloco }}
+                  </p>
+                </td>
+                <td class="py-3 pr-4 text-xs text-muted-foreground">
+                  <span class="metric-mono">{{ getAgeDays(app) }}d</span>
+                  <p class="mt-1 text-[11px]">{{ app.appliedAt | date: 'MMM d' }}</p>
+                </td>
+                <td class="py-3 text-right">
                   <span class="metric-mono text-xs text-muted-foreground">
                     {{ app.matchScore != null ? app.matchScore + '%' : '-' }}
                   </span>
+                  <a
+                    [routerLink]="['/applications', app.id]"
+                    class="mt-1 block text-[11px] font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    {{ 'common.actions.open' | transloco }}
+                  </a>
                 </td>
               </tr>
             }
@@ -101,9 +124,15 @@
         </table>
       </div>
     } @else {
-      <p class="py-6 text-center text-xs text-muted-foreground">
-        No applications yet. Start applying to populate your table.
-      </p>
+      <div class="rounded-lg border border-dashed border-border bg-muted/20 px-5 py-8 text-center">
+        <p class="text-sm font-semibold text-foreground">{{ 'dashboard.workQueue.empty.title' | transloco }}</p>
+        <p class="mx-auto mt-2 max-w-sm text-xs leading-5 text-muted-foreground">
+          {{ 'dashboard.workQueue.empty.body' | transloco }}
+        </p>
+        <a routerLink="/new" class="mt-4 inline-flex text-xs font-semibold text-primary">
+          {{ 'dashboard.workQueue.empty.cta' | transloco }}
+        </a>
+      </div>
     }
   }
 </article>

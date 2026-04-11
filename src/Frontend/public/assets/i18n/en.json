@@ -19,7 +19,13 @@
     },
     "states": {
       "loading": "Loading...",
-      "noResults": "No results found."
+      "noResults": "No results found.",
+      "unknown": "Unknown"
+    },
+    "time": {
+      "today": "Today",
+      "dayAgo": "1 day ago",
+      "daysAgo": "{{count}} days ago"
     }
   },
   "language": {
@@ -50,6 +56,10 @@
       "dark": "Dark",
       "system": "System",
       "logout": "Log out",
+      "account": {
+        "workspaceName": "Horizon Workspace",
+        "workspaceGroup": "Workspace"
+      },
       "descriptions": {
         "dashboard": "See what matters now and where you need to react.",
         "applications": "Track active applications and react quickly.",
@@ -183,17 +193,251 @@
     }
   },
   "dashboard": {
-    "hero": {
-      "eyebrow": "Important right now",
-      "greeting": "Good {{period}}, {{name}}.",
-      "subtitle": "Focus on the few things that can move your search forward today, last updated on {{date}}"
-    },
+    "fallbackUser": "there",
     "period": {
       "morning": "morning",
       "afternoon": "afternoon",
       "evening": "evening"
     },
-    "fallbackUser": "there"
+    "actions": {
+      "addOpportunity": "Add opportunity"
+    },
+    "focus": {
+      "eyebrow": "Today's Focus",
+      "title": "What needs attention now",
+      "updated": "Updated {{date}}.",
+      "summary": {
+        "empty": "No tracked opportunities yet. Add one role to start building signal.",
+        "offers": "Offer-stage items: {{count}}. Decision quality matters more than volume.",
+        "interviews": "Active interview loops: {{count}}. Let them drive today's work.",
+        "followUps": "Pending applications: {{count}}. They can go stale without follow-up.",
+        "default": "Tracked applications: {{count}}. No urgent loop yet, so build the next signal."
+      },
+      "briefing": {
+        "interviews": "Active interviews: {{count}}",
+        "followUps": "Follow-ups pending: {{count}}",
+        "offers": "Offers received: {{count}}",
+        "empty": "Add a targeted role to start building signal"
+      }
+    },
+    "momentum": {
+      "title": "Momentum",
+      "badge": "Guidance",
+      "recommendation": "Recommendation",
+      "states": {
+        "noSignal": {
+          "label": "No signal yet",
+          "body": "Momentum starts once Horizon has one real opportunity to track.",
+          "recommendation": "Add a role you would actually pursue and let Horizon structure the next step."
+        },
+        "decision": {
+          "label": "Decision momentum",
+          "body": "You have offer-stage signal. The next move is response quality, not more volume.",
+          "recommendation": "Review compensation, timing, and negotiation notes before replying.",
+          "cta": "Review offers"
+        },
+        "noLoops": {
+          "label": "Activity without loops",
+          "body": "You have application activity, but no active interview loop yet.",
+          "recommendation": "Tighten fit analysis and follow up on warm applications before adding noise.",
+          "cta": "Review pipeline"
+        },
+        "thinFunnel": {
+          "label": "Top of funnel is thin",
+          "body": "Momentum is low because there are not enough targeted opportunities in motion.",
+          "recommendation": "Add three well-fit roles this week before optimizing details."
+        },
+        "interview": {
+          "label": "Interview leverage",
+          "body": "Your strongest signal is in active interview loops.",
+          "recommendation": "Prepare role-specific stories and questions before sending more applications.",
+          "cta": "Prepare now"
+        },
+        "healthy": {
+          "label": "Healthy rhythm",
+          "body": "Your pipeline has useful activity. Keep the cadence steady."
+        },
+        "building": {
+          "label": "Momentum building",
+          "body": "Your profile readiness is improving, but the application pace still needs work.",
+          "recommendation": "Protect the next action: follow up, tailor one document, or add one strong role."
+        }
+      }
+    },
+    "pipeline": {
+      "title": "Pipeline Strategy",
+      "stages": {
+        "applied": {
+          "label": "Applied",
+          "helper": "Targeted roles added",
+          "actionMore": "{{count}} more this week",
+          "actionMaintain": "Maintain quality"
+        },
+        "screen": {
+          "label": "Screen",
+          "helper": "Recruiter conversations",
+          "actionImprove": "Improve initial fit",
+          "actionKeepWarm": "Keep warm"
+        },
+        "interview": {
+          "label": "Interview",
+          "helper": "Active loops",
+          "actionPrepare": "Prepare before next screen",
+          "actionPractice": "Practice answers"
+        },
+        "offer": {
+          "label": "Offer",
+          "helper": "Decision zone",
+          "actionNotYet": "Not there yet",
+          "actionReview": "Review response"
+        }
+      },
+      "insights": {
+        "empty": {
+          "label": "No pipeline yet",
+          "body": "Start with one opportunity. Horizon will turn it into a guided workflow.",
+          "recommendation": "Add one role with a real job description.",
+          "target": "Week target: 3 quality roles"
+        },
+        "decision": {
+          "label": "Decision stage",
+          "body": "You have offer-stage traction. Reduce risk before optimizing volume.",
+          "recommendation": "Review compensation, timing, and negotiation notes.",
+          "target": "Target: one clean response path"
+        },
+        "topHeavy": {
+          "label": "Top-heavy pipeline",
+          "body": "Applications are not turning into conversations yet.",
+          "recommendation": "Review fit, strengthen the CV angle, and follow up on warm roles.",
+          "target": "Target: 1 recruiter conversation"
+        },
+        "screening": {
+          "label": "Screening bottleneck",
+          "body": "You have early conversations, but no active interview loop.",
+          "recommendation": "Prepare sharper stories and role-specific questions.",
+          "target": "Target: convert one screen"
+        },
+        "activeLoop": {
+          "label": "Active loop",
+          "body": "Your strongest signal is already in motion.",
+          "recommendation": "Prioritize interview prep before adding more applications.",
+          "target": "Target: one prepared loop"
+        },
+        "forming": {
+          "label": "Flow is forming",
+          "body": "The pipeline has activity, but no clear pressure point yet.",
+          "recommendation": "Keep one follow-up and one new role moving each week.",
+          "target": "Target: steady weekly cadence"
+        }
+      }
+    },
+    "suggestedActions": {
+      "roleAtCompany": "{{role}} at {{company}}",
+      "interview": {
+        "eyebrow": "Prepare now",
+        "meta": "High-leverage prep window open",
+        "cta": "Prepare"
+      },
+      "offer": {
+        "eyebrow": "Decision lane",
+        "meta": "Review package and response timing",
+        "cta": "Review"
+      },
+      "followUp": {
+        "eyebrow": "Follow-up",
+        "meta": "Follow up before this opportunity goes stale",
+        "cta": "Follow up"
+      },
+      "empty": {
+        "add": {
+          "eyebrow": "Start momentum",
+          "title": "Add your next opportunity",
+          "meta": "Fresh opportunities create better guidance and context",
+          "cta": "Add role"
+        },
+        "documents": {
+          "eyebrow": "Sharpen profile",
+          "title": "Refresh CV and portfolio narrative",
+          "meta": "Make your materials ready before volume increases",
+          "cta": "Open documents"
+        }
+      }
+    },
+    "readiness": {
+      "title": "Readiness",
+      "heading": "Prepared to move",
+      "body": "Keep the materials and practice layer close to the opportunities that matter.",
+      "openDocuments": "Open document assistant",
+      "items": {
+        "documents": {
+          "label": "Documents",
+          "ready": "Role materials are attached to part of the pipeline.",
+          "empty": "Attach or generate a tailored CV for your next strong role."
+        },
+        "fit": {
+          "label": "Fit signal",
+          "ready": "High-fit opportunities are worth focused preparation.",
+          "empty": "Run fit analysis before sending more generic applications."
+        },
+        "practice": {
+          "label": "Practice",
+          "ready": "Interview loops need prepared stories and questions.",
+          "empty": "No active interview loop yet. Build signal first."
+        }
+      }
+    },
+    "workQueue": {
+      "title": "Application Work Queue",
+      "subtitle": "Next actions, stale items, active loops",
+      "open": "Open work queue",
+      "companyFallback": "Company",
+      "itemCount": "{{count}} items",
+      "columns": {
+        "opportunity": "Opportunity",
+        "signal": "Signal",
+        "nextAction": "Next action",
+        "age": "Age",
+        "fit": "Fit"
+      },
+      "empty": {
+        "title": "Start with one opportunity.",
+        "body": "Horizon will turn it into a guided workflow with fit, documents, follow-up, and interview prep.",
+        "cta": "Add your first role"
+      },
+      "status": {
+        "Applied": "Applied",
+        "PhoneScreen": "Phone screen",
+        "TechnicalTask": "Technical task",
+        "Interviewing": "Interviewing",
+        "Offer": "Offer",
+        "Rejected": "Rejected",
+        "Ghosted": "Ghosted",
+        "Accepted": "Accepted"
+      },
+      "attention": {
+        "decision": "Decision needed",
+        "activeLoop": "Active loop",
+        "followUp": "Follow-up due",
+        "promisingFit": "Promising fit",
+        "archive": "Archive candidate",
+        "nextStep": "Next step open"
+      },
+      "nextAction": {
+        "offer": "Review offer response",
+        "interview": "Prepare interview stories",
+        "technicalTask": "Plan technical task",
+        "phoneScreen": "Prepare recruiter screen",
+        "followUp": "Send follow-up",
+        "applied": "Monitor and refine fit",
+        "archive": "Archive or extract learning"
+      },
+      "priority": {
+        "label": "priority",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    }
   },
   "ai": {
     "drawer": {

@@ -3,17 +3,17 @@
     <div class="flex items-center justify-between">
       <div hlmCardTitle class="flex items-center gap-2 text-base font-semibold">
         <lucide-icon name="briefcase" class="h-4 w-4 text-primary"></lucide-icon>
-        Recent Applications
+        {{ 'dashboard.workQueue.title' | transloco }}
       </div>
-      <p class="text-xs text-muted-foreground">Latest first</p>
+      <p class="text-xs text-muted-foreground">{{ 'dashboard.workQueue.subtitle' | transloco }}</p>
     </div>
   </div>
 
   <div hlmCardContent class="space-y-2">
     @if (isLoading()) {
-      <p class="text-sm text-muted-foreground">Loading applications…</p>
+      <p class="text-sm text-muted-foreground">{{ 'common.states.loading' | transloco }}</p>
     } @else if (applications().length === 0) {
-      <p class="text-sm text-muted-foreground">No applications found yet.</p>
+      <p class="text-sm text-muted-foreground">{{ 'dashboard.workQueue.empty.body' | transloco }}</p>
     } @else {
       @for (application of applications(); track application.id) {
         <div class="rounded-xl border border-border bg-card p-3">
@@ -21,7 +21,7 @@
             <div>
               <p class="text-sm font-semibold text-foreground">{{ application.position }}</p>
               <p class="text-xs text-muted-foreground">
-                {{ application.companyName || 'Unknown Company' }} ·
+                {{ application.companyName || ('dashboard.workQueue.companyFallback' | transloco) }} -
                 {{ getAppliedAtLabel(application.appliedAt) }}
               </p>
             </div>

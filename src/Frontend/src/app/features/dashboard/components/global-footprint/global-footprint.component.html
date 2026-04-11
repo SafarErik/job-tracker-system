@@ -11,7 +11,7 @@
       </div>
 
       <span class="text-xs text-muted-foreground">
-        {{ locationStats().total }} location{{ locationStats().total === 1 ? '' : 's' }}
+        {{ 'footprint.locationCount' | transloco: { count: locationStats().total } }}
       </span>
     </div>
 
@@ -36,8 +36,8 @@
         <div class="global-footprint-preview__meta">
           <span class="global-footprint-preview__meta-pill">{{ 'footprint.liveOrbit' | transloco }}</span>
           <span class="global-footprint-preview__meta-pill">{{
-            locationStats().applicationHubs
-          }} tracked hub{{ locationStats().applicationHubs === 1 ? '' : 's' }}</span>
+            'footprint.trackedHubCount' | transloco: { count: locationStats().applicationHubs }
+          }}</span>
         </div>
         <div class="global-footprint-preview__veil"></div>
 
@@ -146,10 +146,10 @@
                 {{ hovered.city }}, {{ hovered.country }}
               </p>
               <p class="mt-2 text-sm text-foreground">
-                {{ hovered.applications.length }} tracked role{{
+                {{ hovered.applications.length }} tracked application{{
                   hovered.applications.length === 1 ? '' : 's'
                 }}
-                and {{ hovered.nearbyRoles.length }} nearby signal{{
+                and {{ hovered.nearbyRoles.length }} nearby context item{{
                   hovered.nearbyRoles.length === 1 ? '' : 's'
                 }}
               </p>
@@ -222,7 +222,7 @@
                       {{ 'footprint.yourApplications' | transloco }}
                     </h4>
                     <span class="text-xs text-muted-foreground"
-                      >{{ location.applications.length }} active trace</span
+                      >{{ location.applications.length }} tracked</span
                     >
                   </div>
 
@@ -269,7 +269,9 @@
                       {{ 'footprint.nearbyMarketSignal' | transloco }}
                     </h4>
                     <span class="text-xs text-muted-foreground"
-                      >{{ location.nearbyRoles.length }} mock/live-ready card</span
+                      >{{ location.nearbyRoles.length }} context item{{
+                        location.nearbyRoles.length === 1 ? '' : 's'
+                      }}</span
                     >
                   </div>
 

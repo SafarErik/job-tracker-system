@@ -5,15 +5,17 @@
 >
   <div
     hlmSidebarHeader
-    class="overflow-hidden border-b border-sidebar-border/80 px-4 py-4 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
+    class="overflow-hidden border-b border-sidebar-border/80 px-3 py-3.5 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
   >
     <div
-      class="flex w-full items-center gap-3 overflow-hidden rounded-2xl border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-3 transition-all group-data-[collapsible=icon]:w-12 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-2xl group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0"
+      class="flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-2.5 transition-all group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:min-h-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0"
     >
       <app-logo class="transition-all duration-300" size="sm" [withGlow]="true"></app-logo>
-      <div class="min-w-0 group-data-[collapsible=icon]:hidden">
+      <div class="min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
         <p class="truncate text-sm font-semibold text-sidebar-foreground">Horizon</p>
-        <p class="truncate text-xs text-sidebar-foreground/55">{{ 'shell.brandSubtitle' | transloco }}</p>
+        <p class="mt-0.5 truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
+          {{ 'shell.brandSubtitle' | transloco }}
+        </p>
       </div>
     </div>
   </div>
@@ -34,7 +36,7 @@
                 [routerLink]="item.link"
                 routerLinkActive="bg-sidebar-primary/12 text-sidebar-foreground border-sidebar-primary/30 shadow-[0_12px_30px_hsl(var(--sidebar-primary)/0.08)]"
                 [routerLinkActiveOptions]="{ exact: item.exact }"
-                class="group mb-1 flex justify-start rounded-2xl border border-transparent px-3 py-3 text-sidebar-foreground/72 transition-all hover:border-sidebar-border hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0"
+                class="group mb-1 flex justify-start rounded-lg border border-transparent px-3 py-3 text-sidebar-foreground/72 transition-all hover:border-sidebar-border hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:px-0"
               >
                 <ng-icon
                   hlm

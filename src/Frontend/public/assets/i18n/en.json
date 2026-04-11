@@ -57,8 +57,10 @@
       "system": "System",
       "logout": "Log out",
       "account": {
-        "workspaceName": "Horizon Workspace",
-        "workspaceGroup": "Workspace"
+        "workspaceName": "Horizon account",
+        "workspaceGroup": "Account",
+        "preferencesGroup": "Preferences",
+        "workspaceKind": "Career workspace"
       },
       "descriptions": {
         "dashboard": "See what matters now and where you need to react.",
@@ -207,17 +209,17 @@
       "title": "What needs attention now",
       "updated": "Updated {{date}}.",
       "summary": {
-        "empty": "No tracked opportunities yet. Add one role to start building signal.",
+        "empty": "No tracked opportunities yet. Add one opportunity to start building momentum.",
         "offers": "Offer-stage items: {{count}}. Decision quality matters more than volume.",
-        "interviews": "Active interview loops: {{count}}. Let them drive today's work.",
+        "interviews": "Active interviews: {{count}}. Let them drive today's work.",
         "followUps": "Pending applications: {{count}}. They can go stale without follow-up.",
-        "default": "Tracked applications: {{count}}. No urgent loop yet, so build the next signal."
+        "default": "Tracked applications: {{count}}. No urgent next action yet. Review one application or add a strong opportunity."
       },
       "briefing": {
         "interviews": "Active interviews: {{count}}",
         "followUps": "Follow-ups pending: {{count}}",
         "offers": "Offers received: {{count}}",
-        "empty": "Add a targeted role to start building signal"
+        "empty": "Add a strong opportunity to start building momentum"
       }
     },
     "momentum": {
@@ -226,31 +228,31 @@
       "recommendation": "Recommendation",
       "states": {
         "noSignal": {
-          "label": "No signal yet",
+          "label": "No momentum yet",
           "body": "Momentum starts once Horizon has one real opportunity to track.",
-          "recommendation": "Add a role you would actually pursue and let Horizon structure the next step."
+          "recommendation": "Add an opportunity you would actually pursue and let Horizon structure the next step."
         },
         "decision": {
           "label": "Decision momentum",
-          "body": "You have offer-stage signal. The next move is response quality, not more volume.",
+          "body": "You have an offer-stage application. The next move is response quality, not more volume.",
           "recommendation": "Review compensation, timing, and negotiation notes before replying.",
           "cta": "Review offers"
         },
-        "noLoops": {
-          "label": "Activity without loops",
-          "body": "You have application activity, but no active interview loop yet.",
-          "recommendation": "Tighten fit analysis and follow up on warm applications before adding noise.",
+        "noInterviews": {
+          "label": "Applications need attention",
+          "body": "You have applications in motion, but no active interview yet.",
+          "recommendation": "Review fit and follow up on the strongest opportunities before adding more.",
           "cta": "Review pipeline"
         },
         "thinFunnel": {
-          "label": "Top of funnel is thin",
+          "label": "Pipeline is thin",
           "body": "Momentum is low because there are not enough targeted opportunities in motion.",
-          "recommendation": "Add three well-fit roles this week before optimizing details."
+          "recommendation": "Add two well-matched opportunities this week, then update materials for the strongest one."
         },
         "interview": {
-          "label": "Interview leverage",
-          "body": "Your strongest signal is in active interview loops.",
-          "recommendation": "Prepare role-specific stories and questions before sending more applications.",
+          "label": "Interview momentum",
+          "body": "Your strongest progress is in active interviews.",
+          "recommendation": "Prepare opportunity-specific stories and questions before sending more applications.",
           "cta": "Prepare now"
         },
         "healthy": {
@@ -260,7 +262,7 @@
         "building": {
           "label": "Momentum building",
           "body": "Your profile readiness is improving, but the application pace still needs work.",
-          "recommendation": "Protect the next action: follow up, tailor one document, or add one strong role."
+          "recommendation": "Protect the next action: follow up, tailor one document, or add one strong opportunity."
         }
       }
     },
@@ -269,20 +271,20 @@
       "stages": {
         "applied": {
           "label": "Applied",
-          "helper": "Targeted roles added",
+          "helper": "Targeted opportunities added",
           "actionMore": "{{count}} more this week",
           "actionMaintain": "Maintain quality"
         },
         "screen": {
           "label": "Screen",
           "helper": "Recruiter conversations",
-          "actionImprove": "Improve initial fit",
-          "actionKeepWarm": "Keep warm"
+          "actionImprove": "Review opportunity fit",
+          "actionKeepWarm": "Practice for screen"
         },
         "interview": {
           "label": "Interview",
-          "helper": "Active loops",
-          "actionPrepare": "Prepare before next screen",
+          "helper": "Active interviews",
+          "actionPrepare": "Prepare before the next screen",
           "actionPractice": "Practice answers"
         },
         "offer": {
@@ -296,8 +298,8 @@
         "empty": {
           "label": "No pipeline yet",
           "body": "Start with one opportunity. Horizon will turn it into a guided workflow.",
-          "recommendation": "Add one role with a real job description.",
-          "target": "Week target: 3 quality roles"
+          "recommendation": "Add one opportunity with a real job description.",
+          "target": "Week target: 3 quality opportunities"
         },
         "decision": {
           "label": "Decision stage",
@@ -306,27 +308,27 @@
           "target": "Target: one clean response path"
         },
         "topHeavy": {
-          "label": "Top-heavy pipeline",
+          "label": "Pipeline needs attention",
           "body": "Applications are not turning into conversations yet.",
-          "recommendation": "Review fit, strengthen the CV angle, and follow up on warm roles.",
+          "recommendation": "Review fit, strengthen the CV angle, and follow up on the strongest opportunities.",
           "target": "Target: 1 recruiter conversation"
         },
         "screening": {
           "label": "Screening bottleneck",
-          "body": "You have early conversations, but no active interview loop.",
-          "recommendation": "Prepare sharper stories and role-specific questions.",
+          "body": "You have early conversations, but no active interview yet.",
+          "recommendation": "Prepare sharper stories and opportunity-specific questions.",
           "target": "Target: convert one screen"
         },
         "activeLoop": {
-          "label": "Active loop",
-          "body": "Your strongest signal is already in motion.",
+          "label": "Active interview",
+          "body": "Your strongest application is already in motion.",
           "recommendation": "Prioritize interview prep before adding more applications.",
-          "target": "Target: one prepared loop"
+          "target": "Target: one prepared interview"
         },
         "forming": {
-          "label": "Flow is forming",
-          "body": "The pipeline has activity, but no clear pressure point yet.",
-          "recommendation": "Keep one follow-up and one new role moving each week.",
+          "label": "Pipeline is taking shape",
+          "body": "Your pipeline has activity, but no clear priority yet.",
+          "recommendation": "Keep one follow-up and one new opportunity moving each week.",
           "target": "Target: steady weekly cadence"
         }
       }
@@ -335,11 +337,11 @@
       "roleAtCompany": "{{role}} at {{company}}",
       "interview": {
         "eyebrow": "Prepare now",
-        "meta": "High-leverage prep window open",
+        "meta": "This interview should lead today's work",
         "cta": "Prepare"
       },
       "offer": {
-        "eyebrow": "Decision lane",
+        "eyebrow": "Decision needed",
         "meta": "Review package and response timing",
         "cta": "Review"
       },
@@ -350,51 +352,51 @@
       },
       "empty": {
         "add": {
-          "eyebrow": "Start momentum",
+          "eyebrow": "Recommended",
           "title": "Add your next opportunity",
-          "meta": "Fresh opportunities create better guidance and context",
-          "cta": "Add role"
+          "meta": "One strong opportunity gives Horizon better context",
+          "cta": "Add opportunity"
         },
         "documents": {
-          "eyebrow": "Sharpen profile",
-          "title": "Refresh CV and portfolio narrative",
-          "meta": "Make your materials ready before volume increases",
-          "cta": "Open documents"
+          "eyebrow": "Readiness",
+          "title": "Update your materials",
+          "meta": "Keep your CV ready for the strongest opportunities",
+          "cta": "Update materials"
         }
       }
     },
     "readiness": {
       "title": "Readiness",
-      "heading": "Prepared to move",
-      "body": "Keep the materials and practice layer close to the opportunities that matter.",
-      "openDocuments": "Open document assistant",
+      "heading": "Prepared for the next step",
+      "body": "Keep documents and practice tied to the opportunities that matter.",
+      "openDocuments": "Update materials",
       "items": {
         "documents": {
           "label": "Documents",
-          "ready": "Role materials are attached to part of the pipeline.",
-          "empty": "Attach or generate a tailored CV for your next strong role."
+          "ready": "Materials are attached to part of the pipeline.",
+          "empty": "Attach or generate a tailored CV for your next strong opportunity."
         },
         "fit": {
-          "label": "Fit signal",
-          "ready": "High-fit opportunities are worth focused preparation.",
-          "empty": "Run fit analysis before sending more generic applications."
+          "label": "Opportunity fit",
+          "ready": "Strong-fit opportunities are ready for focused preparation.",
+          "empty": "Review fit before sending more generic applications."
         },
         "practice": {
           "label": "Practice",
-          "ready": "Interview loops need prepared stories and questions.",
-          "empty": "No active interview loop yet. Build signal first."
+          "ready": "Active interviews need prepared stories and questions.",
+          "empty": "No active interview yet. Build momentum first."
         }
       }
     },
     "workQueue": {
-      "title": "Application Work Queue",
-      "subtitle": "Next actions, stale items, active loops",
-      "open": "Open work queue",
+      "title": "Application Queue",
+      "subtitle": "Next actions and applications that need attention",
+      "open": "Review next actions",
       "companyFallback": "Company",
       "itemCount": "{{count}} items",
       "columns": {
         "opportunity": "Opportunity",
-        "signal": "Signal",
+        "signal": "Attention",
         "nextAction": "Next action",
         "age": "Age",
         "fit": "Fit"
@@ -402,7 +404,7 @@
       "empty": {
         "title": "Start with one opportunity.",
         "body": "Horizon will turn it into a guided workflow with fit, documents, follow-up, and interview prep.",
-        "cta": "Add your first role"
+        "cta": "Add your first opportunity"
       },
       "status": {
         "Applied": "Applied",
@@ -416,20 +418,24 @@
       },
       "attention": {
         "decision": "Decision needed",
-        "activeLoop": "Active loop",
+        "activeInterview": "Active interview",
         "followUp": "Follow-up due",
         "promisingFit": "Promising fit",
-        "archive": "Archive candidate",
+        "archive": "Ready to archive",
         "nextStep": "Next step open"
       },
       "nextAction": {
-        "offer": "Review offer response",
-        "interview": "Prepare interview stories",
-        "technicalTask": "Plan technical task",
-        "phoneScreen": "Prepare recruiter screen",
-        "followUp": "Send follow-up",
-        "applied": "Monitor and refine fit",
-        "archive": "Archive or extract learning"
+        "offer": "Prepare response",
+        "interview": "Prepare answers",
+        "technicalTask": "Plan task",
+        "phoneScreen": "Practice for screen",
+        "followUp": "Follow up",
+        "applied": "Review fit",
+        "updateMaterials": "Update materials",
+        "reengage": "Re-engage",
+        "reengageOrArchive": "Re-engage or archive",
+        "archive": "Archive",
+        "reviewNextAction": "Review next action"
       },
       "priority": {
         "label": "priority",
@@ -537,23 +543,25 @@
     }
   },
   "footprint": {
-    "cardTitle": "Global footprint",
-    "cardSubtitle": "Open the immersive world map in a dedicated screen.",
+    "cardTitle": "Market footprint",
+    "cardSubtitle": "Secondary context for where your applications live.",
     "empty": "No location data available yet.",
-    "liveOrbit": "Live orbit",
-    "interactiveGlobe": "Interactive globe",
-    "openTitle": "Open the dedicated world view",
-    "openBody": "Explore tracked applications and nearby company signals on an interactive map.",
-    "openCta": "Open globe",
+    "locationCount": "{{count}} locations",
+    "trackedHubCount": "{{count}} tracked hubs",
+    "liveOrbit": "Map view",
+    "interactiveGlobe": "Market context",
+    "openTitle": "Explore the market map",
+    "openBody": "Review application locations and nearby market context when you need it.",
+    "openCta": "Open map",
     "screenEyebrow": "World view",
     "screenTitle": "Global application map",
-    "screenBody": "Rotate the globe, inspect city clusters, and review company signals in context.",
-    "allSignal": "All signals",
+    "screenBody": "Rotate the globe, inspect city clusters, and review market context.",
+    "allSignal": "All context",
     "applications": "Applications",
     "yourApplications": "Your applications",
     "nearby": "Nearby",
     "tracked": "Tracked",
-    "nearbyMarketSignal": "Nearby market signal",
+    "nearbyMarketSignal": "Nearby market context",
     "autoOrbitOn": "Auto orbit on",
     "autoOrbitOff": "Auto orbit off",
     "dragHint": "Drag to rotate",

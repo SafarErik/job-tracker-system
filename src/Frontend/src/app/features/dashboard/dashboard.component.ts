@@ -232,10 +232,10 @@ export class DashboardComponent implements OnInit {
 
     if (interviews === 0 && total >= 5) {
       return {
-        label: this.t('dashboard.momentum.states.noLoops.label'),
-        body: this.t('dashboard.momentum.states.noLoops.body'),
-        recommendation: this.t('dashboard.momentum.states.noLoops.recommendation'),
-        cta: this.t('dashboard.momentum.states.noLoops.cta'),
+        label: this.t('dashboard.momentum.states.noInterviews.label'),
+        body: this.t('dashboard.momentum.states.noInterviews.body'),
+        recommendation: this.t('dashboard.momentum.states.noInterviews.recommendation'),
+        cta: this.t('dashboard.momentum.states.noInterviews.cta'),
         route: '/applications',
       };
     }
@@ -462,7 +462,7 @@ export class DashboardComponent implements OnInit {
     const priority = this.priorityItems();
 
     if (priority.length > 0) {
-      return priority.map((item) => ({
+      return priority.map((item, index) => ({
         eyebrow:
           item.kind === 'interview'
             ? this.t('dashboard.suggestedActions.interview.eyebrow')
@@ -486,7 +486,7 @@ export class DashboardComponent implements OnInit {
               ? this.t('dashboard.suggestedActions.offer.cta')
               : this.t('dashboard.suggestedActions.followUp.cta'),
         route: `/applications/${item.id}`,
-        tone: item.kind === 'interview' ? 'primary' : item.kind === 'offer' ? 'attention' : 'neutral',
+        tone: index === 0 ? 'primary' : item.kind === 'offer' ? 'attention' : 'neutral',
       }));
     }
 

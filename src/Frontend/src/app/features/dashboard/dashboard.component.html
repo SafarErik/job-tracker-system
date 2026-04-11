@@ -34,9 +34,9 @@
           </a>
         </div>
 
-        <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+        <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
           <div>
-            <div class="mb-3 flex flex-wrap items-center gap-2">
+            <div class="mb-2 flex flex-wrap items-center gap-2">
               @for (item of dailyBriefing(); track item.text) {
                 <span class="dashboard-chip">{{ item.text }}</span>
               }
@@ -46,8 +46,8 @@
               @for (item of suggestedActions(); track item.title) {
                 <article class="dashboard-action-card" [ngClass]="getActionClass(item.tone)">
                   <p class="dashboard-action-card__eyebrow">{{ item.eyebrow }}</p>
-                  <h2 class="mt-3 text-base font-semibold leading-6 text-foreground">{{ item.title }}</h2>
-                  <p class="mt-2 min-h-10 text-sm leading-6 text-muted-foreground">{{ item.meta }}</p>
+                  <h2 class="mt-2 text-base font-semibold leading-6 text-foreground">{{ item.title }}</h2>
+                  <p class="mt-1 min-h-9 text-sm leading-5 text-muted-foreground">{{ item.meta }}</p>
                   <a [routerLink]="item.route" class="dashboard-action-card__link">
                     {{ item.cta }}
                   </a>
@@ -67,13 +67,13 @@
               <span class="momentum-panel__badge">{{ 'dashboard.momentum.badge' | transloco }}</span>
             </div>
 
-            <div class="mt-5 grid items-center gap-5 sm:grid-cols-[9rem_1fr] lg:grid-cols-1 xl:grid-cols-[8.5rem_1fr]">
+            <div class="mt-4 grid items-center gap-4 sm:grid-cols-[8.5rem_1fr] lg:grid-cols-1 xl:grid-cols-[8rem_1fr]">
               <app-momentum-gauge [score]="momentumScore()" [loading]="isLoading()"></app-momentum-gauge>
               <div>
                 <p class="text-sm leading-6 text-muted-foreground">
                   {{ momentumDiagnosis().body }}
                 </p>
-                <div class="mt-4 rounded-lg border border-primary/20 bg-primary/10 p-3">
+                <div class="mt-3 rounded-lg border border-primary/20 bg-primary/10 p-2.5">
                   <p class="text-xs font-semibold uppercase text-primary">
                     {{ 'dashboard.momentum.recommendation' | transloco }}
                   </p>

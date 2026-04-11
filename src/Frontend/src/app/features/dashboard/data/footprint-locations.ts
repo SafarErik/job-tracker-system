@@ -136,7 +136,7 @@ const MARKET_SIGNAL_LIBRARY: Record<string, MarketOpportunitySeed[]> = {
       companyName: 'Remote-first Watchlist',
       roleTitle: 'Principal Angular Engineer',
       summary:
-        'Mock signal bucket for distributed teams with enterprise dashboards and multi-tenant products.',
+        'Mock market context for distributed teams with enterprise dashboards and multi-tenant products.',
       workplaceLabel: 'Remote',
       techStack: ['Angular', 'Tailwind', 'Architecture'],
       emphasis: 'Distributed by default',
@@ -190,7 +190,7 @@ export function buildFootprintLocations(
         summary: seed.summary,
         statusLabel: 'Nearby',
         workplaceLabel: seed.workplaceLabel,
-        sourceLabel: 'Mock market signal',
+        sourceLabel: 'Mock market context',
         techStack: seed.techStack,
         emphasis: seed.emphasis,
       });
@@ -248,7 +248,7 @@ function getOrCreateBucket(
 function buildPulse(bucket: LocationBucket): string[] {
   const pulse = [
     `${bucket.applications.length} tracked application${bucket.applications.length === 1 ? '' : 's'}`,
-    `${bucket.nearbyRoles.length} nearby signal${bucket.nearbyRoles.length === 1 ? '' : 's'}`,
+    `${bucket.nearbyRoles.length} nearby context item${bucket.nearbyRoles.length === 1 ? '' : 's'}`,
     ...bucket.pulse,
   ];
 
@@ -286,7 +286,7 @@ function buildWatchlistCard(company: Company): FootprintSignalCard {
     roleTitle: fallbackRole,
     summary:
       company.description?.trim() ||
-      `Watchlist company with ${company.compatibilityScore}% compatibility and enough metadata to surface as nearby signal.`,
+      `Watchlist company with ${company.compatibilityScore}% compatibility and enough metadata to surface as nearby context.`,
     statusLabel: 'Watchlist',
     workplaceLabel: 'Hybrid-ready',
     sourceLabel: 'Tracked company',

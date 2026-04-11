@@ -174,7 +174,7 @@ export class PipelineTableCardComponent {
 
   getAttentionLabel(app: JobApplication): string {
     if (app.status === JobApplicationStatus.Offer) return this.t('dashboard.workQueue.attention.decision');
-    if (app.status === JobApplicationStatus.Interviewing) return this.t('dashboard.workQueue.attention.activeLoop');
+    if (app.status === JobApplicationStatus.Interviewing) return this.t('dashboard.workQueue.attention.activeInterview');
     if (this.isStale(app)) return this.t('dashboard.workQueue.attention.followUp');
     if ((app.matchScore ?? 0) >= 75) return this.t('dashboard.workQueue.attention.promisingFit');
     if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {
@@ -199,18 +199,25 @@ export class PipelineTableCardComponent {
     if (app.status === JobApplicationStatus.TechnicalTask) return this.t('dashboard.workQueue.nextAction.technicalTask');
     if (app.status === JobApplicationStatus.PhoneScreen) {
       return this.isStale(app)
-        ? this.t('dashboard.workQueue.nextAction.followUp')
+        ? this.t('dashboard.workQueue.nextAction.reengage')
         : this.t('dashboard.workQueue.nextAction.phoneScreen');
     }
     if (app.status === JobApplicationStatus.Applied) {
+      if (!app.documentId && (app.matchScore ?? 0) >= 70) {
+        return this.t('dashboard.workQueue.nextAction.updateMaterials');
+      }
+
       return this.isStale(app)
         ? this.t('dashboard.workQueue.nextAction.followUp')
         : this.t('dashboard.workQueue.nextAction.applied');
     }
-    if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {
+    if (app.status === JobApplicationStatus.Ghosted) {
+      return this.t('dashboard.workQueue.nextAction.reengageOrArchive');
+    }
+    if (app.status === JobApplicationStatus.Rejected) {
       return this.t('dashboard.workQueue.nextAction.archive');
     }
-    return this.t('dashboard.workQueue.open');
+    return this.t('dashboard.workQueue.nextAction.reviewNextAction');
   }
 
   getPriorityLabel(priority: JobPriority): string {

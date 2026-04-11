@@ -482,7 +482,7 @@ export class GlobalFootprintComponent {
       <div style="padding:8px 10px;border-radius:12px;background:rgba(11,18,32,.9);border:1px solid rgba(95,152,255,.22);color:#f8fafc;min-width:180px">
         <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7fb3ff;font-weight:700">${escapeHtml(location.city)}, ${escapeHtml(location.country)}</div>
         <div style="margin-top:6px;font-size:13px;font-weight:700">${escapeHtml(location.detail)}</div>
-        <div style="margin-top:6px;font-size:12px;color:#cbd5e1">${location.applications.length} tracked role${location.applications.length === 1 ? '' : 's'} | ${location.nearbyRoles.length} nearby</div>
+        <div style="margin-top:6px;font-size:12px;color:#cbd5e1">${location.applications.length} tracked application${location.applications.length === 1 ? '' : 's'} | ${location.nearbyRoles.length} nearby</div>
       </div>
     `;
   }

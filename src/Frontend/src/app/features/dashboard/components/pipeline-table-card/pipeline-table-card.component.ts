@@ -60,7 +60,7 @@ import { JobPriority } from '../../../job-applications/models/job-priority.enum'
     }
 
     .queue-row:hover {
-      background: hsl(var(--muted) / 0.32);
+      background: hsl(var(--brand-mist) / 0.28);
     }
   `,
 })
@@ -184,11 +184,11 @@ export class PipelineTableCardComponent {
   }
 
   getAttentionClass(app: JobApplication): string {
-    if (app.status === JobApplicationStatus.Offer) return 'border-success/40 bg-success/10 text-success';
-    if (app.status === JobApplicationStatus.Interviewing) return 'border-primary/40 bg-primary/10 text-primary';
-    if (this.isStale(app)) return 'border-warning/40 bg-warning/10 text-warning';
+    if (app.status === JobApplicationStatus.Offer) return 'border-[hsl(var(--brand-electric)/0.38)] bg-[hsl(var(--brand-electric)/0.08)] text-[hsl(var(--brand-electric))]';
+    if (app.status === JobApplicationStatus.Interviewing) return 'border-[hsl(var(--brand-aurora)/0.42)] bg-[hsl(var(--brand-mist)/0.62)] text-[hsl(var(--brand-midnight))]';
+    if (this.isStale(app)) return 'border-[hsl(var(--brand-electric)/0.32)] bg-[hsl(var(--brand-electric)/0.07)] text-[hsl(var(--brand-electric))]';
     if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {
-      return 'border-destructive/40 bg-destructive/10 text-destructive';
+      return 'border-destructive/30 bg-destructive/5 text-destructive';
     }
     return 'border-border bg-muted/60 text-muted-foreground';
   }
@@ -227,9 +227,27 @@ export class PipelineTableCardComponent {
   }
 
   getPriorityClass(priority: JobPriority): string {
-    if (priority === JobPriority.High) return 'text-primary';
+    if (priority === JobPriority.High) return 'text-[hsl(var(--brand-electric))]';
     if (priority === JobPriority.Medium) return 'text-foreground';
     return 'text-muted-foreground';
+  }
+
+  getNextActionClass(app: JobApplication): string {
+    if (
+      app.status === JobApplicationStatus.Offer ||
+      app.status === JobApplicationStatus.Interviewing ||
+      app.status === JobApplicationStatus.PhoneScreen ||
+      app.status === JobApplicationStatus.TechnicalTask ||
+      this.isStale(app)
+    ) {
+      return 'text-[hsl(var(--brand-electric))]';
+    }
+
+    if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {
+      return 'text-muted-foreground';
+    }
+
+    return 'text-foreground';
   }
 
   trackByApp(_: number, app: JobApplication): string {

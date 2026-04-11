@@ -44,6 +44,7 @@ interface PipelineStageSummary {
   helper: string;
   action: string;
   state: 'strong' | 'watch' | 'quiet';
+  stateLabel: string;
 }
 
 interface MomentumDiagnosis {
@@ -316,6 +317,7 @@ export class DashboardComponent implements OnInit {
             ? this.t('dashboard.pipeline.stages.applied.actionMore', { count: 3 - applied })
             : this.t('dashboard.pipeline.stages.applied.actionMaintain'),
         state: applied === 0 ? 'quiet' : applied < 3 ? 'watch' : 'strong',
+        stateLabel: this.getStageStateLabel(applied === 0 ? 'quiet' : applied < 3 ? 'watch' : 'strong'),
       },
       {
         label: this.t('dashboard.pipeline.stages.screen.label'),
@@ -326,6 +328,7 @@ export class DashboardComponent implements OnInit {
             ? this.t('dashboard.pipeline.stages.screen.actionImprove')
             : this.t('dashboard.pipeline.stages.screen.actionKeepWarm'),
         state: screen === 0 && applied > 0 ? 'watch' : screen > 0 ? 'strong' : 'quiet',
+        stateLabel: this.getStageStateLabel(screen === 0 && applied > 0 ? 'watch' : screen > 0 ? 'strong' : 'quiet'),
       },
       {
         label: this.t('dashboard.pipeline.stages.interview.label'),
@@ -336,6 +339,7 @@ export class DashboardComponent implements OnInit {
             ? this.t('dashboard.pipeline.stages.interview.actionPrepare')
             : this.t('dashboard.pipeline.stages.interview.actionPractice'),
         state: interview === 0 && screen > 0 ? 'watch' : interview > 0 ? 'strong' : 'quiet',
+        stateLabel: this.getStageStateLabel(interview === 0 && screen > 0 ? 'watch' : interview > 0 ? 'strong' : 'quiet'),
       },
       {
         label: this.t('dashboard.pipeline.stages.offer.label'),
@@ -346,6 +350,7 @@ export class DashboardComponent implements OnInit {
             ? this.t('dashboard.pipeline.stages.offer.actionNotYet')
             : this.t('dashboard.pipeline.stages.offer.actionReview'),
         state: offers > 0 ? 'strong' : 'quiet',
+        stateLabel: this.getStageStateLabel(offers > 0 ? 'strong' : 'quiet'),
       },
     ];
   });
@@ -573,6 +578,12 @@ export class DashboardComponent implements OnInit {
     if (state === 'ready') return 'readiness-item--ready';
     if (state === 'watch') return 'readiness-item--watch';
     return 'readiness-item--quiet';
+  }
+
+  getStageStateLabel(state: PipelineStageSummary['state']): string {
+    if (state === 'strong') return this.t('dashboard.pipeline.state.strong');
+    if (state === 'watch') return this.t('dashboard.pipeline.state.watch');
+    return this.t('dashboard.pipeline.state.quiet');
   }
 
   trackByApplication(_: number, app: JobApplication): string {

@@ -8,15 +8,14 @@
     class="overflow-hidden border-b border-sidebar-border/80 px-3 py-3.5 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
   >
     <div
-      class="flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-2.5 transition-all group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:min-h-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0"
+      class="flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-2.5 shadow-[inset_0_1px_0_hsl(var(--sidebar-foreground)/0.04)] transition-all group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:min-h-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:shadow-none"
     >
-      <app-logo class="transition-all duration-300" size="sm" [withGlow]="true"></app-logo>
-      <div class="min-w-0 leading-tight group-data-[collapsible=icon]:hidden">
-        <p class="truncate text-sm font-semibold text-sidebar-foreground">Horizon</p>
-        <p class="mt-0.5 truncate text-[11px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
-          {{ 'shell.brandSubtitle' | transloco }}
-        </p>
-      </div>
+      <app-logo
+        class="min-w-0 transition-all duration-300"
+        size="sm"
+        [withGlow]="true"
+        [subtitle]="'shell.brandSubtitle' | transloco"
+      ></app-logo>
     </div>
   </div>
   <div hlmSidebarContent>

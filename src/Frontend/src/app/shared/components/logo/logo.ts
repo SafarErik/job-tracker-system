@@ -6,20 +6,20 @@ import { ThemeService } from '../../../core/services/theme.service';
   selector: 'app-logo',
   imports: [CommonModule],
   template: `
-    <div class="flex items-center gap-2 select-none transition-all duration-300 ease-in-out" 
+    <div class="flex items-center gap-2.5 select-none transition-all duration-300 ease-in-out"
          [class.flex-col]="vertical()"
          [class.justify-center]="vertical() || iconOnly()">
-      
+
       <!-- ICON CONTAINER -->
       <div class="relative flex items-center justify-center shrink-0 transition-all duration-300" [class]="sizeClasses()">
-        
+
         <!-- Optional Glow -->
-        <div class="absolute inset-0 rounded-lg bg-primary/20 blur-xl transition-opacity duration-500"
+        <div class="absolute inset-0 rounded-lg bg-accent/20 blur-xl transition-opacity duration-500"
              [class.opacity-0]="!withGlow()"
              [class.opacity-100]="withGlow()"></div>
 
         <img src="assets/brand/horizon-guided-path.svg"
-             [style.width.px]="imgSize()" 
+             [style.width.px]="imgSize()"
              [style.height.px]="imgSize()"
              alt="Horizon"
              class="relative z-10 object-contain drop-shadow-sm transition-all duration-300"
@@ -38,10 +38,16 @@ import { ThemeService } from '../../../core/services/theme.service';
            [class.items-center]="vertical()">
            
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
-          <span class="font-display font-bold leading-none text-foreground">
+          <span class="font-display font-bold uppercase leading-none tracking-[0.08em] text-foreground">
             HORIZON
           </span>
         </div>
+
+        @if (subtitle(); as label) {
+          <p class="mt-1 truncate text-[10px] font-semibold uppercase leading-none tracking-[0.16em] text-muted-foreground">
+            {{ label }}
+          </p>
+        }
       </div>
     </div>
   `,
@@ -57,6 +63,7 @@ export class LogoComponent {
   vertical = input<boolean>(false);
   withGlow = input<boolean>(false);
   mono = input<boolean>(false);
+  subtitle = input<string | null>(null);
 
   private readonly _themeService = inject(ThemeService);
   readonly isDark = this._themeService.isDark;

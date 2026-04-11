@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { GlobalHeaderComponent } from '../global-header/global-header.component';
@@ -18,6 +19,7 @@ import { AiDrawerComponent } from '../../../shared/components/ai-drawer/ai-drawe
     HlmSidebarImports,
     ProfileSettingsSheetComponent,
     AiDrawerComponent,
+    TranslocoPipe,
   ],
   templateUrl: './app-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

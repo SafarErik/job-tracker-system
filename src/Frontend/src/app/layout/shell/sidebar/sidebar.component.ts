@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { provideIcons } from '@ng-icons/core';
 import {
   lucideLayoutDashboard,
@@ -16,7 +17,7 @@ import {
 import { LogoComponent } from '../../../shared/components/logo/logo';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   icon: string;
   link: string;
   exact: boolean;
@@ -24,7 +25,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule, RouterModule, HlmSidebarImports, HlmIconImports, LogoComponent],
+  imports: [CommonModule, RouterModule, HlmSidebarImports, HlmIconImports, LogoComponent, TranslocoPipe],
   providers: [
     provideIcons({
       lucideLayoutDashboard,
@@ -44,11 +45,11 @@ interface NavItem {
 })
 export class SidebarComponent {
   navItems: NavItem[] = [
-    { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
-    { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
-    { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
-    { label: 'Insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
-    { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
-    { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
+    { labelKey: 'shell.nav.dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
+    { labelKey: 'shell.nav.applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
+    { labelKey: 'shell.nav.companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
+    { labelKey: 'shell.nav.insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
+    { labelKey: 'shell.nav.signals', icon: 'lucideRadio', link: '/signals', exact: false },
+    { labelKey: 'shell.nav.documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];
 }

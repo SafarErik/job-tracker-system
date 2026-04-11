@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { UiStateService } from '../../../../../core/services';
 
 // Services
@@ -27,6 +28,7 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
   selector: 'app-job-list',
   imports: [
     CommonModule,
+    TranslocoPipe,
     ApplicationGridComponent,
     ApplicationListComponent,
     ApplicationKanbanComponent,

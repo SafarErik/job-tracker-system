@@ -28,17 +28,18 @@ export default {
             },
         },
         extend: {
-            // Typography - Inter as primary
+            // Typography - Sora for Horizon display copy, Inter for UI/body
             fontFamily: {
                 sans: ['Inter', 'Geist', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                display: ['Sora', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             },
 
-            // Signature Border Radius (Soft Architecture)
+            // Horizon keeps primitives compact and product-like
             borderRadius: {
-                lg: 'var(--radius)',                    // 14px - Standard
-                xl: '0.875rem',                          // 14px - Buttons
-                '2xl': '1.125rem',                       // 18px - Cards (Signature)
-                '3xl': '1.5rem',                         // 24px - Dialogs/Modals
+                lg: 'var(--radius)',
+                xl: 'var(--radius)',
+                '2xl': 'var(--radius)',
+                '3xl': 'var(--radius)',
             },
 
             // Color System - Maps to CSS variables

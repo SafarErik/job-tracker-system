@@ -20,7 +20,7 @@
           <div
             class="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest font-semibold"
           >
-            <span>Applications</span>
+            <span>{{ 'shell.nav.applications' | transloco }}</span>
             <ng-icon name="lucideChevronRight" class="text-border"></ng-icon>
             <span class="text-muted-foreground">{{
               store.selectedApplication()?.companyName
@@ -42,7 +42,7 @@
             class="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors"
           >
             <ng-icon name="lucideSearch" class="text-lg"></ng-icon>
-            <span class="text-sm font-light">Ask AI or search...</span>
+            <span class="text-sm font-light">{{ 'workstation.command.searchPlaceholder' | transloco }}</span>
           </div>
           <div
             class="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded border border-border text-[10px] font-mono text-muted-foreground"
@@ -231,7 +231,7 @@
               [name]="phase.icon"
               class="text-lg group-hover/btn:scale-110 transition-transform"
             ></ng-icon>
-            {{ phase.label }}
+            {{ phase.labelKey | transloco }}
           </button>
         }
       </div>
@@ -295,12 +295,12 @@
       >
         <div class="p-6 flex items-center gap-4 border-b border-border">
           <ng-icon name="lucideSearch" class="text-2xl text-primary" aria-hidden="true"></ng-icon>
-          <label for="command-bar-input" class="sr-only">Search or ask AI</label>
+          <label for="command-bar-input" class="sr-only">{{ 'workstation.command.searchLabel' | transloco }}</label>
           <input
             #commandBarInput
             id="command-bar-input"
             type="text"
-            placeholder="Ask AI anything about this application..."
+            [placeholder]="'workstation.command.placeholder' | transloco"
             class="flex-1 bg-transparent border-none outline-none text-foreground text-lg placeholder:text-muted-foreground"
           />
           <button
@@ -313,7 +313,7 @@
         </div>
         <div class="p-4">
           <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            Quick Actions
+            {{ 'workstation.command.quickActions' | transloco }}
           </p>
           <div class="mt-2 space-y-1">
             <button
@@ -331,7 +331,7 @@
                   class="text-xl text-muted-foreground group-hover:text-primary"
                 ></ng-icon>
               }
-              <span class="text-foreground">Analyze Job Description</span>
+              <span class="text-foreground">{{ 'workstation.actions.analyze' | transloco }}</span>
             </button>
             <button
               (click)="generateAssets(); toggleCommandBar()"
@@ -348,7 +348,7 @@
                   class="text-xl text-muted-foreground group-hover:text-primary"
                 ></ng-icon>
               }
-              <span class="text-foreground">Generate Cover Letter</span>
+              <span class="text-foreground">{{ 'workstation.actions.generateDocuments' | transloco }}</span>
             </button>
             <button
               (mouseenter)="commandBarFocusedIndex.set(2)"
@@ -359,7 +359,7 @@
                 name="lucideMic2"
                 class="text-xl text-muted-foreground group-hover:text-primary"
               ></ng-icon>
-              <span class="text-foreground">Prepare for Interview</span>
+              <span class="text-foreground">{{ 'workstation.actions.prepareInterview' | transloco }}</span>
             </button>
           </div>
         </div>

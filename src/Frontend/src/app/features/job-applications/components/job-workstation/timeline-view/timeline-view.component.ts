@@ -120,7 +120,7 @@ export class TimelineViewComponent {
 
         this.isAddingEvent.set(false);
         this.newEvent.set({ title: '', type: 'technical', date: '', description: '', link: '' });
-        this.notificationService.success('Tactical Event Scheduled!', 'Timeline');
+        this.notificationService.success('Timeline event scheduled.', 'Timeline');
     }
 
     deleteEvent(id: string) {
@@ -129,7 +129,7 @@ export class TimelineViewComponent {
     }
 
     connectCalendar() {
-        this.notificationService.info('Connecting to Google Command Center...', 'Sync');
+        this.notificationService.info('Connecting to Google Calendar...', 'Sync');
         setTimeout(() => {
             this.isCalendarConnected.set(true);
             this.notificationService.success('Google Calendar Integrated!', 'Success');
@@ -149,6 +149,6 @@ export class TimelineViewComponent {
 
     openPrepDojo() {
         // This is a placeholder for a parent communication or global navigation
-        this.notificationService.info('Redirecting to The Dojo...', 'Interview Prep');
+        this.notificationService.info('Opening interview practice...', 'Interview Prep');
     }
 }

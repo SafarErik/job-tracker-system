@@ -3,7 +3,7 @@
  * APPLICATION ROUTES
  * ============================================================================
  *
- * Defines all routes for the JobTracker application.
+ * Defines all routes for the Horizon application.
  * Uses lazy loading for feature modules for better initial load performance.
  *
  * Route categories:
@@ -17,21 +17,35 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/guards';
+import { authGuard, entryRedirectMatchGuard } from './core/guards';
 // import { SignalsComponent } from './features/signals/signals.component'; // Managed via lazy load
 
 export const routes: Routes = [
   // ============================================
-  // PUBLIC ROOT (Landing Page)
+  // SMART ROOT ENTRY
   // ============================================
   {
     path: '',
+    canMatch: [entryRedirectMatchGuard],
     loadComponent: () =>
       import('./features/landing/components/landing-page/landing-page.component').then(
         (m) => m.LandingPageComponent,
       ),
     pathMatch: 'full',
-    title: 'Horizon - Your Career, Autopilot Engaged',
+    title: 'Horizon',
+  },
+
+  // ============================================
+  // PUBLIC WELCOME PAGE
+  // ============================================
+  {
+    path: 'welcome',
+    loadComponent: () =>
+      import('./features/landing/components/landing-page/landing-page.component').then(
+        (m) => m.LandingPageComponent,
+      ),
+    pathMatch: 'full',
+    title: 'Horizon - Career growth, intelligently guided',
   },
 
   // ============================================
@@ -46,13 +60,40 @@ export const routes: Routes = [
   // PROTECTED APP SHELL
   // ============================================
   {
-    path: 'mission/global-footprint',
+    path: 'global-footprint',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/pages/global-footprint-screen/global-footprint-screen.component').then(
         (m) => m.GlobalFootprintScreenComponent,
-      ),
+    ),
     title: 'Global Footprint - Horizon',
+  },
+  {
+    path: 'mission/global-footprint',
+    redirectTo: 'global-footprint',
+    pathMatch: 'full',
+  },
+  {
+    // Application Workstation - immersive full page view without app shell header
+    path: 'applications/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
+      ),
+    title: 'Application Workstation - Horizon',
+    data: { breadcrumb: 'Workstation' },
+  },
+  {
+    // Keep view/:id as alias for backwards compatibility
+    path: 'view/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
+      ),
+    title: 'View Application - Horizon',
+    data: { breadcrumb: 'View Application' },
   },
   {
     path: '',
@@ -85,27 +126,6 @@ export const routes: Routes = [
         title: 'New Application - Horizon',
         data: { breadcrumb: 'New Application' },
       },
-      {
-        // Application Workstation - full page view with tabs
-        path: 'applications/:id',
-        loadComponent: () =>
-          import('./features/job-applications/components/job-workstation/job-workstation').then(
-            (m) => m.JobWorkstationComponent,
-          ),
-        title: 'Application Workstation - Horizon',
-        data: { breadcrumb: 'Workstation' },
-      },
-      {
-        // Keep view/:id as alias for backwards compatibility
-        path: 'view/:id',
-        loadComponent: () =>
-          import('./features/job-applications/components/job-workstation/job-workstation').then(
-            (m) => m.JobWorkstationComponent,
-          ),
-        title: 'View Application - Horizon',
-        data: { breadcrumb: 'View Application' },
-      },
-
       // Companies
       {
         path: 'companies',

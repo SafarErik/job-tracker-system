@@ -7,8 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
 import { AuthService } from '../../core/auth/auth.service';
+import { LanguageService } from '../../core/services';
 import { JobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
 import { JobApplicationStore } from '../job-applications/services/job-application.store';
@@ -42,6 +44,7 @@ interface PipelineStageSummary {
   selector: 'app-dashboard',
   imports: [
     CommonModule,
+    TranslocoPipe,
     MomentumGaugeComponent,
     GlobalFootprintComponent,
     PipelineTableCardComponent,
@@ -55,6 +58,7 @@ export class DashboardComponent implements OnInit {
   private readonly applicationStore = inject(JobApplicationStore);
   private readonly companyStore = inject(CompanyStore);
   private readonly authService = inject(AuthService);
+  private readonly languageService = inject(LanguageService);
 
   readonly now = signal(new Date());
   readonly applications = this.applicationStore.applications;
@@ -67,19 +71,19 @@ export class DashboardComponent implements OnInit {
 
   readonly greetingPeriod = computed(() => {
     const hour = this.now().getHours();
-    if (hour < 12) return 'Morning';
-    if (hour < 18) return 'Afternoon';
-    return 'Evening';
+    if (hour < 12) return 'dashboard.period.morning';
+    if (hour < 18) return 'dashboard.period.afternoon';
+    return 'dashboard.period.evening';
   });
 
   readonly userName = computed(() => {
     const user = this.authService.user();
-    if (!user) return 'Operator';
-    return user.firstName?.trim() || user.email?.split('@')[0] || 'Operator';
+    if (!user) return '';
+    return user.firstName?.trim() || user.email?.split('@')[0] || '';
   });
 
   readonly currentDateLabel = computed(() =>
-    new Intl.DateTimeFormat('en-US', {
+    new Intl.DateTimeFormat(this.languageService.locale() === 'hu' ? 'hu-HU' : 'en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -242,8 +246,8 @@ export class DashboardComponent implements OnInit {
     return [
       {
         eyebrow: 'Start momentum',
-        title: 'Add your next target company',
-        meta: 'Fresh opportunities create better signal quality',
+        title: 'Add your next company',
+        meta: 'Fresh opportunities create better guidance and context',
       },
       {
         eyebrow: 'Sharpen profile',

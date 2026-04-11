@@ -19,13 +19,22 @@
         <div class="relative z-10 flex h-full flex-col gap-6">
           <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p class="dashboard-eyebrow">Important right now</p>
+              <p class="dashboard-eyebrow">{{ 'dashboard.hero.eyebrow' | transloco }}</p>
               <h1 class="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-                Good {{ greetingPeriod() }}, {{ userName() }}.
+                {{
+                  'dashboard.hero.greeting'
+                    | transloco
+                      : {
+                          period: (greetingPeriod() | transloco),
+                          name: userName() || ('dashboard.fallbackUser' | transloco),
+                        }
+                }}
               </h1>
               <p class="mt-2 max-w-2xl text-sm text-muted-foreground">
-                Focus on the few things that can move your search forward today, last updated on
-                <span class="dashboard-mono font-medium text-foreground">{{ currentDateLabel() }}</span>
+                {{
+                  'dashboard.hero.subtitle'
+                    | transloco: { date: currentDateLabel() }
+                }}
               </p>
             </div>
 

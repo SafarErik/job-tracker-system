@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProfileStore } from '../profile/services/profile.store';
 import {
@@ -47,7 +48,7 @@ import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
 
 @Component({
   selector: 'app-signals',
-  imports: [CommonModule, FormsModule, NgIcon, DatePipe, HlmButtonImports, HlmSkeleton],
+  imports: [CommonModule, FormsModule, NgIcon, DatePipe, TranslocoPipe, HlmButtonImports, HlmSkeleton],
   templateUrl: './signals.component.html',
   styleUrls: ['./signals.component.css'],
   providers: [
@@ -224,7 +225,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
             this.createSignalApplication(company.id, opp);
           },
           error: () => {
-            alert('Failed to create company for target acquisition');
+            alert('Failed to create company for this opportunity');
           },
         });
     }
@@ -244,9 +245,9 @@ export class SignalsComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          alert(`Target Acquired: ${opp.roleTitle}`);
+          alert(`Saved opportunity: ${opp.roleTitle}`);
         },
-        error: () => alert('Failed to acquire target'),
+        error: () => alert('Failed to save opportunity'),
       });
   }
 

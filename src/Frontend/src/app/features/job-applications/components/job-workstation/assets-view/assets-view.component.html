@@ -7,20 +7,20 @@
                 [class.text-foreground]="mode() === 'resume'" [class.text-muted-foreground]="mode() !== 'resume'"
                 class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
                 <ng-icon name="lucideFileText" class="text-sm"></ng-icon>
-                Resume
+                {{ 'workstation.assets.resume' | transloco }}
             </button>
             <button (click)="setMode('cover-letter')" [class.bg-background]="mode() === 'cover-letter'"
                 [class.text-foreground]="mode() === 'cover-letter'"
                 [class.text-muted-foreground]="mode() !== 'cover-letter'"
                 class="px-4 py-1.5 rounded-lg text-xs font-sans font-bold transition-all flex items-center gap-2">
                 <ng-icon name="lucideMail" class="text-sm"></ng-icon>
-                Cover Letter
+                {{ 'workstation.assets.coverLetter' | transloco }}
             </button>
         </div>
     </div>
 
     @if (mode() === 'resume') {
-    <!-- Resume Mode: The Document Forge (VS Code Style) -->
+    <!-- Resume mode: document assistant editor -->
     <div
         class="flex gap-1 h-[calc(100vh-280px)] bg-card border border-border rounded-lg overflow-hidden relative shadow-2xl">
 
@@ -60,9 +60,7 @@
                     Using global Master Resume source.
                     }
 
-                    The original source content is protected.
-                    The AI Forge uses this as the seed for
-                    targeted generation.
+                    {{ 'workstation.assets.masterProtected' | transloco }}
                 </div>
             </div>
         </div>
@@ -82,7 +80,7 @@
                         } @else {
                         <ng-icon name="lucideSparkles"></ng-icon>
                         }
-                        Regenerate
+                        {{ 'common.actions.regenerate' | transloco }}
                     </button>
                 </div>
             </div>
@@ -105,8 +103,8 @@
                     } @else {
                     <div class="h-full flex flex-col items-center justify-center text-center opacity-40 p-8">
                         <ng-icon name="lucideSparkles" class="text-4xl mb-4"></ng-icon>
-                        <p class="text-xs uppercase tracking-widest">Awaiting Transmission</p>
-                        <p class="text-[10px] mt-2">Initialize "Tailor with AI" to forge content.</p>
+                        <p class="text-xs uppercase tracking-widest">{{ 'workstation.assets.awaiting' | transloco }}</p>
+                        <p class="text-[10px] mt-2">{{ 'workstation.assets.awaitingBody' | transloco }}</p>
                     </div>
                     }
                 </div>
@@ -116,7 +114,9 @@
             <div [class.translate-x-0]="isSidebarOpen()" [class.translate-x-full]="!isSidebarOpen()"
                 class="absolute right-0 top-0 bottom-0 w-80 bg-muted border-l border-border z-30 transition-transform duration-300 shadow-2xl flex flex-col">
                 <div class="p-4 border-b border-border flex items-center justify-between">
-                    <h4 class="text-[10px] font-black uppercase tracking-widest text-primary">AI Suggestions</h4>
+                    <h4 class="text-[10px] font-black uppercase tracking-widest text-primary">
+                        {{ 'workstation.assets.suggestions' | transloco }}
+                    </h4>
                     <button (click)="toggleSidebar()" class="text-muted-foreground hover:text-foreground">
                         <ng-icon name="lucideChevronRight"></ng-icon>
                     </button>
@@ -148,8 +148,9 @@
     <div
         class="max-w-3xl mx-auto w-full h-[calc(100vh-280px)] flex flex-col bg-card border border-border rounded-[40px] overflow-hidden">
         <div class="px-8 py-5 border-b border-border bg-muted/20 flex items-center justify-between">
-            <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">Tailored Cover
-                Letter</h3>
+            <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">
+                {{ 'workstation.assets.coverLetter' | transloco }}
+            </h3>
             @if (store.selectedApplication()?.generatedCoverLetter) {
             <div class="flex gap-2">
                 <button (click)="copyContent(store.selectedApplication()?.generatedCoverLetter)"
@@ -158,8 +159,9 @@
                     <ng-icon name="lucideCopy"></ng-icon>
                 </button>
                 <button (click)="downloadAsPdf(store.selectedApplication()?.generatedCoverLetter, 'cover_letter')"
-                    class="px-4 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-[10px] font-bold uppercase rounded-xl transition-colors">Download
-                    PDF</button>
+                    class="px-4 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-[10px] font-bold uppercase rounded-xl transition-colors">
+                    {{ 'common.actions.downloadPdf' | transloco }}
+                </button>
             </div>
             }
         </div>
@@ -176,18 +178,16 @@
                     class="w-16 h-16 rounded-2xl bg-muted border border-border flex items-center justify-center mb-6 text-muted-foreground">
                     <ng-icon name="lucideMail" class="text-3xl"></ng-icon>
                 </div>
-                <h4 class="text-lg font-sans font-bold text-foreground mb-2">No Cover Letter Found</h4>
-                <p class="text-sm text-muted-foreground max-w-xs mb-8">Let the AI Forge draft a professional,
-                    position-aware
-                    cover letter for you.</p>
+                <h4 class="text-lg font-sans font-bold text-foreground mb-2">{{ 'workstation.assets.noCoverTitle' | transloco }}</h4>
+                <p class="text-sm text-muted-foreground max-w-xs mb-8">{{ 'workstation.assets.noCoverBody' | transloco }}</p>
                 <button (click)="generateCoverLetter()" [disabled]="store.isProcessing()"
                     class="px-8 py-3 bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all flex items-center gap-2 group">
                     @if (store.isProcessing()) {
                     <ng-icon name="lucideLoader2" class="animate-spin text-xl"></ng-icon>
-                    Forging Content...
+                    {{ 'workstation.assets.drafting' | transloco }}
                     } @else {
                     <ng-icon name="lucideSparkles" class="text-xl group-hover:rotate-12 transition-transform"></ng-icon>
-                    Draft with AI Intelligence
+                    {{ 'workstation.assets.draftCover' | transloco }}
                     }
                 </button>
             </div>

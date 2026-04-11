@@ -12,6 +12,7 @@ import {
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { JobApplicationStore } from '../../services/job-application.store';
 import { DocumentService } from '../../../documents/services/document.service';
@@ -93,6 +94,7 @@ import {
     CommonModule,
     FormsModule,
     NgIcon,
+    TranslocoPipe,
     ReactiveFormsModule,
     ...HlmInputImports,
     ...HlmLabelImports,
@@ -189,13 +191,13 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       return [
         {
           id: 'analyze',
-          label: 'Refresh AI Scan',
+          label: 'Refresh analysis',
           icon: 'lucideRotateCw',
           action: () => this.triggerAnalysis(),
         },
         {
           id: 'simulate',
-          label: 'Simulate Top Gap',
+          label: 'Simulate top gap',
           icon: 'lucideZap',
           action: () => {
             const firstGap = this.gapAnalysis().find((g) => !g.matched);
@@ -207,7 +209,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       return [
         {
           id: 'tailor',
-          label: 'Forge Document',
+          label: 'Generate documents',
           icon: 'lucideSparkles',
           action: () => this.generateAssets(),
         },
@@ -216,9 +218,9 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       return [
         {
           id: 'analyze-offer',
-          label: 'Analyze Offer',
+          label: 'Analyze offer',
           icon: 'lucideGavel',
-          action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal'),
+          action: () => this.notificationService.info('Analyzing offer terms...', 'Offer'),
         },
       ];
     } else if (phase === 'timeline') {
@@ -227,20 +229,20 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
           id: 'sync',
           label: 'Sync Calendar',
           icon: 'lucideRefreshCw',
-          action: () => this.notificationService.info('Syncing mission roadmap...', 'Timeline'),
+          action: () => this.notificationService.info('Syncing timeline...', 'Timeline'),
         },
         {
           id: 'add-event',
-          label: 'Add Mission Event',
+          label: 'Add timeline event',
           icon: 'lucidePlus',
-          action: () => this.notificationService.info('Opening tactical event form...', 'Timeline'),
+          action: () => this.notificationService.info('Opening timeline event form...', 'Timeline'),
         },
       ];
     } else {
       return [
         {
           id: 'focus',
-          label: 'Combat Focus',
+          label: 'Focus mode',
           icon: 'lucideMaximize2',
           action: () => this.toggleFocusMode(),
         },
@@ -330,11 +332,11 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   // Phase Configuration
   phases = [
-    { id: 'strategy' as const, label: 'Strategy', icon: 'lucideSwords' },
-    { id: 'assets' as const, label: 'Assets', icon: 'lucideFolderKanban' },
-    { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
-    { id: 'deal' as const, label: 'The Deal', icon: 'lucideGavel' },
-    { id: 'timeline' as const, label: 'Timeline', icon: 'lucideCalendar' },
+    { id: 'strategy' as const, labelKey: 'workstation.nav.strategy', icon: 'lucideSwords' },
+    { id: 'assets' as const, labelKey: 'workstation.nav.assets', icon: 'lucideFolderKanban' },
+    { id: 'interview' as const, labelKey: 'workstation.nav.interview', icon: 'lucideMic2' },
+    { id: 'deal' as const, labelKey: 'workstation.nav.deal', icon: 'lucideGavel' },
+    { id: 'timeline' as const, labelKey: 'workstation.nav.timeline', icon: 'lucideCalendar' },
   ];
 
   simulateImprovement(skill: string): void {

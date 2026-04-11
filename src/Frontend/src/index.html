@@ -6,17 +6,23 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script src="env.js"></script>
     <style>
       html {
-        --background: 210 40% 98%;
-        --foreground: 215 25% 10%;
+        --background: 213 54% 97%;
+        --foreground: 226 49% 8%;
         color-scheme: light;
       }
 
       html.dark {
-        --background: 222 47% 5%;
-        --foreground: 210 40% 98%;
+        --background: 226 49% 8%;
+        --foreground: 213 54% 97%;
         color-scheme: dark;
       }
 
@@ -37,7 +43,7 @@
             storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system'
               ? storedTheme
               : 'system';
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
           const effectiveTheme = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
           const root = document.documentElement;
 

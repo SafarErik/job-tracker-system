@@ -9,7 +9,7 @@
     >
       <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
       <span class="text-[10px] font-bold text-destructive uppercase tracking-widest"
-        >AI Listening...</span
+        >{{ 'workstation.interview.listening' | transloco }}</span
       >
     </div>
   }
@@ -26,7 +26,7 @@
           <ng-icon name="lucideSparkles" class="text-primary text-sm"></ng-icon>
         </div>
         <h3 class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground">
-          The Dojo / AI Coach
+          {{ 'workstation.interview.title' | transloco }}
         </h3>
       </div>
 
@@ -39,7 +39,7 @@
             (click)="endSession()"
             class="text-[10px] font-bold text-muted-foreground hover:text-destructive transition-colors uppercase tracking-widest"
           >
-            End Session
+            {{ 'workstation.interview.endSession' | transloco }}
           </button>
         </div>
       }
@@ -51,9 +51,11 @@
     @if (messages().length === 0) {
       <div class="h-full flex flex-col items-center justify-center max-w-4xl mx-auto">
         <div class="text-center mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
-          <h2 class="text-2xl font-serif font-bold text-foreground mb-3">Ready for Combat?</h2>
+          <h2 class="text-2xl font-serif font-bold text-foreground mb-3">
+            {{ 'workstation.interview.readyTitle' | transloco }}
+          </h2>
           <p class="text-sm text-muted-foreground max-w-md mx-auto">
-            Select an interview simulation to begin your session with the AI Coach.
+            {{ 'workstation.interview.readyBody' | transloco }}
           </p>
         </div>
 
@@ -138,7 +140,7 @@
           class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2"
         >
           <ng-icon name="lucideActivity" class="text-primary"></ng-icon>
-          Performance
+          {{ 'workstation.interview.performance' | transloco }}
         </h4>
 
         <div class="space-y-6">
@@ -192,7 +194,7 @@
     </div>
   }
 
-  <!-- Combat Deck (Fixed Bottom Input) -->
+  <!-- Practice input deck -->
   <div class="bg-card/80 backdrop-blur-md border-t border-border p-8 shrink-0 relative z-20">
     <!-- Audio Waveform Visualizer -->
     @if (isRecording()) {
@@ -286,7 +288,7 @@
         <div class="relative">
           <input
             type="text"
-            placeholder="Type your response..."
+            [placeholder]="'workstation.interview.inputPlaceholder' | transloco"
             [(ngModel)]="responseText"
             (keyup.enter)="sendResponse()"
             class="w-full bg-muted border border-border rounded-2xl px-6 py-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"

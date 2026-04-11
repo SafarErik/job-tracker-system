@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
 import { FootprintGeocodingService } from './footprint-geocoding.service';
@@ -107,7 +108,7 @@ const EARTH_BUMP_TEXTURE_URL = 'https://unpkg.com/three-globe/example/img/earth-
 
 @Component({
   selector: 'app-global-footprint',
-  imports: [CommonModule, ...HlmSkeletonImports, ...HlmButtonImports],
+  imports: [CommonModule, TranslocoPipe, ...HlmSkeletonImports, ...HlmButtonImports],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './global-footprint.component.html',
   styleUrl: './global-footprint.component.css',
@@ -284,7 +285,7 @@ export class GlobalFootprintComponent {
       return;
     }
 
-    void this.router.navigate(['/mission/global-footprint']);
+    void this.router.navigate(['/global-footprint']);
   }
 
   leaveScreen(): void {

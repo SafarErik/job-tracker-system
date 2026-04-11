@@ -15,11 +15,7 @@
           [class.bg-primary/10]="message.role === 'user'"
           [class.bg-card]="message.role === 'assistant'"
         >
-          @if (message.role === 'assistant') {
-            <div [innerHTML]="renderMarkdown(message.content)"></div>
-          } @else {
-            {{ message.content }}
-          }
+          <p class="whitespace-pre-line">{{ message.content }}</p>
         </div>
 
         @if (message.role === 'assistant' && message.citations.length > 0) {

@@ -2,7 +2,7 @@
 
 /* ============================================
    HORIZON DESIGN SYSTEM
-   - Premium AI System with Institutional Trust
+   - Career growth, intelligently guided.
    - Built for Angular 21 + Tailwind v4 + spartan/ui
    ============================================ */
 
@@ -11,23 +11,31 @@
    ============================================ */
 :root {
   /* Foundation Layer */
-  --background: 210 40% 98%;
-  --foreground: 215 25% 10%;
+  --background: 213 54% 97%;
+  --foreground: 226 49% 8%;
 
   /* Surface Layers */
   --card: 0 0% 100%;
-  --card-foreground: 215 25% 10%;
+  --card-foreground: 226 49% 8%;
   --popover: 0 0% 100%;
-  --popover-foreground: 215 25% 10%;
-  --surface-raised: 215 25% 96%;
-  --surface-inset: 215 25% 98%;
+  --popover-foreground: 226 49% 8%;
+  --surface-raised: 213 48% 94%;
+  --surface-inset: 213 44% 96%;
 
-  /* Brand Colors - Intelligent Blue */
-  --primary: 221 83% 53%;
+  /* Brand Colors - Horizon */
+  --primary: 222 48% 18%;
   --primary-foreground: 0 0% 100%;
-  --accent: 217 91% 60%;
-  --accent-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  --accent: 192 75% 59%;
+  --accent-foreground: 226 49% 8%;
+  --ring: 192 75% 59%;
+  --brand-midnight: 226 49% 8%;
+  --brand-indigo: 222 48% 18%;
+  --brand-slate: 216 46% 34%;
+  --brand-aurora: 192 75% 59%;
+  --brand-electric: 218 100% 65%;
+  --brand-ice: 213 54% 97%;
+  --brand-cool-gray: 218 20% 72%;
+  --brand-steel: 217 15% 44%;
 
   /* Semantic Colors */
   --success: 142 71% 45%;
@@ -36,33 +44,33 @@
   --info: 199 89% 58%;
 
   /* UI Elements */
-  --muted: 215 20% 90%;
-  --muted-foreground: 215 16% 46%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
+  --muted: 214 38% 91%;
+  --muted-foreground: 217 15% 44%;
+  --border: 216 28% 85%;
+  --input: 216 28% 85%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
-  --secondary: 215 20% 92%;
-  --secondary-foreground: 215 25% 10%;
+  --secondary: 216 46% 34%;
+  --secondary-foreground: 0 0% 100%;
 
   /* Charts */
-  --chart-1: 221 83% 58%;
-  --chart-2: 217 91% 63%;
+  --chart-1: 222 48% 24%;
+  --chart-2: 192 75% 59%;
   --chart-3: 142 71% 50%;
   --chart-4: 38 92% 55%;
-  --chart-5: 0 72% 56%;
+  --chart-5: 218 100% 65%;
 
   /* Sidebar */
-  --sidebar-background: 0 0% 100%;
-  --sidebar-foreground: 215 25% 10%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 215 20% 96%;
-  --sidebar-accent-foreground: 215 25% 10%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-ring: 217 91% 60%;
-  --scrollbar-thumb: 214 32% 82%;
-  --scrollbar-thumb-hover: 215 20% 65%;
+  --sidebar-background: 226 49% 8%;
+  --sidebar-foreground: 213 54% 97%;
+  --sidebar-primary: 192 75% 59%;
+  --sidebar-primary-foreground: 226 49% 8%;
+  --sidebar-accent: 222 48% 18%;
+  --sidebar-accent-foreground: 213 54% 97%;
+  --sidebar-border: 216 46% 28%;
+  --sidebar-ring: 192 75% 59%;
+  --scrollbar-thumb: 216 28% 76%;
+  --scrollbar-thumb-hover: 217 15% 44%;
 
   color-scheme: light;
 }
@@ -73,23 +81,31 @@
    ============================================ */
 .dark {
   /* Foundation Layer */
-  --background: 222 47% 5%;
-  --foreground: 210 40% 98%;
+  --background: 226 49% 8%;
+  --foreground: 213 54% 97%;
 
   /* Surface Layers */
-  --card: 222 47% 7%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222 47% 7%;
-  --popover-foreground: 210 40% 98%;
-  --surface-raised: 215 28% 17%;
-  --surface-inset: 222 47% 3%;
+  --card: 222 48% 13%;
+  --card-foreground: 213 54% 97%;
+  --popover: 222 48% 13%;
+  --popover-foreground: 213 54% 97%;
+  --surface-raised: 222 48% 16%;
+  --surface-inset: 226 49% 6%;
 
-  /* Brand Colors - Intelligent Blue */
-  --primary: 217 91% 60%;
-  --primary-foreground: 0 0% 100%;
-  --accent: 217 91% 60%;
-  --accent-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  /* Brand Colors - Horizon */
+  --primary: 192 75% 59%;
+  --primary-foreground: 226 49% 8%;
+  --accent: 218 100% 65%;
+  --accent-foreground: 226 49% 8%;
+  --ring: 192 75% 59%;
+  --brand-midnight: 226 49% 8%;
+  --brand-indigo: 222 48% 18%;
+  --brand-slate: 216 46% 34%;
+  --brand-aurora: 192 75% 59%;
+  --brand-electric: 218 100% 65%;
+  --brand-ice: 213 54% 97%;
+  --brand-cool-gray: 218 20% 72%;
+  --brand-steel: 217 15% 44%;
 
   /* Semantic Colors */
   --success: 142 71% 45%;
@@ -98,33 +114,33 @@
   --info: 199 89% 58%;
 
   /* UI Elements */
-  --muted: 215 25% 22%;
-  --muted-foreground: 215 16% 64%;
-  --border: 215 25% 22%;
-  --input: 215 25% 22%;
+  --muted: 222 48% 18%;
+  --muted-foreground: 218 20% 72%;
+  --border: 216 46% 28%;
+  --input: 216 46% 28%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --secondary: 215 25% 17%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 216 46% 34%;
+  --secondary-foreground: 213 54% 97%;
 
   /* Charts */
-  --chart-1: 217 91% 65%;
-  --chart-2: 199 89% 63%;
+  --chart-1: 192 75% 59%;
+  --chart-2: 218 100% 65%;
   --chart-3: 142 71% 50%;
   --chart-4: 38 92% 55%;
-  --chart-5: 0 84% 65%;
+  --chart-5: 216 46% 60%;
 
   /* Sidebar */
-  --sidebar-background: 222 47% 5%;
-  --sidebar-foreground: 210 40% 90%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 215 25% 14%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 215 25% 17%;
-  --sidebar-ring: 217 91% 60%;
-  --scrollbar-thumb: 215 25% 24%;
-  --scrollbar-thumb-hover: 215 20% 36%;
+  --sidebar-background: 226 49% 8%;
+  --sidebar-foreground: 213 54% 97%;
+  --sidebar-primary: 192 75% 59%;
+  --sidebar-primary-foreground: 226 49% 8%;
+  --sidebar-accent: 222 48% 18%;
+  --sidebar-accent-foreground: 213 54% 97%;
+  --sidebar-border: 216 46% 28%;
+  --sidebar-ring: 192 75% 59%;
+  --scrollbar-thumb: 216 46% 28%;
+  --scrollbar-thumb-hover: 216 46% 34%;
 
   color-scheme: dark;
 }
@@ -163,6 +179,7 @@
   --color-info: hsl(var(--info));
 
   /* Sidebar */
+  --color-sidebar: hsl(var(--sidebar-background));
   --color-sidebar-background: hsl(var(--sidebar-background));
   --color-sidebar-foreground: hsl(var(--sidebar-foreground));
   --color-sidebar-primary: hsl(var(--sidebar-primary));
@@ -174,6 +191,7 @@
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Sora', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   /* Font Sizes */
   --text-display: 3rem;
@@ -196,9 +214,10 @@
   --leading-micro: 1rem;
 
   /* Border Radius */
+  --radius: 0.5rem;
   --radius-button: 0.5rem;
-  --radius-card: 0.75rem;
-  --radius-modal: 1rem;
+  --radius-card: 0.5rem;
+  --radius-modal: 0.5rem;
   --radius-input: 0.5rem;
 
   /* Spacing */
@@ -243,8 +262,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-sans);
-  @apply tracking-tight;
+  font-family: var(--font-display);
+  letter-spacing: 0;
 }
 
 /* Focus styles */
@@ -318,11 +337,11 @@ html.theme-switching *::after {
 }
 
 @utility panel-surface {
-  @apply rounded-[2.5rem] border border-border/40 bg-card/60 backdrop-blur-xl shadow-xl;
+  @apply rounded-[var(--radius-card)] border border-border/40 bg-card/60 backdrop-blur-xl shadow-xl;
 }
 
 @utility panel-surface-muted {
-  @apply rounded-[2.5rem] border border-border/40 bg-muted/30;
+  @apply rounded-[var(--radius-card)] border border-border/40 bg-muted/30;
 }
 
 @utility field-surface {

@@ -19,10 +19,10 @@
         <h1
           class="text-4xl font-extrabold tracking-tight lg:text-5xl bg-linear-to-r from-foreground to-foreground/60 bg-clip-text text-transparent"
         >
-          Welcome back
+          {{ 'auth.login.title' | transloco }}
         </h1>
         <p class="text-muted-foreground text-lg">
-          Enter your credentials to access your workspace.
+          {{ 'auth.login.subtitle' | transloco }}
         </p>
       </div>
 
@@ -44,7 +44,7 @@
             for="email"
             class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors"
           >
-            Email
+            {{ 'auth.login.email' | transloco }}
           </label>
           <div class="relative">
             <input
@@ -52,7 +52,7 @@
               id="email"
               type="email"
               formControlName="email"
-              placeholder="member@jobtracker.ai"
+              placeholder="member@horizon.app"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-12 rounded-lg transition-all font-medium"
             />
             <!-- Validation Signal -->
@@ -68,7 +68,7 @@
             (form.controls.email.dirty || form.controls.email.touched)
           ) {
             <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
-              Valid email required.
+              {{ 'auth.login.emailError' | transloco }}
             </span>
           }
         </div>
@@ -81,13 +81,13 @@
               for="password"
               class="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors"
             >
-              Password
+              {{ 'auth.login.password' | transloco }}
             </label>
             <a
               routerLink="/auth/forgot-password"
               class="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              Lost access?
+              {{ 'auth.login.forgotPassword' | transloco }}
             </a>
           </div>
           <div class="relative">
@@ -96,7 +96,7 @@
               [type]="showPassword() ? 'text' : 'password'"
               id="password"
               formControlName="password"
-              placeholder="••••••••"
+              placeholder="********"
               class="w-full bg-secondary/30 border-input/50 focus:border-primary/50 focus:ring-primary/20 h-12 rounded-lg pr-12 transition-all font-medium"
             />
             <button
@@ -104,7 +104,7 @@
               (click)="togglePasswordVisibility()"
               class="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <span class="sr-only">Toggle password visibility</span>
+              <span class="sr-only">{{ 'auth.login.togglePassword' | transloco }}</span>
               @if (showPassword()) {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@
             (form.controls.password.dirty || form.controls.password.touched)
           ) {
             <span class="text-xs text-destructive font-medium block animate-in slide-in-from-top-1">
-              Minimum 6 characters required.
+              {{ 'auth.login.passwordError' | transloco }}
             </span>
           }
         </div>
@@ -167,9 +167,9 @@
             <div
               class="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"
             ></div>
-            Authenticating...
+            {{ 'auth.login.submitting' | transloco }}
           } @else {
-            Initialize Session
+            {{ 'auth.login.submit' | transloco }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -195,7 +195,7 @@
           <span class="w-full border-t border-border"></span>
         </div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-background px-2 text-muted-foreground font-mono">Or connect via</span>
+          <span class="bg-background px-2 text-muted-foreground font-mono">{{ 'auth.login.orConnect' | transloco }}</span>
         </div>
       </div>
 
@@ -224,17 +224,17 @@
             fill="#EA4335"
           />
         </svg>
-        <span class="font-medium">Google Workspace</span>
+        <span class="font-medium">{{ 'auth.login.google' | transloco }}</span>
       </button>
 
       <!-- Footer -->
       <p class="text-center text-sm text-muted-foreground pt-4">
-        Need access?
+        {{ 'auth.login.needAccess' | transloco }}
         <a
           routerLink="/auth/register"
           class="font-semibold text-primary hover:text-primary/80 underline underline-offset-4 transition-colors"
         >
-          Register new account
+          {{ 'auth.login.register' | transloco }}
         </a>
       </p>
     </div>
@@ -280,7 +280,7 @@
         <blockquote class="space-y-6">
           <p class="text-2xl font-medium leading-relaxed text-foreground/90">
             "Horizon has completely transformed how I manage my career applications. It feels less
-            like a spreadsheet and more like a tactical command center."
+            like a spreadsheet and more like a guided career workspace."
           </p>
           <footer class="flex items-center gap-4">
             <div
@@ -306,7 +306,7 @@
               ></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            SYSTEM ONLINE
+            WORKSPACE READY
           </div>
           <div>v2.4.0-stable</div>
         </div>

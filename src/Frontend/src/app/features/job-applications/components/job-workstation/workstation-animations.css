@@ -56,7 +56,7 @@
     }
 }
 
-/* Mission Intel Card Glow */
+/* Role overview card glow */
 .mission-intel-card {
     @apply relative overflow-hidden;
 }

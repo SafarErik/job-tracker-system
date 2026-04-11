@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
+import { Router, CanActivateFn, CanMatchFn } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 /**
@@ -46,3 +46,21 @@ export const guestGuard: CanActivateFn = () => {
 
   return !authService.isAuthenticated() ? true : router.createUrlTree(['/dashboard']);
 };
+
+const resolveEntryRedirect = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  return authService.isAuthenticated()
+    ? router.createUrlTree(['/dashboard'])
+    : router.createUrlTree(['/welcome']);
+};
+
+/**
+ * Smart root entry guard.
+ *
+ * Keeps "/" deterministic while preserving a public welcome page.
+ */
+export const entryRedirectGuard: CanActivateFn = () => resolveEntryRedirect();
+
+export const entryRedirectMatchGuard: CanMatchFn = () => resolveEntryRedirect();

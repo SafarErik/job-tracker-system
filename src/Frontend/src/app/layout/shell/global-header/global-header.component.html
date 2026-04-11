@@ -3,10 +3,10 @@
 >
   <div class="min-w-0">
     <h1 class="truncate text-base font-semibold tracking-tight text-foreground sm:text-lg">
-      {{ pageTitle() }}
+      {{ pageTitleKey() | transloco }}
     </h1>
     <p class="mt-1 truncate text-sm text-muted-foreground">
-      {{ pageDescription() }}
+      {{ pageDescriptionKey() | transloco }}
     </p>
   </div>
 
@@ -19,7 +19,7 @@
       class="group relative h-11 w-full justify-start overflow-hidden rounded-2xl border-border/70 bg-background/60 px-4 text-left text-sm font-normal text-muted-foreground shadow-none transition-all hover:border-primary/35 hover:bg-muted/40 hover:text-foreground"
     >
       <ng-icon hlm name="lucideSearch" class="mr-3 h-4 w-4" />
-      <span class="truncate pr-16">Search pipeline or ask Career Copilot...</span>
+      <span class="truncate pr-16">{{ 'shell.header.searchPlaceholder' | transloco }}</span>
       <span
         class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-border/80 bg-card/80 px-2 py-1 text-[10px] font-medium text-muted-foreground"
       >
@@ -36,7 +36,7 @@
       type="button"
       (click)="isOpen.set(true)"
       class="h-10 w-10 rounded-xl border border-transparent hover:border-border lg:hidden"
-      aria-label="Open command menu"
+      [attr.aria-label]="'shell.header.openSearch' | transloco"
     >
       <ng-icon hlm name="lucideSearch" class="h-4 w-4" />
     </button>
@@ -57,12 +57,12 @@
       </span>
       <span class="min-w-0 text-left">
         <span class="block max-w-[10rem] truncate text-sm font-semibold text-foreground">
-          {{ authService.userFullName() || 'Operator' }}
+          {{ authService.userFullName() || ('dashboard.fallbackUser' | transloco) }}
         </span>
         <span
           class="block text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
         >
-          Elite Plan
+          {{ 'app.planLabel' | transloco }}
         </span>
       </span>
       <ng-icon hlm name="lucideChevronDown" class="h-4 w-4 text-muted-foreground" />
@@ -78,35 +78,35 @@
         <hlm-command hlmClassName="bg-transparent border-none">
           <input
             hlmCommandSearchInput
-            placeholder="Type a command, route, or ask AI..."
+            [placeholder]="'shell.header.searchPlaceholder' | transloco"
             class="h-12 border-b border-border"
           />
           <hlm-command-list hlmClassName="max-h-[300px] overflow-y-auto scrollbar-hide py-2 px-2">
             <div *hlmCommandEmptyState hlmCommandEmpty class="py-6 text-center text-sm text-muted-foreground">
-              No results found.
+              {{ 'common.states.noResults' | transloco }}
             </div>
 
-            <hlm-command-group label="Workspace">
+            <hlm-command-group [attr.label]="'shell.header.commands.workspace' | transloco">
               <button hlmCommandItem value="dashboard" (click)="navigateTo('/dashboard')">
                 <ng-icon hlm name="lucideCommand" hlmCommandIcon />
-                <span>Open Command Center</span>
+                <span>{{ 'shell.header.commands.openDashboard' | transloco }}</span>
               </button>
               <button hlmCommandItem value="applications" (click)="navigateTo('/applications')">
                 <ng-icon hlm name="lucideCalculator" hlmCommandIcon />
-                <span>Open Application Pipeline</span>
+                <span>{{ 'shell.header.commands.openApplications' | transloco }}</span>
               </button>
               <button hlmCommandItem value="companies" (click)="navigateTo('/companies')">
                 <ng-icon hlm name="lucideCalendar" hlmCommandIcon />
-                <span>Open Company Database</span>
+                <span>{{ 'shell.header.commands.openCompanies' | transloco }}</span>
               </button>
             </hlm-command-group>
 
             <hlm-command-separator />
 
-            <hlm-command-group label="Actions">
+            <hlm-command-group [attr.label]="'shell.header.commands.actions' | transloco">
               <button hlmCommandItem value="profile" (click)="navigateTo('/profile')">
                 <ng-icon hlm name="lucideUser" hlmCommandIcon />
-                <span>Profile</span>
+                <span>{{ 'shell.header.profile' | transloco }}</span>
                 <hlm-command-shortcut>Ctrl+P</hlm-command-shortcut>
               </button>
               <button
@@ -115,30 +115,30 @@
                 (click)="uiService.openAddAppSheet(); isOpen.set(false)"
               >
                 <ng-icon hlm name="lucideMail" hlmCommandIcon />
-                <span>Add New Application</span>
+                <span>{{ 'shell.header.commands.addApplication' | transloco }}</span>
                 <hlm-command-shortcut>Ctrl+N</hlm-command-shortcut>
               </button>
               <button hlmCommandItem value="settings" (click)="openSettings()">
                 <ng-icon hlm name="lucideSettings" hlmCommandIcon />
-                <span>Settings</span>
+                <span>{{ 'shell.header.settings' | transloco }}</span>
                 <hlm-command-shortcut>Ctrl+S</hlm-command-shortcut>
               </button>
             </hlm-command-group>
 
             <hlm-command-separator />
 
-            <hlm-command-group label="AI Assistant">
+            <hlm-command-group [attr.label]="'shell.header.commands.assistant' | transloco">
               <button hlmCommandItem value="ai-open" (click)="openAiDrawer()">
                 <ng-icon hlm name="lucideSparkles" hlmCommandIcon />
-                <span>Open AI Assistant</span>
+                <span>{{ 'shell.header.commands.openAssistant' | transloco }}</span>
               </button>
               <button hlmCommandItem value="ai-summary" (click)="openAiDrawer()">
                 <ng-icon hlm name="lucideBrain" hlmCommandIcon />
-                <span>Pipeline Summary</span>
+                <span>{{ 'shell.header.commands.pipelineSummary' | transloco }}</span>
               </button>
               <button hlmCommandItem value="ai-next" (click)="openAiDrawer()">
                 <ng-icon hlm name="lucideZap" hlmCommandIcon />
-                <span>Next Best Action</span>
+                <span>{{ 'shell.header.commands.nextBestAction' | transloco }}</span>
               </button>
             </hlm-command-group>
           </hlm-command-list>
@@ -160,10 +160,10 @@
         </span>
         <div class="min-w-0">
           <p class="truncate text-sm font-semibold text-foreground">
-            {{ authService.userFullName() || 'Operator' }}
+            {{ authService.userFullName() || ('dashboard.fallbackUser' | transloco) }}
           </p>
           <p class="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Elite Plan
+            {{ 'app.planLabel' | transloco }}
           </p>
         </div>
       </div>
@@ -173,31 +173,49 @@
       <div hlmDropdownMenuGroup>
         <button hlmDropdownMenuItem (click)="navigateTo('/profile')" hlmClassName="rounded-lg">
           <ng-icon hlm name="lucideUser" hlmDropdownMenuIcon />
-          <span>Profile</span>
+          <span>{{ 'shell.header.profile' | transloco }}</span>
         </button>
         <button hlmDropdownMenuItem (click)="openSettings()" hlmClassName="rounded-lg">
           <ng-icon hlm name="lucideSettings" hlmDropdownMenuIcon />
-          <span>Settings</span>
+          <span>{{ 'shell.header.settings' | transloco }}</span>
         </button>
       </div>
 
       <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
 
       <div class="px-2 py-1">
-        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Theme</p>
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
+          {{ 'shell.header.theme' | transloco }}
+        </p>
       </div>
       <div hlmDropdownMenuGroup>
         <button hlmDropdownMenuItem (click)="setTheme('light')" hlmClassName="rounded-lg">
           <ng-icon hlm name="lucideSun" hlmDropdownMenuIcon />
-          <span>Light</span>
+          <span>{{ 'shell.header.light' | transloco }}</span>
         </button>
         <button hlmDropdownMenuItem (click)="setTheme('dark')" hlmClassName="rounded-lg">
           <ng-icon hlm name="lucideMoon" hlmDropdownMenuIcon />
-          <span>Dark</span>
+          <span>{{ 'shell.header.dark' | transloco }}</span>
         </button>
         <button hlmDropdownMenuItem (click)="setTheme('system')" hlmClassName="rounded-lg">
           <ng-icon hlm name="lucideLaptop" hlmDropdownMenuIcon />
-          <span>System</span>
+          <span>{{ 'shell.header.system' | transloco }}</span>
+        </button>
+      </div>
+
+      <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
+
+      <div class="px-2 py-1">
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground">
+          {{ 'language.label' | transloco }}
+        </p>
+      </div>
+      <div hlmDropdownMenuGroup>
+        <button hlmDropdownMenuItem (click)="setLanguage('en')" hlmClassName="rounded-lg">
+          <span>{{ 'language.english' | transloco }}</span>
+        </button>
+        <button hlmDropdownMenuItem (click)="setLanguage('hu')" hlmClassName="rounded-lg">
+          <span>{{ 'language.hungarian' | transloco }}</span>
         </button>
       </div>
 
@@ -209,7 +227,7 @@
         class="rounded-lg text-destructive focus:bg-destructive/10 focus:text-destructive"
       >
         <ng-icon hlm name="lucideLogOut" hlmDropdownMenuIcon />
-        <span>Log out</span>
+        <span>{{ 'shell.header.logout' | transloco }}</span>
       </button>
     </div>
   </ng-template>

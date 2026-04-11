@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideMic,
@@ -27,7 +28,7 @@ interface Message {
 
 @Component({
   selector: 'app-interview-view',
-  imports: [CommonModule, NgIcon, FormsModule],
+  imports: [CommonModule, TranslocoPipe, NgIcon, FormsModule],
   providers: [
     provideIcons({
       lucideMic,

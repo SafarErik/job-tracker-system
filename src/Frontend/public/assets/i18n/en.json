@@ -1,0 +1,321 @@
+{
+  "app": {
+    "name": "Horizon",
+    "tagline": "Career growth, intelligently guided.",
+    "planLabel": "Workspace",
+    "dashboard": "Dashboard"
+  },
+  "common": {
+    "actions": {
+      "backToDashboard": "Back to dashboard",
+      "cancel": "Cancel",
+      "copy": "Copy",
+      "downloadPdf": "Download PDF",
+      "open": "Open",
+      "regenerate": "Regenerate",
+      "resetView": "Reset view",
+      "saveChanges": "Save changes",
+      "search": "Search"
+    },
+    "states": {
+      "loading": "Loading...",
+      "noResults": "No results found."
+    }
+  },
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "hungarian": "Hungarian",
+    "switchTo": "Switch language"
+  },
+  "shell": {
+    "brandSubtitle": "Career workspace",
+    "footerTitle": "Career workspace 2026",
+    "nav": {
+      "workspace": "Workspace",
+      "dashboard": "Dashboard",
+      "applications": "Applications",
+      "companies": "Companies",
+      "insights": "Insights",
+      "signals": "Opportunities",
+      "documents": "Documents"
+    },
+    "header": {
+      "searchPlaceholder": "Search your pipeline or ask Horizon Guide...",
+      "openSearch": "Open command menu",
+      "profile": "Profile",
+      "settings": "Settings",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "logout": "Log out",
+      "descriptions": {
+        "dashboard": "See what matters now and where you need to react.",
+        "applications": "Track active applications and react quickly.",
+        "companies": "Manage company research and outreach context.",
+        "insights": "Review trends, charts, and performance signals.",
+        "signals": "Find opportunities and useful market signals.",
+        "documents": "Keep resumes and job-search documents ready.",
+        "profile": "Manage your career profile and preferences."
+      },
+      "commands": {
+        "workspace": "Workspace",
+        "actions": "Actions",
+        "assistant": "Horizon Guide",
+        "openDashboard": "Open dashboard",
+        "openApplications": "Open applications",
+        "openCompanies": "Open companies",
+        "addApplication": "Add application",
+        "openAssistant": "Open Horizon Guide",
+        "pipelineSummary": "Pipeline summary",
+        "nextBestAction": "Next best action"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue your career workspace.",
+      "email": "Email",
+      "password": "Password",
+      "togglePassword": "Toggle password visibility",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "orConnect": "Or continue with",
+      "google": "Google",
+      "needAccess": "Need access?",
+      "register": "Create an account",
+      "emailError": "Enter a valid email address.",
+      "passwordError": "Enter at least 6 characters."
+    }
+  },
+  "landing": {
+    "nav": {
+      "capabilities": "Guidance",
+      "intelligence": "Workspace",
+      "pricing": "Plans",
+      "login": "Login",
+      "dashboard": "Dashboard",
+      "getAccess": "Start free"
+    },
+    "hero": {
+      "eyebrow": "Career growth, intelligently guided.",
+      "title": "Build a career with direction",
+      "subtitle": "Clarity, strategy, and momentum for your next move.",
+      "body": "From job search to long-term growth, Horizon helps you understand where you stand, choose the smartest next step, and keep moving with confidence.",
+      "cta": "Start with Horizon",
+      "secondaryCta": "See the workflow"
+    },
+    "proof": {
+      "guidance": "A calm workspace for applications, companies, documents, and decisions.",
+      "documents": "AI-assisted CV, cover letter, and role-specific document preparation.",
+      "practice": "Interview practice and follow-up planning tied to real opportunities."
+    },
+    "pillars": {
+      "eyebrow": "The Horizon system",
+      "title": "Less noise. More useful next steps.",
+      "subtitle": "Horizon is not a one-time job search tool. It is a structured career workspace for the decisions that shape your next role and the one after it.",
+      "clarity": {
+        "title": "Clarity",
+        "body": "See your pipeline, role fit, company context, and risks without switching between scattered notes and spreadsheets."
+      },
+      "strategy": {
+        "title": "Strategy",
+        "body": "Turn job descriptions, company research, and your profile into sharper positioning, tailored documents, and better questions."
+      },
+      "momentum": {
+        "title": "Momentum",
+        "body": "Know what to do today: follow up, prepare, improve a document, research a company, or move an opportunity forward."
+      }
+    },
+    "workspace": {
+      "eyebrow": "One career surface",
+      "title": "Everything around an opportunity lives in one guided flow.",
+      "body": "Horizon connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The AI guide supports the workflow without turning the product into a noisy chat screen.",
+      "previewTitle": "Application workstation",
+      "previewSubtitle": "Role context, documents, practice, and next actions",
+      "previewBadge": "Guided",
+      "outcomes": {
+        "nextMove": "Get a practical next move based on status, deadlines, and missing context.",
+        "fit": "Understand fit and gaps before sending a generic application.",
+        "followUp": "Keep follow-ups and interview preparation connected to the actual role."
+      }
+    },
+    "workflow": {
+      "research": {
+        "title": "Research",
+        "body": "Capture company context, role signals, and questions worth asking."
+      },
+      "documents": {
+        "title": "Documents",
+        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled AI help."
+      },
+      "applications": {
+        "title": "Applications",
+        "body": "Track status, deadlines, contacts, follow-ups, and decisions in one place."
+      },
+      "practice": {
+        "title": "Interview practice",
+        "body": "Prepare answers, rehearse stories, and build a clearer interview narrative."
+      }
+    },
+    "pricing": {
+      "eyebrow": "A product people can grow into",
+      "title": "Start simple, pay for serious career leverage.",
+      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and a Horizon Guide that understands the user’s whole career context.",
+      "planTitle": "Horizon Pro",
+      "planBody": "For active job seekers and ambitious professionals who want structure, better decisions, and less manual work.",
+      "benefits": {
+        "tracker": "Unlimited applications and company research spaces.",
+        "documents": "CV and cover letter generation with role-specific revision guidance.",
+        "interview": "Interview practice plans, answer feedback, and follow-up suggestions.",
+        "guide": "Horizon Guide context across applications, documents, and goals."
+      },
+      "cta": "Create your workspace"
+    },
+    "closing": {
+      "eyebrow": "Your choice. Your future.",
+      "title": "Build the next move with direction, not reaction.",
+      "body": "Horizon helps people move through job search and long-term growth with a calmer system, clearer decisions, and steady progress.",
+      "cta": "Start your guided path"
+    }
+  },
+  "dashboard": {
+    "hero": {
+      "eyebrow": "Important right now",
+      "greeting": "Good {{period}}, {{name}}.",
+      "subtitle": "Focus on the few things that can move your search forward today, last updated on {{date}}"
+    },
+    "period": {
+      "morning": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening"
+    },
+    "fallbackUser": "there"
+  },
+  "ai": {
+    "drawer": {
+      "title": "Horizon Guide",
+      "ariaLabel": "Horizon Guide",
+      "close": "Close Horizon Guide",
+      "modeFast": "Fast",
+      "modeDeep": "Deep reason",
+      "placeholder": "Ask anything about your career workflow...",
+      "send": "Send message",
+      "quickPrompts": {
+        "summary": "summary",
+        "nextAction": "next action",
+        "followUps": "follow-ups",
+        "interviewPrep": "interview prep"
+      },
+      "welcomeTitle": "Welcome to Horizon Guide",
+      "welcomeBody": "I can help with pipeline summaries, follow-up strategy, and interview preparation. Try asking for a next best action.",
+      "responses": {
+        "summaryTitle": "Pipeline summary",
+        "summaryBody": "Your applications are being tracked. Open the dashboard for detailed metrics.",
+        "nextTitle": "Recommended next action",
+        "nextBody": "Review your active interviews and prepare STAR examples for upcoming sessions.",
+        "followTitle": "Follow-up plan",
+        "followBody": "Send concise updates to pending applications. Mention one relevant achievement and reconfirm interest.",
+        "interviewTitle": "Interview preparation",
+        "interviewBody": "Build a 30-60-90 narrative and rehearse STAR answers focused on ownership and ambiguity.",
+        "fallbackTitle": "I can help with this",
+        "fallbackBody": "Try: summary, next action, follow-ups, or interview prep.",
+        "modeFast": "Mode: Fast",
+        "modeDeep": "Mode: Deep reason"
+      }
+    }
+  },
+  "workstation": {
+    "command": {
+      "searchPlaceholder": "Ask AI or search...",
+      "searchLabel": "Search or ask AI",
+      "placeholder": "Ask AI anything about this application...",
+      "quickActions": "Quick actions"
+    },
+    "nav": {
+      "strategy": "Fit",
+      "assets": "Documents",
+      "interview": "Interview",
+      "deal": "Offer",
+      "timeline": "Timeline"
+    },
+    "actions": {
+      "analyze": "Analyze fit",
+      "analyzing": "Analyzing...",
+      "prepareInterview": "Prepare for interview",
+      "generateDocuments": "Generate documents",
+      "addEvent": "Add timeline event"
+    },
+    "strategy": {
+      "jobContext": "Job context",
+      "editDescription": "Edit description",
+      "noDescriptionTitle": "No job description yet",
+      "noDescriptionBody": "Add the role requirements to unlock tailored fit analysis and next-step guidance.",
+      "pasteManually": "Paste text manually",
+      "jobUrl": "Paste job URL...",
+      "autoFill": "Auto-fill from URL",
+      "overview": "Role overview",
+      "priority": "Priority",
+      "matchScore": "Match score",
+      "type": "Type",
+      "gapAnalysis": "Gap analysis",
+      "refresh": "Refresh analysis",
+      "simulate": "Simulate improvement",
+      "insights": "AI guidance",
+      "insightsEmpty": "Click \"Analyze fit\" to generate guidance for this role."
+    },
+    "assets": {
+      "assistant": "AI document assistant",
+      "resume": "Resume",
+      "source": "Source document",
+      "output": "Tailored output",
+      "masterProtected": "The original source content is protected. Horizon uses it as the base for targeted generation.",
+      "awaiting": "Awaiting document generation",
+      "awaitingBody": "Use \"Generate documents\" to create a tailored CV and cover letter.",
+      "suggestions": "AI suggestions",
+      "coverLetter": "Tailored cover letter",
+      "noCoverTitle": "No cover letter yet",
+      "noCoverBody": "Let Horizon draft a professional, position-aware cover letter for you.",
+      "draftCover": "Draft with Horizon Guide",
+      "drafting": "Drafting..."
+    },
+    "interview": {
+      "title": "Interview practice",
+      "readyTitle": "Ready to practice?",
+      "readyBody": "Choose an interview simulation to begin your session with Horizon Guide.",
+      "listening": "Listening...",
+      "endSession": "End session",
+      "performance": "Performance",
+      "inputPlaceholder": "Type your response..."
+    }
+  },
+  "footprint": {
+    "cardTitle": "Global footprint",
+    "cardSubtitle": "Open the immersive world map in a dedicated screen.",
+    "empty": "No location data available yet.",
+    "liveOrbit": "Live orbit",
+    "interactiveGlobe": "Interactive globe",
+    "openTitle": "Open the dedicated world view",
+    "openBody": "Explore tracked applications and nearby company signals on an interactive map.",
+    "openCta": "Open globe",
+    "screenEyebrow": "World view",
+    "screenTitle": "Global application map",
+    "screenBody": "Rotate the globe, inspect city clusters, and review company signals in context.",
+    "allSignal": "All signals",
+    "applications": "Applications",
+    "yourApplications": "Your applications",
+    "nearby": "Nearby",
+    "tracked": "Tracked",
+    "nearbyMarketSignal": "Nearby market signal",
+    "autoOrbitOn": "Auto orbit on",
+    "autoOrbitOff": "Auto orbit off",
+    "dragHint": "Drag to rotate",
+    "clickHint": "Click a marker for company overview"
+  },
+  "opportunities": {
+    "save": "Save opportunity"
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "app": {
+    "name": "Horizon",
+    "tagline": "Karrierépítés, intelligensen vezetve.",
+    "planLabel": "Munkaterület",
+    "dashboard": "Karrier áttekintés"
+  },
+  "common": {
+    "actions": {
+      "backToDashboard": "Vissza az áttekintéshez",
+      "cancel": "Mégse",
+      "copy": "Másolás",
+      "downloadPdf": "PDF letöltése",
+      "open": "Megnyitás",
+      "regenerate": "Újragenerálás",
+      "resetView": "Nézet visszaállítása",
+      "saveChanges": "Változások mentése",
+      "search": "Keresés"
+    },
+    "states": {
+      "loading": "Betöltés...",
+      "noResults": "Nincs találat."
+    }
+  },
+  "language": {
+    "label": "Nyelv",
+    "english": "Angol",
+    "hungarian": "Magyar",
+    "switchTo": "Nyelv váltása"
+  },
+  "shell": {
+    "brandSubtitle": "Karrier munkaterület",
+    "footerTitle": "Karrier munkaterület 2026",
+    "nav": {
+      "workspace": "Munkaterület",
+      "dashboard": "Áttekintés",
+      "applications": "Jelentkezések",
+      "companies": "Cégek",
+      "insights": "Elemzések",
+      "signals": "Lehetőségek",
+      "documents": "Dokumentumok"
+    },
+    "header": {
+      "searchPlaceholder": "Keress a folyamatban vagy kérdezd a Horizon segítőt...",
+      "openSearch": "Parancsmenü megnyitása",
+      "profile": "Profil",
+      "settings": "Beállítások",
+      "theme": "Téma",
+      "light": "Világos",
+      "dark": "Sötét",
+      "system": "Rendszer",
+      "logout": "Kijelentkezés",
+      "descriptions": {
+        "dashboard": "Lásd, mi számít most, és hol érdemes lépned.",
+        "applications": "Kövesd az aktív jelentkezéseket és reagálj gyorsan.",
+        "companies": "Kezeld a cégkutatást és a kapcsolatfelvételi kontextust.",
+        "insights": "Tekintsd át a trendeket, grafikonokat és teljesítményjeleket.",
+        "signals": "Találj lehetőségeket és hasznos piaci jeleket.",
+        "documents": "Tartsd készen a CV-ket és álláskeresési dokumentumokat.",
+        "profile": "Kezeld a karrierprofilodat és preferenciáidat."
+      },
+      "commands": {
+        "workspace": "Munkaterület",
+        "actions": "Műveletek",
+        "assistant": "Horizon segítő",
+        "openDashboard": "Áttekintés megnyitása",
+        "openApplications": "Jelentkezések megnyitása",
+        "openCompanies": "Cégek megnyitása",
+        "addApplication": "Jelentkezés hozzáadása",
+        "openAssistant": "Horizon segítő megnyitása",
+        "pipelineSummary": "Folyamat összegzése",
+        "nextBestAction": "Következő legjobb lépés"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Üdv újra",
+      "subtitle": "Jelentkezz be a karrier munkaterületed folytatásához.",
+      "email": "Email",
+      "password": "Jelszó",
+      "togglePassword": "Jelszó láthatóságának váltása",
+      "forgotPassword": "Elfelejtetted a jelszót?",
+      "submit": "Bejelentkezés",
+      "submitting": "Bejelentkezés...",
+      "orConnect": "Vagy folytatás ezzel",
+      "google": "Google",
+      "needAccess": "Nincs még hozzáférésed?",
+      "register": "Fiók létrehozása",
+      "emailError": "Adj meg érvényes email címet.",
+      "passwordError": "Adj meg legalább 6 karaktert."
+    }
+  },
+  "landing": {
+    "nav": {
+      "capabilities": "Útmutatás",
+      "intelligence": "Munkaterület",
+      "pricing": "Csomagok",
+      "login": "Belépés",
+      "dashboard": "Áttekintés",
+      "getAccess": "Ingyenes kezdés"
+    },
+    "hero": {
+      "eyebrow": "Karrierépítés, intelligensen vezetve.",
+      "title": "Építs karriert iránnyal",
+      "subtitle": "Tisztánlátás, stratégia és lendület a következő lépésedhez.",
+      "body": "Az álláskereséstől a hosszú távú fejlődésig a Horizon segít megérteni, hol tartasz, mi a legokosabb következő lépés, és hogyan haladj magabiztosan tovább.",
+      "cta": "Kezdés a Horizonnal",
+      "secondaryCta": "Munkafolyamat megtekintése"
+    },
+    "proof": {
+      "guidance": "Nyugodt munkaterület jelentkezésekhez, cégekhez, dokumentumokhoz és döntésekhez.",
+      "documents": "AI-támogatott CV, motivációs levél és szerepkörhöz igazított dokumentumkészítés.",
+      "practice": "Interjúgyakorlás és utánkövetési terv valós lehetőségekhez kötve."
+    },
+    "pillars": {
+      "eyebrow": "A Horizon rendszer",
+      "title": "Kevesebb zaj. Több hasznos következő lépés.",
+      "subtitle": "A Horizon nem egyszeri álláskereső eszköz. Strukturált karrier-munkaterület azokhoz a döntésekhez, amelyek a következő szerepedet és az azt követő lépést is alakítják.",
+      "clarity": {
+        "title": "Tisztánlátás",
+        "body": "Lásd a folyamatot, az illeszkedést, a cégkörnyezetet és a kockázatokat szétszórt jegyzetek és táblázatok nélkül."
+      },
+      "strategy": {
+        "title": "Stratégia",
+        "body": "Alakítsd az álláshirdetéseket, a cégkutatást és a profilodat erősebb pozicionálássá, célzott dokumentumokká és jobb kérdésekké."
+      },
+      "momentum": {
+        "title": "Lendület",
+        "body": "Tudd, ma mit érdemes tenni: utánkövetni, gyakorolni, dokumentumot javítani, céget kutatni vagy előremozdítani egy lehetőséget."
+      }
+    },
+    "workspace": {
+      "eyebrow": "Egy karrierfelület",
+      "title": "Minden, ami egy lehetőséghez tartozik, egy vezetett folyamatban él.",
+      "body": "A Horizon összekapcsolja azt a munkát, amit a jelöltek amúgy is végeznek: kutatás, követés, CV-szerkesztés, motivációs levél, interjúfelkészülés és ajánlati gondolkodás. Az AI segítő támogatja a folyamatot anélkül, hogy a termék zajos chatfelületté válna.",
+      "previewTitle": "Jelentkezési munkaterület",
+      "previewSubtitle": "Szerepkör-kontekstus, dokumentumok, gyakorlás és következő lépések",
+      "previewBadge": "Vezetett",
+      "outcomes": {
+        "nextMove": "Kapj gyakorlati következő lépést státusz, határidők és hiányzó kontextus alapján.",
+        "fit": "Értsd meg az illeszkedést és a hiányokat, mielőtt sablonos jelentkezést küldenél.",
+        "followUp": "Tartsd az utánkövetést és az interjúfelkészülést az adott szerephez kötve."
+      }
+    },
+    "workflow": {
+      "research": {
+        "title": "Kutatás",
+        "body": "Rögzítsd a cégkörnyezetet, a szerepkör jeleit és a valóban hasznos kérdéseket."
+      },
+      "documents": {
+        "title": "Dokumentumok",
+        "body": "Készíts és javíts CV-t, motivációs levelet és szerepkörhöz kötött jegyzeteket kontrollált AI-segítséggel."
+      },
+      "applications": {
+        "title": "Jelentkezések",
+        "body": "Kövesd a státuszt, határidőket, kontaktokat, utánkövetéseket és döntéseket egy helyen."
+      },
+      "practice": {
+        "title": "Interjúgyakorlás",
+        "body": "Készülj válaszokkal, gyakorold a történeteidet, és építs tisztább interjúnarratívát."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Termék, amibe bele lehet nőni",
+      "title": "Kezdj egyszerűen, fizess valódi karrierelőnyért.",
+      "body": "Az első fizetős rétegnek ki kell érdemelnie a helyét: erősebb dokumentumgenerálás, mélyebb szerepkörkutatás, interjú-coaching és egy Horizon segítő, amely érti a felhasználó teljes karrierkörnyezetét.",
+      "planTitle": "Horizon Pro",
+      "planBody": "Aktív álláskeresőknek és ambiciózus szakembereknek, akik struktúrát, jobb döntéseket és kevesebb kézi munkát szeretnének.",
+      "benefits": {
+        "tracker": "Korlátlan jelentkezési és cégkutatási munkaterület.",
+        "documents": "CV- és motivációslevél-generálás szerepkörhöz igazított javítási útmutatással.",
+        "interview": "Interjúgyakorlási tervek, válasz-visszajelzés és utánkövetési javaslatok.",
+        "guide": "Horizon segítő kontextussal a jelentkezések, dokumentumok és célok között."
+      },
+      "cta": "Munkaterület létrehozása"
+    },
+    "closing": {
+      "eyebrow": "A te döntésed. A te jövőd.",
+      "title": "A következő lépést iránnyal építsd, ne kapkodva.",
+      "body": "A Horizon nyugodtabb rendszerrel, tisztább döntésekkel és stabil haladással támogatja az álláskeresést és a hosszú távú karrierépítést.",
+      "cta": "Vezetett út indítása"
+    }
+  },
+  "dashboard": {
+    "hero": {
+      "eyebrow": "Most fontos",
+      "greeting": "Szép {{period}}, {{name}}.",
+      "subtitle": "Arra fókuszálj, ami ma előreviheti az álláskeresést. Utolsó frissítés: {{date}}"
+    },
+    "period": {
+      "morning": "reggelt",
+      "afternoon": "délutánt",
+      "evening": "estét"
+    },
+    "fallbackUser": "neked"
+  },
+  "ai": {
+    "drawer": {
+      "title": "Horizon segítő",
+      "ariaLabel": "Horizon segítő",
+      "close": "Horizon segítő bezárása",
+      "modeFast": "Gyors",
+      "modeDeep": "Mélyebb elemzés",
+      "placeholder": "Kérdezz bármit a karrierfolyamatodról...",
+      "send": "Üzenet küldése",
+      "quickPrompts": {
+        "summary": "összegzés",
+        "nextAction": "következő lépés",
+        "followUps": "utánkövetés",
+        "interviewPrep": "interjúfelkészülés"
+      },
+      "welcomeTitle": "Üdv a Horizon segítőben",
+      "welcomeBody": "Segítek a folyamat összegzésében, az utánkövetési stratégiában és az interjúfelkészülésben. Próbáld megkérdezni a következő legjobb lépést.",
+      "responses": {
+        "summaryTitle": "Folyamat összegzése",
+        "summaryBody": "A jelentkezéseid követve vannak. A részletes metrikákat az áttekintésben találod.",
+        "nextTitle": "Javasolt következő lépés",
+        "nextBody": "Nézd át az aktív interjúidat, és készíts STAR példákat a közelgő beszélgetésekhez.",
+        "followTitle": "Utánkövetési terv",
+        "followBody": "Küldj rövid, lényegre törő frissítést a függő jelentkezésekhez. Említs egy releváns eredményt, és erősítsd meg az érdeklődést.",
+        "interviewTitle": "Interjúfelkészülés",
+        "interviewBody": "Építs 30-60-90 napos narratívát, és gyakorolj STAR válaszokat felelősségvállalásra és bizonytalan helyzetekre.",
+        "fallbackTitle": "Ebben tudok segíteni",
+        "fallbackBody": "Próbáld: összegzés, következő lépés, utánkövetés vagy interjúfelkészülés.",
+        "modeFast": "Mód: Gyors",
+        "modeDeep": "Mód: Mélyebb elemzés"
+      }
+    }
+  },
+  "workstation": {
+    "command": {
+      "searchPlaceholder": "Kérdezz az AI-tól vagy keress...",
+      "searchLabel": "Keresés vagy AI-kérdés",
+      "placeholder": "Kérdezz bármit erről a jelentkezésről...",
+      "quickActions": "Gyors műveletek"
+    },
+    "nav": {
+      "strategy": "Illeszkedés",
+      "assets": "Dokumentumok",
+      "interview": "Interjú",
+      "deal": "Ajánlat",
+      "timeline": "Idővonal"
+    },
+    "actions": {
+      "analyze": "Illeszkedés elemzése",
+      "analyzing": "Elemzés...",
+      "prepareInterview": "Interjúfelkészülés",
+      "generateDocuments": "Dokumentumok generálása",
+      "addEvent": "Idővonal esemény hozzáadása"
+    },
+    "strategy": {
+      "jobContext": "Állás kontextusa",
+      "editDescription": "Leírás szerkesztése",
+      "noDescriptionTitle": "Még nincs állásleírás",
+      "noDescriptionBody": "Add hozzá a szerepkör elvárásait, hogy megkapd a személyre szabott illeszkedési elemzést és következő lépéseket.",
+      "pasteManually": "Szöveg beillesztése kézzel",
+      "jobUrl": "Álláshirdetés URL beillesztése...",
+      "autoFill": "Automatikus kitöltés URL-ből",
+      "overview": "Szerepkör áttekintése",
+      "priority": "Prioritás",
+      "matchScore": "Illeszkedési pontszám",
+      "type": "Típus",
+      "gapAnalysis": "Hiányelemzés",
+      "refresh": "Elemzés frissítése",
+      "simulate": "Javítás szimulálása",
+      "insights": "AI útmutatás",
+      "insightsEmpty": "Kattints az \"Illeszkedés elemzése\" gombra, hogy útmutatást kapj ehhez a szerephez."
+    },
+    "assets": {
+      "assistant": "AI dokumentumsegítő",
+      "resume": "CV",
+      "source": "Forrásdokumentum",
+      "output": "Személyre szabott kimenet",
+      "masterProtected": "Az eredeti forrásdokumentum védett. A Horizon ezt használja alapként a célzott generáláshoz.",
+      "awaiting": "Dokumentumgenerálásra vár",
+      "awaitingBody": "Használd a \"Dokumentumok generálása\" műveletet személyre szabott CV és motivációs levél készítéséhez.",
+      "suggestions": "AI javaslatok",
+      "coverLetter": "Személyre szabott motivációs levél",
+      "noCoverTitle": "Még nincs motivációs levél",
+      "noCoverBody": "A Horizon elkészít egy professzionális, pozícióhoz igazított motivációs levelet.",
+      "draftCover": "Piszkozat a Horizon segítővel",
+      "drafting": "Piszkozat készül..."
+    },
+    "interview": {
+      "title": "Interjúgyakorlás",
+      "readyTitle": "Készen állsz gyakorolni?",
+      "readyBody": "Válassz interjúszimulációt, és kezdd el a gyakorlást a Horizon segítővel.",
+      "listening": "Hallgatás...",
+      "endSession": "Gyakorlás befejezése",
+      "performance": "Teljesítmény",
+      "inputPlaceholder": "Írd be a válaszod..."
+    }
+  },
+  "footprint": {
+    "cardTitle": "Globális térkép",
+    "cardSubtitle": "Nyisd meg az interaktív világtérképet külön képernyőn.",
+    "empty": "Még nincs elérhető helyadat.",
+    "liveOrbit": "Élő forgás",
+    "interactiveGlobe": "Interaktív glóbusz",
+    "openTitle": "Dedikált világnézet megnyitása",
+    "openBody": "Tekintsd át a követett jelentkezéseket és a közeli céges jeleket interaktív térképen.",
+    "openCta": "Glóbusz megnyitása",
+    "screenEyebrow": "Világnézet",
+    "screenTitle": "Jelentkezések globális térképe",
+    "screenBody": "Forgasd a glóbuszt, vizsgáld meg a városi klasztereket, és nézd át a céges jeleket kontextusban.",
+    "allSignal": "Összes jel",
+    "applications": "Jelentkezések",
+    "yourApplications": "Jelentkezéseid",
+    "nearby": "Közeli",
+    "tracked": "Követett",
+    "nearbyMarketSignal": "Közeli piaci jel",
+    "autoOrbitOn": "Automatikus forgás be",
+    "autoOrbitOff": "Automatikus forgás ki",
+    "dragHint": "Forgatáshoz húzd",
+    "clickHint": "Kattints egy jelölőre a cég áttekintéséhez"
+  },
+  "opportunities": {
+    "save": "Lehetőség mentése"
+  }
+}

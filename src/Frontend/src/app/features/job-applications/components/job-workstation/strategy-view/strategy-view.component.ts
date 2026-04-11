@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAlertCircle,
@@ -24,7 +25,7 @@ export interface GapAnalysisItem {
 
 @Component({
   selector: 'app-strategy-view',
-  imports: [CommonModule, FormsModule, NgIcon, JobPriorityPipe, JobTypePipe],
+  imports: [CommonModule, FormsModule, TranslocoPipe, NgIcon, JobPriorityPipe, JobTypePipe],
   providers: [
     provideIcons({
       lucideAlertCircle,

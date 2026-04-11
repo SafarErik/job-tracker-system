@@ -14,17 +14,15 @@ import { ThemeService } from '../../../core/services/theme.service';
       <div class="relative flex items-center justify-center shrink-0 transition-all duration-300" [class]="sizeClasses()">
         
         <!-- Optional Glow -->
-        <div class="absolute inset-0 rounded-full bg-primary/20 blur-xl transition-opacity duration-500"
+        <div class="absolute inset-0 rounded-lg bg-primary/20 blur-xl transition-opacity duration-500"
              [class.opacity-0]="!withGlow()"
              [class.opacity-100]="withGlow()"></div>
 
-        <!-- Static Logo Image -->
-        <!-- Scaled up to compensate for internal padding in PNG -->
-        <img src="assets/logo.png" 
+        <img src="assets/brand/horizon-guided-path.svg"
              [style.width.px]="imgSize()" 
              [style.height.px]="imgSize()"
-             alt="Horizon Logo"
-             class="relative z-10 object-contain drop-shadow-sm transition-all duration-300 scale-150"
+             alt="Horizon"
+             class="relative z-10 object-contain drop-shadow-sm transition-all duration-300"
              [class.grayscale]="mono()"
              [class.brightness-200]="mono() && isDark()"
              [class.invert]="mono() && !isDark()"
@@ -40,7 +38,7 @@ import { ThemeService } from '../../../core/services/theme.service';
            [class.items-center]="vertical()">
            
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
-          <span class="font-[900] tracking-tight leading-none text-foreground font-sans">
+          <span class="font-display font-bold leading-none text-foreground">
             HORIZON
           </span>
         </div>
@@ -65,28 +63,28 @@ export class LogoComponent {
 
   sizeClasses = computed(() => {
     switch (this.size()) {
-      case 'sm': return 'h-10 w-10';
-      case 'md': return 'h-14 w-14'; // Slightly reduced from 16 to fit header better if scaled
-      case 'lg': return 'h-24 w-24';
-      case 'xl': return 'h-32 w-32';
-      default: return 'h-14 w-14';
+      case 'sm': return 'h-9 w-9';
+      case 'md': return 'h-12 w-12';
+      case 'lg': return 'h-20 w-20';
+      case 'xl': return 'h-28 w-28';
+      default: return 'h-12 w-12';
     }
   });
 
   imgSize = computed(() => {
     switch (this.size()) {
-      case 'sm': return 40;
-      case 'md': return 56; // Matching new md h-14
-      case 'lg': return 96;
-      case 'xl': return 128;
-      default: return 56;
+      case 'sm': return 36;
+      case 'md': return 48;
+      case 'lg': return 80;
+      case 'xl': return 112;
+      default: return 48;
     }
   });
 
   textSizeClasses = computed(() => {
     switch (this.size()) {
       case 'sm': return 'text-lg';
-      case 'md': return 'text-xl'; // Reduced from 2xl to fit sidebar
+      case 'md': return 'text-xl';
       case 'lg': return 'text-4xl';
       case 'xl': return 'text-6xl';
       default: return 'text-xl';

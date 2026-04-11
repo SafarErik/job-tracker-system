@@ -19,13 +19,15 @@ import {
   lucideMoon,
   lucideLaptop,
   lucideLogOut,
+  lucideSparkles,
 } from '@ng-icons/lucide';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
-import { UiStateService, BreadcrumbService } from '../../../core/services';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { UiStateService, BreadcrumbService, LanguageService } from '../../../core/services';
 import { NotificationCenterComponent } from '../../../features/notifications/notification-center.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Theme, ThemeService } from '../../../core/services/theme.service';
@@ -44,6 +46,7 @@ import { Theme, ThemeService } from '../../../core/services/theme.service';
     HlmDropdownMenuImports,
     HlmDropdownMenuTrigger,
     NotificationCenterComponent,
+    TranslocoPipe,
   ],
   providers: [
     provideIcons({
@@ -61,6 +64,7 @@ import { Theme, ThemeService } from '../../../core/services/theme.service';
       lucideMoon,
       lucideLaptop,
       lucideLogOut,
+      lucideSparkles,
     }),
   ],
   templateUrl: './global-header.component.html',
@@ -75,6 +79,7 @@ export class GlobalHeaderComponent {
   public readonly breadcrumbService = inject(BreadcrumbService);
   public readonly authService = inject(AuthService);
   public readonly themeService = inject(ThemeService);
+  public readonly languageService = inject(LanguageService);
   private readonly router = inject(Router);
 
   readonly currentSection = computed(() => {
@@ -82,30 +87,59 @@ export class GlobalHeaderComponent {
     return breadcrumbs.length ? breadcrumbs[breadcrumbs.length - 1].label : 'Dashboard';
   });
 
-  readonly pageTitle = computed(() => {
+  readonly pageTitleKey = computed(() => {
     const section = this.currentSection();
-    return section === 'Dashboard' ? 'Command Center' : section;
+    return this.sectionTitleKey(section);
   });
 
-  readonly pageDescription = computed(() => {
+  readonly pageDescriptionKey = computed(() => {
     const section = this.currentSection();
+    return this.sectionDescriptionKey(section);
+  });
 
+  private sectionTitleKey(section: string): string {
     switch (section) {
       case 'Applications':
-        return 'Track active applications and react quickly.';
+        return 'shell.nav.applications';
       case 'Companies':
-        return 'Manage target companies and outreach context.';
+        return 'shell.nav.companies';
       case 'Insights':
-        return 'Review trends, charts, and performance signals.';
+      case 'Intelligence':
+        return 'shell.nav.insights';
       case 'Signals':
-        return 'Watch incoming opportunities and alerts.';
+      case 'Global Signals':
+        return 'shell.nav.signals';
       case 'Documents':
-        return 'Keep resumes and job-search assets ready.';
+        return 'shell.nav.documents';
+      case 'Profile':
+        return 'shell.header.profile';
       case 'Dashboard':
       default:
-        return 'See what matters now and where you need to react.';
+        return 'app.dashboard';
     }
-  });
+  }
+
+  private sectionDescriptionKey(section: string): string {
+    switch (section) {
+      case 'Applications':
+        return 'shell.header.descriptions.applications';
+      case 'Companies':
+        return 'shell.header.descriptions.companies';
+      case 'Insights':
+      case 'Intelligence':
+        return 'shell.header.descriptions.insights';
+      case 'Signals':
+      case 'Global Signals':
+        return 'shell.header.descriptions.signals';
+      case 'Documents':
+        return 'shell.header.descriptions.documents';
+      case 'Profile':
+        return 'shell.header.descriptions.profile';
+      case 'Dashboard':
+      default:
+        return 'shell.header.descriptions.dashboard';
+    }
+  }
 
   onKeyDown(event: KeyboardEvent) {
     if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
@@ -131,6 +165,10 @@ export class GlobalHeaderComponent {
 
   setTheme(theme: Theme) {
     this.themeService.setTheme(theme);
+  }
+
+  setLanguage(locale: 'en' | 'hu') {
+    this.languageService.setLocale(locale);
   }
 
   logout() {

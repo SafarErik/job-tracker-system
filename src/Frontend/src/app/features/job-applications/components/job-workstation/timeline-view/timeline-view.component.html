@@ -3,8 +3,8 @@
     <!-- Top Header & Sync -->
     <div class="flex items-center justify-between px-2 shrink-0">
         <div>
-            <h3 class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Tactical Roadmap</h3>
-            <p class="text-[11px] text-muted-foreground">Strategic scheduling and mission milestones.</p>
+            <h3 class="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Timeline</h3>
+            <p class="text-[11px] text-muted-foreground">Scheduling and key milestones for this application.</p>
         </div>
 
         <!-- Google Calendar Sync Card -->
@@ -102,7 +102,7 @@
                                 <button (click)="openPrepDojo()"
                                     class="flex items-center gap-2 px-4 py-2 bg-muted/50 text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-muted transition-all">
                                     <ng-icon name="lucideZap"></ng-icon>
-                                    Prep Dojo
+                                    Interview prep
                                 </button>
                                 }
                                 @if (event.type === 'technical' && event.link) {
@@ -138,7 +138,7 @@
                     class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 </div>
                 <ng-icon name="lucidePlus" class="text-lg relative z-10"></ng-icon>
-                <span class="text-[10px] font-black uppercase tracking-widest relative z-10">Add Mission Event</span>
+                <span class="text-[10px] font-black uppercase tracking-widest relative z-10">Add timeline event</span>
             </button>
 
             <div class="flex-1 bg-zinc-950 text-zinc-100 p-8 rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden flex flex-col"
@@ -146,7 +146,7 @@
                 [class.slide-in-from-right-8]="isAddingEvent()">
                 <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-primary/20 blur-[60px]"></div>
 
-                <h4 class="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Deploy Milestone</h4>
+                <h4 class="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Add milestone</h4>
 
                 <div class="space-y-6 flex-1 overflow-y-auto no-scrollbar">
                     <div class="space-y-2">
@@ -156,7 +156,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-[9px] font-black uppercase text-zinc-500">Operation Type</label>
+                        <label class="text-[9px] font-black uppercase text-zinc-500">Event type</label>
                         <select [(ngModel)]="newEvent().type"
             class="w-full rounded-2xl border border-border/30 bg-muted/20 px-4 py-3 text-xs text-muted-foreground transition-all focus:border-primary/50 focus:outline-none">
                             <option value="technical">Technical Task</option>
@@ -167,7 +167,7 @@
                     </div>
 
                     <div class="space-y-2">
-                        <label class="text-[9px] font-black uppercase text-zinc-500">Deployment Date</label>
+                        <label class="text-[9px] font-black uppercase text-zinc-500">Event date</label>
                         <input type="datetime-local" [(ngModel)]="newEvent().date"
             class="w-full rounded-2xl border border-border/30 bg-muted/20 px-4 py-3 text-xs text-muted-foreground transition-all focus:border-primary/50 focus:outline-none">
                     </div>

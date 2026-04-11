@@ -1,6 +1,7 @@
 import { Component, OnInit, signal, ViewChild, ElementRef, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { CompanyStore } from '../../services/company.store';
 import { Company, JobApplicationHistory } from '../../models/company.model';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -18,6 +19,7 @@ import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet
   selector: 'app-company-list',
   imports: [
     CommonModule,
+    TranslocoPipe,
     ...HlmButtonImports,
     ...HlmInputImports,
     ...HlmLabelImports,

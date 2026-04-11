@@ -14,7 +14,7 @@ import { filter } from 'rxjs';
 import { NgxSonnerToaster } from 'ngx-sonner';
 
 // Core services
-import { NotificationService, ThemeService } from './core/services';
+import { LanguageService, NotificationService, ThemeService } from './core/services';
 import { ProfileStore } from './features/profile/services/profile.store';
 
 // Shared components
@@ -32,12 +32,15 @@ export class App implements AfterViewInit {
   @ViewChild(ConfirmDialogComponent) confirmDialog?: ConfirmDialogComponent;
   private readonly _router = inject(Router);
   readonly themeService = inject(ThemeService);
+  private readonly languageService = inject(LanguageService);
   readonly isAuthPage = signal<boolean>(false);
 
   constructor(
     private readonly notificationService: NotificationService,
     private readonly profileStore: ProfileStore,
   ) {
+    this.languageService.initialize();
+
     // Initialize profile and skills globally
     this.profileStore.loadProfile();
 
@@ -46,12 +49,12 @@ export class App implements AfterViewInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       const url = this._router.url.split('?')[0]; // Ignore query params
-      this.isAuthPage.set(url === '/' || url.startsWith('/auth'));
+      this.isAuthPage.set(url === '/' || url === '/welcome' || url.startsWith('/auth'));
     });
 
     // Initial check
     const path = globalThis.location?.pathname ?? '';
-    this.isAuthPage.set(path === '/' || path.startsWith('/auth'));
+    this.isAuthPage.set(path === '/' || path === '/welcome' || path.startsWith('/auth'));
   }
 
   /**

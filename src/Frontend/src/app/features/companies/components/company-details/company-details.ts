@@ -126,7 +126,7 @@ export class CompanyDetailsComponent implements OnDestroy {
   private latestNewsRequestId = 0;
   private lastLoadedRouteCompanyId: string | null = null;
 
-  // Tactical Timeline State
+  // Timeline State
   manualEvents = signal<TacticalEvent[]>([]); // For manual adds in this session
 
   // Tab Navigation State
@@ -357,7 +357,7 @@ export class CompanyDetailsComponent implements OnDestroy {
       meta: { aiInsight: 'High potential for internal referral. Follow up in 3 days.' },
     };
     this.manualEvents.update((events) => [newEvent, ...events]);
-    this.notificationService.success('Tactical timeline updated.', 'Event Logged');
+    this.notificationService.success('Timeline updated.', 'Event logged');
   }
 
   goBack(): void {

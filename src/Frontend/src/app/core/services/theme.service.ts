@@ -32,13 +32,16 @@ export class ThemeService {
   constructor() {
     // Initialize system preference
     if (isPlatformBrowser(this._platformId)) {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.systemPrefersDark.set(mediaQuery.matches);
+      const mediaQuery = this._document.defaultView?.matchMedia?.('(prefers-color-scheme: dark)');
 
-      // Listen for OS-level changes
-      mediaQuery.addEventListener('change', (e) => {
-        this.systemPrefersDark.set(e.matches);
-      });
+      if (mediaQuery) {
+        this.systemPrefersDark.set(mediaQuery.matches);
+
+        // Listen for OS-level changes
+        mediaQuery.addEventListener('change', (e) => {
+          this.systemPrefersDark.set(e.matches);
+        });
+      }
     }
 
     // Keep DOM theme state in sync with the active setting and system preference.

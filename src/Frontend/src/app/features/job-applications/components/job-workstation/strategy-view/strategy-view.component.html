@@ -6,14 +6,14 @@
   >
     <div class="px-6 py-4 border-b border-border/50 bg-card/20 flex items-center justify-between">
       <h3 class="text-xs font-serif font-bold text-muted-foreground uppercase tracking-widest">
-        Job Context
+        {{ 'workstation.strategy.jobContext' | transloco }}
       </h3>
       @if (highlightedDescription()) {
         <button
           (click)="startManualPaste.emit()"
           class="text-[10px] text-muted-foreground hover:text-foreground transition-colors uppercase font-bold tracking-tighter"
         >
-          Edit Description
+          {{ 'workstation.strategy.editDescription' | transloco }}
         </button>
       }
     </div>
@@ -38,14 +38,14 @@
               (click)="cancelManualPaste.emit()"
               class="text-xs font-bold uppercase tracking-widest text-muted-foreground px-6"
             >
-              Cancel
+              {{ 'common.actions.cancel' | transloco }}
             </button>
             <button
               (click)="saveManualPaste.emit()"
               [disabled]="!manualPasteText().trim()"
               class="bg-linear-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold uppercase tracking-widest px-8 py-2 rounded-xl shadow-lg disabled:opacity-60"
             >
-              Save Changes
+              {{ 'common.actions.saveChanges' | transloco }}
             </button>
           </div>
         </div>
@@ -76,10 +76,10 @@
             <ng-icon name="lucideFileText" class="text-4xl text-muted-foreground/30"></ng-icon>
           </div>
           <h4 class="text-lg font-sans font-bold text-foreground mb-2">
-            No Job Description Detected
+            {{ 'workstation.strategy.noDescriptionTitle' | transloco }}
           </h4>
           <p class="text-xs text-muted-foreground max-w-xs mb-8 leading-relaxed">
-            Analyze the specific role requirements to unlock tailored strategy and gap analysis.
+            {{ 'workstation.strategy.noDescriptionBody' | transloco }}
           </p>
 
           <div class="w-full max-w-sm space-y-4">
@@ -93,7 +93,7 @@
               <input
                 id="job-url-input"
                 type="text"
-                placeholder="Paste Job URL..."
+                [placeholder]="'workstation.strategy.jobUrl' | transloco"
                 class="w-full h-12 pl-11 pr-4 bg-muted border border-border rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all placeholder:text-muted-foreground"
               />
             </div>
@@ -105,7 +105,7 @@
                 name="lucideSparkles"
                 class="text-lg group-hover:rotate-12 transition-transform"
               ></ng-icon>
-              Magic Auto-Fill
+              {{ 'workstation.strategy.autoFill' | transloco }}
             </button>
 
             <div class="flex items-center gap-4 py-2">
@@ -120,7 +120,7 @@
               (click)="startManualPaste.emit()"
               class="w-full py-2 text-xs font-sans font-bold text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest"
             >
-              Paste Text Manually
+              {{ 'workstation.strategy.pasteManually' | transloco }}
             </button>
           </div>
         </div>
@@ -134,12 +134,12 @@
         class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2"
       >
         <ng-icon name="lucideTarget" class="text-primary"></ng-icon>
-        Mission Intel
+        {{ 'workstation.strategy.overview' | transloco }}
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="space-y-2">
           <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
-            Priority
+            {{ 'workstation.strategy.priority' | transloco }}
           </p>
           <div [class]="priorityBadgeClass()" class="inline-block px-4 py-1.5">
             {{ application()?.priority | jobPriority }}
@@ -148,7 +148,7 @@
 
         <div class="space-y-2 flex flex-col items-center md:items-start">
           <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
-            Match Score
+            {{ 'workstation.strategy.matchScore' | transloco }}
           </p>
           <div class="relative w-24 h-24 flex items-center justify-center">
             <svg class="w-full h-full -rotate-90 transform" viewBox="0 0 36 36">
@@ -189,7 +189,9 @@
         </div>
 
         <div class="space-y-2">
-          <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Type</p>
+          <p class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
+            {{ 'workstation.strategy.type' | transloco }}
+          </p>
           <div
             class="bg-muted border border-border text-muted-foreground px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider inline-block"
           >
@@ -205,10 +207,10 @@
         >
           @if (isProcessing()) {
             <ng-icon name="lucideLoader2" class="text-lg animate-spin"></ng-icon>
-            Synchronizing Intel...
+            {{ 'workstation.actions.analyzing' | transloco }}
           } @else {
             <ng-icon name="lucideBrain" class="text-lg"></ng-icon>
-            Initiate AI Analysis
+            {{ 'workstation.actions.analyze' | transloco }}
           }
         </button>
       </div>
@@ -220,13 +222,13 @@
           class="text-xs font-serif font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2"
         >
           <ng-icon name="lucideBrain" class="text-primary"></ng-icon>
-          Gap Analysis
+          {{ 'workstation.strategy.gapAnalysis' | transloco }}
         </h3>
         <button
           (click)="triggerAnalysis.emit()"
           class="text-[9px] font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-widest"
         >
-          Refresh Scan
+          {{ 'workstation.strategy.refresh' | transloco }}
         </button>
       </div>
 
@@ -260,7 +262,7 @@
                     (click)="simulateImprovement.emit(item.name)"
                     class="text-[8px] font-black uppercase tracking-tighter px-2 py-1 rounded bg-foreground/5 hover:bg-foreground/10 transition-colors"
                   >
-                    Simulate Improvement
+                    {{ 'workstation.strategy.simulate' | transloco }}
                   </button>
                 }
               </div>
@@ -298,7 +300,7 @@
             <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
           </div>
           <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-foreground">
-            AI Strategic Insights
+            {{ 'workstation.strategy.insights' | transloco }}
           </h4>
         </div>
 
@@ -308,7 +310,7 @@
           </div>
         } @else {
           <p class="text-xs text-muted-foreground leading-relaxed italic opacity-60">
-            Click "Initiate AI Analysis" above to generate a tactical blueprint for this role.
+            {{ 'workstation.strategy.insightsEmpty' | transloco }}
           </p>
         }
       </div>

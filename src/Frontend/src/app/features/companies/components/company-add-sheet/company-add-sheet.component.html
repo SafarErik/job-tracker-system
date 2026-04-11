@@ -12,12 +12,12 @@
                         <ng-icon name="lucideBuilding2" class="h-5 w-5"></ng-icon>
                     </div>
                     <div>
-                        <h3 hlmSheetTitle class="text-xl font-semibold text-foreground tracking-tight">Tactical
-                            Acquisition
+                        <h3 hlmSheetTitle class="text-xl font-semibold text-foreground tracking-tight">Company
+                            Research
                         </h3>
                         <p hlmSheetDescription
                             class="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-                            Initialize New Asset</p>
+                            Add company context</p>
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <!-- 2. Main Content (Scrollable) -->
         <div class="flex-1 px-8 py-6 space-y-10">
 
-            <!-- MAGIC INPUT: Scout Website -->
+            <!-- Company website auto-fill -->
             <section class="space-y-4 relative group">
                 <div
                     class="absolute -inset-4 bg-linear-to-b from-primary/5 to-transparent rounded-[2rem] -z-10 group-focus-within:from-primary/10 transition-all duration-500">
@@ -34,7 +34,7 @@
 
                 <div class="flex items-center gap-2">
                     <ng-icon name="lucideSparkles" class="text-primary h-4 w-4"></ng-icon>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">Scout & Auto-Fill</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">Research & Auto-Fill</h4>
                 </div>
 
                 <div class="flex gap-2">
@@ -55,7 +55,7 @@
                 </div>
 
                 <p class="text-[10px] text-muted-foreground font-medium ml-1">
-                    Enter domain to deploy scout. Fetches identity and tech DNA automatically.
+                    Enter a domain to create a company profile. Horizon can fill identity and tech context automatically.
                 </p>
             </section>
 
@@ -68,7 +68,7 @@
                 <section class="space-y-5">
                     <h4
                         class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Identity Parameter
+                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Company identity
                     </h4>
 
                     <div class="grid gap-5">
@@ -123,8 +123,8 @@
                         </div>
 
                         <div class="flex items-center gap-3 pl-4 border-l border-border">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Dream
-                                Target</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Priority
+                                company</span>
                             <hlm-switch [checked]="isDreamTarget()" (changed)="toggleDreamTarget()"></hlm-switch>
                         </div>
                     </div>
@@ -147,7 +147,7 @@
                 <section class="space-y-5">
                     <h4
                         class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Contact Liaison
+                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Recruiting contact
                     </h4>
 
                     <div class="grid gap-4">
@@ -186,9 +186,9 @@
                 class="w-full h-14 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold uppercase tracking-widest text-xs shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
                 @if(isLoading()) {
                 <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-5 w-5"></ng-icon>
-                Initializing...
+                Saving...
                 } @else {
-                Initialize Tracking
+                Save company
                 }
             </button>
         </hlm-sheet-footer>

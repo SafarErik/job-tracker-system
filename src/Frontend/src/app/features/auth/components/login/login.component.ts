@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { LogoComponent } from '../../../../shared/components/logo/logo';
 import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
@@ -15,6 +16,7 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
+    TranslocoPipe,
     LogoComponent,
     ThemeToggleComponent,
     ...HlmButtonImports,

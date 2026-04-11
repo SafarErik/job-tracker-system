@@ -105,7 +105,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                 <ng-icon name="lucideSettings" class="h-5 w-5"></ng-icon>
               </div>
               <div>
-                <h3 class="text-xl font-serif text-foreground tracking-tight">Command Center</h3>
+                <h3 class="text-xl font-serif text-foreground tracking-tight">Settings</h3>
                 <p
                   class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
                 >

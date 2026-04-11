@@ -13,7 +13,7 @@
       <app-logo class="transition-all duration-300" size="sm" [withGlow]="true"></app-logo>
       <div class="min-w-0 group-data-[collapsible=icon]:hidden">
         <p class="truncate text-sm font-semibold text-sidebar-foreground">Horizon</p>
-        <p class="truncate text-xs text-sidebar-foreground/55">Career workspace</p>
+        <p class="truncate text-xs text-sidebar-foreground/55">{{ 'shell.brandSubtitle' | transloco }}</p>
       </div>
     </div>
   </div>
@@ -23,11 +23,11 @@
         hlmSidebarGroupLabel
         hlmClassName="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.24em] text-sidebar-foreground/45"
       >
-        Workspace
+        {{ 'shell.nav.workspace' | transloco }}
       </div>
       <div hlmSidebarGroupContent>
         <ul hlmSidebarMenu class="px-0">
-          @for (item of navItems; track item.label) {
+          @for (item of navItems; track item.labelKey) {
             <li hlmSidebarMenuItem>
               <a
                 hlmSidebarMenuButton
@@ -42,7 +42,7 @@
                   hlmClassName="h-5 w-5 shrink-0 transition-colors group-hover:text-sidebar-primary"
                 />
                 <span class="block truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
-                  {{ item.label }}
+                  {{ item.labelKey | transloco }}
                 </span>
               </a>
             </li>

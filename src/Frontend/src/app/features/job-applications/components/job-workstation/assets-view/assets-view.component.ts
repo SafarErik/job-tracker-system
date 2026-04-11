@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     lucideLock,
@@ -22,7 +23,7 @@ import { NotificationService } from '../../../../../core/services/notification.s
 
 @Component({
     selector: 'app-assets-view',
-    imports: [CommonModule, NgIcon],
+    imports: [CommonModule, TranslocoPipe, NgIcon],
     providers: [
         provideIcons({
             lucideLock,

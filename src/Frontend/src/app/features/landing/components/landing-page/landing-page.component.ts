@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../../../core/auth';
 import {
     LucideAngularModule,
@@ -31,10 +32,12 @@ import {
     Moon,
 } from 'lucide-angular';
 import { ThemeService } from '../../../../core/services/theme.service';
+import { LanguageService } from '../../../../core/services';
+import { LogoComponent } from '../../../../shared/components/logo/logo';
 
 @Component({
     selector: 'app-landing-page',
-    imports: [RouterLink, LucideAngularModule],
+    imports: [RouterLink, LucideAngularModule, TranslocoPipe, LogoComponent],
     providers: [
         {
             provide: LUCIDE_ICONS,
@@ -77,8 +80,69 @@ import { ThemeService } from '../../../../core/services/theme.service';
 export class LandingPageComponent {
     private readonly authService = inject(AuthService);
     readonly themeService = inject(ThemeService);
+    readonly languageService = inject(LanguageService);
 
     readonly isAuthenticated = this.authService.isAuthenticated;
+
+    readonly proofPoints = [
+        'landing.proof.guidance',
+        'landing.proof.documents',
+        'landing.proof.practice',
+    ];
+
+    readonly pillars = [
+        {
+            icon: Search,
+            titleKey: 'landing.pillars.clarity.title',
+            bodyKey: 'landing.pillars.clarity.body',
+        },
+        {
+            icon: Layout,
+            titleKey: 'landing.pillars.strategy.title',
+            bodyKey: 'landing.pillars.strategy.body',
+        },
+        {
+            icon: TrendingUp,
+            titleKey: 'landing.pillars.momentum.title',
+            bodyKey: 'landing.pillars.momentum.body',
+        },
+    ];
+
+    readonly workflow = [
+        {
+            icon: Radar,
+            titleKey: 'landing.workflow.research.title',
+            bodyKey: 'landing.workflow.research.body',
+        },
+        {
+            icon: FileText,
+            titleKey: 'landing.workflow.documents.title',
+            bodyKey: 'landing.workflow.documents.body',
+        },
+        {
+            icon: MessageSquare,
+            titleKey: 'landing.workflow.applications.title',
+            bodyKey: 'landing.workflow.applications.body',
+        },
+        {
+            icon: Mic,
+            titleKey: 'landing.workflow.practice.title',
+            bodyKey: 'landing.workflow.practice.body',
+        },
+    ];
+
+    readonly outcomes = [
+        'landing.workspace.outcomes.nextMove',
+        'landing.workspace.outcomes.fit',
+        'landing.workspace.outcomes.followUp',
+    ];
+
+    readonly planBenefits = [
+        'landing.pricing.benefits.tracker',
+        'landing.pricing.benefits.documents',
+        'landing.pricing.benefits.interview',
+        'landing.pricing.benefits.guide',
+    ];
 
     // Icons for use in template (if needed by name)
     readonly icons = {

@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
     ArrowUp,
     CircleDashed,
@@ -34,6 +34,11 @@ export interface AiCopilotContext {
 
 type ChatMode = 'Fast' | 'Deep Reason';
 
+interface QuickPrompt {
+    labelKey: string;
+    command: string;
+}
+
 interface ChatMessage {
     id: string;
     role: 'user' | 'assistant';
@@ -47,6 +52,7 @@ interface ChatMessage {
         CommonModule,
         TextFieldModule,
         LucideAngularModule,
+        TranslocoPipe,
         ...HlmButtonImports,
     ],
     providers: [
@@ -83,13 +89,13 @@ interface ChatMessage {
         class="drawer-panel fixed right-0 top-0 z-90 flex h-full w-full max-w-md flex-col border-l border-border bg-card shadow-2xl"
         role="dialog"
         aria-modal="true"
-        aria-label="AI Assistant"
+        [attr.aria-label]="'ai.drawer.ariaLabel' | transloco"
       >
         <!-- Header -->
         <div class="flex items-center justify-between border-b border-border px-5 py-4">
           <div class="flex items-center gap-2.5">
             <lucide-angular name="Sparkles" class="h-5 w-5 text-primary" />
-            <h2 class="text-sm font-semibold text-foreground">Career Copilot</h2>
+            <h2 class="text-sm font-semibold text-foreground">{{ 'ai.drawer.title' | transloco }}</h2>
           </div>
           <div class="flex items-center gap-2">
             <!-- Mode toggle -->
@@ -101,7 +107,7 @@ interface ChatMessage {
                 class="h-7 text-xs"
                 (click)="setMode(mode)"
               >
-                {{ mode }}
+                {{ mode === 'Fast' ? ('ai.drawer.modeFast' | transloco) : ('ai.drawer.modeDeep' | transloco) }}
               </button>
             }
             <button
@@ -110,7 +116,7 @@ interface ChatMessage {
               size="icon"
               class="h-8 w-8"
               (click)="close()"
-              aria-label="Close AI Assistant"
+              [attr.aria-label]="'ai.drawer.close' | transloco"
             >
               <lucide-angular name="X" class="h-4 w-4" />
             </button>
@@ -126,7 +132,7 @@ interface ChatMessage {
               [class.bg-primary/10]="msg.role === 'user'"
               [class.ml-8]="msg.role === 'user'"
             >
-              <div [innerHTML]="renderMarkdown(msg.content)"></div>
+              <p class="whitespace-pre-line leading-relaxed">{{ msg.content }}</p>
               @if (msg.citations.length > 0) {
                 <div class="mt-2 flex flex-wrap gap-1.5">
                   @for (cite of msg.citations; track cite) {
@@ -143,15 +149,15 @@ interface ChatMessage {
         <!-- Quick Prompts -->
         <div class="border-t border-border px-5 py-3">
           <div class="mb-3 flex flex-wrap gap-2">
-            @for (prompt of quickPrompts; track prompt) {
+            @for (prompt of quickPrompts; track prompt.command) {
               <button
                 hlmBtn
                 variant="outline"
                 size="sm"
                 class="h-7 text-xs"
-                (click)="runCommand(prompt)"
+                (click)="runCommand(prompt.command)"
               >
-                {{ prompt }}
+                {{ prompt.labelKey | transloco }}
               </button>
             }
           </div>
@@ -163,7 +169,7 @@ interface ChatMessage {
               cdkAutosizeMinRows="1"
               cdkAutosizeMaxRows="4"
               class="flex-1 resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-              placeholder="Ask anything..."
+              [placeholder]="'ai.drawer.placeholder' | transloco"
               [value]="command()"
               (input)="updateCommand($event)"
               (keydown.enter)="onEnter($event)"
@@ -174,7 +180,7 @@ interface ChatMessage {
               class="h-8 w-8 shrink-0"
               [disabled]="!hasCommand()"
               (click)="runCommand()"
-              aria-label="Send message"
+              [attr.aria-label]="'ai.drawer.send' | transloco"
             >
               <lucide-angular name="ArrowUp" class="h-4 w-4" />
             </button>
@@ -212,20 +218,25 @@ interface ChatMessage {
 })
 export class AiDrawerComponent {
     readonly uiService = inject(UiStateService);
-    private readonly sanitizer = inject(DomSanitizer);
+    private readonly transloco = inject(TranslocoService);
 
     readonly command = signal('');
     readonly chatMode = signal<ChatMode>('Fast');
     readonly availableModes: ChatMode[] = ['Fast', 'Deep Reason'];
-    readonly quickPrompts = ['summary', 'next action', 'follow-ups', 'interview prep'];
+    readonly quickPrompts: QuickPrompt[] = [
+        { labelKey: 'ai.drawer.quickPrompts.summary', command: 'summary' },
+        { labelKey: 'ai.drawer.quickPrompts.nextAction', command: 'next action' },
+        { labelKey: 'ai.drawer.quickPrompts.followUps', command: 'follow-ups' },
+        { labelKey: 'ai.drawer.quickPrompts.interviewPrep', command: 'interview prep' },
+    ];
     readonly hasCommand = computed(() => this.command().trim().length > 0);
 
     readonly messages = signal<ChatMessage[]>([
         {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: '### Welcome to Career Copilot\nI can help with:\n- Pipeline summaries\n- Follow-up strategy\n- Interview preparation\n\nTry asking for a **next best action**.',
-            citations: ['Dashboard Metrics'],
+            content: this.combineResponse('ai.drawer.welcomeTitle', 'ai.drawer.welcomeBody'),
+            citations: [this.transloco.translate('app.dashboard')],
         },
     ]);
 
@@ -253,48 +264,42 @@ export class AiDrawerComponent {
         if (!cmd) return;
 
         const response = this.getResponseFor(cmd.toLowerCase());
-        const modeLabel = this.chatMode() === 'Fast' ? '> Mode: Fast' : '> Mode: Deep Reason';
+        const modeLabel = this.chatMode() === 'Fast'
+            ? this.transloco.translate('ai.drawer.responses.modeFast')
+            : this.transloco.translate('ai.drawer.responses.modeDeep');
 
         this.messages.update((current) => [
             ...current,
-            { id: crypto.randomUUID(), role: 'user', content: cmd, citations: [] },
-            { id: crypto.randomUUID(), role: 'assistant', content: `${response}\n\n${modeLabel}`, citations: ['Dashboard Metrics'] },
+            { id: crypto.randomUUID(), role: 'user', content: this.getPromptLabel(cmd), citations: [] },
+            { id: crypto.randomUUID(), role: 'assistant', content: `${response}\n\n${modeLabel}`, citations: [this.transloco.translate('app.dashboard')] },
         ]);
 
         this.command.set('');
     }
 
-    renderMarkdown(markdown: string): SafeHtml {
-        const escaped = markdown
-            .replaceAll('&', '&amp;')
-            .replaceAll('<', '&lt;')
-            .replaceAll('>', '&gt;');
-
-        const html = escaped
-            .replaceAll(/^###\s(.+)$/gm, '<h4 class="mb-2 mt-1 text-sm font-semibold text-foreground">$1</h4>')
-            .replaceAll(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
-            .replaceAll(/^-\s(.+)$/gm, '<li class="ml-4 list-disc text-xs text-muted-foreground">$1</li>')
-            .replaceAll(/(<li.*?<\/li>\n?)+/gs, '<ul class="mb-2 space-y-1">$&</ul>')
-            .replaceAll('\n\n', '<br><br>')
-            .replaceAll('\n', '<br>');
-
-        return this.sanitizer.bypassSecurityTrustHtml(html);
-    }
-
     private getResponseFor(command: string): string {
         if (this.matchesAny(command, ['summary', 'status', 'overview'])) {
-            return '### Pipeline Summary\nYour applications are being tracked. Open the dashboard for detailed metrics.';
+            return this.combineResponse('ai.drawer.responses.summaryTitle', 'ai.drawer.responses.summaryBody');
         }
         if (this.matchesAny(command, ['next', 'priority', 'action'])) {
-            return '### Recommended Next Action\nReview your active interviews and prepare STAR examples for upcoming sessions.';
+            return this.combineResponse('ai.drawer.responses.nextTitle', 'ai.drawer.responses.nextBody');
         }
         if (this.matchesAny(command, ['follow'])) {
-            return '### Follow-up Plan\nSend concise updates to pending applications. Mention one role-fit achievement and reconfirm interest.';
+            return this.combineResponse('ai.drawer.responses.followTitle', 'ai.drawer.responses.followBody');
         }
         if (this.matchesAny(command, ['interview', 'prep'])) {
-            return '### Interview Preparation\nBuild a 30-60-90 narrative and rehearse STAR answers focused on ownership and ambiguity.';
+            return this.combineResponse('ai.drawer.responses.interviewTitle', 'ai.drawer.responses.interviewBody');
         }
-        return '### I can help with this\nTry: summary, next action, follow-ups, or interview prep.';
+        return this.combineResponse('ai.drawer.responses.fallbackTitle', 'ai.drawer.responses.fallbackBody');
+    }
+
+    private combineResponse(titleKey: string, bodyKey: string): string {
+        return `${this.transloco.translate(titleKey)}\n${this.transloco.translate(bodyKey)}`;
+    }
+
+    private getPromptLabel(command: string): string {
+        const prompt = this.quickPrompts.find((item) => item.command === command);
+        return prompt ? this.transloco.translate(prompt.labelKey) : command;
     }
 
     private matchesAny(command: string, keywords: string[]): boolean {

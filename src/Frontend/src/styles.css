@@ -61,13 +61,13 @@
   --chart-5: 218 100% 65%;
 
   /* Sidebar */
-  --sidebar-background: 226 49% 8%;
-  --sidebar-foreground: 213 54% 97%;
-  --sidebar-primary: 192 75% 59%;
-  --sidebar-primary-foreground: 226 49% 8%;
-  --sidebar-accent: 222 48% 18%;
-  --sidebar-accent-foreground: 213 54% 97%;
-  --sidebar-border: 216 46% 28%;
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 226 49% 8%;
+  --sidebar-primary: 216 46% 34%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 213 48% 94%;
+  --sidebar-accent-foreground: 226 49% 8%;
+  --sidebar-border: 216 28% 85%;
   --sidebar-ring: 192 75% 59%;
   --scrollbar-thumb: 216 28% 76%;
   --scrollbar-thumb-hover: 217 15% 44%;

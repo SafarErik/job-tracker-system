@@ -17,7 +17,7 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard, entryRedirectMatchGuard } from './core/guards';
+import { authGuard } from './core/guards';
 // import { SignalsComponent } from './features/signals/signals.component'; // Managed via lazy load
 
 export const routes: Routes = [
@@ -26,10 +26,9 @@ export const routes: Routes = [
   // ============================================
   {
     path: '',
-    canMatch: [entryRedirectMatchGuard],
     loadComponent: () =>
-      import('./features/landing/components/landing-page/landing-page.component').then(
-        (m) => m.LandingPageComponent,
+      import('./features/landing/components/entry-redirect/entry-redirect.component').then(
+        (m) => m.EntryRedirectComponent,
       ),
     pathMatch: 'full',
     title: 'Horizon',

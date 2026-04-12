@@ -345,7 +345,7 @@ export class JobApplicationStore {
         this._tailoredResume.set(res.tailoredResume);
         this._isGeneratingAsset.set(false);
         this._isProcessing.set(false);
-        this.notificationService.success('Assets generated!', 'AI Magic');
+        this.notificationService.success('Documents generated.', 'Horizon Guide');
       },
       error: (err) => {
         console.error('Failed to generate assets', err);

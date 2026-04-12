@@ -128,6 +128,12 @@ export class GlobalHeaderComponent {
         return 'shell.nav.documents';
       case 'Profile':
         return 'shell.header.profile';
+      case 'New Application':
+        return 'shell.header.titles.newApplication';
+      case 'Edit Company':
+        return 'shell.header.titles.editCompany';
+      case 'Company Details':
+        return 'shell.header.titles.companyDetails';
       case 'Dashboard':
       default:
         return 'app.dashboard';
@@ -150,6 +156,12 @@ export class GlobalHeaderComponent {
         return 'shell.header.descriptions.documents';
       case 'Profile':
         return 'shell.header.descriptions.profile';
+      case 'New Application':
+        return 'shell.header.descriptions.newApplication';
+      case 'Edit Company':
+        return 'shell.header.descriptions.editCompany';
+      case 'Company Details':
+        return 'shell.header.descriptions.companyDetails';
       case 'Dashboard':
       default:
         return 'shell.header.descriptions.dashboard';

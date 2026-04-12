@@ -6,6 +6,7 @@ import {
   HlmCardFooter,
 } from '@spartan-ng/helm/card';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
@@ -18,6 +19,7 @@ import { CompanyPriority } from '../../models/company-priority.enum';
   selector: 'app-company-card',
   imports: [
     CommonModule,
+    TranslocoPipe,
     NgIcon,
     HlmCard,
     HlmCardHeader,

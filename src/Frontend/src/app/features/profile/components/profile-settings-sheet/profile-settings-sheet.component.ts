@@ -105,11 +105,11 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                 <ng-icon name="lucideSettings" class="h-5 w-5"></ng-icon>
               </div>
               <div>
-                <h3 class="text-xl font-serif text-foreground tracking-tight">Settings</h3>
+                <h3 class="text-xl font-display font-semibold text-foreground tracking-tight">Settings</h3>
                 <p
-                  class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70"
+                  class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70"
                 >
-                  System Overrides & Parameters
+                  Account and workspace preferences
                 </p>
               </div>
             </div>
@@ -148,10 +148,10 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
             <div class="mt-auto p-4 rounded-2xl bg-muted/20 border border-border/50">
               <div class="flex items-center gap-2 mb-2 text-primary">
                 <ng-icon name="lucideShield" class="h-3 w-3"></ng-icon>
-                <span class="text-[9px] font-black uppercase tracking-widest">Trust Store</span>
+                <span class="text-[9px] font-semibold uppercase tracking-widest">Data protection</span>
               </div>
               <p class="text-[9px] text-muted-foreground leading-tight">
-                All transmissions are encrypted via zero-knowledge protocols.
+                Account settings are handled through the Horizon workspace layer.
               </p>
             </div>
           </aside>
@@ -163,17 +163,17 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'intelligence') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-serif font-bold">Neural Core</h4>
+                    <h4 class="text-xl font-display font-semibold">Horizon Guide</h4>
                     <p class="text-xs text-muted-foreground">
-                      Calibrate the intelligence engine and AI personality types.
+                      Tune how Horizon supports research, documents, and next actions.
                     </p>
                   </header>
 
                   <!-- AI Tone Pills -->
                   <div class="space-y-4">
                     <label
-                      class="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
-                      >AI Persona Alignment</label
+                        class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground"
+                        >Guide tone</label
                     >
                     <div class="flex flex-wrap gap-2">
                       @for (tone of aiTones; track tone) {
@@ -198,8 +198,8 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                     <div class="space-y-2">
                       <label
                         hlmLabel
-                        class="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
-                        >Gemini API Matrix</label
+                        class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground"
+                        >Gemini API key</label
                       >
                       <div class="relative">
                         <ng-icon
@@ -525,9 +525,9 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                           <ng-icon name="lucideDownload" class="h-4 w-4"></ng-icon>
                         </div>
                         <div class="text-left">
-                          <div class="text-sm font-bold">Export Global Dossier</div>
+                          <div class="text-sm font-bold">Export profile data</div>
                           <div class="text-[10px] text-muted-foreground">
-                            Encrypted JSON Package
+                            JSON package
                           </div>
                         </div>
                       </div>
@@ -548,21 +548,21 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                         </div>
                         <div class="space-y-1">
                           <h5 class="text-sm font-bold text-destructive">
-                            Danger Zone: Termination
+                            Danger zone
                           </h5>
                           <p class="text-xs text-muted-foreground">
                             This will permanently purge your member profile and all associated job
-                            tracking telemetry from the system.
+                            tracking data from the system.
                           </p>
                         </div>
                       </div>
                       <button
                         hlmBtn
                         variant="outline"
-                        class="w-full h-10 rounded-xl border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all uppercase tracking-widest text-[10px] font-black"
+                        class="w-full h-10 rounded-lg border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all text-[10px] font-semibold"
                         (click)="deleteProfile()"
                       >
-                        Wipe Profile Data
+                        Delete profile data
                       </button>
                     </div>
                   </div>
@@ -592,10 +592,10 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
           >
             @if (isLoading()) {
               <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-4 w-4"></ng-icon>
-              Synchronizing...
+              Saving...
             } @else {
               <ng-icon name="lucideSave" class="mr-2 h-4 w-4"></ng-icon>
-              Commit Changes
+              Save changes
             }
           </button>
         </div>
@@ -632,10 +632,10 @@ export class ProfileSettingsSheetComponent {
     sub: string;
     icon: string;
   }[] = [
-    { id: 'intelligence', label: 'Intelligence', sub: 'Neural Config', icon: 'lucideBrain' },
-    { id: 'connectivity', label: 'Connectivity', sub: 'Signal Bridges', icon: 'lucideLink' },
-    { id: 'preferences', label: 'Preferences', sub: 'Environment', icon: 'lucideSettings' },
-    { id: 'security', label: 'Security & Data', sub: 'Identity Core', icon: 'lucideShield' },
+    { id: 'intelligence', label: 'Guide', sub: 'AI support', icon: 'lucideBrain' },
+    { id: 'connectivity', label: 'Connections', sub: 'Integrations', icon: 'lucideLink' },
+    { id: 'preferences', label: 'Preferences', sub: 'Workspace', icon: 'lucideSettings' },
+    { id: 'security', label: 'Security & data', sub: 'Account', icon: 'lucideShield' },
   ];
 
   aiTones = ['Professional', 'Aggressive', 'Mentor'];
@@ -696,7 +696,7 @@ export class ProfileSettingsSheetComponent {
     const control = this.form.get(field);
     if (control) {
       control.setValue(!control.value);
-      toast.info(control.value ? 'Link Established' : 'Signal Terminated', {
+      toast.info(control.value ? 'Connection enabled' : 'Connection disabled', {
         description: `${field === 'googleCalendarConnected' ? 'Google Calendar' : field} status updated.`,
       });
     }
@@ -723,9 +723,9 @@ export class ProfileSettingsSheetComponent {
 
   exportDossier() {
     toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
-      loading: 'Generating encrypted dossier...',
-      success: 'Dossier Downloaded',
-      error: 'Transmission Failed',
+      loading: 'Preparing profile export...',
+      success: 'Profile export ready',
+      error: 'Export failed',
     });
   }
 

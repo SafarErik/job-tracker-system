@@ -1,36 +1,16 @@
 <section class="app-page min-h-screen">
   <div class="space-y-4">
-    <header class="surface-card p-4 sm:p-5">
+    <section class="surface-card p-4 sm:p-5">
       <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div class="space-y-1">
-            <p class="text-xs font-medium uppercase tracking-wide text-muted-foreground">{{ 'app.dashboard' | transloco }}</p>
-            <h1 class="text-2xl font-semibold tracking-tight text-foreground">{{ 'shell.nav.applications' | transloco }}</h1>
-            <p class="text-sm text-muted-foreground">Track roles, move stages, and trigger AI actions inline.</p>
-          </div>
-
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <button hlmBtn variant="outline"
-              class="h-10 gap-2 rounded-xl border-border bg-card text-foreground hover:bg-muted/60">
-              <ng-icon name="lucideDatabaseZap" class="h-4 w-4 text-primary"></ng-icon>
-              AI: Prioritize Pipeline
-            </button>
-            <button hlmBtn (click)="uiService.openAddAppSheet()" class="h-10 gap-2 rounded-xl px-4">
-              <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
-              Add Application
-            </button>
-          </div>
-        </div>
-
         <app-application-statbar></app-application-statbar>
 
         <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div class="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-muted/20 p-1">
+          <div class="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-muted/20 p-1">
             @for (category of categories; track category.id) {
             <button (click)="setCategory(category.id)"
               [class]="selectedCategory() === category.id ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
               class="h-8 rounded-lg px-3 text-sm font-medium transition-colors">
-              {{ category.label }}
+              {{ category.labelKey | transloco }}
             </button>
             }
           </div>
@@ -41,45 +21,57 @@
                 <ng-icon name="lucideSearch" class="h-4 w-4"></ng-icon>
               </div>
               <input #searchInput type="text" [value]="searchQuery()" (input)="onSearchChange(searchInput.value)"
-                placeholder="Search role or company..."
-                class="h-10 w-full rounded-xl border border-border bg-card pl-10 pr-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20" />
+                [placeholder]="'applications.searchPlaceholder' | transloco"
+                class="h-10 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-accent/20" />
             </div>
 
-            <div class="flex items-center rounded-xl border border-border bg-muted/20 p-1">
+            <div class="flex items-center rounded-lg border border-border bg-muted/20 p-1">
               <button (click)="switchView('grid')"
                 [class]="viewMode() === 'grid' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
-                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" title="Grid View">
+                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" [title]="'applications.view.grid' | transloco">
                 <ng-icon name="lucideLayoutGrid" class="h-4 w-4"></ng-icon>
               </button>
               <button (click)="switchView('kanban')"
                 [class]="viewMode() === 'kanban' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
-                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" title="Kanban View">
+                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" [title]="'applications.view.kanban' | transloco">
                 <ng-icon name="lucideKanban" class="h-4 w-4"></ng-icon>
               </button>
               <button (click)="switchView('list')"
                 [class]="viewMode() === 'list' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:bg-muted/50'"
-                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" title="List View">
+                class="flex h-8 w-8 items-center justify-center rounded-lg transition-colors" [title]="'applications.view.list' | transloco">
                 <ng-icon name="lucideLayoutList" class="h-4 w-4"></ng-icon>
+              </button>
+            </div>
+
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <button hlmBtn variant="outline"
+                class="h-10 gap-2 rounded-lg border-border bg-card text-foreground hover:border-accent/40 hover:bg-muted/60">
+                <ng-icon name="lucideDatabaseZap" class="h-4 w-4 text-primary"></ng-icon>
+                {{ 'applications.actions.prioritize' | transloco }}
+              </button>
+              <button hlmBtn (click)="uiService.openAddAppSheet()" class="h-10 gap-2 rounded-lg px-4">
+                <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
+                {{ 'applications.actions.add' | transloco }}
               </button>
             </div>
           </div>
         </div>
       </div>
-    </header>
+    </section>
 
     <div *ngIf="store.isLoading()" class="surface-card flex flex-col items-center py-14">
       <div class="inline-block h-10 w-10 animate-spin rounded-full border-b-2 border-primary"></div>
-      <p class="mt-3 text-sm text-muted-foreground">Loading pipeline...</p>
+      <p class="mt-3 text-sm text-muted-foreground">{{ 'applications.loading' | transloco }}</p>
     </div>
 
     <div *ngIf="!store.isLoading() && filteredApps().length === 0"
       class="surface-card flex flex-col items-center justify-center border-dashed py-16">
-      <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
+      <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-lg bg-muted/50 text-muted-foreground">
         <ng-icon name="lucideSearch" size="28"></ng-icon>
       </div>
-      <h3 class="text-lg font-semibold">No applications found</h3>
-      <p class="mt-1 text-sm text-muted-foreground">Try adjusting filters or search criteria.</p>
-      <button (click)="searchQuery.set(''); selectedCategory.set('all')" hlmBtn variant="link" class="mt-2">Clear filters</button>
+      <h3 class="text-lg font-semibold">{{ 'applications.empty.title' | transloco }}</h3>
+      <p class="mt-1 max-w-md text-center text-sm text-muted-foreground">{{ 'applications.empty.body' | transloco }}</p>
+      <button (click)="searchQuery.set(''); selectedCategory.set('all')" hlmBtn variant="link" class="mt-2">{{ 'applications.empty.clear' | transloco }}</button>
     </div>
 
     <div *ngIf="!store.isLoading() && filteredApps().length > 0" class="surface-card p-3 sm:p-4">

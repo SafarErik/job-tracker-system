@@ -4,12 +4,12 @@
       <div class="p-2 rounded-xl bg-primary/10 text-primary">
         <ng-icon name="lucideBriefcase" class="h-5 w-5"></ng-icon>
       </div>
-      <h3 class="text-sm font-black uppercase tracking-widest text-foreground font-serif">
-        Active Applications
+      <h3 class="text-sm font-semibold uppercase tracking-widest text-foreground">
+        Active applications
       </h3>
     </div>
     <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-      {{ applications().length }} In Progress
+      {{ applications().length }} in progress
     </span>
   </div>
 
@@ -17,7 +17,7 @@
     @for (app of applications(); track app.id) {
       <button
         (click)="viewApplication.emit(app.id)"
-        class="shrink-0 w-80 group p-6 rounded-3xl bg-card border-border hover:border-primary/50 transition-all text-left relative overflow-hidden"
+        class="shrink-0 w-80 group p-6 rounded-lg bg-card border-border hover:border-primary/50 transition-all text-left relative overflow-hidden"
       >
         <div
           class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"
@@ -44,21 +44,21 @@
           </div>
           <div>
             <h4
-              class="text-base font-black text-foreground group-hover:text-primary transition-colors"
+            class="text-base font-semibold text-foreground group-hover:text-primary transition-colors"
             >
               {{ app.position }}
             </h4>
             <p class="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-bold">
-              Initiated: {{ app.appliedAt | date: 'MMM yyyy' }}
+              Added: {{ app.appliedAt | date: 'MMM yyyy' }}
             </p>
           </div>
         </div>
       </button>
     } @empty {
       <div
-        class="w-full flex flex-col items-center justify-center py-12 rounded-3xl bg-card/30 border border-dashed border-border text-muted-foreground"
+        class="w-full flex flex-col items-center justify-center py-12 rounded-lg bg-card/30 border border-dashed border-border text-muted-foreground"
       >
-        <p class="text-xs font-medium italic">No active applications identified.</p>
+        <p class="text-xs font-medium">No active applications yet.</p>
       </div>
     }
   </div>

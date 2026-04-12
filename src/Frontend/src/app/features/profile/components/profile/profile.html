@@ -25,7 +25,7 @@
     @if (!isLoading() && !error() && profile()) {
       <!-- 1. HEADER: The Identity Engine -->
       <div
-        class="relative overflow-hidden rounded-[2.5rem] border border-border bg-card/40 backdrop-blur-xl shadow-2xl"
+        class="relative overflow-hidden rounded-lg border border-border bg-card/60 backdrop-blur-xl shadow-sm"
       >
         <div
           class="relative p-8 md:p-12 flex flex-col md:flex-row items-center md:items-start gap-10"
@@ -47,7 +47,7 @@
                 />
               } @else {
                 <div
-                  class="h-full w-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-serif"
+                  class="h-full w-full flex items-center justify-center bg-primary/10 text-primary text-4xl font-display"
                 >
                   {{ profile()!.firstName?.charAt(0) }}{{ profile()!.lastName?.charAt(0) }}
                 </div>
@@ -106,7 +106,7 @@
                 @if (editingField() !== 'name') {
                   <h1
                     (click)="startEditing('name')"
-                    class="group flex items-center gap-4 text-4xl font-serif font-bold tracking-tight transition-all hover:text-primary md:text-5xl cursor-pointer"
+                    class="group flex items-center gap-4 text-4xl font-display font-bold tracking-tight transition-all hover:text-primary md:text-5xl cursor-pointer"
                   >
                     {{ profile()!.firstName }} {{ profile()!.lastName }}
                     <ng-icon
@@ -126,7 +126,7 @@
                     <input
                       hlmInput
                       formControlName="firstName"
-                      class="text-3xl md:text-4xl font-serif font-bold h-14 bg-input/50 border-border text-foreground focus:border-primary/50"
+                      class="text-3xl md:text-4xl font-display font-bold h-14 bg-input/50 border-border text-foreground focus:border-primary/50"
                       placeholder="First"
                       (blur)="saveField('firstName')"
                       (keydown.enter)="saveField('firstName')"
@@ -135,7 +135,7 @@
                     <input
                       hlmInput
                       formControlName="lastName"
-                      class="text-3xl md:text-4xl font-serif font-bold h-14 bg-input/50 border-border text-foreground focus:border-primary/50"
+                      class="text-3xl md:text-4xl font-display font-bold h-14 bg-input/50 border-border text-foreground focus:border-primary/50"
                       placeholder="Last"
                       (blur)="saveField('lastName')"
                       (keydown.enter)="saveField('lastName')"
@@ -230,7 +230,7 @@
                 >
                   <ng-icon name="lucideUserPen" class="h-4 w-4"></ng-icon>
                 </div>
-                <h2 class="text-xl font-serif font-bold">Professional Narrative</h2>
+                <h2 class="text-xl font-display font-semibold">Professional Narrative</h2>
               </div>
 
               <button
@@ -268,7 +268,7 @@
                       class="flex flex-col items-center justify-center py-12 text-center text-muted-foreground italic gap-4"
                     >
                       <ng-icon name="lucidePencil" class="h-10 w-10 opacity-20"></ng-icon>
-                      Define your professional narrative...
+                      Add a short professional narrative...
                     </div>
                   }
                   <div
@@ -310,7 +310,7 @@
             </h3>
             <div class="flex items-end justify-between">
               <div>
-                <div class="text-4xl font-serif font-bold text-primary">
+                <div class="text-4xl font-display font-bold text-primary">
                   {{ stats()?.successRate || 0 }}%
                 </div>
                 <p class="text-xs text-muted-foreground mt-1">Conversion rate</p>
@@ -353,7 +353,7 @@
             <ng-icon name="lucideSparkles" class="h-4 w-4"></ng-icon>
           </div>
           <div>
-            <div class="text-3xl font-serif font-bold text-foreground">
+            <div class="text-3xl font-display font-bold text-foreground">
               {{ stats()?.offersReceived || 0 }}
             </div>
             <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -389,8 +389,8 @@
                   <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                     Next Level Path
                   </p>
-                  <p class="text-lg font-serif font-bold text-foreground">
-                    {{ careerInsights()?.nextLevelPath || 'Strategic Leadership' }}
+                  <p class="text-lg font-display font-semibold text-foreground">
+                    {{ careerInsights()?.nextLevelPath || 'Lead Engineer roles' }}
                   </p>
                 </div>
                 <div class="space-y-1 relative">
@@ -434,11 +434,11 @@
                     Missing Key
                   </p>
                   <p class="text-sm font-medium text-muted-foreground">
-                    Deploy
+                    Add
                     <span class="text-primary font-bold">{{
                       careerInsights()?.missingKey || 'Unknown'
                     }}</span>
-                    to increase match score globally.
+                    to strengthen your readiness.
                   </p>
                 </div>
               </div>
@@ -451,16 +451,16 @@
           <div class="p-8 space-y-8">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div class="space-y-1">
-                <h2 class="text-2xl font-serif font-bold flex items-center gap-3">
+                <h2 class="text-2xl font-display font-semibold flex items-center gap-3">
                   <div
                     class="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400"
                   >
                     <ng-icon name="lucideGraduationCap" class="h-4 w-4"></ng-icon>
                   </div>
-                  Skills Portfolio
+                  Skills
                 </h2>
                 <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                  Skill Inventory • {{ userSkills().length }} Total
+                  Current skills • {{ userSkills().length }} total
                 </p>
               </div>
 
@@ -472,7 +472,7 @@
                 ></ng-icon>
                 <input
                   [formControl]="skillSearchControl"
-                  placeholder="Scan for new skills..."
+                  placeholder="Search or add a skill..."
                   class="w-full pl-10 h-11 bg-input/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:border-primary/50 outline-none transition-all"
                   (keydown.enter)="onSkillInputEnter()"
                 />
@@ -511,7 +511,7 @@
 
             <!-- Skill Cloud -->
             <div class="grid md:grid-cols-4 gap-8">
-              <!-- Current Arsenal -->
+              <!-- Current skills -->
               <div class="md:col-span-3 space-y-6">
                 <div class="flex flex-wrap gap-3">
                   @for (skill of userSkills(); track skill.id) {

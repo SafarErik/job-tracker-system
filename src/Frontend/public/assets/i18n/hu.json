@@ -56,6 +56,11 @@
       "dark": "Sötét",
       "system": "Rendszer",
       "logout": "Kijelentkezés",
+      "titles": {
+        "newApplication": "Új jelentkezés",
+        "editCompany": "Cég szerkesztése",
+        "companyDetails": "Cégkutatás"
+      },
       "account": {
         "workspaceName": "Horizon fiók",
         "workspaceGroup": "Fiók",
@@ -69,7 +74,10 @@
         "insights": "Tekintsd át a trendeket, grafikonokat és teljesítményjeleket.",
         "signals": "Találj lehetőségeket és hasznos piaci jeleket.",
         "documents": "Tartsd készen a CV-ket és álláskeresési dokumentumokat.",
-        "profile": "Kezeld a karrierprofilodat és preferenciáidat."
+        "profile": "Kezeld a karrierprofilodat és preferenciáidat.",
+        "newApplication": "Rögzítsd a lehetőség alapjait, státuszát, anyagait és felkészültségét.",
+        "editCompany": "Frissítsd a cégkutatást, prioritást, kontaktokat és kontextust.",
+        "companyDetails": "Nézd át a cégkontekstust, aktív jelentkezéseket, kontaktokat és interjús szempontokat."
       },
       "commands": {
         "workspace": "Munkaterület",
@@ -450,6 +458,170 @@
       }
     }
   },
+  "applications": {
+    "actions": {
+      "add": "Jelentkezés hozzáadása",
+      "prioritize": "Folyamat priorizálása"
+    },
+    "categories": {
+      "all": "Összes",
+      "inbox": "Beérkező",
+      "active": "Aktív",
+      "offers": "Ajánlatok",
+      "archive": "Archív"
+    },
+    "searchPlaceholder": "Pozíció vagy cég keresése...",
+    "loading": "Folyamat betöltése...",
+    "empty": {
+      "title": "Nincs találat",
+      "body": "Módosítsd a szűrőket, vagy adj hozzá egy erős lehetőséget a folyamat indításához.",
+      "clear": "Szűrők törlése"
+    },
+    "view": {
+      "grid": "Rács nézet",
+      "kanban": "Kanban nézet",
+      "list": "Lista nézet"
+    },
+    "form": {
+      "actions": {
+        "pasteUrl": "URL beillesztése",
+        "save": "Jelentkezés mentése",
+        "saving": "Jelentkezés mentése..."
+      },
+      "sections": {
+        "opportunity": "Lehetőség alapjai",
+        "pipeline": "Folyamat",
+        "materials": "Anyagok",
+        "readiness": "Felkészültség"
+      },
+      "fields": {
+        "company": "Cég",
+        "position": "Pozíció",
+        "jobUrl": "Lehetőség linkje",
+        "status": "Aktuális státusz",
+        "priority": "Prioritás",
+        "type": "Típus",
+        "locationMode": "Munkavégzés"
+      },
+      "empty": {
+        "noCompanies": "Nincs találat a cégek között.",
+        "noPositions": "Nincs korábbi pozíció."
+      },
+      "recentPositions": "Korábbi pozíciók",
+      "materials": {
+        "attachResume": "CV csatolása",
+        "fileHint": "PDF / Word, max 5MB"
+      },
+      "readiness": {
+        "matchProbability": "Becsült illeszkedési esély"
+      }
+    }
+  },
+  "companies": {
+    "actions": {
+      "add": "Cég hozzáadása",
+      "clearSearch": "Keresés törlése",
+      "fetchData": "Adatok lekérése"
+    },
+    "card": {
+      "viewResearch": "{{name}} kutatásának megnyitása",
+      "activeApplications": "{{count}} aktív",
+      "noActivePipeline": "Nincs aktív folyamat",
+      "open": "Megnyitás"
+    },
+    "form": {
+      "actions": {
+        "saving": "Cég mentése...",
+        "save": "Cég mentése",
+        "update": "Cég frissítése"
+      },
+      "sections": {
+        "identity": "Cég alapadatai",
+        "research": "Kutatási kontextus",
+        "tech": "Technológiai környezet",
+        "contact": "Fő kontakt"
+      },
+      "fields": {
+        "companyName": "Cég neve",
+        "industry": "Iparág",
+        "website": "Weboldal",
+        "priority": "Prioritás",
+        "hqLocation": "Központ",
+        "applications": "Jelentkezések",
+        "status": "Státusz",
+        "active": "Aktív",
+        "contactName": "Recruiter neve",
+        "contactEmail": "Email cím",
+        "contactLinkedIn": "LinkedIn profil"
+      },
+      "placeholders": {
+        "companyName": "pl. Acme Corp",
+        "industry": "Iparág kiválasztása",
+        "hqLocation": "Város, ország",
+        "contactName": "pl. Kovács Anna",
+        "contactEmail": "anna@company.com",
+        "contactLinkedIn": "linkedin.com/in/..."
+      }
+    },
+    "metrics": {
+      "researchBase": "Kutatási alap",
+      "researchBaseBody": "Követett cégek",
+      "activePipelines": "Aktív folyamatok",
+      "activePipelinesBody": "Cégek nyitott jelentkezéssel",
+      "responseRate": "Válaszarány",
+      "responseRateBody": "Cégszintű visszajelzés"
+    },
+    "searchLabel": "Cégek keresése név, iparág vagy domain alapján",
+    "searchPlaceholder": "Cég, iparág vagy domain keresése...",
+    "loading": "Cégadatok betöltése...",
+    "error": {
+      "title": "Nem sikerült betölteni a cégadatokat"
+    },
+    "empty": {
+      "title": "Nincs találat",
+      "body": "Adj hozzá egy céget, hogy legyen kutatási alapod a jelentkezésekhez.",
+      "searchBody": "Nincs találat erre a keresésre. Módosítsd a keresést és próbáld újra."
+    },
+    "results": {
+      "showing": "Megjelenítve",
+      "total": "Összesen"
+    }
+  },
+  "documents": {
+    "actions": {
+      "upload": "Dokumentum feltöltése"
+    },
+    "capacity": {
+      "label": "Workspace kapacitás",
+      "used": "{{size}} használatban"
+    },
+    "loading": "Dokumentumok betöltése...",
+    "master": {
+      "label": "Master CV",
+      "badge": "Master",
+      "updated": "Frissítve: {{date}}",
+      "primaryDocument": "Master dokumentum",
+      "body": "Ez az alapdokumentum, amelyből a Horizon célzott CV-t és cover lettert készít. Tartsd teljesen és naprakészen.",
+      "update": "Master frissítése",
+      "openPreview": "Előnézet megnyitása"
+    },
+    "emptyMaster": {
+      "title": "Nincs master CV beállítva",
+      "body": "Tölts fel egy teljes CV-t, hogy a Horizon minden lehetőséghez célzott dokumentumot tudjon készíteni.",
+      "cta": "Master CV feltöltése"
+    },
+    "tailored": {
+      "title": "Célzott dokumentumok",
+      "resumes": "Célzott CV-k ({{count}})",
+      "coverLetters": "Cover letterek ({{count}})",
+      "emptyResumes": "Még nincs célzott dokumentum. Generálj egy célzott CV-t az Application Workstationben."
+    },
+    "emptyLibrary": {
+      "body": "A dokumentum workspace üres.",
+      "cta": "Első dokumentum feltöltése"
+    },
+    "dropToUpload": "Engedd el a feltöltéshez"
+  },
   "ai": {
     "drawer": {
       "title": "Horizon segítő",
@@ -488,7 +660,9 @@
       "searchPlaceholder": "Kérdezz az AI-tól vagy keress...",
       "searchLabel": "Keresés vagy AI-kérdés",
       "placeholder": "Kérdezz bármit erről a jelentkezésről...",
-      "quickActions": "Gyors műveletek"
+      "quickActions": "Gyors műveletek",
+      "guideLabel": "Horizon segítő",
+      "openGuide": "Horizon segítő megnyitása"
     },
     "nav": {
       "strategy": "Illeszkedés",

@@ -121,7 +121,7 @@ export class CompanyIntelligenceService {
      */
     generateIntelligenceBriefing(companyName: string): Observable<IntelligenceBriefing> {
         const briefing: IntelligenceBriefing = {
-            mission: `A prominent force in the technical landscape, ${companyName} continues to pioneer solutions in infrastructure and enterprise services, maintaining a robust market presence through constant innovation.`,
+            mission: `${companyName} is an active company to research for role fit, team context, and application strategy. Review the product area, hiring signals, and interview angles before prioritizing outreach.`,
             fit: [
                 'Deep technical expertise in distributed systems aligns with current architectural objectives.',
                 'Proven capacity for scaling enterprise applications addresses immediate infrastructure needs.',

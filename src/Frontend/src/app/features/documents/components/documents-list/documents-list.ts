@@ -10,6 +10,7 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { DocumentStore } from '../../services/document.store';
 import { DocumentViewModel as Document } from '../../../../core/models/document.model';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -26,7 +27,14 @@ import { lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 } from '@
 
 @Component({
   selector: 'app-documents-list',
-  imports: [CommonModule, ...HlmButtonImports, NgIcon, ErrorStateComponent, DocumentCardComponent],
+  imports: [
+    CommonModule,
+    TranslocoPipe,
+    ...HlmButtonImports,
+    NgIcon,
+    ErrorStateComponent,
+    DocumentCardComponent,
+  ],
   providers: [provideIcons({ lucideFileUp, lucideFileWarning, lucideLibrary, lucideLoader2 })],
   templateUrl: './documents-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

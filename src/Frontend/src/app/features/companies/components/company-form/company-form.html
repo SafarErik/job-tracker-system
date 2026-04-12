@@ -1,34 +1,12 @@
 <div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
   <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-10">
 
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4 animate-fade-in-up">
-      <div class="space-y-6">
-        <!-- Back Button -->
-        <button (click)="goBack()" hlmBtn variant="ghost" size="sm"
-          class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-all group px-0">
-          <ng-icon name="lucideArrowLeft" class="text-sm group-hover:-translate-x-1 transition-transform"></ng-icon>
-          Return
-        </button>
-
-        <div class="space-y-2">
-          <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-none">
-            {{ isEditMode() ? 'Edit Company' : 'Add Company' }}
-          </h1>
-          <p class="text-muted-foreground text-sm font-medium">
-            {{ isEditMode() ? 'Update company details and strategy' : 'Track a new organization in your ecosystem' }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Quick Actions (Optional) -->
-      <div class="flex items-center gap-3">
-        <button hlmBtn variant="outline" type="button"
-          class="h-12 px-6 gap-2 text-xs font-black uppercase tracking-widest rounded-2xl border-border/40 bg-card/60 backdrop-blur-xl hover:bg-primary/5 hover:text-primary transition-all active:scale-95">
-          <ng-icon name="lucideGlobe" class="text-base"></ng-icon>
-          Fetch Data
-        </button>
-      </div>
+    <div class="flex justify-end pb-2 animate-fade-in-up">
+      <button hlmBtn variant="outline" type="button"
+        class="h-10 gap-2 rounded-lg border-border bg-card text-sm font-semibold text-foreground hover:border-accent/40 hover:bg-muted/60">
+        <ng-icon name="lucideGlobe" class="text-base"></ng-icon>
+        {{ 'companies.actions.fetchData' | transloco }}
+      </button>
     </div>
 
     <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" class="animate-fade-in-up delay-1">
@@ -42,31 +20,33 @@
           </div>
 
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse"></div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Company Identity</h3>
+            <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {{ 'companies.form.sections.identity' | transloco }}
+            </h3>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Company Name -->
             <div class="space-y-2">
-              <label hlmLabel class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">
-                Company Name
+              <label hlmLabel class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.companyName' | transloco }}
               </label>
-              <input hlmInput formControlName="name" placeholder="e.g. Acme Corp"
-                class="field-surface h-14 w-full rounded-2xl px-5 transition-all"
+              <input hlmInput formControlName="name" [placeholder]="'companies.form.placeholders.companyName' | transloco"
+                class="field-surface h-14 w-full rounded-lg px-5 transition-all"
                 [class.border-destructive]="name?.invalid && name?.touched" />
             </div>
 
             <!-- Industry Selection (Dropdown) -->
             <div class="space-y-2">
-              <label hlmLabel class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">
-                Industry
+              <label hlmLabel class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.industry' | transloco }}
               </label>
               <div class="relative">
                 <button type="button" (click)="toggleIndustry()"
-                  class="field-surface w-full h-14 flex items-center justify-between rounded-2xl px-5 transition-all hover:border-primary/40 text-left group">
+                  class="field-surface w-full h-14 flex items-center justify-between rounded-lg px-5 transition-all hover:border-accent/40 text-left group">
                   <span [class.text-muted-foreground]="!companyForm.get('industry')?.value">
-                    {{ companyForm.get('industry')?.value || 'Select Industry' }}
+                    {{ companyForm.get('industry')?.value || ('companies.form.placeholders.industry' | transloco) }}
                   </span>
                   <ng-icon name="lucideChevronDown"
                     class="opacity-40 group-hover:opacity-100 transition-opacity"></ng-icon>
@@ -74,10 +54,10 @@
 
                 @if (isIndustryDropdownOpen()) {
                 <div
-                  class="absolute z-50 mt-2 w-full max-h-60 overflow-y-auto rounded-2xl border border-border bg-popover shadow-2xl p-1 animate-in fade-in zoom-in-95 custom-scrollbar">
+                  class="absolute z-50 mt-2 w-full max-h-60 overflow-y-auto rounded-lg border border-border bg-popover shadow-2xl p-1 animate-in fade-in zoom-in-95 custom-scrollbar">
                   @for (ind of industryOptions; track ind) {
                   <button type="button" (click)="selectIndustry(ind)"
-                    class="w-full text-left px-4 py-3 text-xs font-bold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between group/item">
+                    class="w-full text-left px-4 py-3 text-xs font-semibold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-between group/item">
                     {{ ind }}
                     @if (companyForm.get('industry')?.value === ind) {
                     <ng-icon name="lucideCheck" class="text-primary"></ng-icon>
@@ -92,14 +72,14 @@
 
           <!-- Website -->
           <div class="space-y-2">
-            <label hlmLabel class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">
-              Website
+            <label hlmLabel class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+              {{ 'companies.form.fields.website' | transloco }}
             </label>
             <div class="relative group/input">
               <ng-icon name="lucideGlobe"
                 class="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors"></ng-icon>
               <input hlmInput formControlName="website" type="url" placeholder="https://..."
-                class="field-surface h-14 w-full rounded-2xl px-5 pl-12 transition-all" />
+                class="field-surface h-14 w-full rounded-lg px-5 pl-12 transition-all" />
             </div>
           </div>
         </div>
@@ -108,15 +88,17 @@
         <div
           class="panel-surface-muted lg:col-span-4 flex flex-col gap-6 p-8 h-full relative group/logistics">
           <div class="flex items-center gap-3 mb-2">
-            <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params</h3>
+            <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {{ 'companies.form.sections.research' | transloco }}
+            </h3>
           </div>
 
           <div class="space-y-4">
             <!-- Priority Selection -->
             <div class="space-y-2">
-              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">
-                Priority Level
+              <label class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.priority' | transloco }}
               </label>
               <div class="relative">
                 <button type="button" (click)="togglePriority()"
@@ -141,13 +123,13 @@
 
             <!-- Address -->
             <div class="space-y-2 pt-2">
-              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">
-                HQ Location
+              <label class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.hqLocation' | transloco }}
               </label>
               <div class="relative group/loc">
                 <ng-icon name="lucideMapPin"
                   class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within/loc:text-primary text-xs transition-colors"></ng-icon>
-                <input hlmInput formControlName="address" placeholder="City, Country"
+                <input hlmInput formControlName="address" [placeholder]="'companies.form.placeholders.hqLocation' | transloco"
                   class="h-11 w-full pl-9 rounded-xl bg-card border-border/40 text-[11px] font-bold focus:ring-1 focus:ring-primary/20 placeholder:text-muted-foreground/30" />
               </div>
             </div>
@@ -156,13 +138,13 @@
             <div class="pt-4 grid grid-cols-2 gap-2">
               <div
                 class="bg-card/50 rounded-xl p-3 border border-border/20 flex flex-col items-center justify-center gap-1">
-                <span class="text-[10px] uppercase font-bold text-muted-foreground/50">Apps</span>
+                <span class="text-[10px] uppercase font-bold text-muted-foreground/50">{{ 'companies.form.fields.applications' | transloco }}</span>
                 <span class="text-lg font-black text-foreground">{{ isEditMode() ? 'N/A' : '0' }}</span>
               </div>
               <div
                 class="bg-card/50 rounded-xl p-3 border border-border/20 flex flex-col items-center justify-center gap-1">
-                <span class="text-[10px] uppercase font-bold text-muted-foreground/50">Status</span>
-                <span class="text-xs font-black text-success">Active</span>
+                <span class="text-[10px] uppercase font-bold text-muted-foreground/50">{{ 'companies.form.fields.status' | transloco }}</span>
+                <span class="text-xs font-semibold text-success">{{ 'companies.form.fields.active' | transloco }}</span>
               </div>
             </div>
           </div>
@@ -171,40 +153,44 @@
         <!-- 3. Tech Ecosystem (Span 7) -->
         <div
           class="panel-surface lg:col-span-7 p-8 relative overflow-hidden group/tech">
-          <app-skill-selector title="Tech Ecosystem" placeholder="Add technology (e.g. React, .NET)..."
+          <app-skill-selector [title]="'companies.form.sections.tech' | transloco" placeholder="Add technology (e.g. React, .NET)..."
             [selectedSkills]="techStack()" (skillAdded)="onSkillAdded($event)" (skillRemoved)="onSkillRemoved($event)">
           </app-skill-selector>
         </div>
 
         <!-- 4. Key Contact (Span 5) -->
         <div
-          class="lg:col-span-5 flex flex-col rounded-[2.5rem] border border-border/40 bg-card p-8 shadow-sm group/contact">
+          class="lg:col-span-5 flex flex-col rounded-lg border border-border/40 bg-card p-8 shadow-sm group/contact">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Key Contact</h3>
+            <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+            <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {{ 'companies.form.sections.contact' | transloco }}
+            </h3>
           </div>
 
           <div class="flex-1 flex flex-col gap-4">
             <!-- Name -->
             <div class="space-y-1.5">
-              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 ml-1">HR /
-                Recruiter Name</label>
+              <label class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.contactName' | transloco }}
+              </label>
               <div class="relative group/cname">
                 <ng-icon name="lucideUsers"
                   class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/cname:text-primary transition-colors"></ng-icon>
-                <input hlmInput formControlName="hrContactName" placeholder="e.g. Sarah Smith"
+                <input hlmInput formControlName="hrContactName" [placeholder]="'companies.form.placeholders.contactName' | transloco"
                   class="field-surface-compact h-11 w-full rounded-xl pl-9" />
               </div>
             </div>
 
             <!-- Email -->
             <div class="space-y-1.5">
-              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 ml-1">Email
-                Address</label>
+              <label class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.contactEmail' | transloco }}
+              </label>
               <div class="relative group/cemail">
                 <ng-icon name="lucideMail"
                   class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/cemail:text-primary transition-colors"></ng-icon>
-                <input hlmInput formControlName="hrContactEmail" type="email" placeholder="sarah@company.com"
+                <input hlmInput formControlName="hrContactEmail" type="email" [placeholder]="'companies.form.placeholders.contactEmail' | transloco"
                   class="field-surface-compact h-11 w-full rounded-xl pl-9"
                   [class.border-destructive]="hrContactEmail?.invalid && hrContactEmail?.touched" />
               </div>
@@ -212,12 +198,13 @@
 
             <!-- LinkedIn -->
             <div class="space-y-1.5">
-              <label class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/50 ml-1">LinkedIn
-                Profile</label>
+              <label class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">
+                {{ 'companies.form.fields.contactLinkedIn' | transloco }}
+              </label>
               <div class="relative group/clinked">
                 <ng-icon name="lucideLinkedin"
                   class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within/clinked:text-primary transition-colors"></ng-icon>
-                <input hlmInput formControlName="hrContactLinkedIn" placeholder="linkedin.com/in/..."
+                <input hlmInput formControlName="hrContactLinkedIn" [placeholder]="'companies.form.placeholders.contactLinkedIn' | transloco"
                   class="field-surface-compact h-11 w-full rounded-xl pl-9" />
               </div>
             </div>
@@ -227,13 +214,13 @@
         <!-- Submission Action -->
         <div class="lg:col-span-12 pt-6">
           <button hlmBtn type="submit" [disabled]="companyForm.invalid || isSubmitting()"
-            class="w-full h-16 rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] bg-primary text-primary-foreground hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-primary/20 disabled:opacity-50 disabled:scale-100 group">
+            class="w-full h-14 rounded-lg text-sm font-semibold bg-primary text-primary-foreground transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100 group">
             @if (isSubmitting()) {
-            <span class="animate-pulse">Synchronizing Data...</span>
+            <span class="animate-pulse">{{ 'companies.form.actions.saving' | transloco }}</span>
             } @else {
             <span class="flex items-center gap-2">
               <ng-icon name="lucideCheck" class="text-lg group-hover:scale-110 transition-transform"></ng-icon>
-              {{ isEditMode() ? 'Update Company Profile' : 'Initialize Company Profile' }}
+              {{ isEditMode() ? ('companies.form.actions.update' | transloco) : ('companies.form.actions.save' | transloco) }}
             </span>
             }
           </button>

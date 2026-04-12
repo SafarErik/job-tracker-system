@@ -28,7 +28,7 @@ export type HorizonWidgetVariant = 'default' | 'highlight' | 'compact';
       }
 
       .horizon-widget {
-        border-radius: var(--radius-card);
+        border-radius: 0.5rem;
         border: 1px solid hsl(var(--border));
         background-color: hsl(var(--card));
         color: hsl(var(--card-foreground));

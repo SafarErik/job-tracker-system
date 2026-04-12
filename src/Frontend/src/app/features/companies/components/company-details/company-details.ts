@@ -342,7 +342,7 @@ export class CompanyDetailsComponent implements OnDestroy {
 
     this.notificationService.info('Synthesizing market intelligence...', 'AI Analyst');
     setTimeout(() => {
-      this.notificationService.success('News digest updated in Intelligence Lab.', 'Summary Ready');
+      this.notificationService.success('Company context summary updated.', 'Summary ready');
     }, 2000);
   }
 
@@ -352,7 +352,7 @@ export class CompanyDetailsComponent implements OnDestroy {
       type: 'Networking',
       date: new Date(),
       title: 'Coffee Chat with Tech Lead',
-      subtitle: 'Internal Referral Opportunity',
+      subtitle: 'Internal referral opportunity',
       description: 'Discussed clean architecture and team culture. Strong positive signal.',
       meta: { aiInsight: 'High potential for internal referral. Follow up in 3 days.' },
     };
@@ -396,8 +396,8 @@ export class CompanyDetailsComponent implements OnDestroy {
 
     const confirmed = await this.notificationService.confirm(
       `This will permanently delete "${current.name}"`,
-      'Delete Asset?',
-      { confirmText: 'Delete Asset', isDangerous: true },
+      'Delete company?',
+      { confirmText: 'Delete company', isDangerous: true },
     );
 
     if (confirmed) {
@@ -407,15 +407,15 @@ export class CompanyDetailsComponent implements OnDestroy {
   }
 
   handleOpenSettings(): void {
-    this.notificationService.info('Asset configuration panel coming soon.', 'Settings');
+    this.notificationService.info('Company settings are coming soon.', 'Settings');
   }
 
   // Tech Stack Actions
   async handleAddTech(skill: string): Promise<void> {
     if (!skill) {
       this.notificationService.info(
-        'Skill selection interface is offline.',
-        'Intelligence Collection',
+        'Skill selection is unavailable right now.',
+        'Company research',
       );
       return;
     }

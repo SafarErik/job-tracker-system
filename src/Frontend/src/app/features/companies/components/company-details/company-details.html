@@ -5,23 +5,23 @@
   @if (isLoading()) {
     <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-muted-foreground">
       <ng-icon name="lucideLoader2" class="text-4xl animate-spin text-primary"></ng-icon>
-      <p class="text-sm font-medium tracking-wide">Retrieving Intelligence Dossier...</p>
+      <p class="text-sm font-medium tracking-wide">Loading company research...</p>
     </div>
   }
 
   <!-- Error State -->
   @if (error()) {
     <div class="flex flex-col items-center justify-center min-h-screen gap-6 p-8 text-center">
-      <div class="w-20 h-20 rounded-3xl bg-destructive/10 flex items-center justify-center">
+      <div class="w-20 h-20 rounded-lg bg-destructive/10 flex items-center justify-center">
         <ng-icon name="lucideBuilding2" class="text-4xl text-destructive"></ng-icon>
       </div>
       <div class="space-y-2">
-        <h2 class="text-2xl font-black tracking-tight text-foreground">Access Denied</h2>
+        <h2 class="text-2xl font-semibold tracking-tight text-foreground">Could not load company data</h2>
         <p class="text-muted-foreground max-w-sm mx-auto">{{ error() }}</p>
       </div>
-      <button hlmBtn variant="outline" (click)="goBack()" class="rounded-2xl">
+      <button hlmBtn variant="outline" (click)="goBack()" class="rounded-lg">
         <ng-icon name="lucideArrowLeft" class="mr-2"></ng-icon>
-        Return to Dashboard
+        Back to companies
       </button>
     </div>
   }
@@ -46,7 +46,7 @@
         class="sticky top-0 z-20 bg-background/80 backdrop-blur-md flex items-center justify-between border-b border-border/50 pb-4 pt-2"
       >
         <div
-          class="flex items-center gap-1 p-1 bg-card/50 rounded-2xl border border-border"
+          class="flex items-center gap-1 p-1 bg-card/50 rounded-lg border border-border"
           role="tablist"
         >
           <button
@@ -58,7 +58,7 @@
                 ? 'bg-muted text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             "
-            class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+            class="flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all"
           >
             <ng-icon name="lucideLayoutDashboard" class="h-3.5 w-3.5"></ng-icon>
             Overview
@@ -72,10 +72,10 @@
                 ? 'bg-muted text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             "
-            class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+            class="flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all"
           >
             <ng-icon name="lucideSearch" class="h-3.5 w-3.5"></ng-icon>
-            Company Analysis
+            Research brief
           </button>
           <button
             (click)="activeTab.set('marketPulse')"
@@ -86,10 +86,10 @@
                 ? 'bg-muted text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             "
-            class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+            class="flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all"
           >
             <ng-icon name="lucideActivity" class="h-3.5 w-3.5"></ng-icon>
-            Market Pulse
+            Market context
           </button>
           <button
             (click)="activeTab.set('ecosystem')"
@@ -100,19 +100,19 @@
                 ? 'bg-muted text-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             "
-            class="flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all"
+            class="flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold uppercase tracking-widest transition-all"
           >
             <ng-icon name="lucideGlobe" class="h-3.5 w-3.5"></ng-icon>
-            Ecosystem
+            Tech context
           </button>
         </div>
 
         <div class="flex items-center gap-4">
           <!-- Hardcoded status indicator - reflects user's global job search setting -->
-          <div class="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-xl">
+          <div class="flex items-center gap-2 px-4 py-2 bg-muted border border-border rounded-lg">
             <div class="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></div>
-            <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground"
-              >Job Search Active</span
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground"
+              >Career search active</span
             >
           </div>
         </div>
@@ -132,12 +132,12 @@
                     <ng-icon name="lucideTrendingUp" class="h-5 w-5"></ng-icon>
                   </div>
                   <h3
-                    class="text-sm font-black uppercase tracking-widest text-foreground font-serif"
+                    class="text-sm font-semibold uppercase tracking-widest text-foreground"
                   >
-                    Operational ROI
+                    Pipeline traction
                   </h3>
                 </div>
-                <div class="p-6 rounded-3xl bg-card border-border">
+                <div class="p-6 rounded-lg bg-card border-border">
                   <app-company-stats
                     [totalApplications]="details.totalApplications"
                     [successRate]="successRate()"
@@ -154,13 +154,13 @@
                     <ng-icon name="lucideShieldCheck" class="h-5 w-5"></ng-icon>
                   </div>
                   <h3
-                    class="text-sm font-black uppercase tracking-widest text-foreground font-serif"
+                    class="text-sm font-semibold uppercase tracking-widest text-foreground"
                   >
-                    Compatibility Index
+                    Readiness fit
                   </h3>
                 </div>
                 @if (compatibilityIndex(); as index) {
-                  <div class="p-6 rounded-3xl bg-card border-border flex items-center gap-8 group">
+                  <div class="p-6 rounded-lg bg-card border-border flex items-center gap-8 group">
                     <div class="relative w-32 h-32 shrink-0">
                       <svg class="w-full h-full -rotate-90">
                         <circle
@@ -185,12 +185,12 @@
                         />
                       </svg>
                       <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="text-3xl font-black font-serif text-foreground"
+                        <span class="text-3xl font-semibold text-foreground"
                           >{{ index.score }}%</span
                         >
                         <span
                           class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest"
-                          >Synergy</span
+                          >Fit</span
                         >
                       </div>
                     </div>
@@ -198,7 +198,7 @@
                       <div class="space-y-2">
                         <div class="flex items-center gap-2">
                           <ng-icon name="lucideZap" class="h-3 w-3 text-success"></ng-icon>
-                          <p class="text-[11px] font-bold text-foreground">Strategic Alignment</p>
+                          <p class="text-[11px] font-bold text-foreground">Strengths</p>
                         </div>
                         <ul class="space-y-1 pl-5">
                           @for (pro of index.pros; track pro) {
@@ -212,7 +212,7 @@
                             name="lucideAlertTriangle"
                             class="h-3 w-3 text-warning"
                           ></ng-icon>
-                          <p class="text-[11px] font-bold text-foreground">Operational Risks</p>
+                          <p class="text-[11px] font-bold text-foreground">Risks to watch</p>
                         </div>
                         <ul class="space-y-1 pl-5">
                           @for (con of index.cons; track con) {
@@ -267,26 +267,26 @@
 
             <!-- Right (40%): AI Analyst Chat -->
             <div
-              class="lg:col-span-4 rounded-3xl bg-card border-border flex flex-col h-[750px] sticky top-20 shadow-2xl"
+              class="lg:col-span-4 rounded-lg bg-card border-border flex flex-col h-[750px] sticky top-20 shadow-xl"
             >
               <div
                 class="flex items-center justify-between border-b border-border p-6"
               >
                 <div>
                   <h3
-                    class="text-xs font-black uppercase tracking-[0.25em] text-foreground font-serif"
+                    class="text-xs font-semibold uppercase tracking-[0.18em] text-foreground"
                   >
-                    AI Analyst
+                    Horizon Guide
                   </h3>
                   <p class="text-[9px] text-muted-foreground uppercase mt-1 font-bold">
-                    Target: {{ details.name }}
+                    Company: {{ details.name }}
                   </p>
                 </div>
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
                   <span
-                    class="text-[9px] font-black text-muted-foreground uppercase tracking-widest"
-                    >Synapse Active</span
+                    class="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest"
+                    >Guide ready</span
                   >
                 </div>
               </div>
@@ -307,24 +307,20 @@
           >
             <!-- Left & Center: Tech Stack -->
             <div class="lg:col-span-2 space-y-8">
-              <div class="p-10 rounded-3xl bg-card border-border relative overflow-hidden group">
-                <div
-                  class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-all duration-700"
-                ></div>
-
+              <div class="p-10 rounded-lg bg-card border-border relative overflow-hidden group">
                 <div class="relative z-10">
                   <div class="flex items-center gap-4 mb-10">
-                    <div class="p-4 rounded-2xl bg-primary/10 text-primary">
+                    <div class="p-4 rounded-lg bg-primary/10 text-primary">
                       <ng-icon name="lucideCpu" class="h-7 w-7"></ng-icon>
                     </div>
                     <div>
-                      <h3 class="text-xl font-black tracking-tight text-foreground font-serif">
-                        Operational Tech Stack
+                      <h3 class="text-xl font-semibold tracking-tight text-foreground">
+                        Tech stack
                       </h3>
                       <p
                         class="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold"
                       >
-                        Intelligence Index 8.4
+                        Context index 8.4
                       </p>
                     </div>
                   </div>
@@ -339,37 +335,37 @@
                 </div>
               </div>
 
-              <div class="p-10 rounded-3xl bg-card border-border">
+              <div class="p-10 rounded-lg bg-card border-border">
                 <div class="flex items-center gap-4 mb-8">
-                  <div class="p-4 rounded-2xl bg-secondary/10 text-secondary">
+                  <div class="p-4 rounded-lg bg-secondary/10 text-secondary">
                     <ng-icon name="lucideBuilding2" class="h-7 w-7"></ng-icon>
                   </div>
                   <div>
                     <h3
-                      class="text-sm font-black uppercase tracking-widest text-foreground font-serif"
+                      class="text-sm font-semibold uppercase tracking-widest text-foreground"
                     >
-                      HQ Operational Hub
+                      Company base
                     </h3>
                   </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div
-                    class="rounded-2xl border border-border bg-muted/30 p-6"
+                    class="rounded-lg border border-border bg-muted/30 p-6"
                   >
                     <span
-                      class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2"
-                      >Industry Sector</span
+                      class="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest block mb-2"
+                      >Industry</span
                     >
                     <span class="text-base font-bold text-foreground">{{
-                      details.industry || 'Classified'
+                      details.industry || 'Not set'
                     }}</span>
                   </div>
                   <div
-                    class="rounded-2xl border border-border bg-muted/30 p-6"
+                    class="rounded-lg border border-border bg-muted/30 p-6"
                   >
                     <span
-                      class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2"
-                      >Primary Domain</span
+                      class="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest block mb-2"
+                      >Website</span
                     >
                     @if (details.website) {
                       <a
@@ -384,14 +380,14 @@
                     }
                   </div>
                   <div
-                    class="rounded-2xl border border-border bg-muted/30 p-6 md:col-span-2"
+                    class="rounded-lg border border-border bg-muted/30 p-6 md:col-span-2"
                   >
                     <span
-                      class="text-[9px] font-black text-muted-foreground uppercase tracking-widest block mb-2"
-                      >Registered Address</span
+                      class="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest block mb-2"
+                      >Address</span
                     >
                     <span class="text-base font-bold text-foreground">{{
-                      details.address || 'Confidential Headquarters'
+                      details.address || 'Not set'
                     }}</span>
                   </div>
                 </div>
@@ -410,15 +406,15 @@
           <div class="animate-in slide-in-from-bottom-5 duration-500 pb-20">
             <div class="flex items-center justify-between mb-8">
               <div class="flex items-center gap-4">
-                <div class="p-4 rounded-3xl bg-primary/10 text-primary">
+                <div class="p-4 rounded-lg bg-primary/10 text-primary">
                   <ng-icon name="lucideActivity" class="h-8 w-8"></ng-icon>
                 </div>
                 <div>
-                  <h2 class="text-3xl font-black tracking-tight text-foreground font-serif">
-                    Market Pulse
+                  <h2 class="text-3xl font-semibold tracking-tight text-foreground">
+                    Market context
                   </h2>
                   <p class="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">
-                    Real-time Signals & Sentiment Analysis
+                    Recent context and sentiment
                   </p>
                 </div>
               </div>
@@ -426,7 +422,7 @@
                 hlmBtn
                 variant="outline"
                 (click)="loadCompanyNews(details.name)"
-                class="rounded-2xl"
+                class="rounded-lg"
                 [disabled]="newsLoading()"
               >
                 <ng-icon
@@ -434,12 +430,12 @@
                   class="mr-2"
                   [class.animate-spin]="newsLoading()"
                 ></ng-icon>
-                Refresh Signals
+                Refresh context
               </button>
             </div>
 
             <div class="grid grid-cols-1 gap-8">
-              <div class="p-8 rounded-3xl bg-card border-border">
+              <div class="p-8 rounded-lg bg-card border-border">
                 <app-company-intel
                   [news]="companyNews()"
                   [loading]="newsLoading()"

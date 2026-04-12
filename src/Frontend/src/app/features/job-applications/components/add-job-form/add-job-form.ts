@@ -8,6 +8,7 @@ import {
     DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
@@ -39,6 +40,7 @@ import { lucideArrowLeft, lucideClipboard, lucideUploadCloud, lucideFileText, lu
     selector: 'app-add-job-form',
     imports: [
         CommonModule,
+        TranslocoPipe,
         ReactiveFormsModule,
         RouterModule,
         NgIcon,

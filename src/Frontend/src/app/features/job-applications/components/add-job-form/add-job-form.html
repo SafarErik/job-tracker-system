@@ -1,34 +1,13 @@
 <div class="min-h-screen bg-background text-foreground pb-12 font-sans selection:bg-primary/20 overflow-x-hidden">
     <div class="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-8 space-y-10">
 
-        <!-- Header: Identity & Actions -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4 animate-fade-in-up">
-            <div class="space-y-6">
-                <!-- Back Button -->
-                <a routerLink="/" hlmBtn variant="ghost" size="sm"
-                    class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-all group px-0">
-                    <ng-icon name="lucideArrowLeft"
-                        class="text-sm group-hover:-translate-x-1 transition-transform"></ng-icon>
-                    Return
-                </a>
-
-                <div class="space-y-2">
-                    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-none">
-                        Add Application
-                    </h1>
-                    <p class="text-muted-foreground text-sm font-medium">Quickly track a new position in your pipeline
-                    </p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button hlmBtn variant="outline" (click)="onPasteUrl()"
-                    class="h-12 px-6 gap-2 text-xs font-black uppercase tracking-widest rounded-2xl border-border/40 bg-card/60 backdrop-blur-xl hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
-                    type="button">
-                    <ng-icon name="lucideClipboard" class="text-base"></ng-icon>
-                    Paste URL
-                </button>
-            </div>
+        <div class="flex justify-end pb-2">
+            <button hlmBtn variant="outline" (click)="onPasteUrl()"
+                class="h-10 gap-2 rounded-lg border-border bg-card text-sm font-semibold text-foreground hover:border-accent/40 hover:bg-muted/60"
+                type="button">
+                <ng-icon name="lucideClipboard" class="text-base"></ng-icon>
+                {{ 'applications.form.actions.pasteUrl' | transloco }}
+            </button>
         </div>
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="animate-fade-in-up delay-1">
@@ -43,8 +22,9 @@
                     </div>
 
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-warning animate-pulse"></div>
-                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Role Definition
+                        <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            {{ 'applications.form.sections.opportunity' | transloco }}
                         </h3>
                     </div>
 
@@ -52,16 +32,16 @@
                         <!-- Company Input -->
                         <div class="space-y-2">
                             <label hlmLabel
-                                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Company</label>
+                                class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.company' | transloco }}</label>
                             <hlm-autocomplete [(search)]="companySearch">
                                 <hlm-autocomplete-input formControlName="companyName" placeholder="e.g. Google"
                                     showClear
-                                    class="field-surface h-14 w-full rounded-2xl px-5 transition-all"
+                                    class="field-surface h-14 w-full rounded-lg px-5 transition-all"
                                     [class.border-destructive]="form.get('companyName')?.invalid && form.get('companyName')?.touched" />
 
                                 <div *brnPopoverContent hlmAutocompleteContent
-                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
-                                    <hlm-autocomplete-empty>No companies found.</hlm-autocomplete-empty>
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-lg border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
+                                    <hlm-autocomplete-empty>{{ 'applications.form.empty.noCompanies' | transloco }}</hlm-autocomplete-empty>
                                     <div hlmAutocompleteList class="max-h-[200px] overflow-y-auto custom-scrollbar">
                                         @for(company of filteredCompanies(); track company.id) {
                                         <hlm-autocomplete-item [value]="company.name"
@@ -77,21 +57,21 @@
                         <!-- Position Input -->
                         <div class="space-y-2">
                             <label hlmLabel
-                                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Position</label>
+                                class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.position' | transloco }}</label>
                             <hlm-autocomplete [(search)]="positionSearch">
                                 <hlm-autocomplete-input formControlName="position" placeholder="e.g. Senior Frontend"
                                     showClear
-                                    class="field-surface h-14 w-full rounded-2xl px-5 transition-all"
+                                    class="field-surface h-14 w-full rounded-lg px-5 transition-all"
                                     [class.border-destructive]="form.get('position')?.invalid && form.get('position')?.touched" />
 
                                 <div *brnPopoverContent hlmAutocompleteContent
-                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
-                                    <hlm-autocomplete-empty>No recent positions found.</hlm-autocomplete-empty>
+                                    class="w-[var(--brn-popover-anchor-width)] p-1 rounded-lg border border-border bg-popover/95 backdrop-blur-xl shadow-2xl">
+                                    <hlm-autocomplete-empty>{{ 'applications.form.empty.noPositions' | transloco }}</hlm-autocomplete-empty>
                                     <div hlmAutocompleteList class="max-h-[200px] overflow-y-auto custom-scrollbar">
                                         @if (recentPositions().length > 0) {
                                         <div
                                             class="px-3 py-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground/40">
-                                            Recent History</div>
+                                            {{ 'applications.form.recentPositions' | transloco }}</div>
                                         @for(pos of filteredPositions(); track pos) {
                                         <hlm-autocomplete-item [value]="pos" (click)="onPositionSelected(pos)"
                                             class="rounded-xl">
@@ -108,10 +88,9 @@
                     <!-- Job URL -->
                     <div class="space-y-2">
                         <label hlmLabel
-                            class="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Archive
-                            Link</label>
+                            class="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.jobUrl' | transloco }}</label>
                         <input hlmInput formControlName="jobUrl" type="url" placeholder="https://..."
-                            class="field-surface h-14 w-full rounded-2xl px-5 transition-all" />
+                            class="field-surface h-14 w-full rounded-lg px-5 transition-all" />
                     </div>
                 </div>
 
@@ -119,8 +98,9 @@
                 <div
                     class="panel-surface-muted lg:col-span-4 flex flex-col gap-6 p-8 h-full relative group/logistics">
                     <div class="flex items-center gap-3 mb-2">
-                        <div class="w-1.5 h-1.5 rounded-full bg-destructive"></div>
-                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Params
+                        <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            {{ 'applications.form.sections.pipeline' | transloco }}
                         </h3>
                     </div>
 
@@ -128,18 +108,17 @@
                         <!-- Status Selection -->
                         <div class="space-y-2">
                             <label
-                                class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Current
-                                Status</label>
+                                class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.status' | transloco }}</label>
                             <div class="relative">
                                 <button type="button" (click)="isStatusDropdownOpen.set(!isStatusDropdownOpen())"
-                                    class="w-full h-12 flex items-center justify-between px-4 rounded-xl bg-card border border-border/40 text-sm font-bold transition-all hover:border-primary/40 group">
+                                    class="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-card border border-border/40 text-sm font-semibold transition-all hover:border-accent/40 group">
                                     {{ selectedStatusLabel }}
                                     <ng-icon name="lucideChevronDown"
                                         class="opacity-40 group-hover:opacity-100 transition-opacity"></ng-icon>
                                 </button>
                                 @if (isStatusDropdownOpen()) {
                                 <div
-                                    class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
+                                    class="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
                                     @for (opt of statusOptions; track opt.value) {
                                     <button type="button" (click)="selectStatus(opt.value)"
                                         class="w-full text-left px-3 py-2 text-xs font-bold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors">
@@ -154,18 +133,17 @@
                         <!-- Priority Selection -->
                         <div class="space-y-2">
                             <label
-                                class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Strategic
-                                Priority</label>
+                                class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.priority' | transloco }}</label>
                             <div class="relative">
                                 <button type="button" (click)="isPriorityDropdownOpen.set(!isPriorityDropdownOpen())"
-                                    class="w-full h-12 flex items-center justify-between px-4 rounded-xl bg-card border border-border/40 text-sm font-bold transition-all hover:border-primary/40 group">
+                                    class="w-full h-12 flex items-center justify-between px-4 rounded-lg bg-card border border-border/40 text-sm font-semibold transition-all hover:border-accent/40 group">
                                     {{ selectedPriorityLabel }}
                                     <ng-icon name="lucideChevronDown"
                                         class="opacity-40 group-hover:opacity-100 transition-opacity"></ng-icon>
                                 </button>
                                 @if (isPriorityDropdownOpen()) {
                                 <div
-                                    class="absolute z-50 mt-1 w-full rounded-xl border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
+                                    class="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-2xl p-1 animate-in fade-in slide-in-from-top-2">
                                     @for (opt of priorityOptions; track opt.value) {
                                     <button type="button" (click)="selectPriority(opt.value)"
                                         class="w-full text-left px-3 py-2 text-xs font-bold rounded-lg hover:bg-primary/10 hover:text-primary transition-colors">
@@ -181,9 +159,9 @@
                         <div class="grid grid-cols-2 gap-3 pt-2">
                             <div class="space-y-2">
                                 <label
-                                    class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Type</label>
+                                    class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.type' | transloco }}</label>
                                 <button type="button" (click)="isJobTypeDropdownOpen.set(!isJobTypeDropdownOpen())"
-                                    class="w-full h-11 flex items-center justify-between px-3 rounded-xl bg-card border border-border/40 text-[11px] font-bold">
+                                    class="w-full h-11 flex items-center justify-between px-3 rounded-lg bg-card border border-border/40 text-[11px] font-semibold">
                                     {{ selectedJobTypeLabel }}
                                 </button>
                                 @if (isJobTypeDropdownOpen()) {
@@ -200,10 +178,10 @@
                             </div>
                             <div class="space-y-2">
                                 <label
-                                    class="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 ml-1">Locale</label>
+                                    class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/70 ml-1">{{ 'applications.form.fields.locationMode' | transloco }}</label>
                                 <button type="button"
                                     (click)="isWorkplaceTypeDropdownOpen.set(!isWorkplaceTypeDropdownOpen())"
-                                    class="w-full h-11 flex items-center justify-between px-3 rounded-xl bg-card border border-border/40 text-[11px] font-bold">
+                                    class="w-full h-11 flex items-center justify-between px-3 rounded-lg bg-card border border-border/40 text-[11px] font-semibold">
                                     {{ selectedWorkplaceTypeLabel }}
                                 </button>
                                 @if (isWorkplaceTypeDropdownOpen()) {
@@ -226,15 +204,16 @@
                 <div
                     class="panel-surface lg:col-span-7 p-8 relative overflow-hidden group/assets">
                     <div class="flex items-center gap-3 mb-6">
-                        <div class="w-1.5 h-1.5 rounded-full bg-success"></div>
-                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Strategic Assets
+                        <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            {{ 'applications.form.sections.materials' | transloco }}
                         </h3>
                     </div>
 
                     <div (click)="fileInput.click()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
                         (drop)="onFileDropped($event)" [class.border-primary]="isDragging()"
                         [class.bg-primary/5]="isDragging()"
-                        class="relative h-44 w-full rounded-[1.5rem] border-2 border-dashed border-border/40 transition-all cursor-pointer hover:border-primary/40 hover:bg-muted/30 flex flex-col items-center justify-center gap-2">
+                        class="relative h-44 w-full rounded-lg border-2 border-dashed border-border/40 transition-all cursor-pointer hover:border-accent/40 hover:bg-muted/30 flex flex-col items-center justify-center gap-2">
                         <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)"
                             accept=".pdf,.doc,.docx" />
 
@@ -261,8 +240,8 @@
                             class="flex flex-col items-center gap-1.5 text-muted-foreground group-hover/assets:text-primary transition-colors">
                             <ng-icon name="lucideUploadCloud" size="40"
                                 class="mb-1 opacity-40 group-hover/assets:opacity-100"></ng-icon>
-                            <span class="text-xs font-black uppercase tracking-widest">Deploy Resume</span>
-                            <span class="text-[10px] font-medium opacity-60">PDF / Word (Max 5MB)</span>
+                            <span class="text-xs font-semibold uppercase tracking-widest">{{ 'applications.form.materials.attachResume' | transloco }}</span>
+                            <span class="text-[10px] font-medium opacity-60">{{ 'applications.form.materials.fileHint' | transloco }}</span>
                         </div>
                         }
                     </div>
@@ -270,10 +249,11 @@
 
                 <!-- 4. AI Insight (Span 5) -->
                 <div
-                    class="lg:col-span-5 flex flex-col justify-between rounded-[2.5rem] border border-border/40 bg-card p-8 shadow-sm group/assessment">
+                    class="lg:col-span-5 flex flex-col justify-between rounded-lg border border-border/40 bg-card p-8 shadow-sm group/assessment">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-                        <h3 class="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Self-Assessment
+                        <div class="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                            {{ 'applications.form.sections.readiness' | transloco }}
                         </h3>
                     </div>
 
@@ -287,7 +267,7 @@
                             </span>
                         </div>
                         <p class="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.3em] mt-2">
-                            Estimated Match Probability
+                            {{ 'applications.form.readiness.matchProbability' | transloco }}
                         </p>
                     </div>
 
@@ -302,11 +282,11 @@
                 <!-- Submission Action (Full Width below grid) -->
                 <div class="lg:col-span-12 pt-6">
                     <button hlmBtn type="submit" [disabled]="form.invalid || isSubmitting()"
-                        class="w-full h-16 rounded-[2rem] text-sm font-black uppercase tracking-[0.2em] bg-primary text-primary-foreground hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-primary/20 disabled:opacity-50 disabled:scale-100">
+                        class="w-full h-14 rounded-lg text-sm font-semibold bg-primary text-primary-foreground transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:scale-100">
                         @if (isSubmitting()) {
-                        <span class="animate-pulse">Synchronizing Data...</span>
+                        <span class="animate-pulse">{{ 'applications.form.actions.saving' | transloco }}</span>
                         } @else {
-                        Commit Application
+                        {{ 'applications.form.actions.save' | transloco }}
                         }
                     </button>
                 </div>

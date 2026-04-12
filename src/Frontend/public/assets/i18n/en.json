@@ -56,6 +56,11 @@
       "dark": "Dark",
       "system": "System",
       "logout": "Log out",
+      "titles": {
+        "newApplication": "New application",
+        "editCompany": "Edit company",
+        "companyDetails": "Company research"
+      },
       "account": {
         "workspaceName": "Horizon account",
         "workspaceGroup": "Account",
@@ -69,7 +74,10 @@
         "insights": "Review trends, charts, and performance signals.",
         "signals": "Find opportunities and useful market signals.",
         "documents": "Keep resumes and job-search documents ready.",
-        "profile": "Manage your career profile and preferences."
+        "profile": "Manage your career profile and preferences.",
+        "newApplication": "Capture the opportunity basics, pipeline stage, materials, and readiness.",
+        "editCompany": "Update company research, priority, contacts, and context.",
+        "companyDetails": "Review company context, active applications, contacts, and interview angles."
       },
       "commands": {
         "workspace": "Workspace",
@@ -450,6 +458,170 @@
       }
     }
   },
+  "applications": {
+    "actions": {
+      "add": "Add application",
+      "prioritize": "Prioritize pipeline"
+    },
+    "categories": {
+      "all": "All",
+      "inbox": "Inbox",
+      "active": "Active",
+      "offers": "Offers",
+      "archive": "Archive"
+    },
+    "searchPlaceholder": "Search role or company...",
+    "loading": "Loading pipeline...",
+    "empty": {
+      "title": "No applications found",
+      "body": "Adjust the filters or add a strong opportunity to start building your pipeline.",
+      "clear": "Clear filters"
+    },
+    "view": {
+      "grid": "Grid view",
+      "kanban": "Kanban view",
+      "list": "List view"
+    },
+    "form": {
+      "actions": {
+        "pasteUrl": "Paste URL",
+        "save": "Save application",
+        "saving": "Saving application..."
+      },
+      "sections": {
+        "opportunity": "Opportunity basics",
+        "pipeline": "Pipeline",
+        "materials": "Materials",
+        "readiness": "Readiness"
+      },
+      "fields": {
+        "company": "Company",
+        "position": "Position",
+        "jobUrl": "Opportunity link",
+        "status": "Current status",
+        "priority": "Priority",
+        "type": "Type",
+        "locationMode": "Location mode"
+      },
+      "empty": {
+        "noCompanies": "No companies found.",
+        "noPositions": "No recent positions found."
+      },
+      "recentPositions": "Recent positions",
+      "materials": {
+        "attachResume": "Attach resume",
+        "fileHint": "PDF / Word, max 5MB"
+      },
+      "readiness": {
+        "matchProbability": "Estimated match probability"
+      }
+    }
+  },
+  "companies": {
+    "actions": {
+      "add": "Add company",
+      "clearSearch": "Clear search",
+      "fetchData": "Fetch data"
+    },
+    "card": {
+      "viewResearch": "Open research for {{name}}",
+      "activeApplications": "{{count}} active",
+      "noActivePipeline": "No active pipeline",
+      "open": "Open"
+    },
+    "form": {
+      "actions": {
+        "saving": "Saving company...",
+        "save": "Save company",
+        "update": "Update company"
+      },
+      "sections": {
+        "identity": "Company identity",
+        "research": "Research context",
+        "tech": "Tech ecosystem",
+        "contact": "Key contact"
+      },
+      "fields": {
+        "companyName": "Company name",
+        "industry": "Industry",
+        "website": "Website",
+        "priority": "Priority",
+        "hqLocation": "HQ location",
+        "applications": "Applications",
+        "status": "Status",
+        "active": "Active",
+        "contactName": "Recruiter name",
+        "contactEmail": "Email address",
+        "contactLinkedIn": "LinkedIn profile"
+      },
+      "placeholders": {
+        "companyName": "e.g. Acme Corp",
+        "industry": "Select industry",
+        "hqLocation": "City, country",
+        "contactName": "e.g. Sarah Smith",
+        "contactEmail": "sarah@company.com",
+        "contactLinkedIn": "linkedin.com/in/..."
+      }
+    },
+    "metrics": {
+      "researchBase": "Research base",
+      "researchBaseBody": "Tracked companies",
+      "activePipelines": "Active pipelines",
+      "activePipelinesBody": "Companies with open applications",
+      "responseRate": "Response rate",
+      "responseRateBody": "Company-level traction"
+    },
+    "searchLabel": "Search companies by name, industry, or domain",
+    "searchPlaceholder": "Search company, industry, or domain...",
+    "loading": "Loading company data...",
+    "error": {
+      "title": "Could not load company data"
+    },
+    "empty": {
+      "title": "No companies found",
+      "body": "Add your first company to build a research base around your applications.",
+      "searchBody": "No results for this search. Adjust the query and try again."
+    },
+    "results": {
+      "showing": "Showing",
+      "total": "Total"
+    }
+  },
+  "documents": {
+    "actions": {
+      "upload": "Upload document"
+    },
+    "capacity": {
+      "label": "Workspace capacity",
+      "used": "{{size}} used"
+    },
+    "loading": "Loading documents...",
+    "master": {
+      "label": "Master resume",
+      "badge": "Master",
+      "updated": "Updated {{date}}",
+      "primaryDocument": "Master document",
+      "body": "This is the base document Horizon uses for tailored resumes and cover letters. Keep it complete and current.",
+      "update": "Update master",
+      "openPreview": "Open preview"
+    },
+    "emptyMaster": {
+      "title": "No master resume set",
+      "body": "Upload a complete resume so Horizon can tailor documents to each opportunity.",
+      "cta": "Upload master resume"
+    },
+    "tailored": {
+      "title": "Tailored documents",
+      "resumes": "Tailored resumes ({{count}})",
+      "coverLetters": "Cover letters ({{count}})",
+      "emptyResumes": "No tailored documents yet. Generate a tailored resume in the Application Workstation to see it here."
+    },
+    "emptyLibrary": {
+      "body": "Your document workspace is empty.",
+      "cta": "Upload your first document"
+    },
+    "dropToUpload": "Drop to upload"
+  },
   "ai": {
     "drawer": {
       "title": "Horizon Guide",
@@ -488,7 +660,9 @@
       "searchPlaceholder": "Ask AI or search...",
       "searchLabel": "Search or ask AI",
       "placeholder": "Ask AI anything about this application...",
-      "quickActions": "Quick actions"
+      "quickActions": "Quick actions",
+      "guideLabel": "Horizon Guide",
+      "openGuide": "Open Horizon Guide"
     },
     "nav": {
       "strategy": "Fit",

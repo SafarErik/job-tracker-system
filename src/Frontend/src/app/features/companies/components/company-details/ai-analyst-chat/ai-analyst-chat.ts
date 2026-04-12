@@ -19,7 +19,7 @@ export class AiAnalystChatComponent {
 
 
   messages = signal([
-    { role: 'analyst', content: 'Intelligence link established. I have analyzed the current market position and technical stack. How can I assist with your strategy?' }
+    { role: 'analyst', content: 'Horizon Guide is ready. I can help summarize company context, identify interview angles, and connect this research to your pipeline.' }
   ]);
 
   currentInput = signal('');
@@ -37,7 +37,7 @@ export class AiAnalystChatComponent {
       const context = this.companyContext() ? `Context: ${this.companyContext().slice(0, 50)}... ` : '';
       this.messages.update(m => [...m, {
         role: 'analyst',
-        content: `Based on my latest scans of ${this.companyName() || 'this asset'} (${context}), I recommend focusing your technical pitch on distributed systems scalability. They are currently restructuring their infrastructure team.`
+        content: `Based on the current context for ${this.companyName() || 'this company'} (${context}), I recommend focusing your technical pitch on distributed systems scalability. They appear to be restructuring their infrastructure team.`
       }]);
     }, 1000);
   }

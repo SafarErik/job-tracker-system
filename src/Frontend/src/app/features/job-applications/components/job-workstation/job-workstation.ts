@@ -252,42 +252,6 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   simulatedScore = signal<number | null>(null);
 
-  // Computed: Highlighted Job Description
-  highlightedDescription = computed<string | null>(() => {
-    const desc = this.store.selectedApplication()?.description;
-    if (!desc) return null;
-
-    const keywords = [
-      'Angular',
-      'Scalability',
-      'TypeScript',
-      'Performance',
-      'Fintech',
-      'Signals',
-      'Optimization',
-      'Frontend',
-      'Distributed Systems',
-      'Architecture',
-      'UI/UX',
-    ];
-
-    // Escape HTML
-    let html = desc
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;')
-      .replaceAll('\n', '<br>');
-
-    keywords.forEach((kw) => {
-      const regex = new RegExp(`(${kw})`, 'gi');
-      html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
-    });
-
-    return html;
-  });
-
   // Computed: Line Numbers
   lineNumbers = computed(() => {
     const desc = this.store.selectedApplication()?.description;

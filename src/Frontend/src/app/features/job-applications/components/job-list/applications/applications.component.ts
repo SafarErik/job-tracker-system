@@ -1,4 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  HostListener,
+  inject,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -22,7 +32,16 @@ import { ApplicationStatbarComponent } from '../../application-statbar/applicati
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSlidersHorizontal, lucideLayoutGrid, lucideLayoutList, lucideCalendar, lucideKanban } from '@ng-icons/lucide';
+import {
+  lucideBriefcase,
+  lucideDatabaseZap,
+  lucideKanban,
+  lucideLayoutGrid,
+  lucideLayoutList,
+  lucidePlus,
+  lucideSearch,
+  lucideSlidersHorizontal,
+} from '@ng-icons/lucide';
 
 @Component({
   selector: 'app-job-list',
@@ -37,17 +56,18 @@ import { lucideBriefcase, lucidePlus, lucideDatabaseZap, lucideSearch, lucideSli
     NgIcon,
     RouterModule,
   ],
-  providers: [provideIcons({
-    lucideBriefcase,
-    lucidePlus,
-    lucideDatabaseZap,
-    lucideSearch,
-    lucideSlidersHorizontal,
-    lucideLayoutGrid,
-    lucideLayoutList,
-    lucideCalendar,
-    lucideKanban
-  })],
+  providers: [
+    provideIcons({
+      lucideBriefcase,
+      lucidePlus,
+      lucideDatabaseZap,
+      lucideSearch,
+      lucideSlidersHorizontal,
+      lucideLayoutGrid,
+      lucideLayoutList,
+      lucideKanban,
+    }),
+  ],
   templateUrl: './applications.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -68,12 +88,12 @@ export class ApplicationsComponent implements OnInit {
   Status = JobApplicationStatus;
 
   // Categories for the Segmented Control (4 Buckets)
-  categories = [
-    { id: 'all', label: 'All' },
-    { id: 'inbox', label: 'Inbox' },
-    { id: 'active', label: 'Active' },
-    { id: 'offers', label: 'Offers' },
-    { id: 'archive', label: 'Archive' },
+  categories: Array<{ id: string; labelKey: string }> = [
+    { id: 'all', labelKey: 'applications.categories.all' },
+    { id: 'inbox', labelKey: 'applications.categories.inbox' },
+    { id: 'active', labelKey: 'applications.categories.active' },
+    { id: 'offers', labelKey: 'applications.categories.offers' },
+    { id: 'archive', labelKey: 'applications.categories.archive' },
   ];
 
   // Logic to filter applications based on category (4 Buckets)
@@ -83,10 +103,11 @@ export class ApplicationsComponent implements OnInit {
     const search = this.searchQuery().toLowerCase();
 
     // Filter by search first
-    let filtered = apps.filter(app => {
-      const matchesSearch = !search ||
+    let filtered = apps.filter((app) => {
+      const matchesSearch =
+        !search ||
         app.position.toLowerCase().includes(search) ||
-        (app.companyName?.toLowerCase().includes(search));
+        app.companyName?.toLowerCase().includes(search);
       return matchesSearch;
     });
 

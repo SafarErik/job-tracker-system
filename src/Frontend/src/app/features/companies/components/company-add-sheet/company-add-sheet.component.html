@@ -29,12 +29,12 @@
             <!-- Company website auto-fill -->
             <section class="space-y-4 relative group">
                 <div
-                    class="absolute -inset-4 bg-linear-to-b from-primary/5 to-transparent rounded-[2rem] -z-10 group-focus-within:from-primary/10 transition-all duration-500">
+                        class="absolute -inset-4 bg-linear-to-b from-primary/5 to-transparent rounded-lg -z-10 group-focus-within:from-primary/10 transition-all duration-500">
                 </div>
 
                 <div class="flex items-center gap-2">
                     <ng-icon name="lucideSparkles" class="text-primary h-4 w-4"></ng-icon>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">Research & Auto-Fill</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">Research auto-fill</h4>
                 </div>
 
                 <div class="flex gap-2">
@@ -107,11 +107,11 @@
                 <section class="space-y-5">
                     <h4
                         class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Strategy & Priority
+                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Research priority
                     </h4>
 
                     <div
-                        class="flex items-center justify-between gap-4 p-4 rounded-2xl bg-muted/30 border border-border/50">
+                        class="flex items-center justify-between gap-4 p-4 rounded-lg bg-muted/30 border border-border/50">
                         <div class="flex gap-2">
                             @for(p of priorities; track p.value) {
                             <button type="button" (click)="setPriority(p.value)"
@@ -134,9 +134,9 @@
                 <section class="space-y-5">
                     <h4
                         class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Tech DNA
+                        <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Tech stack
                     </h4>
-                    <div class="p-5 rounded-2xl bg-muted/30 border border-border/50">
+                    <div class="p-5 rounded-lg bg-muted/30 border border-border/50">
                         <app-skill-selector placeholder="Add tech stack..." [selectedSkills]="techStack()"
                             (skillAdded)="onSkillAdded($event)" (skillRemoved)="onSkillRemoved($event)">
                         </app-skill-selector>
@@ -183,7 +183,7 @@
         <!-- 3. Footer Actions -->
         <hlm-sheet-footer class="sticky bottom-0 p-6 bg-card/80 backdrop-blur-xl border-t border-border z-20">
             <button hlmBtn size="lg" (click)="onSubmit()" [disabled]="form.invalid || isLoading()"
-                class="w-full h-14 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold uppercase tracking-widest text-xs shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
+                class="w-full h-14 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
                 @if(isLoading()) {
                 <ng-icon name="lucideLoader2" class="animate-spin mr-2 h-5 w-5"></ng-icon>
                 Saving...

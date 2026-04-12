@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -43,7 +43,6 @@ export interface GapAnalysisItem {
 })
 export class StrategyViewComponent {
   application = input<JobApplication | null>(null);
-  highlightedDescription = input<string | null>(null);
   lineNumbers = input.required<number[]>();
   isPastingManually = input(false);
   isProcessing = input(false);
@@ -58,4 +57,10 @@ export class StrategyViewComponent {
   saveManualPaste = output<void>();
   triggerAnalysis = output<void>();
   simulateImprovement = output<string>();
+
+  readonly descriptionLines = computed(() => {
+    const description = this.application()?.description;
+    if (!description) return [];
+    return description.split('\n');
+  });
 }

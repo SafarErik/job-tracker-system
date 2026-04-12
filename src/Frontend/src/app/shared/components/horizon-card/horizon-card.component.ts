@@ -20,7 +20,7 @@ export type HorizonCardSize = 'sm' | 'md' | 'lg';
       }
 
       .horizon-card {
-        border-radius: var(--radius-card);
+        border-radius: 0.5rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 

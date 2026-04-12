@@ -3,7 +3,7 @@
   class="group relative flex h-full flex-col overflow-hidden bg-card rounded-xl border border-border/70 hover:border-primary/40 transition-all duration-200 ease-out cursor-pointer shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
   tabindex="0"
   role="group"
-  [attr.aria-label]="'View dossier for ' + company().name"
+  [attr.aria-label]="'companies.card.viewResearch' | transloco: { name: company().name }"
   (keydown.enter)="onViewDossier()"
   (click)="onViewDossier()"
 >
@@ -115,12 +115,12 @@
             <span
               class="text-[10px] uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-500"
             >
-              {{ company().totalApplications }} active
+              {{ 'companies.card.activeApplications' | transloco: { count: company().totalApplications } }}
             </span>
           } @else {
             <div class="h-1.5 w-1.5 rounded-full bg-muted-foreground/30"></div>
             <span class="text-[10px] uppercase tracking-[0.12em] text-muted-foreground px-1">
-              No active pipeline
+              {{ 'companies.card.noActivePipeline' | transloco }}
             </span>
           }
         </div>
@@ -131,7 +131,7 @@
         >
           <span
             class="text-[10px] uppercase tracking-widest text-muted-foreground transition-colors group-hover/btn:text-foreground"
-            >Open</span
+            >{{ 'companies.card.open' | transloco }}</span
           >
           <ng-icon
             name="lucideChevronRight"

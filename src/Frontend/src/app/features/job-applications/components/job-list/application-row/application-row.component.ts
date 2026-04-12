@@ -1,4 +1,4 @@
-import { Component, input, output, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JobApplication } from '../../../models/job-application.model';
 import { JobApplicationStatus } from '../../../models/application-status.enum';
@@ -18,6 +18,8 @@ import {
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmTooltipImports } from '@spartan-ng/helm/tooltip';
 import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../../../core/services';
 
 @Component({
   selector: 'tr[app-application-row]',
@@ -28,6 +30,7 @@ import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
     ...HlmButtonImports,
     ...HlmTooltipImports,
     ...BrnTooltipImports,
+    TranslocoPipe,
   ],
   providers: [
     provideIcons({
@@ -50,6 +53,8 @@ import { BrnTooltipImports } from '@spartan-ng/brain/tooltip';
 })
 export class ApplicationRowComponent {
   application = input.required<JobApplication>();
+  private readonly languageService = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
 
   viewDetail = output<string>();
   archive = output<string>();
@@ -71,7 +76,7 @@ export class ApplicationRowComponent {
 
   // Computed: Status label
   statusLabel = computed(() => {
-    return getStatusStyle(this.application().status).label;
+    return this.getStatusLabel(this.application().status);
   });
 
   // Computed: Status Text Color (classes)
@@ -127,7 +132,7 @@ export class ApplicationRowComponent {
       ].includes(status)
     ) {
       return {
-        text: 'Prepare for Interview',
+        textKey: 'applications.nextActions.practiceForScreen',
         color: 'text-primary',
         icon: 'lucideZap',
       };
@@ -135,7 +140,7 @@ export class ApplicationRowComponent {
 
     if (status === JobApplicationStatus.Offer) {
       return {
-        text: 'Review Offer Details',
+        textKey: 'applications.nextActions.prepareResponse',
         color: 'text-emerald-400 font-bold',
         icon: 'lucideCheckCircle2',
       };
@@ -150,13 +155,13 @@ export class ApplicationRowComponent {
 
       if (diffDays > 7) {
         return {
-          text: 'Follow-up Recommended',
+          textKey: 'applications.nextActions.followUp',
           color: 'text-amber-400',
           icon: 'lucideTimer',
         };
       }
       return {
-        text: 'Awaiting Response',
+        textKey: 'applications.nextActions.reviewFit',
         color: 'text-muted-foreground',
         icon: 'lucideClock',
       };
@@ -164,7 +169,7 @@ export class ApplicationRowComponent {
 
     if (status === JobApplicationStatus.Rejected) {
       return {
-        text: 'Archive Application',
+        textKey: 'applications.nextActions.archive',
         color: 'text-red-400',
         icon: 'lucideArchive',
       };
@@ -172,14 +177,14 @@ export class ApplicationRowComponent {
 
     if (status === JobApplicationStatus.Ghosted) {
       return {
-        text: 'Send Nudge',
+        textKey: 'applications.nextActions.reengage',
         color: 'text-orange-400',
         icon: 'lucideSend',
       };
     }
 
     return {
-      text: 'Keep tracking',
+      textKey: 'applications.nextActions.reviewFit',
       color: 'text-muted-foreground',
       icon: 'lucideCircle',
     };
@@ -193,9 +198,9 @@ export class ApplicationRowComponent {
     const diffTime = Math.abs(now.getTime() - updatedAt.getTime());
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    return `${diffDays} days ago`;
+    if (diffDays === 0) return this.t('common.time.today');
+    if (diffDays === 1) return this.t('common.time.dayAgo');
+    return this.t('common.time.daysAgo', { count: diffDays });
   });
 
   // Computed: Logo URL
@@ -218,5 +223,15 @@ export class ApplicationRowComponent {
       return colorClass;
     }
     return 'bg-secondary';
+  }
+
+  private getStatusLabel(status: JobApplicationStatus): string {
+    const statusName = JobApplicationStatus[status] ?? 'Applied';
+    return this.t(`dashboard.workQueue.status.${statusName}`, undefined, getStatusStyle(status).label);
+  }
+
+  private t(key: string, params?: Record<string, unknown>, fallback?: string): string {
+    this.languageService.locale();
+    return this.transloco.translate(key, params) || fallback || key;
   }
 }

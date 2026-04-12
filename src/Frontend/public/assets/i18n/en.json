@@ -18,6 +18,7 @@
       "search": "Search"
     },
     "states": {
+      "error": "Error",
       "loading": "Loading...",
       "noResults": "No results found.",
       "unknown": "Unknown"
@@ -86,7 +87,7 @@
         "openDashboard": "Open dashboard",
         "openApplications": "Open applications",
         "openCompanies": "Open companies",
-        "addApplication": "Add application",
+        "addApplication": "Add opportunity",
         "openAssistant": "Open Horizon Guide",
         "pipelineSummary": "Pipeline summary",
         "nextBestAction": "Next best action"
@@ -460,7 +461,7 @@
   },
   "applications": {
     "actions": {
-      "add": "Add application",
+      "add": "Add opportunity",
       "prioritize": "Prioritize pipeline"
     },
     "categories": {
@@ -470,11 +471,84 @@
       "offers": "Offers",
       "archive": "Archive"
     },
-    "searchPlaceholder": "Search role or company...",
+    "focusFilters": {
+      "label": "Focus",
+      "all": "All",
+      "needsAction": "Needs action",
+      "highFit": "High fit",
+      "missingMaterials": "No materials",
+      "stale": "Stale",
+      "archived": "Archived"
+    },
+    "cockpit": {
+      "eyebrow": {
+        "empty": "Pipeline cockpit",
+        "decision": "Decision focus",
+        "focus": "Recommended focus",
+        "readiness": "Readiness focus",
+        "steady": "Pipeline cockpit"
+      },
+      "empty": {
+        "title": "Start with one real opportunity",
+        "body": "Add the role you would actually pursue. Horizon will use it to organize fit, documents, follow-up, and preparation.",
+        "action": "Capture the opportunity first, then build the workflow around it."
+      },
+      "offers": {
+        "title": "Offer-stage work needs a clean response path",
+        "body": "Decision quality matters more than adding more volume right now.",
+        "action": "Review compensation, timing, and negotiation notes before replying."
+      },
+      "attention": {
+        "title": "Several applications need a next action",
+        "body": "Prioritize the items where a follow-up, preparation step, or response can move the pipeline forward.",
+        "action": "Open the work queue and clear the highest-priority action first."
+      },
+      "highFit": {
+        "title": "Strong-fit opportunities are ready for deeper prep",
+        "body": "Use the stronger matches to sharpen materials and interview stories before sending more generic applications.",
+        "action": "Review fit and update materials on the strongest opportunity."
+      },
+      "steady": {
+        "title": "Pipeline is stable, but the next step should stay explicit",
+        "body": "Keep one follow-up, one readiness action, and one new opportunity moving each week.",
+        "action": "Use the focus filters to choose the next concrete action."
+      },
+      "metric": {
+        "total": "Tracked",
+        "offers": "Offers",
+        "needsAction": "Need action",
+        "highFit": "High fit",
+        "active": "Active"
+      }
+    },
+    "stats": {
+      "total": {
+        "label": "Total",
+        "hint": "opportunities"
+      },
+      "active": {
+        "label": "Active",
+        "hint": "in pipeline"
+      },
+      "interviews": {
+        "label": "Interviews",
+        "hint": "to prepare"
+      },
+      "offers": {
+        "label": "Offers",
+        "hint": "{{rate}}% rate"
+      }
+    },
+    "searchPlaceholder": "Search opportunity or company...",
     "loading": "Loading pipeline...",
+    "results": {
+      "count": "Showing {{shown}} of {{total}} opportunities"
+    },
     "empty": {
-      "title": "No applications found",
-      "body": "Adjust the filters or add a strong opportunity to start building your pipeline.",
+      "firstTitle": "Add your first opportunity",
+      "firstBody": "Start with one role. Horizon will turn it into a guided workflow for fit, documents, follow-up, and interview prep.",
+      "filteredTitle": "No opportunities match this view",
+      "filteredBody": "Clear the filters or add a new opportunity if your pipeline has moved forward.",
       "clear": "Clear filters"
     },
     "view": {
@@ -482,38 +556,107 @@
       "kanban": "Kanban view",
       "list": "List view"
     },
-    "form": {
-      "actions": {
-        "pasteUrl": "Paste URL",
-        "save": "Save application",
-        "saving": "Saving application..."
+    "list": {
+      "columns": {
+        "opportunity": "Opportunity",
+        "pipeline": "Pipeline",
+        "compensation": "Compensation",
+        "readiness": "Readiness",
+        "activity": "Last activity",
+        "nextAction": "Next action"
+      },
+      "notSpecified": "Not specified",
+      "archive": "Archive application"
+    },
+    "nextActions": {
+      "followUp": "Follow up",
+      "reviewFit": "Review fit",
+      "prepareResponse": "Prepare response",
+      "archive": "Archive",
+      "practiceForScreen": "Practice for screen",
+      "updateMaterials": "Update materials",
+      "reengage": "Re-engage"
+    },
+    "card": {
+      "fit": "Fit estimate",
+      "matchTooltip": "Horizon fit estimate based on the role, your profile, and available materials.",
+      "insightLabel": "Signal",
+      "nextActionLabel": "Next action",
+      "jobType": {
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "internship": "Internship",
+        "contract": "Contract",
+        "freelance": "Freelance"
+      },
+      "workplace": {
+        "onSite": "On-site",
+        "remote": "Remote",
+        "hybrid": "Hybrid"
+      },
+      "insights": {
+        "offer": "Offer received",
+        "interview": "Interview stage",
+        "noActivity": "No activity for {{days}}d",
+        "followUpDue": "Follow-up due",
+        "strongFit": "Strong profile fit",
+        "analysis": "Analysis: {{snippet}}",
+        "sent": "Application sent"
+      }
+    },
+    "kanban": {
+      "updateStatus": "Update status",
+      "daysShort": "{{count}}d",
+      "limit": "Showing latest {{count}} items",
+      "empty": {
+        "inbox": "No new opportunities",
+        "active": "No active applications",
+        "offers": "No offers yet",
+        "archive": "Archive is clear",
+        "default": "Drop opportunity here"
+      }
+    },
+    "addSheet": {
+      "title": "Add opportunity",
+      "description": "Track a new career move",
+      "import": {
+        "title": "Import from job post",
+        "placeholder": "Paste job post URL...",
+        "action": "Import",
+        "reading": "Reading...",
+        "hint": "Paste a job posting URL to prefill the opportunity basics."
       },
       "sections": {
-        "opportunity": "Opportunity basics",
+        "basics": "Opportunity basics",
         "pipeline": "Pipeline",
-        "materials": "Materials",
-        "readiness": "Readiness"
+        "compensation": "Optional compensation"
       },
       "fields": {
-        "company": "Company",
-        "position": "Position",
-        "jobUrl": "Opportunity link",
+        "position": "Position *",
+        "company": "Company *",
         "status": "Current status",
         "priority": "Priority",
-        "type": "Type",
-        "locationMode": "Location mode"
+        "baseSalary": "Base salary",
+        "targetSalary": "Offer / target"
       },
-      "empty": {
-        "noCompanies": "No companies found.",
-        "noPositions": "No recent positions found."
+      "placeholders": {
+        "position": "e.g. Frontend Developer",
+        "company": "e.g. Acme Corp",
+        "status": "Select status"
       },
-      "recentPositions": "Recent positions",
-      "materials": {
-        "attachResume": "Attach resume",
-        "fileHint": "PDF / Word, max 5MB"
+      "actions": {
+        "save": "Save opportunity"
       },
-      "readiness": {
-        "matchProbability": "Estimated match probability"
+      "errors": {
+        "companyCreate": "Could not create the company for this opportunity."
+      }
+    },
+    "notifications": {
+      "archived": {
+        "heading": "Pipeline updated",
+        "title": "Application for {{company}} archived",
+        "body": "Moved to rejected status.",
+        "undo": "Undo"
       }
     }
   },

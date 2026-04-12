@@ -18,6 +18,7 @@
       "search": "Keresés"
     },
     "states": {
+      "error": "Hiba",
       "loading": "Betöltés...",
       "noResults": "Nincs találat.",
       "unknown": "Ismeretlen"
@@ -86,7 +87,7 @@
         "openDashboard": "Áttekintés megnyitása",
         "openApplications": "Jelentkezések megnyitása",
         "openCompanies": "Cégek megnyitása",
-        "addApplication": "Jelentkezés hozzáadása",
+        "addApplication": "Lehetőség hozzáadása",
         "openAssistant": "Horizon segítő megnyitása",
         "pipelineSummary": "Folyamat összegzése",
         "nextBestAction": "Következő legjobb lépés"
@@ -460,7 +461,7 @@
   },
   "applications": {
     "actions": {
-      "add": "Jelentkezés hozzáadása",
+      "add": "Lehetőség hozzáadása",
       "prioritize": "Folyamat priorizálása"
     },
     "categories": {
@@ -470,11 +471,84 @@
       "offers": "Ajánlatok",
       "archive": "Archív"
     },
-    "searchPlaceholder": "Pozíció vagy cég keresése...",
+    "focusFilters": {
+      "label": "Fókusz",
+      "all": "Összes",
+      "needsAction": "Lépést kér",
+      "highFit": "Erős illeszkedés",
+      "missingMaterials": "Nincs anyag",
+      "stale": "Kihűlt",
+      "archived": "Archivált"
+    },
+    "cockpit": {
+      "eyebrow": {
+        "empty": "Pipeline cockpit",
+        "decision": "Döntési fókusz",
+        "focus": "Javasolt fókusz",
+        "readiness": "Készültségi fókusz",
+        "steady": "Pipeline cockpit"
+      },
+      "empty": {
+        "title": "Kezdj egy valódi lehetőséggel",
+        "body": "Add hozzá azt a szerepet, amit tényleg megpályáznál. A Horizon erre építi az illeszkedést, a dokumentumokat, az utánkövetést és a felkészülést.",
+        "action": "Először rögzítsd a lehetőséget, utána építsd köré a munkafolyamatot."
+      },
+      "offers": {
+        "title": "Az ajánlati szakasz tiszta válaszutat kér",
+        "body": "Most a döntés minősége fontosabb, mint az újabb jelentkezések száma.",
+        "action": "Válasz előtt nézd át a kompenzációt, az időzítést és a tárgyalási jegyzeteket."
+      },
+      "attention": {
+        "title": "Több jelentkezés következő lépést kér",
+        "body": "Azokat priorizáld, ahol egy utánkövetés, felkészülési lépés vagy válasz előre tudja mozdítani a folyamatot.",
+        "action": "Nyisd meg a munkasort, és zárd le először a legfontosabb lépést."
+      },
+      "highFit": {
+        "title": "Az erős illeszkedésű lehetőségek mélyebb felkészülést érdemelnek",
+        "body": "Használd a legerősebb találatokat az anyagok és interjútörténetek élesítésére, mielőtt több generikus jelentkezést küldenél.",
+        "action": "Nézd át az illeszkedést, és frissítsd az anyagokat a legerősebb lehetőségnél."
+      },
+      "steady": {
+        "title": "A folyamat stabil, de a következő lépés maradjon egyértelmű",
+        "body": "Tarts mozgásban hetente egy utánkövetést, egy készültségi lépést és egy új lehetőséget.",
+        "action": "A fókuszfilterekkel válaszd ki a következő konkrét lépést."
+      },
+      "metric": {
+        "total": "Követett",
+        "offers": "Ajánlat",
+        "needsAction": "Lépést kér",
+        "highFit": "Erős fit",
+        "active": "Aktív"
+      }
+    },
+    "stats": {
+      "total": {
+        "label": "Összes",
+        "hint": "lehetőség"
+      },
+      "active": {
+        "label": "Aktív",
+        "hint": "pipeline-ban"
+      },
+      "interviews": {
+        "label": "Interjúk",
+        "hint": "felkészüléshez"
+      },
+      "offers": {
+        "label": "Ajánlatok",
+        "hint": "{{rate}}% arány"
+      }
+    },
+    "searchPlaceholder": "Lehetőség vagy cég keresése...",
     "loading": "Folyamat betöltése...",
+    "results": {
+      "count": "{{shown}} / {{total}} lehetőség megjelenítve"
+    },
     "empty": {
-      "title": "Nincs találat",
-      "body": "Módosítsd a szűrőket, vagy adj hozzá egy erős lehetőséget a folyamat indításához.",
+      "firstTitle": "Add hozzá az első lehetőséget",
+      "firstBody": "Kezdj egy szereppel. A Horizon vezetett munkafolyamattá alakítja illeszkedéssel, dokumentumokkal, utánkövetéssel és interjúfelkészüléssel.",
+      "filteredTitle": "Ebben a nézetben nincs találat",
+      "filteredBody": "Töröld a szűrőket, vagy adj hozzá új lehetőséget, ha közben előrelépett a folyamatod.",
       "clear": "Szűrők törlése"
     },
     "view": {
@@ -482,38 +556,107 @@
       "kanban": "Kanban nézet",
       "list": "Lista nézet"
     },
-    "form": {
-      "actions": {
-        "pasteUrl": "URL beillesztése",
-        "save": "Jelentkezés mentése",
-        "saving": "Jelentkezés mentése..."
+    "list": {
+      "columns": {
+        "opportunity": "Lehetőség",
+        "pipeline": "Pipeline",
+        "compensation": "Kompenzáció",
+        "readiness": "Készültség",
+        "activity": "Utolsó aktivitás",
+        "nextAction": "Következő lépés"
+      },
+      "notSpecified": "Nincs megadva",
+      "archive": "Jelentkezés archiválása"
+    },
+    "nextActions": {
+      "followUp": "Utánkövetés",
+      "reviewFit": "Illeszkedés átnézése",
+      "prepareResponse": "Válasz előkészítése",
+      "archive": "Archiválás",
+      "practiceForScreen": "Screen gyakorlása",
+      "updateMaterials": "Anyagok frissítése",
+      "reengage": "Újrakapcsolódás"
+    },
+    "card": {
+      "fit": "Illeszkedési becslés",
+      "matchTooltip": "Horizon illeszkedési becslés a szerep, a profilod és az elérhető anyagok alapján.",
+      "insightLabel": "Jelzés",
+      "nextActionLabel": "Következő lépés",
+      "jobType": {
+        "fullTime": "Teljes munkaidő",
+        "partTime": "Részmunkaidő",
+        "internship": "Gyakornoki",
+        "contract": "Szerződéses",
+        "freelance": "Szabadúszó"
+      },
+      "workplace": {
+        "onSite": "Irodai",
+        "remote": "Távoli",
+        "hybrid": "Hibrid"
+      },
+      "insights": {
+        "offer": "Ajánlat érkezett",
+        "interview": "Interjús szakasz",
+        "noActivity": "{{days}} napja nincs aktivitás",
+        "followUpDue": "Utánkövetés esedékes",
+        "strongFit": "Erős profililleszkedés",
+        "analysis": "Elemzés: {{snippet}}",
+        "sent": "Jelentkezés elküldve"
+      }
+    },
+    "kanban": {
+      "updateStatus": "Státusz frissítése",
+      "daysShort": "{{count}}n",
+      "limit": "Legutóbbi {{count}} elem megjelenítve",
+      "empty": {
+        "inbox": "Nincs új lehetőség",
+        "active": "Nincs aktív jelentkezés",
+        "offers": "Még nincs ajánlat",
+        "archive": "Az archív tiszta",
+        "default": "Húzd ide a lehetőséget"
+      }
+    },
+    "addSheet": {
+      "title": "Lehetőség hozzáadása",
+      "description": "Új karrierlépés követése",
+      "import": {
+        "title": "Import álláshirdetésből",
+        "placeholder": "Álláshirdetés URL beillesztése...",
+        "action": "Import",
+        "reading": "Olvasás...",
+        "hint": "Illeszd be az álláshirdetés linkjét, hogy előtöltsük a lehetőség alapjait."
       },
       "sections": {
-        "opportunity": "Lehetőség alapjai",
-        "pipeline": "Folyamat",
-        "materials": "Anyagok",
-        "readiness": "Felkészültség"
+        "basics": "Lehetőség alapjai",
+        "pipeline": "Pipeline",
+        "compensation": "Opcionális kompenzáció"
       },
       "fields": {
-        "company": "Cég",
-        "position": "Pozíció",
-        "jobUrl": "Lehetőség linkje",
+        "position": "Pozíció *",
+        "company": "Cég *",
         "status": "Aktuális státusz",
         "priority": "Prioritás",
-        "type": "Típus",
-        "locationMode": "Munkavégzés"
+        "baseSalary": "Alapbér",
+        "targetSalary": "Ajánlat / cél"
       },
-      "empty": {
-        "noCompanies": "Nincs találat a cégek között.",
-        "noPositions": "Nincs korábbi pozíció."
+      "placeholders": {
+        "position": "pl. Frontend fejlesztő",
+        "company": "pl. Acme Corp",
+        "status": "Státusz kiválasztása"
       },
-      "recentPositions": "Korábbi pozíciók",
-      "materials": {
-        "attachResume": "CV csatolása",
-        "fileHint": "PDF / Word, max 5MB"
+      "actions": {
+        "save": "Lehetőség mentése"
       },
-      "readiness": {
-        "matchProbability": "Becsült illeszkedési esély"
+      "errors": {
+        "companyCreate": "Nem sikerült céget létrehozni ehhez a lehetőséghez."
+      }
+    },
+    "notifications": {
+      "archived": {
+        "heading": "Pipeline frissítve",
+        "title": "{{company}} jelentkezése archiválva",
+        "body": "Elutasítva státuszba került.",
+        "undo": "Visszavonás"
       }
     }
   },

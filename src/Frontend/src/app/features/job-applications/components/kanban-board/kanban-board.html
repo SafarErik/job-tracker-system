@@ -1,8 +1,8 @@
 <!-- Open Air Kanban Board - 5-Bucket Design with Horizontal Scroll -->
-<div class="h-[calc(100vh-140px)] w-full overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar">
+<div class="h-[calc(100vh-160px)] w-full overflow-x-auto overflow-y-hidden pb-4 custom-scrollbar">
 
   <!-- The Board: Flex Row with Gap -->
-  <div class="flex h-full gap-6 px-1" cdkDropListGroup>
+  <div class="flex h-full gap-4 px-1" cdkDropListGroup>
 
     <!-- COLUMN LOOP (5 Buckets) -->
     @for (column of columns(); track column.id) {
@@ -14,14 +14,14 @@
          - Dynamic border color from column config.
       -->
     <div
-      class="flex h-full w-80 flex-col shrink-0 gap-4 rounded-2xl bg-muted/30 pb-2 border border-border/40 shadow-sm transition-all duration-300">
+      class="flex h-full w-80 flex-col shrink-0 gap-3 rounded-lg bg-muted/30 pb-2 border border-border/60 shadow-sm transition-all duration-300">
 
       <!-- Header Pill/Bar Design -->
       <div class="px-2 pt-2">
-        <div class="flex items-center justify-between px-4 py-2 rounded-xl border border-border/10 shadow-xs"
+        <div class="flex items-center justify-between px-4 py-2 rounded-lg border border-border/30 shadow-xs"
           [class]="column.borderColor + ' ' + column.textColor + ' ' + (column.id === 'archive' ? 'bg-muted/50' : 'bg-card/50')">
-          <h3 class="text-[11px] font-black uppercase tracking-[0.2em]">
-            {{ column.title }}
+          <h3 class="text-[11px] font-semibold uppercase tracking-[0.14em]">
+            {{ column.titleKey | transloco }}
           </h3>
           <span
             class="flex items-center justify-center rounded-lg border border-border/30 bg-muted/40 px-2 py-0.5 text-[10px] font-black tabular-nums">
@@ -37,7 +37,7 @@
         @for (app of column.applications; track app.id) {
         <div cdkDrag [cdkDragData]="app">
           <!-- DRAG PLACEHOLDER -->
-          <div *cdkDragPlaceholder class="mb-3 h-24 rounded-2xl border-2 border-dashed border-primary/20 bg-primary/5">
+          <div *cdkDragPlaceholder class="mb-3 h-24 rounded-lg border-2 border-dashed border-primary/20 bg-primary/5">
           </div>
 
           <app-kanban-card [application]="app" [columnId]="column.id" [allowedStatuses]="column.statuses"
@@ -50,11 +50,11 @@
         <div
           class="h-32 rounded-lg border-2 border-dashed border-muted/30 flex items-center justify-center text-muted-foreground text-sm italic mx-2 my-2">
           @switch (column.id) {
-          @case ('inbox') { <span>No new apps</span> }
-          @case ('active') { <span>No active processes</span> }
-          @case ('offers') { <span>No offers yet</span> }
-          @case ('archive') { <span>History clear</span> }
-          @default { <span>Drop item here</span> }
+          @case ('inbox') { <span>{{ column.emptyKey | transloco }}</span> }
+          @case ('active') { <span>{{ column.emptyKey | transloco }}</span> }
+          @case ('offers') { <span>{{ column.emptyKey | transloco }}</span> }
+          @case ('archive') { <span>{{ column.emptyKey | transloco }}</span> }
+          @default { <span>{{ 'applications.kanban.empty.default' | transloco }}</span> }
           }
         </div>
         }
@@ -62,7 +62,7 @@
         <!-- Archive Limit Indicator -->
         @if (column.limit && column.applications.length >= column.limit) {
         <div class="text-center py-2 text-[10px] text-muted-foreground/50 italic">
-          Showing latest {{ column.limit }} items
+          {{ 'applications.kanban.limit' | transloco: { count: column.limit } }}
         </div>
         }
       </div>

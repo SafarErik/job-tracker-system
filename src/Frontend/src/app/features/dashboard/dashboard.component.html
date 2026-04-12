@@ -29,9 +29,9 @@
             </p>
           </div>
 
-          <a routerLink="/new" class="dashboard-primary-cta">
+          <button type="button" class="dashboard-primary-cta" (click)="uiService.openAddAppSheet()">
             {{ 'dashboard.actions.addOpportunity' | transloco }}
-          </a>
+          </button>
         </div>
 
         <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
@@ -48,9 +48,15 @@
                   <p class="dashboard-action-card__eyebrow">{{ item.eyebrow }}</p>
                   <h2 class="mt-2 text-base font-semibold leading-6 text-foreground">{{ item.title }}</h2>
                   <p class="mt-1 min-h-9 text-sm leading-5 text-muted-foreground">{{ item.meta }}</p>
-                  <a [routerLink]="item.route" class="dashboard-action-card__link">
-                    {{ item.cta }}
-                  </a>
+                  @if (item.type === 'addSheet') {
+                    <button type="button" class="dashboard-action-card__link" (click)="uiService.openAddAppSheet()">
+                      {{ item.cta }}
+                    </button>
+                  } @else {
+                    <a [routerLink]="item.route" class="dashboard-action-card__link">
+                      {{ item.cta }}
+                    </a>
+                  }
                 </article>
               }
             </div>
@@ -81,9 +87,15 @@
                     {{ momentumDiagnosis().recommendation }}
                   </p>
                 </div>
-                <a [routerLink]="momentumDiagnosis().route" class="momentum-panel__link">
-                  {{ momentumDiagnosis().cta }}
-                </a>
+                @if (momentumDiagnosis().type === 'addSheet') {
+                  <button type="button" class="momentum-panel__link" (click)="uiService.openAddAppSheet()">
+                    {{ momentumDiagnosis().cta }}
+                  </button>
+                } @else {
+                  <a [routerLink]="momentumDiagnosis().route" class="momentum-panel__link">
+                    {{ momentumDiagnosis().cta }}
+                  </a>
+                }
               </div>
             </div>
           </aside>
@@ -133,6 +145,7 @@
       [showFunnel]="false"
       [title]="'dashboard.workQueue.title' | transloco"
       [subtitle]="'dashboard.workQueue.subtitle' | transloco"
+      (addApplication)="uiService.openAddAppSheet()"
     ></app-pipeline-table-card>
 
     <article class="readiness-panel md:col-span-1">

@@ -30,7 +30,7 @@
             {{ application().salaryOffer | currency: application().currency }}
         </span>
         } @else {
-        <span class="text-xs italic text-muted-foreground">Not specified</span>
+        <span class="text-xs italic text-muted-foreground">{{ 'applications.list.notSpecified' | transloco }}</span>
         }
     </div>
 </td>
@@ -40,8 +40,7 @@
         <div class="flex items-center gap-2" hlmTooltipTrigger>
             <span class="text-sm font-bold" [class]="matchScoreClasses()">{{ application().matchScore || 0 }}%</span>
         </div>
-        <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
-            Description.</span>
+        <span *brnTooltipContent>{{ 'applications.card.matchTooltip' | transloco }}</span>
     </hlm-tooltip>
 </td>
 
@@ -54,7 +53,7 @@
         <!-- Archive Button -->
         <button hlmBtn variant="ghost" size="icon"
             class="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive transition-all"
-            (click)="onArchive($event)" title="Archive Application">
+            (click)="onArchive($event)" [title]="'applications.list.archive' | transloco">
             <ng-icon name="lucideArchive" class="size-4"></ng-icon>
         </button>
 
@@ -63,13 +62,13 @@
             class="h-8 gap-2 border-primary/20 px-3 text-xs font-semibold transition-all hover:border-primary/50 hover:bg-primary/5"
             (click)="onViewDetail($event)">
             <ng-icon name="lucideExternalLink" class="size-3.5"></ng-icon>
-            View
+            {{ 'common.actions.open' | transloco }}
         </button>
 
         <!-- Smart Action Indicator -->
         <div class="ml-1 hidden h-8 items-center justify-center rounded-full bg-primary/10 px-2.5 transition-all hover:bg-primary/20 md:flex"
             [class]="smartAction().color">
-            <span class="mr-1.5 text-[10px] font-semibold uppercase tracking-wide">{{ smartAction().text }}</span>
+            <span class="mr-1.5 text-[10px] font-semibold uppercase tracking-wide">{{ smartAction().textKey | transloco }}</span>
             <ng-icon [name]="smartAction().icon" class="size-4"></ng-icon>
         </div>
     </div>

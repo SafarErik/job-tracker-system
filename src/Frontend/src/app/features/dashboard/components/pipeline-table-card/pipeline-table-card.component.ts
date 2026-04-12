@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -75,6 +76,7 @@ export class PipelineTableCardComponent {
   readonly showFunnel = input(true);
   readonly title = input<string | null>(null);
   readonly subtitle = input<string | null>(null);
+  readonly addApplication = output<void>();
 
   readonly recentApps = computed(() => {
     return [...this.applications()]

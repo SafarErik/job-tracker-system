@@ -5,6 +5,7 @@ import {
     output,
     ChangeDetectionStrategy,
     signal,
+    inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
@@ -12,9 +13,11 @@ import { JobApplication } from '../../../models/job-application.model';
 import { JobApplicationStatus } from '../../../models/application-status.enum';
 import { JobPriority } from '../../../models/job-priority.enum';
 import { LogoPlaceholderComponent } from '../../../../../shared/components/logo-placeholder/logo-placeholder.component';
-import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../../models/status-styles.util';
+import { getStatusBadgeClasses, getStatusStyle } from '../../../models/status-styles.util';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../../../core/services';
 
 @Component({
     selector: 'app-kanban-card',
@@ -22,6 +25,7 @@ import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
         CommonModule,
         LogoPlaceholderComponent,
         NgIcon,
+        TranslocoPipe,
         ...HlmDropdownMenuImports,
         HlmDropdownMenuTrigger,
     ],
@@ -36,6 +40,8 @@ import { lucideMoreHorizontal, lucideCheck } from '@ng-icons/lucide';
 })
 export class ApplicationKanbanCardComponent {
     application = input.required<JobApplication>();
+    private readonly languageService = inject(LanguageService);
+    private readonly transloco = inject(TranslocoService);
 
     // Outputs
     openWorkstation = output<string>();
@@ -62,9 +68,9 @@ export class ApplicationKanbanCardComponent {
         const now = new Date();
         const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-        if (diffDays === 0) return 'Today';
-        if (diffDays === 1) return '1d';
-        return `${diffDays}d`;
+        if (diffDays === 0) return this.t('common.time.today');
+        if (diffDays === 1) return this.t('common.time.dayAgo');
+        return this.t('applications.kanban.daysShort', { count: diffDays });
     });
 
     // Computed: Priority Color for Left Strip
@@ -87,7 +93,9 @@ export class ApplicationKanbanCardComponent {
     });
 
     getStatusLabel(status: JobApplicationStatus): string {
-        return getStatusStyle(status).label;
+        const statusName = JobApplicationStatus[status] ?? 'Applied';
+        this.languageService.locale();
+        return this.transloco.translate(`dashboard.workQueue.status.${statusName}`) || getStatusStyle(status).label;
     }
 
     // Column Context for Restricting Status Options
@@ -118,5 +126,10 @@ export class ApplicationKanbanCardComponent {
                 status
             });
         }
+    }
+
+    private t(key: string, params?: Record<string, unknown>, fallback?: string): string {
+        this.languageService.locale();
+        return this.transloco.translate(key, params) || fallback || key;
     }
 }

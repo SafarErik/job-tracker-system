@@ -5,6 +5,7 @@ import {
     output,
     ChangeDetectionStrategy,
     signal,
+    inject,
 } from '@angular/core';
 import { HlmCard } from '@spartan-ng/helm/card';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
@@ -33,6 +34,8 @@ import {
     lucideCalendar,
     lucideFlame,
 } from '@ng-icons/lucide';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../../core/services';
 
 /**
  * Job Card Component
@@ -49,6 +52,7 @@ import {
         ...BrnTooltipImports,
         LogoPlaceholderComponent,
         NgIcon,
+        TranslocoPipe,
     ],
     providers: [
         provideIcons({
@@ -71,6 +75,9 @@ import {
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JobCardComponent {
+    private readonly languageService = inject(LanguageService);
+    private readonly transloco = inject(TranslocoService);
+
     // Inputs
     application = input.required<JobApplication>();
     compact = input<boolean>(false); // Compact mode for Kanban boards
@@ -134,7 +141,7 @@ export class JobCardComponent {
     // Computed: Dynamic Container Classes
     containerClasses = computed(() => {
         const base =
-            'group relative w-full flex flex-col cursor-pointer bg-card rounded-2xl border transition-all duration-300 ease-out shadow-sm';
+            'group relative w-full flex flex-col cursor-pointer bg-card rounded-lg border transition-all duration-300 ease-out shadow-sm';
 
         const score = this.application().matchScore || 0;
         let borderColor = 'border-border/50';
@@ -246,26 +253,8 @@ export class JobCardComponent {
     // Computed: Status label
     statusLabel = computed(() => {
         const status = this.application().status;
-        switch (status) {
-            case JobApplicationStatus.Applied:
-                return 'Applied';
-            case JobApplicationStatus.PhoneScreen:
-                return 'Phone Screen';
-            case JobApplicationStatus.TechnicalTask:
-                return 'Technical Task';
-            case JobApplicationStatus.Interviewing:
-                return 'Interviewing';
-            case JobApplicationStatus.Offer:
-                return 'Offer Received';
-            case JobApplicationStatus.Accepted:
-                return 'Accepted';
-            case JobApplicationStatus.Rejected:
-                return 'Rejected';
-            case JobApplicationStatus.Ghosted:
-                return 'Ghosted';
-            default:
-                return 'Unknown';
-        }
+        const statusName = JobApplicationStatus[status] ?? 'Applied';
+        return this.t(`dashboard.workQueue.status.${statusName}`);
     });
 
 
@@ -275,17 +264,17 @@ export class JobCardComponent {
         const type = this.application().jobType;
         switch (type) {
             case JobType.FullTime:
-                return 'Full-time';
+                return this.t('applications.card.jobType.fullTime');
             case JobType.PartTime:
-                return 'Part-time';
+                return this.t('applications.card.jobType.partTime');
             case JobType.Internship:
-                return 'Internship';
+                return this.t('applications.card.jobType.internship');
             case JobType.Contract:
-                return 'Contract';
+                return this.t('applications.card.jobType.contract');
             case JobType.Freelance:
-                return 'Freelance';
+                return this.t('applications.card.jobType.freelance');
             default:
-                return 'Unknown';
+                return this.t('common.states.unknown');
         }
     });
 
@@ -294,13 +283,13 @@ export class JobCardComponent {
         const type = this.application().workplaceType;
         switch (type) {
             case WorkplaceType.OnSite:
-                return 'On-site';
+                return this.t('applications.card.workplace.onSite');
             case WorkplaceType.Remote:
-                return 'Remote';
+                return this.t('applications.card.workplace.remote');
             case WorkplaceType.Hybrid:
-                return 'Hybrid';
+                return this.t('applications.card.workplace.hybrid');
             default:
-                return 'Unknown';
+                return this.t('common.states.unknown');
         }
     });
 
@@ -309,13 +298,13 @@ export class JobCardComponent {
         const priority = this.application().priority;
         switch (priority) {
             case JobPriority.High:
-                return 'High Priority';
+                return this.t('dashboard.workQueue.priority.high');
             case JobPriority.Medium:
-                return 'Medium Priority';
+                return this.t('dashboard.workQueue.priority.medium');
             case JobPriority.Low:
-                return 'Low Priority';
+                return this.t('dashboard.workQueue.priority.low');
             default:
-                return 'Medium';
+                return this.t('dashboard.workQueue.priority.medium');
         }
     });
 
@@ -347,35 +336,35 @@ export class JobCardComponent {
 
         // 1. Offer
         if (this.isOffer()) {
-            return { text: 'Offer Received', classes: 'text-emerald-400 font-bold', icon: 'lucideSparkles' };
+            return { text: this.t('applications.card.insights.offer'), classes: 'text-emerald-400 font-bold', icon: 'lucideSparkles' };
         }
 
         // 2. Interviewing
         if (this.isInterviewing()) {
-            return { text: 'Interview Stage', classes: 'text-primary font-medium', icon: 'lucideZap' };
+            return { text: this.t('applications.card.insights.interview'), classes: 'text-primary font-medium', icon: 'lucideZap' };
         }
 
         // 3. Stale State
         if (days > 14 && !this.isDead()) {
-            return { text: `No Activity (${days}d)`, classes: 'text-muted-foreground', icon: 'lucideClock' };
+            return { text: this.t('applications.card.insights.noActivity', { days }), classes: 'text-muted-foreground', icon: 'lucideClock' };
         }
         if (days > 7 && !this.isDead()) {
-            return { text: `Follow-up Due`, classes: 'text-amber-400', icon: 'lucideTimer' };
+            return { text: this.t('applications.card.insights.followUpDue'), classes: 'text-amber-400', icon: 'lucideTimer' };
         }
 
         // 4. High Match
         if (score >= 90) {
-            return { text: 'Strong Profile Match', classes: 'text-emerald-400', icon: 'lucideStar' };
+            return { text: this.t('applications.card.insights.strongFit'), classes: 'text-emerald-400', icon: 'lucideStar' };
         }
 
         // 5. AI Feedback Snippet
         if (feedback) {
             const firstSentence = feedback.split(/[.!?]/)[0];
             const snippet = firstSentence.length > 35 ? firstSentence.substring(0, 32) + '...' : firstSentence;
-            return { text: `Analysis: ${snippet}`, classes: 'text-sky-400', icon: 'lucideZap' };
+            return { text: this.t('applications.card.insights.analysis', { snippet }), classes: 'text-sky-400', icon: 'lucideZap' };
         }
 
-        return { text: 'Application Sent', classes: 'text-muted-foreground', icon: 'lucideCheckCircle2' };
+        return { text: this.t('applications.card.insights.sent'), classes: 'text-muted-foreground', icon: 'lucideCheckCircle2' };
     });
 
     // Computed: Smart Action logic
@@ -390,7 +379,7 @@ export class JobCardComponent {
             JobApplicationStatus.Interviewing
         ].includes(status)) {
             return {
-                text: 'Prepare for Interview',
+                text: this.t('applications.nextActions.practiceForScreen'),
                 color: 'text-primary',
                 icon: 'lucideZap'
             };
@@ -399,7 +388,7 @@ export class JobCardComponent {
         // Offer statuses
         if (status === JobApplicationStatus.Offer) {
             return {
-                text: 'Review Offer Details',
+                text: this.t('applications.nextActions.prepareResponse'),
                 color: 'text-emerald-400 font-bold',
                 icon: 'lucideCheckCircle2'
             };
@@ -413,13 +402,13 @@ export class JobCardComponent {
 
             if (diffDays > 7) {
                 return {
-                    text: 'Follow-up Recommended',
+                    text: this.t('applications.nextActions.followUp'),
                     color: 'text-amber-400',
                     icon: 'lucideTimer'
                 };
             }
             return {
-                text: 'Awaiting Response',
+                text: this.t('applications.nextActions.reviewFit'),
                 color: 'text-muted-foreground',
                 icon: 'lucideClock'
             };
@@ -428,7 +417,7 @@ export class JobCardComponent {
         // Rejected
         if (status === JobApplicationStatus.Rejected) {
             return {
-                text: 'Archive Application',
+                text: this.t('applications.nextActions.archive'),
                 color: 'text-red-400',
                 icon: 'lucideArchive'
             };
@@ -437,14 +426,14 @@ export class JobCardComponent {
         // Ghosted
         if (status === JobApplicationStatus.Ghosted) {
             return {
-                text: 'Send Nudge',
+                text: this.t('applications.nextActions.reengage'),
                 color: 'text-orange-400',
                 icon: 'lucideSend'
             };
         }
 
         return {
-            text: 'Keep tracking',
+            text: this.t('applications.nextActions.reviewFit'),
             color: 'text-slate-500',
             icon: 'lucideCircle'
         };
@@ -476,6 +465,11 @@ export class JobCardComponent {
         if (url) {
             this.openJobUrl.emit(url);
         }
+    }
+
+    private t(key: string, params?: Record<string, unknown>): string {
+        this.languageService.locale();
+        return this.transloco.translate(key, params);
     }
 
 

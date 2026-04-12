@@ -129,9 +129,13 @@
         <p class="mx-auto mt-2 max-w-sm text-xs leading-5 text-muted-foreground">
           {{ 'dashboard.workQueue.empty.body' | transloco }}
         </p>
-        <a routerLink="/new" class="mt-4 inline-flex text-xs font-semibold text-primary">
+        <button
+          type="button"
+          class="mt-4 inline-flex border-0 bg-transparent p-0 text-xs font-semibold text-primary"
+          (click)="addApplication.emit()"
+        >
           {{ 'dashboard.workQueue.empty.cta' | transloco }}
-        </a>
+        </button>
       </div>
     }
   }

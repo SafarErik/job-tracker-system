@@ -1,15 +1,15 @@
-<div class="w-full overflow-hidden rounded-xl border border-border bg-card">
+<div class="w-full overflow-hidden rounded-lg border border-border bg-card">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead
                 class="border-b border-border bg-muted/20 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 <tr>
-                    <th class="px-4 py-2.5 font-medium">Role / Company</th>
-                    <th class="px-4 py-2.5 font-medium">Status</th>
-                    <th class="px-4 py-2.5 font-medium">Salary</th>
-                    <th class="px-4 py-2.5 font-medium">Match</th>
-                    <th class="px-4 py-2.5 font-medium">Last Activity</th>
-                    <th class="px-4 py-2.5 text-right font-medium">Actions</th>
+                    <th class="px-4 py-2.5 font-medium">{{ 'applications.list.columns.opportunity' | transloco }}</th>
+                    <th class="px-4 py-2.5 font-medium">{{ 'applications.list.columns.pipeline' | transloco }}</th>
+                    <th class="px-4 py-2.5 font-medium">{{ 'applications.list.columns.compensation' | transloco }}</th>
+                    <th class="px-4 py-2.5 font-medium">{{ 'applications.list.columns.readiness' | transloco }}</th>
+                    <th class="px-4 py-2.5 font-medium">{{ 'applications.list.columns.activity' | transloco }}</th>
+                    <th class="px-4 py-2.5 text-right font-medium">{{ 'applications.list.columns.nextAction' | transloco }}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-border/60" #listBody>

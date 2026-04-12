@@ -120,10 +120,11 @@
   min-height: 2.5rem;
   border: 1px solid hsl(var(--brand-electric) / 0.58);
   background: linear-gradient(135deg, hsl(var(--brand-midnight)), hsl(var(--brand-indigo)));
-  color: hsl(var(--primary-foreground));
+  color: hsl(var(--brand-ice));
   padding: 0.68rem 1rem;
   white-space: nowrap;
   box-shadow: 0 14px 28px hsl(var(--brand-midnight) / 0.16);
+  cursor: pointer;
 }
 
 .dashboard-primary-cta:hover {
@@ -205,9 +206,13 @@
 .dashboard-action-card__link {
   margin-top: 0.8rem;
   display: inline-flex;
+  border: 0;
+  background: transparent;
+  padding: 0;
   color: hsl(var(--brand-electric));
   font-size: 0.82rem;
   font-weight: 750;
+  cursor: pointer;
 }
 
 .dashboard-action-card__link:hover {

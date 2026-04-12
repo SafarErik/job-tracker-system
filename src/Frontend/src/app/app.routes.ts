@@ -119,8 +119,8 @@ export const routes: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('./features/job-applications/components/add-job-form/add-job-form').then(
-            (m) => m.AddJobFormComponent,
+          import('./features/job-applications/components/new-application-redirect/new-application-redirect.component').then(
+            (m) => m.NewApplicationRedirectComponent,
           ),
         title: 'New Application - Horizon',
         data: { breadcrumb: 'New Application' },

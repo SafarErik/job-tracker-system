@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
 import { AuthService } from '../../core/auth/auth.service';
-import { LanguageService } from '../../core/services';
+import { LanguageService, UiStateService } from '../../core/services';
 import { JobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
 import { JobApplicationStore } from '../job-applications/services/job-application.store';
@@ -34,7 +34,8 @@ interface SuggestedAction {
   title: string;
   meta: string;
   cta: string;
-  route: string;
+  type: 'route' | 'addSheet';
+  route?: string;
   tone: 'primary' | 'attention' | 'neutral';
 }
 
@@ -52,7 +53,8 @@ interface MomentumDiagnosis {
   body: string;
   recommendation: string;
   cta: string;
-  route: string;
+  type: 'route' | 'addSheet';
+  route?: string;
 }
 
 interface PipelineInsight {
@@ -90,6 +92,7 @@ export class DashboardComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly languageService = inject(LanguageService);
   private readonly transloco = inject(TranslocoService);
+  readonly uiService = inject(UiStateService);
 
   readonly now = signal(new Date());
   readonly applications = this.applicationStore.applications;
@@ -217,7 +220,7 @@ export class DashboardComponent implements OnInit {
         body: this.t('dashboard.momentum.states.noSignal.body'),
         recommendation: this.t('dashboard.momentum.states.noSignal.recommendation'),
         cta: this.t('dashboard.actions.addOpportunity'),
-        route: '/new',
+        type: 'addSheet',
       };
     }
 
@@ -227,6 +230,7 @@ export class DashboardComponent implements OnInit {
         body: this.t('dashboard.momentum.states.decision.body'),
         recommendation: this.t('dashboard.momentum.states.decision.recommendation'),
         cta: this.t('dashboard.momentum.states.decision.cta'),
+        type: 'route',
         route: '/applications',
       };
     }
@@ -237,6 +241,7 @@ export class DashboardComponent implements OnInit {
         body: this.t('dashboard.momentum.states.noInterviews.body'),
         recommendation: this.t('dashboard.momentum.states.noInterviews.recommendation'),
         cta: this.t('dashboard.momentum.states.noInterviews.cta'),
+        type: 'route',
         route: '/applications',
       };
     }
@@ -247,7 +252,7 @@ export class DashboardComponent implements OnInit {
         body: this.t('dashboard.momentum.states.thinFunnel.body'),
         recommendation: this.t('dashboard.momentum.states.thinFunnel.recommendation'),
         cta: this.t('dashboard.actions.addOpportunity'),
-        route: '/new',
+        type: 'addSheet',
       };
     }
 
@@ -257,6 +262,7 @@ export class DashboardComponent implements OnInit {
         body: this.t('dashboard.momentum.states.interview.body'),
         recommendation: this.t('dashboard.momentum.states.interview.recommendation'),
         cta: this.t('dashboard.momentum.states.interview.cta'),
+        type: 'route',
         route: '/applications',
       };
     }
@@ -270,6 +276,7 @@ export class DashboardComponent implements OnInit {
         : this.t('dashboard.momentum.states.building.body'),
       recommendation: this.t('dashboard.momentum.states.building.recommendation'),
       cta: this.t('dashboard.workQueue.open'),
+      type: 'route',
       route: '/applications',
     };
   });
@@ -490,6 +497,7 @@ export class DashboardComponent implements OnInit {
             : item.kind === 'offer'
               ? this.t('dashboard.suggestedActions.offer.cta')
               : this.t('dashboard.suggestedActions.followUp.cta'),
+        type: 'route',
         route: `/applications/${item.id}`,
         tone: index === 0 ? 'primary' : item.kind === 'offer' ? 'attention' : 'neutral',
       }));
@@ -501,7 +509,7 @@ export class DashboardComponent implements OnInit {
         title: this.t('dashboard.suggestedActions.empty.add.title'),
         meta: this.t('dashboard.suggestedActions.empty.add.meta'),
         cta: this.t('dashboard.suggestedActions.empty.add.cta'),
-        route: '/new',
+        type: 'addSheet',
         tone: 'primary',
       },
       {
@@ -509,6 +517,7 @@ export class DashboardComponent implements OnInit {
         title: this.t('dashboard.suggestedActions.empty.documents.title'),
         meta: this.t('dashboard.suggestedActions.empty.documents.meta'),
         cta: this.t('dashboard.suggestedActions.empty.documents.cta'),
+        type: 'route',
         route: '/documents',
         tone: 'neutral',
       },

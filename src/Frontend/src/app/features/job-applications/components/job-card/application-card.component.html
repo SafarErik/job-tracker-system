@@ -9,7 +9,7 @@
     <div class="flex items-center gap-4 min-w-0">
       <!-- Company Logo (Avatar) -->
       <div
-        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted transition-all group-hover:border-primary/30">
+        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-muted transition-all group-hover:border-primary/30">
         @if (logoUrl() && !logoFailed()) {
         <img [src]="logoUrl()" [alt]="application().companyName" class="h-full w-full object-contain p-2"
           (error)="onLogoError()" />
@@ -22,7 +22,7 @@
         <div class="flex flex-wrap items-center gap-2">
           <h3
             class="text-sm font-semibold text-foreground leading-snug transition-colors group-hover:text-primary break-words">
-            {{ application().companyName || 'Unknown Company' }}
+            {{ application().companyName || ('common.states.unknown' | transloco) }}
           </h3>
           <!-- Priority Icon -->
           @if (application().priority === 2) {
@@ -62,13 +62,12 @@
       <hlm-tooltip hlmClassName="z-50 border-border bg-popover/95 backdrop-blur-md text-foreground shadow-2xl">
         <span [class]="matchScoreColorClasses()"
           class="shrink-0 flex cursor-help items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          hlmTooltipTrigger tabindex="0" aria-label="AI Match Score" (click)="$event.stopPropagation()"
+          hlmTooltipTrigger tabindex="0" [attr.aria-label]="'applications.card.fit' | transloco" (click)="$event.stopPropagation()"
           (keydown.enter)="$event.stopPropagation()" (keydown.space)="$event.stopPropagation()">
           <ng-icon name="lucideSparkles" class="size-3.5"></ng-icon>
           {{ application().matchScore || 0 }}%
         </span>
-        <span *brnTooltipContent>AI-estimated match based on keyword overlap between your CV and the Job
-          Description.</span>
+        <span *brnTooltipContent>{{ 'applications.card.matchTooltip' | transloco }}</span>
       </hlm-tooltip>
     </div>
   </div>
@@ -118,7 +117,9 @@
   <!-- Footer: AI Insight (Bottom Section) -->
   <div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 bg-secondary/20 p-3">
     <div class="flex flex-col min-w-0">
-      <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">Insight</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+        {{ 'applications.card.insightLabel' | transloco }}
+      </span>
       <div class="flex items-center gap-1.5 transition-all duration-300" [class]="dynamicInsight().classes">
         @if (dynamicInsight().icon) {
         <ng-icon [name]="dynamicInsight().icon" class="size-3"></ng-icon>
@@ -128,7 +129,9 @@
     </div>
 
     <div class="text-right shrink-0">
-      <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">AI Action</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+        {{ 'applications.card.nextActionLabel' | transloco }}
+      </span>
       <div
         class="flex items-center justify-end gap-1.5 text-xs font-semibold transition-all duration-300"
         [class]="smartAction().color">

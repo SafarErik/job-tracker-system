@@ -1,8 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslocoLoader, provideTransloco, translocoConfig } from '@jsverse/transloco';
+import { of } from 'rxjs';
 import { App } from './app';
 import { LanguageService } from './core/services';
 import { ProfileStore } from './features/profile/services/profile.store';
+
+class TestingTranslocoLoader implements TranslocoLoader {
+  getTranslation() {
+    return of({});
+  }
+}
 
 describe('App', () => {
   beforeAll(() => {
@@ -29,6 +37,7 @@ describe('App', () => {
           provide: LanguageService,
           useValue: {
             initialize: () => undefined,
+            locale: () => 'en',
           },
         },
         {
@@ -37,6 +46,16 @@ describe('App', () => {
             loadProfile: () => undefined,
           },
         },
+        provideTransloco({
+          config: translocoConfig({
+            availableLangs: ['en', 'hu'],
+            defaultLang: 'en',
+            fallbackLang: 'en',
+            reRenderOnLangChange: true,
+            prodMode: true,
+          }),
+          loader: TestingTranslocoLoader,
+        }),
       ],
     }).compileComponents();
   });

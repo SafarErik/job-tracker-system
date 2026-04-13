@@ -805,7 +805,9 @@
       "placeholder": "Ask AI anything about this application...",
       "quickActions": "Quick actions",
       "guideLabel": "Horizon Guide",
-      "openGuide": "Open Horizon Guide"
+      "openGuide": "Open Horizon Guide",
+      "navigate": "Navigate",
+      "select": "Select"
     },
     "nav": {
       "strategy": "Fit",
@@ -819,6 +821,13 @@
       "analyzing": "Analyzing...",
       "prepareInterview": "Prepare for interview",
       "generateDocuments": "Generate documents",
+      "generateResumeDraft": "Generate resume draft",
+      "generateCoverLetter": "Generate cover letter",
+      "refreshAnalysis": "Refresh analysis",
+      "simulateTopGap": "Simulate top gap",
+      "analyzeOffer": "Analyze offer",
+      "syncCalendar": "Sync calendar",
+      "focusMode": "Focus mode",
       "addEvent": "Add timeline event"
     },
     "strategy": {
@@ -852,7 +861,80 @@
       "noCoverTitle": "No cover letter yet",
       "noCoverBody": "Let Horizon draft a professional, position-aware cover letter for you.",
       "draftCover": "Draft with Horizon Guide",
-      "drafting": "Drafting..."
+      "drafting": "Drafting...",
+      "studioEyebrow": "Document Studio",
+      "studioTitle": "Prepare role-specific documents",
+      "studioBody": "Generate a strong starting point, then edit the draft directly before copying or exporting it.",
+      "resumeDraft": "Resume draft",
+      "resumeDraftBody": "Tailor the resume angle for this opportunity. Keep the draft concise, specific, and aligned with the role.",
+      "coverLetterBody": "Shape a focused cover letter that connects your experience to the company and role.",
+      "unsavedSession": "Edited in this session",
+      "missingInputs": "Horizon needs a master resume, job description, and profile skills before generating reliable drafts.",
+      "editorPlaceholder": "Generate a draft or start writing here...",
+      "wordCount": "{{count}} words",
+      "sessionOnly": "Manual edits are kept in this workstation session. Copy or export the draft before refreshing.",
+      "context": {
+        "title": "Document context",
+        "heading": "Generation readiness"
+      },
+      "readiness": {
+        "master": {
+          "label": "Master resume",
+          "ready": "A master resume is available as the source.",
+          "missing": "Upload or set a master resume in Documents."
+        },
+        "job": {
+          "label": "Job description",
+          "ready": "The role context is available for targeting.",
+          "missing": "Add the job description in the Fit phase."
+        },
+        "skills": {
+          "label": "Profile skills",
+          "ready": "Your skill profile can guide the draft.",
+          "loading": "Loading profile skills...",
+          "missing": "Add skills to your profile before generating."
+        }
+      },
+      "source": {
+        "title": "Source",
+        "noMasterTitle": "No master resume",
+        "noMasterBody": "Horizon needs a master resume before it can tailor a reliable CV or cover letter."
+      },
+      "roleContext": {
+        "title": "Opportunity context",
+        "missing": "No job description yet. Add one in the Fit phase to improve document quality."
+      },
+      "actions": {
+        "resetDraft": "Reset",
+        "copyDraft": "Copy",
+        "exportText": "Export .txt",
+        "generateCurrent": "Generate draft",
+        "generating": "Generating..."
+      },
+      "guide": {
+        "title": "Horizon Guide",
+        "subtitle": "Focused editing prompts",
+        "results": {
+          "label": "Make it more results-oriented",
+          "body": "Review the draft and replace responsibilities with measurable outcomes where you have real numbers."
+        },
+        "tighten": {
+          "label": "Tighten wording",
+          "body": "Shorten long sentences, remove filler, and keep the strongest evidence for the role."
+        },
+        "align": {
+          "label": "Align with job description",
+          "body": "Regenerate the resume draft using the current job description, master resume, and profile skills."
+        },
+        "coverTone": {
+          "label": "Make the cover letter more direct",
+          "body": "Use a clear opening, one strong evidence paragraph, and a concise closing line."
+        }
+      },
+      "v2": {
+        "title": "Block editing planned",
+        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level AI edits are live."
+      }
     },
     "interview": {
       "title": "Interview practice",

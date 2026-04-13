@@ -805,7 +805,9 @@
       "placeholder": "Kérdezz bármit erről a jelentkezésről...",
       "quickActions": "Gyors műveletek",
       "guideLabel": "Horizon segítő",
-      "openGuide": "Horizon segítő megnyitása"
+      "openGuide": "Horizon segítő megnyitása",
+      "navigate": "Navigálás",
+      "select": "Kiválasztás"
     },
     "nav": {
       "strategy": "Illeszkedés",
@@ -819,6 +821,13 @@
       "analyzing": "Elemzés...",
       "prepareInterview": "Interjúfelkészülés",
       "generateDocuments": "Dokumentumok generálása",
+      "generateResumeDraft": "CV piszkozat generálása",
+      "generateCoverLetter": "Motivációs levél generálása",
+      "refreshAnalysis": "Elemzés frissítése",
+      "simulateTopGap": "Fő hiány szimulálása",
+      "analyzeOffer": "Ajánlat elemzése",
+      "syncCalendar": "Naptár szinkronizálása",
+      "focusMode": "Fókusz mód",
       "addEvent": "Idővonal esemény hozzáadása"
     },
     "strategy": {
@@ -852,7 +861,80 @@
       "noCoverTitle": "Még nincs motivációs levél",
       "noCoverBody": "A Horizon elkészít egy professzionális, pozícióhoz igazított motivációs levelet.",
       "draftCover": "Piszkozat a Horizon segítővel",
-      "drafting": "Piszkozat készül..."
+      "drafting": "Piszkozat készül...",
+      "studioEyebrow": "Document Studio",
+      "studioTitle": "Szerepkörhöz igazított dokumentumok",
+      "studioBody": "Generálj erős kiinduló piszkozatot, majd szerkeszd közvetlenül másolás vagy export előtt.",
+      "resumeDraft": "CV piszkozat",
+      "resumeDraftBody": "Igazítsd a CV szögét ehhez a lehetőséghez. Legyen tömör, konkrét és szerepre szabott.",
+      "coverLetterBody": "Alakíts ki fókuszált motivációs levelet, amely összeköti a tapasztalatodat a céggel és a szereppel.",
+      "unsavedSession": "Ebben a munkamenetben szerkesztve",
+      "missingInputs": "A megbízható piszkozatgeneráláshoz master CV, állásleírás és profilkészségek kellenek.",
+      "editorPlaceholder": "Generálj piszkozatot vagy kezdj el itt írni...",
+      "wordCount": "{{count}} szó",
+      "sessionOnly": "A kézi módosítások csak ebben a workstation munkamenetben maradnak meg. Frissítés előtt másold vagy exportáld a piszkozatot.",
+      "context": {
+        "title": "Dokumentum kontextus",
+        "heading": "Generálási készültség"
+      },
+      "readiness": {
+        "master": {
+          "label": "Master CV",
+          "ready": "A master CV elérhető forrásként.",
+          "missing": "Tölts fel vagy jelölj ki master CV-t a Dokumentumokban."
+        },
+        "job": {
+          "label": "Állásleírás",
+          "ready": "A szerepkör kontextusa elérhető a célzáshoz.",
+          "missing": "Add hozzá az állásleírást az Illeszkedés fázisban."
+        },
+        "skills": {
+          "label": "Profilkészségek",
+          "ready": "A készségprofilod segítheti a piszkozatot.",
+          "loading": "Profilkészségek betöltése...",
+          "missing": "Generálás előtt adj készségeket a profilodhoz."
+        }
+      },
+      "source": {
+        "title": "Forrás",
+        "noMasterTitle": "Nincs master CV",
+        "noMasterBody": "A Horizonnak master CV-re van szüksége, hogy megbízhatóan célzott CV-t vagy motivációs levelet készítsen."
+      },
+      "roleContext": {
+        "title": "Lehetőség kontextusa",
+        "missing": "Még nincs állásleírás. Add hozzá az Illeszkedés fázisban, hogy jobb legyen a dokumentum minősége."
+      },
+      "actions": {
+        "resetDraft": "Visszaállítás",
+        "copyDraft": "Másolás",
+        "exportText": ".txt export",
+        "generateCurrent": "Piszkozat generálása",
+        "generating": "Generálás..."
+      },
+      "guide": {
+        "title": "Horizon segítő",
+        "subtitle": "Fókuszált szerkesztési irányok",
+        "results": {
+          "label": "Legyen eredményorientáltabb",
+          "body": "Nézd át a piszkozatot, és ahol van valós adatod, cseréld a felelősségeket mérhető eredményekre."
+        },
+        "tighten": {
+          "label": "Legyen tömörebb",
+          "body": "Rövidítsd a hosszú mondatokat, vedd ki a tölteléket, és hagyd meg a legerősebb bizonyítékokat."
+        },
+        "align": {
+          "label": "Igazítás az állásleíráshoz",
+          "body": "Generáld újra a CV piszkozatot az aktuális állásleírás, master CV és profilkészségek alapján."
+        },
+        "coverTone": {
+          "label": "Legyen közvetlenebb a levél",
+          "body": "Használj tiszta nyitást, egy erős bizonyítékbekezdést és rövid záró sort."
+        }
+      },
+      "v2": {
+        "title": "Blokkszintű szerkesztés következik",
+        "body": "A következő lépés a strukturált CV blokk szerkesztés chat válasszal és frissített JSON-nel. Ez a V1 biztonságosan szerkeszthető szöveget ad, anélkül hogy úgy tennénk, mintha a blokkszintű AI már éles lenne."
+      }
     },
     "interview": {
       "title": "Interjúgyakorlás",

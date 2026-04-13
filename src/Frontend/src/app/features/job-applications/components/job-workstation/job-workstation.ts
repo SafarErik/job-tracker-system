@@ -71,7 +71,6 @@ import {
   lucideChevronLeft,
   lucideActivity,
   lucideArrowRight,
-  lucideZap,
   lucideTrash2,
   lucidePlus,
   lucideLinkedin,
@@ -84,8 +83,6 @@ import {
   lucideSettings,
   lucideSearch,
   lucideGavel,
-  lucideRefreshCw,
-  lucideMaximize2,
 } from '@ng-icons/lucide';
 
 @Component({
@@ -136,7 +133,6 @@ import {
       lucideChevronLeft,
       lucideActivity,
       lucideArrowRight,
-      lucideZap,
       lucideTrash2,
       lucidePlus,
       lucideLinkedin,
@@ -149,8 +145,6 @@ import {
       lucideSettings,
       lucideSearch,
       lucideGavel,
-      lucideRefreshCw,
-      lucideMaximize2,
     }),
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -183,72 +177,6 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   // Command bar input element for programmatic focus
   @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
-
-  // Context-aware Commands
-  commands = computed(() => {
-    const phase = this.currentPhase();
-    if (phase === 'strategy') {
-      return [
-        {
-          id: 'analyze',
-          label: 'Refresh analysis',
-          icon: 'lucideRotateCw',
-          action: () => this.triggerAnalysis(),
-        },
-        {
-          id: 'simulate',
-          label: 'Simulate top gap',
-          icon: 'lucideZap',
-          action: () => {
-            const firstGap = this.gapAnalysis().find((g) => !g.matched);
-            if (firstGap) this.simulateImprovement(firstGap.name);
-          },
-        },
-      ];
-    } else if (phase === 'assets') {
-      return [
-        {
-          id: 'tailor',
-          label: 'Generate documents',
-          icon: 'lucideSparkles',
-          action: () => this.generateAssets(),
-        },
-      ];
-    } else if (phase === 'deal') {
-      return [
-        {
-          id: 'analyze-offer',
-          label: 'Analyze offer',
-          icon: 'lucideGavel',
-          action: () => this.notificationService.info('Analyzing offer terms...', 'Offer'),
-        },
-      ];
-    } else if (phase === 'timeline') {
-      return [
-        {
-          id: 'sync',
-          label: 'Sync Calendar',
-          icon: 'lucideRefreshCw',
-          action: () => this.notificationService.info('Syncing timeline...', 'Timeline'),
-        },
-        {
-          id: 'add-event',
-          label: 'Add timeline event',
-          icon: 'lucidePlus',
-          action: () => this.notificationService.info('Opening timeline event form...', 'Timeline'),
-        },
-      ];
-    } else {
-      return [
-        {
-          id: 'focus',
-          label: 'Focus mode',
-          icon: 'lucideMaximize2',
-          action: () => this.toggleFocusMode(),
-        },
-      ];
-    }
-  });
 
   simulatedScore = signal<number | null>(null);
 
@@ -297,7 +225,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   // Phase Configuration
   phases = [
     { id: 'strategy' as const, labelKey: 'workstation.nav.strategy', icon: 'lucideSwords' },
-    { id: 'assets' as const, labelKey: 'workstation.nav.assets', icon: 'lucideFolderKanban' },
+    { id: 'assets' as const, labelKey: 'workstation.nav.assets', icon: 'lucideFileText' },
     { id: 'interview' as const, labelKey: 'workstation.nav.interview', icon: 'lucideMic2' },
     { id: 'deal' as const, labelKey: 'workstation.nav.deal', icon: 'lucideGavel' },
     { id: 'timeline' as const, labelKey: 'workstation.nav.timeline', icon: 'lucideCalendar' },
@@ -393,12 +321,13 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
         this.triggerAnalysis();
         this.closeCommandBar();
         break;
-      case 1: // Generate Cover Letter
-        this.generateAssets();
+      case 1: // Generate resume draft
+        this.generateResumeDraft();
         this.closeCommandBar();
         break;
       case 2: // Prepare for Interview
-        this.toggleCommandBar(); // Close current and switch to interview
+        this.setPhase(this.Phase.Interview);
+        this.closeCommandBar();
         break;
     }
   }
@@ -468,6 +397,20 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const app = this.store.selectedApplication();
     if (app) {
       this.store.generateAssets(app.id);
+    }
+  }
+
+  generateResumeDraft(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.generateResumeDraft(app.id).subscribe();
+    }
+  }
+
+  generateCoverLetterDraft(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.generateCoverLetterDraft(app.id).subscribe();
     }
   }
 

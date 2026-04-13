@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
 import { JobApplicationStatus } from '../models/application-status.enum';
 import { ApplicationService } from './application.service';
-import { tap, finalize } from 'rxjs/operators';
+import { tap, finalize, map } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -359,6 +359,79 @@ export class JobApplicationStore {
         this.notificationService.error(message, 'Error');
       },
     });
+  }
+
+  generateResumeDraft(id: string) {
+    this._isGeneratingAsset.set(true);
+    this._isProcessing.set(true);
+    this._error.set(null);
+
+    return this.applicationService.optimizeResume(id).pipe(
+      map((res) => res.content),
+      tap((content) => {
+        this._applications.update((apps) =>
+          apps.map((app) => (app.id === id ? { ...app, tailoredResume: content } : app)),
+        );
+
+        const current = this._currentJob();
+        if (current?.id === id) {
+          this._currentJob.set({ ...current, tailoredResume: content });
+        }
+
+        this._tailoredResume.set(content);
+        this.notificationService.success('Resume draft generated.', 'Horizon Guide');
+      }),
+      catchError((err) => {
+        console.error('Failed to generate resume draft', err);
+        this._error.set('Resume draft generation failed');
+        const message =
+          typeof err?.error === 'string'
+            ? err.error
+            : (err?.error?.message ?? 'Failed to generate resume draft');
+        this.notificationService.error(message, 'Error');
+        return of('');
+      }),
+      finalize(() => {
+        this._isGeneratingAsset.set(false);
+        this._isProcessing.set(false);
+      }),
+    );
+  }
+
+  generateCoverLetterDraft(id: string) {
+    this._isGeneratingAsset.set(true);
+    this._isProcessing.set(true);
+    this._error.set(null);
+
+    return this.applicationService.generateCoverLetter(id).pipe(
+      map((res) => res.content),
+      tap((content) => {
+        this._applications.update((apps) =>
+          apps.map((app) => (app.id === id ? { ...app, generatedCoverLetter: content } : app)),
+        );
+
+        const current = this._currentJob();
+        if (current?.id === id) {
+          this._currentJob.set({ ...current, generatedCoverLetter: content });
+        }
+
+        this.notificationService.success('Cover letter draft generated.', 'Horizon Guide');
+      }),
+      catchError((err) => {
+        console.error('Failed to generate cover letter draft', err);
+        this._error.set('Cover letter generation failed');
+        const message =
+          typeof err?.error === 'string'
+            ? err.error
+            : (err?.error?.message ?? 'Failed to generate cover letter');
+        this.notificationService.error(message, 'Error');
+        return of('');
+      }),
+      finalize(() => {
+        this._isGeneratingAsset.set(false);
+        this._isProcessing.set(false);
+      }),
+    );
   }
 
   // Filter Actions

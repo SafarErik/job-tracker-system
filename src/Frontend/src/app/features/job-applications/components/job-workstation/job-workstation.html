@@ -333,7 +333,7 @@
               <span class="text-foreground">{{ 'workstation.actions.analyze' | transloco }}</span>
             </button>
             <button
-              (click)="generateAssets(); toggleCommandBar()"
+              (click)="generateResumeDraft(); toggleCommandBar()"
               (mouseenter)="commandBarFocusedIndex.set(1)"
               [disabled]="service.isProcessing()"
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50"
@@ -347,9 +347,10 @@
                   class="text-xl text-muted-foreground group-hover:text-primary"
                 ></ng-icon>
               }
-              <span class="text-foreground">{{ 'workstation.actions.generateDocuments' | transloco }}</span>
+              <span class="text-foreground">{{ 'workstation.actions.generateResumeDraft' | transloco }}</span>
             </button>
             <button
+              (click)="setPhase(Phase.Interview); toggleCommandBar()"
               (mouseenter)="commandBarFocusedIndex.set(2)"
               class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group"
               [class.bg-muted]="commandBarFocusedIndex() === 2"
@@ -367,59 +368,15 @@
         >
           <div class="flex gap-4">
             <span class="flex items-center gap-1"
-              ><span class="bg-card px-1 rounded border border-border">↑↓</span> Navigate</span
+              ><span class="bg-card px-1 rounded border border-border">Up/down</span> {{ 'workstation.command.navigate' | transloco }}</span
             >
             <span class="flex items-center gap-1"
-              ><span class="bg-card px-1 rounded border border-border">↵</span> Select</span
+              ><span class="bg-card px-1 rounded border border-border">Enter</span> {{ 'workstation.command.select' | transloco }}</span
             >
           </div>
             <span>{{ 'workstation.command.guideLabel' | transloco }}</span>
         </div>
       </div>
-    </div>
-  }
-  <!-- Global Command Orb FAB -->
-  @if (!isFocusMode()) {
-    <div class="fixed bottom-8 right-8 z-100 flex flex-col items-end gap-3">
-      <!-- Context Menu (Expanded Above Orb) -->
-      @if (isCommandBarOpen()) {
-        <div class="mb-4 space-y-2 animate-in slide-in-from-bottom-4 duration-300">
-          @for (cmd of commands(); track cmd.id) {
-            <button
-              (click)="cmd.action(); closeCommandBar()"
-              class="group flex items-center gap-3 bg-card border border-border px-4 py-2 rounded-lg shadow-xl hover:bg-muted transition-all"
-            >
-              <span
-                class="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary"
-                >{{ cmd.label }}</span
-              >
-              <div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                <ng-icon [name]="cmd.icon" class="text-primary"></ng-icon>
-              </div>
-            </button>
-          }
-        </div>
-      }
-
-      <button
-        (click)="toggleCommandBar()"
-        class="command-orb group"
-        [class.command-orb-active]="isCommandBarOpen()"
-        [attr.aria-label]="'workstation.command.openGuide' | transloco"
-        [title]="'workstation.command.openGuide' | transloco"
-      >
-        <ng-icon
-          name="lucideBrain"
-          class="text-3xl text-white group-hover:scale-110 transition-transform"
-        ></ng-icon>
-
-        <!-- Pulse ring when expanded -->
-        @if (isCommandBarOpen()) {
-          <span
-            class="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-20"
-          ></span>
-        }
-      </button>
     </div>
   }
 </div>

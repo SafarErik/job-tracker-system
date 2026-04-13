@@ -873,6 +873,78 @@
       "editorPlaceholder": "Generate a draft or start writing here...",
       "wordCount": "{{count}} words",
       "sessionOnly": "Manual edits are kept in this workstation session. Copy or export the draft before refreshing.",
+      "visual": {
+        "title": "Visual CV editor",
+        "body": "Work from a structured CV preview instead of a raw text box. Select a block, give Horizon a clear instruction, then copy or export the session draft.",
+        "v1Badge": "Visual block V1",
+        "profileImage": "Profile image placeholder",
+        "basics": {
+          "subtitle": "Tailored for {{role}} at {{company}}"
+        },
+        "sections": {
+          "header": "Profile header",
+          "summary": "Professional summary",
+          "experience": "Relevant experience",
+          "skills": "Skills",
+          "education": "Education and credentials",
+          "coverLetter": "Cover letter"
+        },
+        "fallback": {
+          "summary": "Focused candidate summary for {{role}}, tailored to the strongest requirements in this opportunity.",
+          "experience": "Position the strongest relevant experience for {{role}} with clear scope, ownership, and outcomes.",
+          "skills": "Role-relevant skills",
+          "education": "Add education, certifications, or training that support this application.",
+          "blockContent": "Add a concise, role-relevant version of this block.",
+          "coverClosing": "I would welcome the chance to discuss how this experience can support the role.",
+          "resultSentence": "Add a concrete metric or outcome where you can verify it.",
+          "alignmentSentence": "Tie this point more directly to the role requirements and the company's context."
+        },
+        "mock": {
+          "resultLine": "with clearer emphasis on measurable business impact.",
+          "alignLine": "aligned to the strongest requirements in this opportunity.",
+          "fitLine": "clarified for stronger role fit."
+        },
+        "empty": {
+          "title": "Generate the first visual draft",
+          "body": "Horizon will map the generated text into editable CV blocks so you can refine the document like a real application asset.",
+          "cta": "Generate draft"
+        },
+        "agent": {
+          "title": "Horizon Document Agent",
+          "subtitle": "Block-level guidance for this draft",
+          "selectedBlock": "Selected block",
+          "noBlockContent": "This block is ready for your instruction.",
+          "noSelectionTitle": "Select a CV block",
+          "noSelectionBody": "Click a section in the document preview to focus Horizon on the exact part you want to improve.",
+          "emptyTitle": "Guide the next edit",
+          "emptyBody": "Use a quick prompt or write an instruction. V1 updates the structured preview locally and keeps the draft plaintext-safe.",
+          "thinking": "Horizon is refining the selected block...",
+          "inputLabel": "Instruction for Horizon Document Agent",
+          "placeholder": "Example: Make this summary more specific to the job description",
+          "send": "Send instruction",
+          "updatedResponse": "Updated the selected block in this session. Review the wording before copying or exporting.",
+          "editedBadge": "Edited"
+        },
+        "quick": {
+          "results": "Make it results-led",
+          "tighten": "Tighten wording",
+          "align": "Align to role",
+          "cover": "Sharpen the letter"
+        },
+        "instructions": {
+          "results": "Make the selected block more results-oriented without inventing metrics.",
+          "tighten": "Tighten the selected block and remove filler.",
+          "align": "Align the selected block more clearly with the job description.",
+          "cover": "Make the cover letter more direct and role-specific."
+        },
+        "notifications": {
+          "missingInputs": "Add a master resume, job description, and profile skills before generating a reliable draft.",
+          "contextTitle": "Document context",
+          "copied": "Draft copied as plaintext.",
+          "studioTitle": "Document Studio",
+          "exported": "Exported as a plaintext draft."
+        }
+      },
       "context": {
         "title": "Document context",
         "heading": "Generation readiness"

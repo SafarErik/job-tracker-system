@@ -873,6 +873,78 @@
       "editorPlaceholder": "Generálj piszkozatot vagy kezdj el itt írni...",
       "wordCount": "{{count}} szó",
       "sessionOnly": "A kézi módosítások csak ebben a workstation munkamenetben maradnak meg. Frissítés előtt másold vagy exportáld a piszkozatot.",
+      "visual": {
+        "title": "Visual CV szerkesztő",
+        "body": "Nyers szövegdoboz helyett strukturált CV előnézetből dolgozol. Válassz ki egy blokkot, adj pontos instrukciót a Horizonnak, majd másold vagy exportáld a munkamenet piszkozatát.",
+        "v1Badge": "Vizuális blokk V1",
+        "profileImage": "Profilkép helye",
+        "basics": {
+          "subtitle": "{{role}} lehetőséghez igazítva, {{company}}"
+        },
+        "sections": {
+          "header": "Profil fejléc",
+          "summary": "Szakmai összefoglaló",
+          "experience": "Releváns tapasztalat",
+          "skills": "Készségek",
+          "education": "Tanulmányok és képesítések",
+          "coverLetter": "Motivációs levél"
+        },
+        "fallback": {
+          "summary": "Fókuszált jelölti összefoglaló {{role}} szerepre, a lehetőség legerősebb elvárásaihoz igazítva.",
+          "experience": "Emeld ki a legerősebb releváns tapasztalatot {{role}} szerepre, világos felelősségi körrel és eredményekkel.",
+          "skills": "Szerephez kapcsolódó készségek",
+          "education": "Adj hozzá tanulmányt, tanúsítványt vagy képzést, ami erősíti ezt a jelentkezést.",
+          "blockContent": "Adj hozzá egy tömör, szerepre releváns változatot ehhez a blokkhoz.",
+          "coverClosing": "Szívesen beszélnék arról, hogyan tudja ez a tapasztalat támogatni a szerepet.",
+          "resultSentence": "Adj hozzá konkrét mérőszámot vagy eredményt ott, ahol ezt valós adattal alá tudod támasztani.",
+          "alignmentSentence": "Kösd ezt a pontot közvetlenebbül a szerep elvárásaihoz és a cég kontextusához."
+        },
+        "mock": {
+          "resultLine": "világosabb hangsúllyal a mérhető üzleti hatáson.",
+          "alignLine": "a lehetőség legerősebb elvárásaihoz igazítva.",
+          "fitLine": "pontosítva az erősebb szerepilleszkedéshez."
+        },
+        "empty": {
+          "title": "Generáld az első vizuális piszkozatot",
+          "body": "A Horizon a generált szöveget szerkeszthető CV blokkokká alakítja, így valódi jelentkezési anyagként finomíthatod.",
+          "cta": "Piszkozat generálása"
+        },
+        "agent": {
+          "title": "Horizon Document Agent",
+          "subtitle": "Blokkszintű útmutatás ehhez a piszkozathoz",
+          "selectedBlock": "Kiválasztott blokk",
+          "noBlockContent": "Ez a blokk készen áll az instrukciódra.",
+          "noSelectionTitle": "Válassz ki egy CV blokkot",
+          "noSelectionBody": "Kattints egy szakaszra a dokumentum előnézetben, hogy a Horizon pontosan arra a részre fókuszáljon, amit javítani szeretnél.",
+          "emptyTitle": "Irányítsd a következő szerkesztést",
+          "emptyBody": "Használj gyors promptot vagy írj instrukciót. A V1 lokálisan frissíti a strukturált előnézetet, és plaintext-biztos marad.",
+          "thinking": "A Horizon finomítja a kiválasztott blokkot...",
+          "inputLabel": "Instrukció a Horizon Document Agent számára",
+          "placeholder": "Példa: Legyen ez az összefoglaló konkrétabb az állásleíráshoz",
+          "send": "Instrukció küldése",
+          "updatedResponse": "Frissítettem a kiválasztott blokkot ebben a munkamenetben. Nézd át a szöveget másolás vagy export előtt.",
+          "editedBadge": "Szerkesztve"
+        },
+        "quick": {
+          "results": "Legyen eredményalapú",
+          "tighten": "Tömörítsd a szöveget",
+          "align": "Igazítsd a szerephez",
+          "cover": "Erősítsd a levelet"
+        },
+        "instructions": {
+          "results": "Tedd a kiválasztott blokkot eredményorientáltabbá anélkül, hogy mérőszámokat találnál ki.",
+          "tighten": "Tömörítsd a kiválasztott blokkot, és vedd ki a tölteléket.",
+          "align": "Igazítsd a kiválasztott blokkot világosabban az állásleíráshoz.",
+          "cover": "Legyen a motivációs levél közvetlenebb és szerepspecifikusabb."
+        },
+        "notifications": {
+          "missingInputs": "A megbízható piszkozatgeneráláshoz adj hozzá master CV-t, állásleírást és profilkészségeket.",
+          "contextTitle": "Dokumentum kontextus",
+          "copied": "A piszkozat plaintextként másolva.",
+          "studioTitle": "Document Studio",
+          "exported": "Plaintext piszkozat exportálva."
+        }
+      },
       "context": {
         "title": "Dokumentum kontextus",
         "heading": "Generálási készültség"

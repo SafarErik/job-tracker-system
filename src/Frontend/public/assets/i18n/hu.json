@@ -7,14 +7,17 @@
   },
   "common": {
     "actions": {
+      "back": "Vissza",
       "backToDashboard": "Vissza az áttekintéshez",
       "cancel": "Mégse",
+      "close": "Bezárás",
       "copy": "Másolás",
       "downloadPdf": "PDF letöltése",
       "open": "Megnyitás",
       "regenerate": "Újragenerálás",
       "resetView": "Nézet visszaállítása",
       "saveChanges": "Változások mentése",
+      "saving": "Mentés...",
       "search": "Keresés"
     },
     "states": {
@@ -807,7 +810,34 @@
       "guideLabel": "Horizon segítő",
       "openGuide": "Horizon segítő megnyitása",
       "navigate": "Navigálás",
-      "select": "Kiválasztás"
+      "select": "Kiválasztás",
+      "noResults": "Nincs ilyen parancs.",
+      "actions": {
+        "analyzeFit": {
+          "label": "Illeszkedés elemzése",
+          "description": "Szerepspecifikus hiányok és következő lépések készítése."
+        },
+        "generateResume": {
+          "label": "CV piszkozat generálása",
+          "description": "Dokumentumok megnyitása és célzott CV piszkozat készítése."
+        },
+        "openDocuments": {
+          "label": "Dokumentumok megnyitása",
+          "description": "CV és motivációs levél piszkozatok áttekintése."
+        },
+        "practiceInterview": {
+          "label": "Interjú gyakorlása",
+          "description": "Fókuszált interjúgyakorlás indítása."
+        },
+        "addTimeline": {
+          "label": "Idővonal esemény hozzáadása",
+          "description": "Interjú, feladat vagy határidő ütemezése."
+        },
+        "roleDetails": {
+          "label": "Szerep részleteinek szerkesztése",
+          "description": "Státusz, prioritás és kompenzációs kontextus frissítése."
+        }
+      }
     },
     "nav": {
       "strategy": "Illeszkedés",
@@ -830,6 +860,71 @@
       "focusMode": "Fókusz mód",
       "addEvent": "Idővonal esemény hozzáadása"
     },
+    "status": {
+      "update": "Státusz frissítése",
+      "Applied": "Jelentkezve",
+      "PhoneScreen": "Telefonos kör",
+      "TechnicalTask": "Technikai feladat",
+      "Interviewing": "Interjú folyamatban",
+      "Offer": "Ajánlat",
+      "Accepted": "Elfogadva",
+      "Rejected": "Elutasítva",
+      "Ghosted": "Nincs válasz",
+      "Unknown": "Ismeretlen"
+    },
+    "priority": {
+      "suffix": "prioritás",
+      "set": "Prioritás beállítása",
+      "low": "Alacsony",
+      "medium": "Közepes",
+      "high": "Magas",
+      "none": "Nincs"
+    },
+    "roleDetails": {
+      "title": "Szerep részletei",
+      "description": "A lehetőség alapadatai. Az állásleírást az Illeszkedés fülön szerkeszd.",
+      "edit": "Szerep részleteinek szerkesztése",
+      "deleteApplication": "Jelentkezés törlése",
+      "deleteConfirm": "Biztosan törölni szeretnéd ezt a jelentkezést: {{company}}?",
+      "company": "Cég",
+      "companyPlaceholder": "Cég neve",
+      "position": "Pozíció *",
+      "positionPlaceholder": "pl. Senior Frontend Engineer",
+      "jobUrl": "Álláshirdetés URL",
+      "currentStatus": "Aktuális státusz",
+      "selectStatus": "Státusz kiválasztása",
+      "priority": "Prioritás",
+      "currency": "Pénznem",
+      "baseSalary": "Alapbér",
+      "offerGoal": "Ajánlat / cél",
+      "fitOwnsDescription": "Az állásleírás szerkesztése az Illeszkedés fülön van, így a szerepösszefoglaló, a pontszám és az útmutatás együtt marad.",
+      "sections": {
+        "basics": "Lehetőség alapjai",
+        "pipeline": "Pipeline",
+        "compensation": "Kompenzáció"
+      },
+      "jobType": {
+        "label": "Munka típusa",
+        "placeholder": "Típus kiválasztása",
+        "fullTime": "Teljes munkaidő",
+        "partTime": "Részmunkaidő",
+        "internship": "Gyakornoki",
+        "contract": "Szerződéses",
+        "freelance": "Szabadúszó"
+      },
+      "workplace": {
+        "label": "Munkavégzés típusa",
+        "remote": "Remote",
+        "hybrid": "Hibrid",
+        "onsite": "Irodai"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Szerep részletei frissítve",
+          "body": "A változások mentve."
+        }
+      }
+    },
     "strategy": {
       "jobContext": "Állás kontextusa",
       "editDescription": "Leírás szerkesztése",
@@ -846,7 +941,37 @@
       "refresh": "Elemzés frissítése",
       "simulate": "Javítás szimulálása",
       "insights": "AI útmutatás",
-      "insightsEmpty": "Kattints az \"Illeszkedés elemzése\" gombra, hogy útmutatást kapj ehhez a szerephez."
+      "insightsEmpty": "Elemezd az illeszkedést, hogy szerepspecifikus hiányokat és következő lépéseket kapj.",
+      "brief": {
+        "title": "Állásösszefoglaló",
+        "overview": "Áttekintés",
+        "overviewFallback": "Adj több szerepkontextust, hogy hasznos összefoglaló készüljön.",
+        "responsibilities": "Feladatok",
+        "noResponsibilities": "Még nincs felismerhető feladatlista.",
+        "requirements": "Elvárások",
+        "noRequirements": "Még nincs felismerhető elváráslista.",
+        "keywords": "Kulcsszavak",
+        "noKeywords": "Még nincs felismerhető kulcsszó."
+      },
+      "editor": {
+        "title": "Állásleírás szerkesztése",
+        "body": "Illeszd be a szerepleírást. A Horizon ezt használja az illeszkedéshez, dokumentumokhoz és interjúútmutatáshoz.",
+        "placeholder": "Illeszd be az állásleírást, feladatokat, elvárásokat és hasznos kontextust..."
+      },
+      "score": {
+        "strong": "Erős illeszkedés",
+        "workable": "Használható illeszkedés",
+        "needsWork": "Pozicionálást igényel",
+        "notAnalyzed": "Nincs elemezve",
+        "body": "A pontszám akkor hasznosabb, ha a Horizon összeveti a szerepet a CV-ddel és a profiloddal."
+      },
+      "notifications": {
+        "descriptionSaved": "Állásleírás frissítve.",
+        "simulation": {
+          "title": "Szimuláció aktív",
+          "body": "{{skill}} szimulálása. Az illeszkedési pontszám {{score}}%-ra nőne."
+        }
+      }
     },
     "assets": {
       "assistant": "AI dokumentumsegítő",
@@ -1015,7 +1140,177 @@
       "listening": "Hallgatás...",
       "endSession": "Gyakorlás befejezése",
       "performance": "Teljesítmény",
-      "inputPlaceholder": "Írd be a válaszod..."
+      "inputPlaceholder": "Írd be a válaszod...",
+      "textMode": "Szöveges válasz mód",
+      "stopRecording": "Felvétel leállítása",
+      "startRecording": "Felvétel indítása",
+      "send": "Válasz küldése",
+      "session": {
+        "title": "Gyakorlás",
+        "noPrompt": "Még nincs kérdés. Válassz egy gyakorlási helyzetet.",
+        "noScenario": "Nincs aktív helyzet",
+        "nextTitle": "Javasolt következő kérdés",
+        "nextEmpty": "Válassz helyzetet, és a Horizon vezeti a következő kérdést."
+      },
+      "metrics": {
+        "clarity": "Érthetőség",
+        "tone": "Hangnem",
+        "specificity": "Konkrétság"
+      },
+      "scenarios": {
+        "technical": {
+          "title": "Technikai próba interjú",
+          "description": "Gyakorolj architektúrát, tradeoffokat és problémamegoldást.",
+          "opening": "Kezdjünk egy technikai helyzettel. Mutasd be, hogyan terveznél skálázható rendszert ehhez a szerephez.",
+          "next": "Jó. Most magyarázd el a fő kompromisszumot, és mit monitoroznál éles környezetben."
+        },
+        "behavioral": {
+          "title": "Behavioral felkészülés",
+          "description": "Építs tiszta STAR történeteket vezetésről és bizonytalan helyzetekről.",
+          "opening": "Mesélj egy olyan helyzetről, amikor jelentős konfliktust kezeltél a csapatodban.",
+          "next": "Most tömörítsd a választ tiszta helyzet, cselekvés, eredmény és tanulság szerkezetbe."
+        },
+        "salary": {
+          "title": "Bértárgyalás",
+          "description": "Gyakorolj kompenzációs beszélgetést anélkül, hogy elhagynád ezt a munkaterületet.",
+          "opening": "Gyakoroljuk a kompenzációs beszélgetés nyitását. Mondd el nyugodtan a célodat, és támaszd alá bizonyítékkal.",
+          "next": "Most válaszolj az ellenvetésre úgy, hogy ne engedj túl gyorsan a pozíciódból."
+        }
+      },
+      "mock": {
+        "voiceAnswer": "Először tisztáznám az elvárásokat, majd olyan tervet javasolnék, amelyben láthatóak a kompromisszumok és hibamódok.",
+        "followUp": "Jó. Legyen konkrétabb: nevezd meg a korlátot, magyarázd el a döntésed, és zárd mérhető eredménnyel."
+      }
+    },
+    "offer": {
+      "title": "Ajánlat munkaterület",
+      "upload": {
+        "title": "Ajánlati levél feltöltése",
+        "body": "Indíts V1 szimulált elemzést a kompenzáció, kockázatok és válaszstratégia strukturálásához. Ez nem jogi tanács.",
+        "cta": "Ajánlati levél feltöltése",
+        "analyzing": "Ajánlat olvasása..."
+      },
+      "snapshot": {
+        "title": "Ajánlat áttekintés",
+        "body": "Nézd át a kompenzációt, kockázatokat és válaszszöget, mielőtt megírod a választ.",
+        "salaryRating": "Bér jelzés",
+        "salaryRatingValue": "Piac feletti ehhez a szakaszhoz",
+        "equityComplexity": "Equity komplexitás",
+        "equityComplexityValue": "Magas: 4 éves vesting"
+      },
+      "risks": {
+        "title": "Kockázati lista",
+        "variableBonus": "A változó bónusz nem garantált.",
+        "nonCompete": "A versenytilalmi rész átnézést igényel."
+      },
+      "compensation": {
+        "title": "Kompenzáció bontása",
+        "total": "Összesen",
+        "note": "Illusztratív helyi V1 kalkuláció.",
+        "base": "Alapbér",
+        "equity": "Equity",
+        "bonus": "Bónusz"
+      },
+      "checklist": {
+        "title": "Válasz előtt nézd át",
+        "base": "Az alapbér megfelel a minimum célodnak.",
+        "equity": "Az equity ütemezés és feltételek tiszták.",
+        "bonus": "A bónuszfeltételek írásban szerepelnek.",
+        "restrictions": "A korlátozások és felmondási idő érthetőek."
+      },
+      "playbook": {
+        "title": "Tárgyalási playbook",
+        "body": "Használd ezeket a nyugodt válaszszögeket egy tiszta, bizonyítékokra épülő válaszhoz.",
+        "draftCta": "Válasz piszkozat",
+        "valueAlignment": {
+          "title": "Értékillesztés",
+          "type": "Bizonyíték alapú szög",
+          "script": "Nagyon érdekel a szerep. A megbeszélt felelősségi kör és a várható hatás alapján szeretném az alapbért közelebb igazítani a felső sávhoz.",
+          "impact": "Akkor jó, ha erős az illeszkedés és együttműködő hangnemet szeretnél tartani."
+        },
+        "marketEvidence": {
+          "title": "Piaci bizonyíték",
+          "type": "Kompenzációs szög",
+          "script": "Ehhez a felelősségi körhöz és készségmixhez erősebb alapbérsávokat látok. Egy módosított alapbérrel sokkal könnyebb lenne gyorsan elfogadni az ajánlatot.",
+          "impact": "Akkor jó, ha van összehasonlítható adatod vagy több folyamatban is van lendület."
+        },
+        "riskClarification": {
+          "title": "Kockázatok tisztázása",
+          "type": "Döntési tisztaság",
+          "script": "A végső döntés előtt szeretném írásban tisztázni a bónuszfeltételeket, equity részleteket és korlátozásokat.",
+          "impact": "Akkor jó, ha az ajánlatban homályos jogi vagy kompenzációs pontok vannak."
+        }
+      },
+      "notifications": {
+        "analyzed": {
+          "title": "Ajánlat elemzés",
+          "body": "Ajánlat áttekintés elkészült."
+        },
+        "generating": {
+          "title": "Válasz piszkozat",
+          "body": "Válasz piszkozat készül az aktuális ajánlati kontextusból."
+        },
+        "ready": {
+          "title": "Piszkozat kész",
+          "body": "A válasz piszkozat készen áll átnézésre."
+        }
+      }
+    },
+    "timeline": {
+      "title": "Idővonal",
+      "body": "Ütemezés és kulcsfontosságú mérföldkövek ehhez a jelentkezéshez.",
+      "nextMilestone": "Következő mérföldkő",
+      "calendarStatus": "Naptár állapot",
+      "disconnected": "Nincs csatlakoztatva",
+      "synced": "Szinkronizálva: {{time}}",
+      "connect": "Csatlakoztatás",
+      "addEvent": "Idővonal esemény hozzáadása",
+      "saveEvent": "Esemény mentése",
+      "actions": {
+        "joinMeeting": "Csatlakozás",
+        "interviewPrep": "Interjú felkészülés",
+        "viewTask": "Feladat megnyitása"
+      },
+      "form": {
+        "title": "Esemény címe",
+        "titlePlaceholder": "pl. Technikai interjú",
+        "type": "Esemény típusa",
+        "date": "Esemény dátuma",
+        "details": "Részletek"
+      },
+      "types": {
+        "technical": "Technikai feladat",
+        "interview": "Interjú",
+        "deadline": "Határidő",
+        "other": "Egyéb mérföldkő"
+      },
+      "time": {
+        "passed": "Lejárt",
+        "daysHoursLeft": "{{days}}n {{hours}}ó van hátra",
+        "hoursLeft": "{{hours}}ó van hátra"
+      },
+      "notifications": {
+        "reminder": {
+          "title": "Technikai feladat",
+          "body": "Emlékeztető beállítva 24 órával a határidő előtt."
+        },
+        "scheduled": {
+          "title": "Idővonal",
+          "body": "Idővonal esemény ütemezve."
+        },
+        "removed": {
+          "title": "Idővonal",
+          "body": "Esemény eltávolítva."
+        },
+        "connecting": {
+          "title": "Naptár",
+          "body": "Naptár csatlakoztatása..."
+        },
+        "connected": {
+          "title": "Naptár",
+          "body": "Naptár csatlakoztatva."
+        }
+      }
     }
   },
   "footprint": {

@@ -18,22 +18,3 @@
         transform: translateY(0);
     }
 }
-
-/* Custom radial gauge padding/offsets */
-svg {
-    filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.1));
-}
-
-/* Emerald Micro-glow */
-.emerald-glow {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.1), inset 0 0 10px rgba(16, 185, 129, 0.05);
-}
-
-/* Scrollbar refinement */
-.scrollbar-emerald::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.2);
-}
-
-.scrollbar-emerald::-webkit-scrollbar-thumb:hover {
-    background: rgba(16, 185, 129, 0.4);
-}

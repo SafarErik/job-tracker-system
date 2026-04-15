@@ -4,21 +4,20 @@
 >
   <!-- Top Bar -->
   @if (!isFocusMode()) {
-    <header
-      class="h-16 border-b border-border bg-background sticky top-0 z-50 px-6 flex items-center justify-between"
-    >
+    <header class="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur">
       <div class="flex items-center gap-4">
         <button
+          type="button"
           (click)="goBack()"
           class="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
-          aria-label="Go back"
-          title="Go back"
+          [attr.aria-label]="'common.actions.back' | transloco"
+          [title]="'common.actions.back' | transloco"
         >
           <ng-icon name="lucideArrowLeft" class="text-xl" aria-hidden="true"></ng-icon>
         </button>
         <div class="flex flex-col">
           <div
-            class="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest font-semibold"
+            class="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-[0.16em] font-semibold"
           >
             <span>{{ 'shell.nav.applications' | transloco }}</span>
             <ng-icon name="lucideChevronRight" class="text-border"></ng-icon>
@@ -32,17 +31,18 @@
         </div>
       </div>
 
-      <!-- Command Bar Trigger (Mockup) -->
+      <!-- Compact command trigger -->
       <div class="absolute left-1/2 -translate-x-1/2 w-full max-w-md hidden md:block">
         <button
+          type="button"
           (click)="toggleCommandBar()"
-          class="w-full h-10 px-4 flex items-center justify-between rounded-xl border border-border bg-card/50 backdrop-blur-md hover:border-primary/30 transition-all group"
+          class="group flex h-10 w-full items-center justify-between rounded-lg border border-border bg-card/80 px-4 shadow-sm backdrop-blur transition-all hover:border-primary/30 hover:bg-card"
         >
           <div
             class="flex items-center gap-3 text-muted-foreground group-hover:text-foreground transition-colors"
           >
             <ng-icon name="lucideSearch" class="text-lg"></ng-icon>
-            <span class="text-sm font-light">{{ 'workstation.command.searchPlaceholder' | transloco }}</span>
+            <span class="text-sm">{{ 'workstation.command.searchPlaceholder' | transloco }}</span>
           </div>
           <div
             class="flex items-center gap-1.5 bg-muted px-2 py-0.5 rounded border border-border text-[10px] font-mono text-muted-foreground"
@@ -56,9 +56,10 @@
       <div class="flex items-center gap-3">
         <!-- Status Dropdown -->
         <button
+          type="button"
           [hlmDropdownMenuTrigger]="statusMenu"
           [class]="getStatusBadgeClasses(store.selectedApplication()?.status)"
-          class="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 hover:brightness-110 transition-all cursor-pointer border-none h-auto"
+          class="flex h-auto cursor-pointer items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all hover:brightness-110"
         >
           {{ getStatusLabel(store.selectedApplication()?.status) }}
           <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
@@ -70,7 +71,7 @@
               hlmDropdownMenuLabel
               class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest"
             >
-              Update Status
+              {{ 'workstation.status.update' | transloco }}
             </div>
             <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
             <button
@@ -78,35 +79,35 @@
               (click)="updateStatus(JobStatus.Applied)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground"
             >
-              Applied
+              {{ getStatusLabelKey(JobStatus.Applied) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.PhoneScreen)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground"
             >
-              Phone Screen
+              {{ getStatusLabelKey(JobStatus.PhoneScreen) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.TechnicalTask)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground"
             >
-              Technical Task
+              {{ getStatusLabelKey(JobStatus.TechnicalTask) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.Interviewing)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground"
             >
-              Interviewing
+              {{ getStatusLabelKey(JobStatus.Interviewing) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.Offer)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-foreground"
             >
-              Offer Received
+              {{ getStatusLabelKey(JobStatus.Offer) | transloco }}
             </button>
             <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
             <button
@@ -114,32 +115,34 @@
               (click)="updateStatus(JobStatus.Accepted)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-success"
             >
-              Accepted
+              {{ getStatusLabelKey(JobStatus.Accepted) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.Rejected)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive"
             >
-              Rejected
+              {{ getStatusLabelKey(JobStatus.Rejected) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
               (click)="updateStatus(JobStatus.Ghosted)"
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground"
             >
-              Ghosted
+              {{ getStatusLabelKey(JobStatus.Ghosted) | transloco }}
             </button>
           </div>
         </ng-template>
 
         <!-- Priority Dropdown -->
         <button
+          type="button"
           [hlmDropdownMenuTrigger]="priorityMenu"
           [class]="getPriorityBadgeClasses(store.selectedApplication()?.priority)"
           class="flex items-center gap-2 transition-all cursor-pointer h-auto"
         >
-          {{ store.selectedApplication()?.priority | jobPriority }} Priority
+          {{ getPriorityLabelKey(store.selectedApplication()?.priority) | transloco }}
+          {{ 'workstation.priority.suffix' | transloco }}
           <ng-icon name="lucideChevronDown" class="text-[8px] opacity-60"></ng-icon>
         </button>
 
@@ -149,7 +152,7 @@
               hlmDropdownMenuLabel
               class="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest"
             >
-              Set Priority
+              {{ 'workstation.priority.set' | transloco }}
             </div>
             <div hlmDropdownMenuSeparator class="bg-border my-1"></div>
             <button
@@ -158,7 +161,7 @@
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-muted-foreground flex items-center"
             >
               <div class="w-2 h-2 rounded-full bg-muted-foreground mr-2"></div>
-              Low
+              {{ getPriorityLabelKey(JobPriority.Low) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
@@ -166,7 +169,7 @@
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-info flex items-center"
             >
               <div class="w-2 h-2 rounded-full bg-info mr-2"></div>
-              Medium
+              {{ getPriorityLabelKey(JobPriority.Medium) | transloco }}
             </button>
             <button
               hlmDropdownMenuItem
@@ -174,38 +177,34 @@
               class="text-xs py-2 px-3 rounded-lg focus:bg-muted text-destructive flex items-center"
             >
               <div class="w-2 h-2 rounded-full bg-destructive mr-2"></div>
-              High
+              {{ getPriorityLabelKey(JobPriority.High) | transloco }}
             </button>
           </div>
         </ng-template>
 
         <div class="w-px h-6 bg-border mx-1"></div>
 
+        <app-theme-toggle />
+
         <!-- Action Buttons -->
         <button
+          type="button"
           (click)="uiState.openJobSettings()"
           class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-foreground transition-colors tooltip"
-          aria-label="Edit Application Metadata"
-          title="Edit Application Metadata"
+          [attr.aria-label]="'workstation.roleDetails.edit' | transloco"
+          [title]="'workstation.roleDetails.edit' | transloco"
         >
           <ng-icon name="lucideSettings" class="text-sm"></ng-icon>
         </button>
 
         <button
+          type="button"
           (click)="deleteApplication()"
           class="p-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-destructive transition-colors tooltip"
-          aria-label="Delete Application"
-          title="Delete Application"
+          [attr.aria-label]="'workstation.roleDetails.deleteApplication' | transloco"
+          [title]="'workstation.roleDetails.deleteApplication' | transloco"
         >
           <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
-        </button>
-
-        <button
-          (click)="onAddWorkstationItem()"
-          class="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors"
-          aria-label="Add item"
-        >
-          <ng-icon name="lucidePlus" class="text-xl" aria-hidden="true"></ng-icon>
         </button>
       </div>
     </header>
@@ -270,102 +269,86 @@
           <app-deal-view />
         }
         @case (Phase.Timeline) {
-          <app-timeline-view />
+          <app-timeline-view
+            [addEventRequest]="timelineAddRequest()"
+            (prepRequested)="setPhase(Phase.Interview)"
+          />
         }
       }
     </div>
   </main>
 
-  <!-- Command Bar Overlay (Mockup) -->
+  <!-- Compact command palette -->
   @if (isCommandBarOpen()) {
     <div
       (click)="closeCommandBar()"
       (keydown.escape)="closeCommandBar()"
-      class="fixed inset-0 z-100 bg-background/80 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-in fade-in duration-300"
+      class="fixed inset-0 z-100 flex items-start justify-center bg-background/55 px-4 pt-[12vh] backdrop-blur-[2px] animate-in fade-in duration-200"
       tabindex="-1"
     >
       <div
         (click)="$event.stopPropagation()"
         (keydown)="onCommandBarKeydown($event)"
-        class="w-full max-w-2xl bg-popover border border-border rounded-lg shadow-2xl overflow-hidden scale-in duration-300"
+        class="w-full max-w-xl overflow-hidden rounded-lg border border-border bg-popover shadow-2xl scale-in duration-200"
         tabindex="0"
         role="dialog"
-        aria-label="Command bar"
+        [attr.aria-label]="'workstation.command.searchLabel' | transloco"
       >
-        <div class="p-6 flex items-center gap-4 border-b border-border">
-          <ng-icon name="lucideSearch" class="text-2xl text-primary" aria-hidden="true"></ng-icon>
+        <div class="flex items-center gap-3 border-b border-border p-4">
+          <ng-icon name="lucideSearch" class="text-xl text-primary" aria-hidden="true"></ng-icon>
           <label for="command-bar-input" class="sr-only">{{ 'workstation.command.searchLabel' | transloco }}</label>
           <input
             #commandBarInput
             id="command-bar-input"
             type="text"
+            [value]="commandQuery()"
+            (input)="onCommandQueryChange(commandBarInput.value)"
             [placeholder]="'workstation.command.placeholder' | transloco"
-            class="flex-1 bg-transparent border-none outline-none text-foreground text-lg placeholder:text-muted-foreground"
+            class="flex-1 bg-transparent border-none text-base text-foreground outline-none placeholder:text-muted-foreground"
           />
           <button
-            (click)="toggleCommandBar()"
+            type="button"
+            (click)="closeCommandBar()"
             class="p-2 hover:bg-muted rounded-lg text-muted-foreground"
-            aria-label="Close command bar"
+            [attr.aria-label]="'common.actions.close' | transloco"
           >
             <ng-icon name="lucideChevronRight" class="rotate-90" aria-hidden="true"></ng-icon>
           </button>
         </div>
-        <div class="p-4">
-          <p class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        <div class="p-3">
+          <p class="px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {{ 'workstation.command.quickActions' | transloco }}
           </p>
-          <div class="mt-2 space-y-1">
+          <div class="mt-1 space-y-1">
+            @for (action of filteredCommandActions(); track action.id; let index = $index) {
             <button
-              (click)="triggerAnalysis(); toggleCommandBar()"
-              (mouseenter)="commandBarFocusedIndex.set(0)"
-              [disabled]="service.isProcessing()"
-              class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50"
-              [class.bg-muted]="commandBarFocusedIndex() === 0"
+              type="button"
+              (click)="executeCommandBarAction(action)"
+              (mouseenter)="commandBarFocusedIndex.set(index)"
+              [disabled]="isCommandActionDisabled(action)"
+              class="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+              [class.bg-muted]="commandBarFocusedIndex() === index"
             >
-              @if (service.isProcessing()) {
-                <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
-              } @else {
-                <ng-icon
-                  name="lucideBrain"
-                  class="text-xl text-muted-foreground group-hover:text-primary"
-                ></ng-icon>
-              }
-              <span class="text-foreground">{{ 'workstation.actions.analyze' | transloco }}</span>
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                @if (isCommandActionDisabled(action) && service.isProcessing()) {
+                  <ng-icon name="lucideLoader2" class="animate-spin text-base"></ng-icon>
+                } @else {
+                  <ng-icon [name]="action.icon" class="text-base"></ng-icon>
+                }
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-foreground">{{ action.labelKey | transloco }}</span>
+                <span class="block truncate text-xs text-muted-foreground">{{ action.descriptionKey | transloco }}</span>
+              </span>
             </button>
-            <button
-              (click)="generateResumeDraft(); toggleCommandBar()"
-              (mouseenter)="commandBarFocusedIndex.set(1)"
-              [disabled]="service.isProcessing()"
-              class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group disabled:opacity-50"
-              [class.bg-muted]="commandBarFocusedIndex() === 1"
-            >
-              @if (service.isProcessing()) {
-                <ng-icon name="lucideLoader2" class="text-xl text-primary animate-spin"></ng-icon>
-              } @else {
-                <ng-icon
-                  name="lucideSparkles"
-                  class="text-xl text-muted-foreground group-hover:text-primary"
-                ></ng-icon>
-              }
-              <span class="text-foreground">{{ 'workstation.actions.generateResumeDraft' | transloco }}</span>
-            </button>
-            <button
-              (click)="setPhase(Phase.Interview); toggleCommandBar()"
-              (mouseenter)="commandBarFocusedIndex.set(2)"
-              class="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted rounded-xl transition-colors group"
-              [class.bg-muted]="commandBarFocusedIndex() === 2"
-            >
-              <ng-icon
-                name="lucideMic2"
-                class="text-xl text-muted-foreground group-hover:text-primary"
-              ></ng-icon>
-              <span class="text-foreground">{{ 'workstation.actions.prepareInterview' | transloco }}</span>
-            </button>
+            } @empty {
+              <p class="px-3 py-8 text-center text-sm text-muted-foreground">
+                {{ 'workstation.command.noResults' | transloco }}
+              </p>
+            }
           </div>
         </div>
-        <div
-          class="bg-muted p-4 border-t border-border flex justify-between items-center text-[10px] text-muted-foreground"
-        >
+        <div class="flex items-center justify-between border-t border-border bg-muted/60 px-4 py-3 text-[10px] text-muted-foreground">
           <div class="flex gap-4">
             <span class="flex items-center gap-1"
               ><span class="bg-card px-1 rounded border border-border">Up/down</span> {{ 'workstation.command.navigate' | transloco }}</span

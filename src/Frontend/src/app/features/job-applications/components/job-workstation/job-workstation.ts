@@ -10,23 +10,18 @@ import {
   ElementRef,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { JobApplicationStore } from '../../services/job-application.store';
-import { DocumentService } from '../../../documents/services/document.service';
 import { DocumentStore } from '../../../documents/services/document.store';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
-import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import {
-  getStatusBadgeClasses,
-  getStatusStyle,
   getPriorityBadgeClasses,
+  getStatusBadgeClasses,
 } from '../../models/status-styles.util';
-import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
 import { JobPriority } from '../../models/job-priority.enum';
 import { StrategyViewComponent, GapAnalysisItem } from './strategy-view/strategy-view.component';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
@@ -35,6 +30,7 @@ import { DealViewComponent } from './deal-view/deal-view.component';
 import { TimelineViewComponent } from './timeline-view/timeline-view.component';
 import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
 import { UiStateService } from '../../../../core/services/ui-state.service';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
 
 // Spartan UI
 // ...
@@ -70,9 +66,7 @@ import {
   lucideLoader2,
   lucideChevronLeft,
   lucideActivity,
-  lucideArrowRight,
   lucideTrash2,
-  lucidePlus,
   lucideLinkedin,
   lucideRotateCw,
   lucideArrowLeft,
@@ -84,6 +78,18 @@ import {
   lucideSearch,
   lucideGavel,
 } from '@ng-icons/lucide';
+
+type WorkstationPhase = 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline';
+
+export interface WorkstationCommandAction {
+  id: string;
+  labelKey: string;
+  descriptionKey: string;
+  icon: string;
+  phase?: WorkstationPhase;
+  disabled?: () => boolean;
+  run: () => void;
+}
 
 @Component({
   selector: 'app-job-workstation',
@@ -102,13 +108,13 @@ import {
     ...HlmBreadCrumbImports,
     ...HlmDropdownMenuImports,
     HlmDropdownMenuTrigger,
-    JobPriorityPipe,
     StrategyViewComponent,
     AssetsViewComponent,
     InterviewViewComponent,
     DealViewComponent,
     TimelineViewComponent,
     JobSettingsSheetComponent,
+    ThemeToggleComponent,
   ],
   providers: [
     provideIcons({
@@ -132,9 +138,7 @@ import {
       lucideLoader2,
       lucideChevronLeft,
       lucideActivity,
-      lucideArrowRight,
       lucideTrash2,
-      lucidePlus,
       lucideLinkedin,
       lucideRotateCw,
       lucideArrowLeft,
@@ -154,26 +158,22 @@ import {
 export class JobWorkstationComponent implements OnInit, OnDestroy {
   public readonly route = inject(ActivatedRoute);
   public readonly uiState = inject(UiStateService);
-  private readonly router = inject(Router);
   private readonly location = inject(Location);
   public readonly store = inject(JobApplicationStore);
   public readonly service = this.store;
-  private readonly documentService = inject(DocumentService);
   private readonly documentStore = inject(DocumentStore);
   private readonly notificationService = inject(NotificationService);
-  private readonly breadcrumbService = inject(BreadcrumbService);
-  private readonly companyService = inject(CompanyService);
+  private readonly transloco = inject(TranslocoService);
 
   // Workstation State
-  currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'>('strategy');
+  currentPhase = signal<WorkstationPhase>('strategy');
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
-  commandBarFocusedIndex = signal(-1); // -1 means no item focused, keyboard nav starts at 0
-
-  // Number of quick action buttons in command bar
-  readonly commandBarButtonCount = 3;
+  commandBarFocusedIndex = signal(0);
+  commandQuery = signal('');
   manualPasteText = signal('');
   isFocusMode = signal(false);
+  timelineAddRequest = signal(0);
 
   // Command bar input element for programmatic focus
   @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
@@ -231,6 +231,76 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     { id: 'timeline' as const, labelKey: 'workstation.nav.timeline', icon: 'lucideCalendar' },
   ];
 
+  readonly commandActions = computed<WorkstationCommandAction[]>(() => [
+    {
+      id: 'analyze-fit',
+      labelKey: 'workstation.command.actions.analyzeFit.label',
+      descriptionKey: 'workstation.command.actions.analyzeFit.description',
+      icon: 'lucideBrain',
+      phase: this.Phase.Strategy,
+      disabled: () => this.service.isProcessing() || !this.store.selectedApplication()?.description?.trim(),
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.triggerAnalysis();
+      },
+    },
+    {
+      id: 'generate-resume',
+      labelKey: 'workstation.command.actions.generateResume.label',
+      descriptionKey: 'workstation.command.actions.generateResume.description',
+      icon: 'lucideSparkles',
+      phase: this.Phase.Assets,
+      disabled: () => this.service.isProcessing(),
+      run: () => {
+        this.setPhase(this.Phase.Assets);
+        this.generateResumeDraft();
+      },
+    },
+    {
+      id: 'open-documents',
+      labelKey: 'workstation.command.actions.openDocuments.label',
+      descriptionKey: 'workstation.command.actions.openDocuments.description',
+      icon: 'lucideFileText',
+      phase: this.Phase.Assets,
+      run: () => this.setPhase(this.Phase.Assets),
+    },
+    {
+      id: 'practice-interview',
+      labelKey: 'workstation.command.actions.practiceInterview.label',
+      descriptionKey: 'workstation.command.actions.practiceInterview.description',
+      icon: 'lucideMic2',
+      phase: this.Phase.Interview,
+      run: () => this.setPhase(this.Phase.Interview),
+    },
+    {
+      id: 'add-timeline-event',
+      labelKey: 'workstation.command.actions.addTimeline.label',
+      descriptionKey: 'workstation.command.actions.addTimeline.description',
+      icon: 'lucideCalendar',
+      phase: this.Phase.Timeline,
+      run: () => this.requestTimelineEvent(),
+    },
+    {
+      id: 'edit-role-details',
+      labelKey: 'workstation.command.actions.roleDetails.label',
+      descriptionKey: 'workstation.command.actions.roleDetails.description',
+      icon: 'lucideSettings',
+      run: () => this.uiState.openJobSettings(),
+    },
+  ]);
+
+  readonly filteredCommandActions = computed(() => {
+    const query = this.commandQuery().trim().toLowerCase();
+    const actions = this.commandActions();
+    if (!query) return actions;
+
+    return actions.filter((action) => {
+      const label = this.transloco.translate(action.labelKey).toLowerCase();
+      const description = this.transloco.translate(action.descriptionKey).toLowerCase();
+      return label.includes(query) || description.includes(query);
+    });
+  });
+
   simulateImprovement(skill: string): void {
     const app = this.store.selectedApplication();
     if (app) {
@@ -238,8 +308,11 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       const newScore = Math.min(100, currentScore + 8);
       this.simulatedScore.set(newScore);
       this.notificationService.info(
-        `Simulating ${skill}... Match Score would increase to ${newScore}%`,
-        'Simulation Active',
+        this.transloco.translate('workstation.strategy.notifications.simulation.body', {
+          skill,
+          score: newScore,
+        }),
+        this.transloco.translate('workstation.strategy.notifications.simulation.title'),
       );
 
       // Auto-reset after some time
@@ -276,7 +349,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   // Helpers
-  setPhase(phase: 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'): void {
+  setPhase(phase: WorkstationPhase): void {
     this.currentPhase.set(phase);
   }
 
@@ -292,11 +365,14 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   closeCommandBar(): void {
     this.isCommandBarOpen.set(false);
-    this.commandBarFocusedIndex.set(-1);
+    this.commandBarFocusedIndex.set(0);
+    this.commandQuery.set('');
   }
 
   onCommandBarKeydown(event: KeyboardEvent): void {
-    const buttonCount = this.commandBarButtonCount;
+    const buttonCount = this.filteredCommandActions().length;
+    if (buttonCount === 0) return;
+
     const currentIndex = this.commandBarFocusedIndex();
 
     switch (event.key) {
@@ -310,33 +386,30 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
         break;
       case 'Enter':
         event.preventDefault();
-        this.executeCommandBarAction(currentIndex);
+        this.executeCommandBarAction(this.filteredCommandActions()[currentIndex]);
         break;
     }
   }
 
-  executeCommandBarAction(index: number): void {
-    switch (index) {
-      case 0: // Analyze Job Description
-        this.triggerAnalysis();
-        this.closeCommandBar();
-        break;
-      case 1: // Generate resume draft
-        this.generateResumeDraft();
-        this.closeCommandBar();
-        break;
-      case 2: // Prepare for Interview
-        this.setPhase(this.Phase.Interview);
-        this.closeCommandBar();
-        break;
-    }
+  executeCommandBarAction(action: WorkstationCommandAction | undefined): void {
+    if (!action || this.isCommandActionDisabled(action)) return;
+
+    action.run();
+    this.closeCommandBar();
   }
 
-  onAddWorkstationItem(): void {
-    this.notificationService.info(
-      'Adding new items to the workstation is coming soon.',
-      'Feature Preview',
-    );
+  isCommandActionDisabled(action: WorkstationCommandAction): boolean {
+    return action.disabled?.() ?? false;
+  }
+
+  onCommandQueryChange(query: string): void {
+    this.commandQuery.set(query);
+    this.commandBarFocusedIndex.set(0);
+  }
+
+  requestTimelineEvent(): void {
+    this.setPhase(this.Phase.Timeline);
+    this.timelineAddRequest.update((value) => value + 1);
   }
 
   goBack(): void {
@@ -354,8 +427,43 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   getStatusLabel(status: JobApplicationStatus | undefined): string {
-    if (status === undefined) return 'Unknown';
-    return getStatusStyle(status).label;
+    return this.transloco.translate(this.getStatusLabelKey(status));
+  }
+
+  getStatusLabelKey(status: JobApplicationStatus | undefined): string {
+    switch (status) {
+      case JobApplicationStatus.Applied:
+        return 'workstation.status.Applied';
+      case JobApplicationStatus.PhoneScreen:
+        return 'workstation.status.PhoneScreen';
+      case JobApplicationStatus.TechnicalTask:
+        return 'workstation.status.TechnicalTask';
+      case JobApplicationStatus.Interviewing:
+        return 'workstation.status.Interviewing';
+      case JobApplicationStatus.Offer:
+        return 'workstation.status.Offer';
+      case JobApplicationStatus.Accepted:
+        return 'workstation.status.Accepted';
+      case JobApplicationStatus.Rejected:
+        return 'workstation.status.Rejected';
+      case JobApplicationStatus.Ghosted:
+        return 'workstation.status.Ghosted';
+      default:
+        return 'workstation.status.Unknown';
+    }
+  }
+
+  getPriorityLabelKey(priority: JobPriority | undefined): string {
+    switch (priority) {
+      case JobPriority.Low:
+        return 'workstation.priority.low';
+      case JobPriority.Medium:
+        return 'workstation.priority.medium';
+      case JobPriority.High:
+        return 'workstation.priority.high';
+      default:
+        return 'workstation.priority.none';
+    }
   }
 
   updateStatus(status: JobApplicationStatus): void {
@@ -375,7 +483,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   deleteApplication(): void {
     const app = this.store.selectedApplication();
     if (app) {
-      if (confirm(`Are you sure you want to delete the application for ${app.companyName}?`)) {
+      if (confirm(this.transloco.translate('workstation.roleDetails.deleteConfirm', { company: app.companyName }))) {
         this.store.deleteApplication(app.id);
         this.goBack();
       }
@@ -434,7 +542,10 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       this.store.updateApplication(app.id, { description: text });
       this.isPastingManually.set(false);
       this.manualPasteText.set('');
-      this.notificationService.success('Job description saved!', 'Job Context');
+      this.notificationService.success(
+        this.transloco.translate('workstation.strategy.notifications.descriptionSaved'),
+        this.transloco.translate('workstation.strategy.jobContext'),
+      );
     }
   }
 }

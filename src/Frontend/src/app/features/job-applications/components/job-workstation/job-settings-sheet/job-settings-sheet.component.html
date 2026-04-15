@@ -1,247 +1,242 @@
 <hlm-sheet side="right" [state]="uiState.isJobSettingsOpen() ? 'open' : 'closed'" (closed)="uiState.closeJobSettings()">
-    <hlm-sheet-content *brnSheetContent="let ctx"
-        class="w-full sm:max-w-xl bg-card border-l border-border p-0 shadow-2xl dark:shadow-primary/5 overflow-y-auto custom-scrollbar flex flex-col h-full">
+  <hlm-sheet-content *brnSheetContent="let ctx"
+    class="flex h-full w-full flex-col overflow-y-auto border-l border-border bg-card p-0 shadow-2xl sm:max-w-xl">
 
-        <!-- 1. Header -->
-        <hlm-sheet-header
-            class="px-8 pt-8 pb-4 space-y-2 sticky top-0 bg-card/80 backdrop-blur-xl z-20 border-b border-border/50">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                        <ng-icon name="lucideSettings" class="h-5 w-5"></ng-icon>
-                    </div>
-                    <div>
-                        <h3 hlmSheetTitle class="text-xl font-semibold text-foreground tracking-tight">Application
-                            Metadata</h3>
-                        <p hlmSheetDescription
-                            class="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-                            Refine the role context for better guidance</p>
-                    </div>
-                </div>
-                <button (click)="uiState.closeJobSettings()"
-                    class="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Close job settings">
-                    <ng-icon name="lucideX" class="text-xl" aria-hidden="true"></ng-icon>
-                </button>
-            </div>
-        </hlm-sheet-header>
-
-        <!-- 2. Main Content (Scrollable) -->
-        <div class="flex-1 px-8 py-6 space-y-8" [formGroup]="form">
-
-            <!-- LOGISTICS -->
-            <section class="space-y-5">
-                <h4
-                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary/80"></span> Logistics
-                </h4>
-
-                <div class="grid gap-5">
-                    <div class="space-y-2 opacity-70">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Company (Fixed)</label>
-                        <input hlmInput formControlName="companyName"
-                            class="bg-muted/50 border-border text-foreground/50 cursor-not-allowed rounded-xl h-12"
-                            placeholder="Company Name" />
-                    </div>
-
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Position *</label>
-                        <input hlmInput formControlName="position"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                            placeholder="e.g. Senior Frontend Engineer" />
-                    </div>
-
-
-
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Job Posting URL</label>
-                        <input hlmInput formControlName="jobUrl"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                            placeholder="https://..." />
-                    </div>
-                </div>
-            </section>
-
-            <div class="h-px bg-border/50"></div>
-
-            <!-- STATUS & CLASSIFICATION -->
-            <section class="space-y-5">
-                <h4
-                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary/80"></span> Status & Classification
-                </h4>
-
-                <div class="grid gap-5">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Current
-                                Status</label>
-                            <brn-select class="w-full" formControlName="status" placeholder="Select Status">
-                                <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
-                                    <hlm-select-value />
-                                </hlm-select-trigger>
-                                <hlm-select-content class="w-full bg-popover border-border">
-                                    @for (option of statusOptions; track option.value) {
-                                    <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
-                                    }
-                                </hlm-select-content>
-                            </brn-select>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Job Type</label>
-                            <brn-select class="w-full" formControlName="jobType" placeholder="Select Type">
-                                <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
-                                    <hlm-select-value />
-                                </hlm-select-trigger>
-                                <hlm-select-content class="w-full bg-popover border-border">
-                                    @for (option of jobTypeOptions; track option.value) {
-                                    <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
-                                    }
-                                </hlm-select-content>
-                            </brn-select>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Priority</label>
-                        <div class="flex items-center gap-2 p-1.5 bg-muted/50 border border-border rounded-xl">
-                            <button type="button"
-                                class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
-                                [class.bg-card]="form.get('priority')?.value === JobPriority.Low"
-                                [class.shadow-sm]="form.get('priority')?.value === JobPriority.Low"
-                                [class.text-foreground]="form.get('priority')?.value === JobPriority.Low"
-                                [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Low"
-                                (click)="form.patchValue({priority: JobPriority.Low})">
-                                Low
-                            </button>
-                            <button type="button"
-                                class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
-                                [class.bg-card]="form.get('priority')?.value === JobPriority.Medium"
-                                [class.shadow-sm]="form.get('priority')?.value === JobPriority.Medium"
-                                [class.text-foreground]="form.get('priority')?.value === JobPriority.Medium"
-                                [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Medium"
-                                (click)="form.patchValue({priority: JobPriority.Medium})">
-                                Med
-                            </button>
-                            <button type="button"
-                                class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
-                                [class.bg-card]="form.get('priority')?.value === JobPriority.High"
-                                [class.shadow-sm]="form.get('priority')?.value === JobPriority.High"
-                                [class.text-foreground]="form.get('priority')?.value === JobPriority.High"
-                                [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.High"
-                                (click)="form.patchValue({priority: JobPriority.High})">
-                                High
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <div class="h-px bg-border/50"></div>
-
-            <!-- THE DEAL -->
-            <section class="space-y-5">
-                <h4
-                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-success/80"></span> The Deal
-                </h4>
-
-                <div class="grid gap-5">
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Currency</label>
-                        <brn-select formControlName="currency">
-                            <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
-                                <hlm-select-value />
-                            </hlm-select-trigger>
-                            <hlm-select-content class="bg-popover border-border">
-                                <hlm-option value="USD">USD</hlm-option>
-                                <hlm-option value="EUR">EUR</hlm-option>
-                                <hlm-option value="GBP">GBP</hlm-option>
-                            </hlm-select-content>
-                        </brn-select>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Base Salary</label>
-                            <input hlmInput type="number" formControlName="salaryMin"
-                                class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                                placeholder="0" />
-                        </div>
-                        <div class="space-y-2">
-                            <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Offer /
-                                Goal</label>
-                            <input hlmInput type="number" formControlName="salaryMax"
-                                class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                                placeholder="0" />
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Workplace
-                            Type</label>
-                        <brn-select formControlName="workplaceType">
-                            <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
-                                <hlm-select-value />
-                            </hlm-select-trigger>
-                            <hlm-select-content class="bg-popover border-border">
-                                @for (loc of locationOptions; track loc.value) {
-                                <hlm-option [value]="loc.value">{{ loc.label }}</hlm-option>
-                                }
-                            </hlm-select-content>
-                        </brn-select>
-                    </div>
-                </div>
-            </section>
-
-            <div class="h-px bg-border/50"></div>
-
-            <!-- ROLE CONTEXT -->
-            <section class="space-y-5">
-                <h4
-                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-warning/80"></span> Role Context
-                </h4>
-
-                <div class="space-y-3">
-                    <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Internal Context &
-                        Notes</label>
-                    <textarea hlmInput formControlName="notes" rows="6"
-                        class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-2xl p-4 font-mono text-xs leading-relaxed min-h-[160px] resize-none"
-                        placeholder="Add notes about the hiring manager, tech stack constraints, or interview vibes to guide the AI..."></textarea>
-                    <div class="flex items-start gap-2 px-2 py-1">
-                        <ng-icon name="lucideAlertCircle" class="h-3 w-3 text-muted-foreground/60 mt-0.5"></ng-icon>
-                        <p class="text-[10px] text-muted-foreground/60 leading-tight">
-                            This context is fed into the LLM during generation cycles to optimize your tailored
-                            career outputs.
-                        </p>
-                    </div>
-                </div>
-            </section>
+    <hlm-sheet-header class="sticky top-0 z-20 border-b border-border bg-card/90 px-8 pb-4 pt-8 backdrop-blur-xl">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="flex size-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+            <ng-icon name="lucideSettings" class="size-5"></ng-icon>
+          </div>
+          <div>
+            <h3 hlmSheetTitle class="text-xl font-semibold tracking-tight text-foreground">
+              {{ 'workstation.roleDetails.title' | transloco }}
+            </h3>
+            <p hlmSheetDescription class="mt-1 text-xs font-medium text-muted-foreground">
+              {{ 'workstation.roleDetails.description' | transloco }}
+            </p>
+          </div>
         </div>
 
-        <!-- 3. Footer Actions -->
-        <hlm-sheet-footer
-            class="sticky bottom-0 p-6 bg-card/80 backdrop-blur-xl border-t border-border z-20 flex flex-col gap-3">
-            <button hlmBtn size="lg" (click)="save()" [disabled]="form.invalid"
-                class="w-full h-14 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold uppercase tracking-widest text-xs shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
-                @if (store.isLoading()) {
-                <span class="animate-spin mr-2">◌</span>
-                Saving...
-                } @else {
-                <ng-icon name="lucideSave" class="mr-2 text-base"></ng-icon>
-                Save changes
+        <button
+          type="button"
+          (click)="uiState.closeJobSettings()"
+          class="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          [attr.aria-label]="'common.actions.close' | transloco"
+        >
+          <ng-icon name="lucideX" class="text-xl" aria-hidden="true"></ng-icon>
+        </button>
+      </div>
+    </hlm-sheet-header>
+
+    <div class="flex-1 space-y-8 px-8 py-6" [formGroup]="form">
+      <section class="space-y-5">
+        <h4 class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <span class="size-1.5 rounded-full bg-primary"></span>
+          {{ 'workstation.roleDetails.sections.basics' | transloco }}
+        </h4>
+
+        <div class="grid gap-5">
+          <div class="space-y-2 opacity-70">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.company' | transloco }}
+            </label>
+            <input
+              hlmInput
+              formControlName="companyName"
+              class="h-12 cursor-not-allowed rounded-lg border-border bg-muted/50 text-foreground/50"
+              [placeholder]="'workstation.roleDetails.companyPlaceholder' | transloco"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.position' | transloco }}
+            </label>
+            <input
+              hlmInput
+              formControlName="position"
+              class="h-12 rounded-lg border-border bg-muted/50 text-foreground focus:border-primary/50"
+              [placeholder]="'workstation.roleDetails.positionPlaceholder' | transloco"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.jobUrl' | transloco }}
+            </label>
+            <input
+              hlmInput
+              formControlName="jobUrl"
+              class="h-12 rounded-lg border-border bg-muted/50 text-foreground focus:border-primary/50"
+              placeholder="https://..."
+            />
+          </div>
+        </div>
+      </section>
+
+      <div class="h-px bg-border"></div>
+
+      <section class="space-y-5">
+        <h4 class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <span class="size-1.5 rounded-full bg-primary"></span>
+          {{ 'workstation.roleDetails.sections.pipeline' | transloco }}
+        </h4>
+
+        <div class="grid gap-5">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-2">
+              <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+                {{ 'workstation.roleDetails.currentStatus' | transloco }}
+              </label>
+              <brn-select class="w-full" formControlName="status" [placeholder]="'workstation.roleDetails.selectStatus' | transloco">
+                <hlm-select-trigger class="h-12 w-full rounded-lg border-border bg-muted/50">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content class="w-full border-border bg-popover">
+                  @for (option of statusOptions; track option.value) {
+                    <hlm-option [value]="option.value">{{ option.labelKey | transloco }}</hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
+            </div>
+
+            <div class="space-y-2">
+              <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+                {{ 'workstation.roleDetails.jobType.label' | transloco }}
+              </label>
+              <brn-select class="w-full" formControlName="jobType" [placeholder]="'workstation.roleDetails.jobType.placeholder' | transloco">
+                <hlm-select-trigger class="h-12 w-full rounded-lg border-border bg-muted/50">
+                  <hlm-select-value />
+                </hlm-select-trigger>
+                <hlm-select-content class="w-full border-border bg-popover">
+                  @for (option of jobTypeOptions; track option.value) {
+                    <hlm-option [value]="option.value">{{ option.labelKey | transloco }}</hlm-option>
+                  }
+                </hlm-select-content>
+              </brn-select>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.priority' | transloco }}
+            </label>
+            <div class="flex items-center gap-2 rounded-lg border border-border bg-muted/50 p-1.5">
+              @for (option of priorityOptions; track option.value) {
+                <button
+                  type="button"
+                  class="flex-1 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all"
+                  [class.bg-card]="form.get('priority')?.value === option.value"
+                  [class.shadow-sm]="form.get('priority')?.value === option.value"
+                  [class.text-foreground]="form.get('priority')?.value === option.value"
+                  [class.text-muted-foreground]="form.get('priority')?.value !== option.value"
+                  (click)="form.patchValue({priority: option.value})"
+                >
+                  {{ option.labelKey | transloco }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="h-px bg-border"></div>
+
+      <section class="space-y-5">
+        <h4 class="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          <span class="size-1.5 rounded-full bg-primary"></span>
+          {{ 'workstation.roleDetails.sections.compensation' | transloco }}
+        </h4>
+
+        <div class="grid gap-5">
+          <div class="space-y-2">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.currency' | transloco }}
+            </label>
+            <brn-select formControlName="currency">
+              <hlm-select-trigger class="h-12 w-full rounded-lg border-border bg-muted/50">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content class="border-border bg-popover">
+                <hlm-option value="USD">USD</hlm-option>
+                <hlm-option value="EUR">EUR</hlm-option>
+                <hlm-option value="GBP">GBP</hlm-option>
+              </hlm-select-content>
+            </brn-select>
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="space-y-2">
+              <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+                {{ 'workstation.roleDetails.baseSalary' | transloco }}
+              </label>
+              <input hlmInput type="number" formControlName="salaryMin"
+                class="h-12 rounded-lg border-border bg-muted/50 text-foreground focus:border-primary/50"
+                placeholder="0" />
+            </div>
+
+            <div class="space-y-2">
+              <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+                {{ 'workstation.roleDetails.offerGoal' | transloco }}
+              </label>
+              <input hlmInput type="number" formControlName="salaryMax"
+                class="h-12 rounded-lg border-border bg-muted/50 text-foreground focus:border-primary/50"
+                placeholder="0" />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label hlmLabel class="ml-1 text-xs font-semibold text-muted-foreground">
+              {{ 'workstation.roleDetails.workplace.label' | transloco }}
+            </label>
+            <brn-select formControlName="workplaceType">
+              <hlm-select-trigger class="h-12 w-full rounded-lg border-border bg-muted/50">
+                <hlm-select-value />
+              </hlm-select-trigger>
+              <hlm-select-content class="border-border bg-popover">
+                @for (loc of locationOptions; track loc.value) {
+                  <hlm-option [value]="loc.value">{{ loc.labelKey | transloco }}</hlm-option>
                 }
-            </button>
+              </hlm-select-content>
+            </brn-select>
+          </div>
+        </div>
+      </section>
 
-            <button (click)="delete()"
-                class="w-full h-12 text-[10px] font-black uppercase tracking-[0.2em] text-destructive/70 hover:text-destructive hover:bg-destructive/5 transition-all rounded-xl flex items-center justify-center gap-2">
-                <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
-                Delete application
-            </button>
-        </hlm-sheet-footer>
+      <div class="rounded-lg border border-primary/20 bg-primary/5 p-4">
+        <p class="text-sm leading-relaxed text-muted-foreground">
+          {{ 'workstation.roleDetails.fitOwnsDescription' | transloco }}
+        </p>
+      </div>
+    </div>
 
-    </hlm-sheet-content>
+    <hlm-sheet-footer class="sticky bottom-0 z-20 flex flex-col gap-3 border-t border-border bg-card/90 p-6 backdrop-blur-xl">
+      <button
+        hlmBtn
+        size="lg"
+        type="button"
+        (click)="save()"
+        [disabled]="form.invalid"
+        class="h-14 w-full rounded-lg bg-primary text-xs font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        @if (store.isLoading()) {
+          <span class="mr-2 animate-spin">...</span>
+          {{ 'common.actions.saving' | transloco }}
+        } @else {
+          <ng-icon name="lucideSave" class="mr-2 text-base"></ng-icon>
+          {{ 'common.actions.saveChanges' | transloco }}
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="delete()"
+        class="flex h-12 w-full items-center justify-center gap-2 rounded-lg text-xs font-semibold text-destructive/80 transition-colors hover:bg-destructive/10 hover:text-destructive"
+      >
+        <ng-icon name="lucideTrash2" class="text-sm"></ng-icon>
+        {{ 'workstation.roleDetails.deleteApplication' | transloco }}
+      </button>
+    </hlm-sheet-footer>
+  </hlm-sheet-content>
 </hlm-sheet>

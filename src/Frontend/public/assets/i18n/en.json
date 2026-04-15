@@ -7,14 +7,17 @@
   },
   "common": {
     "actions": {
+      "back": "Back",
       "backToDashboard": "Back to dashboard",
       "cancel": "Cancel",
+      "close": "Close",
       "copy": "Copy",
       "downloadPdf": "Download PDF",
       "open": "Open",
       "regenerate": "Regenerate",
       "resetView": "Reset view",
       "saveChanges": "Save changes",
+      "saving": "Saving...",
       "search": "Search"
     },
     "states": {
@@ -807,7 +810,34 @@
       "guideLabel": "Horizon Guide",
       "openGuide": "Open Horizon Guide",
       "navigate": "Navigate",
-      "select": "Select"
+      "select": "Select",
+      "noResults": "No matching command.",
+      "actions": {
+        "analyzeFit": {
+          "label": "Analyze fit",
+          "description": "Create role-specific gaps and next actions."
+        },
+        "generateResume": {
+          "label": "Generate resume draft",
+          "description": "Open Documents and draft a tailored CV."
+        },
+        "openDocuments": {
+          "label": "Open Documents",
+          "description": "Review resume and cover letter drafts."
+        },
+        "practiceInterview": {
+          "label": "Practice interview",
+          "description": "Start a focused interview session."
+        },
+        "addTimeline": {
+          "label": "Add timeline event",
+          "description": "Schedule an interview, task, or deadline."
+        },
+        "roleDetails": {
+          "label": "Edit role details",
+          "description": "Update status, priority, and compensation context."
+        }
+      }
     },
     "nav": {
       "strategy": "Fit",
@@ -830,6 +860,71 @@
       "focusMode": "Focus mode",
       "addEvent": "Add timeline event"
     },
+    "status": {
+      "update": "Update status",
+      "Applied": "Applied",
+      "PhoneScreen": "Phone screen",
+      "TechnicalTask": "Technical task",
+      "Interviewing": "Interviewing",
+      "Offer": "Offer",
+      "Accepted": "Accepted",
+      "Rejected": "Rejected",
+      "Ghosted": "No response",
+      "Unknown": "Unknown"
+    },
+    "priority": {
+      "suffix": "priority",
+      "set": "Set priority",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "none": "No"
+    },
+    "roleDetails": {
+      "title": "Role details",
+      "description": "Update the core opportunity fields. Edit the job description from Fit.",
+      "edit": "Edit role details",
+      "deleteApplication": "Delete application",
+      "deleteConfirm": "Are you sure you want to delete the application for {{company}}?",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "position": "Position *",
+      "positionPlaceholder": "e.g. Senior Frontend Engineer",
+      "jobUrl": "Job posting URL",
+      "currentStatus": "Current status",
+      "selectStatus": "Select status",
+      "priority": "Priority",
+      "currency": "Currency",
+      "baseSalary": "Base salary",
+      "offerGoal": "Offer / goal",
+      "fitOwnsDescription": "Job description editing lives in Fit so Horizon can keep the role brief, match score, and guidance aligned.",
+      "sections": {
+        "basics": "Opportunity basics",
+        "pipeline": "Pipeline",
+        "compensation": "Compensation"
+      },
+      "jobType": {
+        "label": "Job type",
+        "placeholder": "Select type",
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "internship": "Internship",
+        "contract": "Contract",
+        "freelance": "Freelance"
+      },
+      "workplace": {
+        "label": "Workplace type",
+        "remote": "Remote",
+        "hybrid": "Hybrid",
+        "onsite": "On-site"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Role details updated",
+          "body": "Changes saved successfully."
+        }
+      }
+    },
     "strategy": {
       "jobContext": "Job context",
       "editDescription": "Edit description",
@@ -846,7 +941,37 @@
       "refresh": "Refresh analysis",
       "simulate": "Simulate improvement",
       "insights": "AI guidance",
-      "insightsEmpty": "Click \"Analyze fit\" to generate guidance for this role."
+      "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
+      "brief": {
+        "title": "Job brief",
+        "overview": "Overview",
+        "overviewFallback": "Add more role context to build a useful brief.",
+        "responsibilities": "Responsibilities",
+        "noResponsibilities": "No responsibilities detected yet.",
+        "requirements": "Requirements",
+        "noRequirements": "No explicit requirements detected yet.",
+        "keywords": "Keywords",
+        "noKeywords": "No keywords detected yet."
+      },
+      "editor": {
+        "title": "Edit job description",
+        "body": "Paste the role description here. Horizon uses this source for fit, documents, and interview guidance.",
+        "placeholder": "Paste the job description, responsibilities, requirements, and useful context..."
+      },
+      "score": {
+        "strong": "Strong fit",
+        "workable": "Workable fit",
+        "needsWork": "Needs positioning",
+        "notAnalyzed": "Not analyzed",
+        "body": "The score becomes more useful after Horizon compares the role against your resume and profile."
+      },
+      "notifications": {
+        "descriptionSaved": "Job description updated.",
+        "simulation": {
+          "title": "Simulation active",
+          "body": "Simulating {{skill}}. Match score would increase to {{score}}%."
+        }
+      }
     },
     "assets": {
       "assistant": "AI document assistant",
@@ -1015,7 +1140,177 @@
       "listening": "Listening...",
       "endSession": "End session",
       "performance": "Performance",
-      "inputPlaceholder": "Type your response..."
+      "inputPlaceholder": "Type your response...",
+      "textMode": "Text response mode",
+      "stopRecording": "Stop recording",
+      "startRecording": "Start recording",
+      "send": "Send response",
+      "session": {
+        "title": "Session",
+        "noPrompt": "No prompt yet. Choose a practice scenario to begin.",
+        "noScenario": "No active scenario",
+        "nextTitle": "Next recommended prompt",
+        "nextEmpty": "Choose a scenario and Horizon will guide the next prompt."
+      },
+      "metrics": {
+        "clarity": "Clarity",
+        "tone": "Tone",
+        "specificity": "Specificity"
+      },
+      "scenarios": {
+        "technical": {
+          "title": "Mock technical interview",
+          "description": "Practice architecture, tradeoffs, and problem solving.",
+          "opening": "Let's start with a technical scenario. Walk me through how you would design a scalable system for this role.",
+          "next": "Good. Now explain the main tradeoff you made and what you would monitor in production."
+        },
+        "behavioral": {
+          "title": "Behavioral prep",
+          "description": "Shape clear STAR stories for leadership and ambiguity.",
+          "opening": "Tell me about a time you handled a significant conflict within your team.",
+          "next": "Now tighten the answer into a clear situation, action, result, and lesson."
+        },
+        "salary": {
+          "title": "Salary negotiation",
+          "description": "Practice compensation conversations without leaving this workspace.",
+          "opening": "Let's practice the opening of a compensation conversation. State your target calmly and anchor it with evidence.",
+          "next": "Now respond to pushback without lowering your position too quickly."
+        }
+      },
+      "mock": {
+        "voiceAnswer": "I would start by clarifying the requirements, then propose a design with clear tradeoffs and failure modes.",
+        "followUp": "Good. Make the answer more specific: name the constraint, explain your decision, and finish with the measurable outcome."
+      }
+    },
+    "offer": {
+      "title": "Offer workspace",
+      "upload": {
+        "title": "Upload offer letter",
+        "body": "Start a simulated V1 analysis to structure compensation, risks, and response strategy. No legal advice is provided.",
+        "cta": "Upload offer letter",
+        "analyzing": "Reading offer..."
+      },
+      "snapshot": {
+        "title": "Offer snapshot",
+        "body": "Review the compensation structure, risk items, and response angle before drafting your reply.",
+        "salaryRating": "Salary signal",
+        "salaryRatingValue": "Above market for this stage",
+        "equityComplexity": "Equity complexity",
+        "equityComplexityValue": "High: 4-year vesting"
+      },
+      "risks": {
+        "title": "Risk checklist",
+        "variableBonus": "Variable bonus is not guaranteed.",
+        "nonCompete": "Non-compete language needs review."
+      },
+      "compensation": {
+        "title": "Compensation breakdown",
+        "total": "Total",
+        "note": "Illustrative local V1 calculation.",
+        "base": "Base",
+        "equity": "Equity",
+        "bonus": "Bonus"
+      },
+      "checklist": {
+        "title": "Review before reply",
+        "base": "Base salary matches your minimum target.",
+        "equity": "Equity schedule and strike details are clear.",
+        "bonus": "Bonus conditions are written down.",
+        "restrictions": "Restrictions and notice period are understood."
+      },
+      "playbook": {
+        "title": "Negotiation playbook",
+        "body": "Use these calmer response angles to prepare a clear, evidence-led reply.",
+        "draftCta": "Draft response",
+        "valueAlignment": {
+          "title": "Value alignment",
+          "type": "Evidence-led angle",
+          "script": "I am excited about the role. Based on the scope we discussed and the impact I can bring, I would like to align the base closer to the upper range.",
+          "impact": "Best when the match is strong and you want to keep the tone constructive."
+        },
+        "marketEvidence": {
+          "title": "Market evidence",
+          "type": "Compensation angle",
+          "script": "For roles with this scope and skill mix, I am seeing stronger base ranges. A revised base would make this much easier to accept quickly.",
+          "impact": "Best when you have comparable data or competing process momentum."
+        },
+        "riskClarification": {
+          "title": "Risk clarification",
+          "type": "Decision clarity angle",
+          "script": "Before I can make a final decision, I would like to clarify the bonus conditions, equity terms, and restrictions in writing.",
+          "impact": "Best when the offer has unclear terms or legal/compensation risk."
+        }
+      },
+      "notifications": {
+        "analyzed": {
+          "title": "Offer analysis",
+          "body": "Offer snapshot prepared."
+        },
+        "generating": {
+          "title": "Draft response",
+          "body": "Preparing a response draft from the current offer context."
+        },
+        "ready": {
+          "title": "Draft ready",
+          "body": "Response draft prepared for review."
+        }
+      }
+    },
+    "timeline": {
+      "title": "Timeline",
+      "body": "Scheduling and key milestones for this application.",
+      "nextMilestone": "Next milestone",
+      "calendarStatus": "Calendar status",
+      "disconnected": "Disconnected",
+      "synced": "Synced: {{time}}",
+      "connect": "Connect",
+      "addEvent": "Add timeline event",
+      "saveEvent": "Save event",
+      "actions": {
+        "joinMeeting": "Join meeting",
+        "interviewPrep": "Interview prep",
+        "viewTask": "View task"
+      },
+      "form": {
+        "title": "Event title",
+        "titlePlaceholder": "e.g. Technical interview",
+        "type": "Event type",
+        "date": "Event date",
+        "details": "Details"
+      },
+      "types": {
+        "technical": "Technical task",
+        "interview": "Interview session",
+        "deadline": "Deadline",
+        "other": "Other milestone"
+      },
+      "time": {
+        "passed": "Passed",
+        "daysHoursLeft": "{{days}}d {{hours}}h left",
+        "hoursLeft": "{{hours}}h left"
+      },
+      "notifications": {
+        "reminder": {
+          "title": "Technical task",
+          "body": "Reminder set 24h before the deadline."
+        },
+        "scheduled": {
+          "title": "Timeline",
+          "body": "Timeline event scheduled."
+        },
+        "removed": {
+          "title": "Timeline",
+          "body": "Event removed."
+        },
+        "connecting": {
+          "title": "Calendar",
+          "body": "Connecting calendar..."
+        },
+        "connected": {
+          "title": "Calendar",
+          "body": "Calendar connected."
+        }
+      }
     }
   },
   "footprint": {

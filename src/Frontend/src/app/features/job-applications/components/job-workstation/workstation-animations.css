@@ -57,11 +57,11 @@
 }
 
 /* Role overview card glow */
-.mission-intel-card {
+.role-brief-card {
     @apply relative overflow-hidden;
 }
 
-.mission-intel-card::after {
+.role-brief-card::after {
     content: '';
     @apply absolute -inset-full pointer-events-none;
     background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
@@ -144,7 +144,7 @@
     animation: zoom-in-dock 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Tactical Scrollbars */
+/* Workstation scrollbars */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideMic,
@@ -19,11 +19,21 @@ import {
 } from '@ng-icons/lucide';
 import { FormsModule } from '@angular/forms';
 
-interface Message {
+export interface InterviewSessionMessage {
   id: string;
   sender: 'ai' | 'user';
   text: string;
   timestamp: Date;
+  scenarioId: string;
+}
+
+export interface InterviewScenario {
+  id: 'technical' | 'behavioral' | 'salary';
+  titleKey: string;
+  descriptionKey: string;
+  icon: string;
+  openingPromptKey: string;
+  nextPromptKey: string;
 }
 
 @Component({
@@ -50,10 +60,13 @@ interface Message {
   styleUrls: ['./interview-view.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InterviewViewComponent {
+export class InterviewViewComponent implements OnDestroy {
+  private readonly transloco = inject(TranslocoService);
+
   focusModeChange = output<boolean>();
 
-  messages = signal<Message[]>([]);
+  messages = signal<InterviewSessionMessage[]>([]);
+  currentScenarioId = signal<InterviewScenario['id'] | null>(null);
   responseText = model('');
   isRecording = signal(false);
   isTextMode = signal(false);
@@ -66,47 +79,64 @@ export class InterviewViewComponent {
     density: 78,
   });
 
-  starterCards = [
+  readonly scenarios: InterviewScenario[] = [
     {
       id: 'technical',
-      title: 'Mock Technical Interview',
-      description: 'Focus on your core tech stack and system design.',
+      titleKey: 'workstation.interview.scenarios.technical.title',
+      descriptionKey: 'workstation.interview.scenarios.technical.description',
       icon: 'lucideTerminal',
+      openingPromptKey: 'workstation.interview.scenarios.technical.opening',
+      nextPromptKey: 'workstation.interview.scenarios.technical.next',
     },
     {
       id: 'behavioral',
-      title: 'Behavioral Prep',
-      description: 'Master the STAR method for leadership questions.',
+      titleKey: 'workstation.interview.scenarios.behavioral.title',
+      descriptionKey: 'workstation.interview.scenarios.behavioral.description',
       icon: 'lucideUsers',
+      openingPromptKey: 'workstation.interview.scenarios.behavioral.opening',
+      nextPromptKey: 'workstation.interview.scenarios.behavioral.next',
     },
     {
       id: 'salary',
-      title: 'Salary Negotiation',
-      description: 'Practice high-stakes compensation discussions.',
+      titleKey: 'workstation.interview.scenarios.salary.title',
+      descriptionKey: 'workstation.interview.scenarios.salary.description',
       icon: 'lucideCircleDollarSign',
+      openingPromptKey: 'workstation.interview.scenarios.salary.opening',
+      nextPromptKey: 'workstation.interview.scenarios.salary.next',
     },
   ];
 
-  startSession(type: string) {
-    const starterText =
-      type === 'technical'
-        ? "Let's begin the technical assessment. Can you walk me through your experience with scalable architectures?"
-        : type === 'behavioral'
-          ? 'Great. Tell me about a time you faced a significant conflict within your team.'
-          : "I'm ready. Let's practice the negotiation. What's your expected compensation range for this role?";
+  readonly currentScenario = computed(() =>
+    this.scenarios.find((scenario) => scenario.id === this.currentScenarioId()) ?? null,
+  );
 
+  readonly currentScenarioTitleKey = computed(
+    () => this.currentScenario()?.titleKey ?? 'workstation.interview.readyTitle',
+  );
+
+  readonly currentScenarioNextPromptKey = computed(
+    () => this.currentScenario()?.nextPromptKey ?? 'workstation.interview.session.nextEmpty',
+  );
+
+  readonly lastPrompt = computed(() => {
+    const lastAiMessage = [...this.messages()].reverse().find((message) => message.sender === 'ai');
+    return lastAiMessage?.text ?? this.transloco.translate('workstation.interview.session.noPrompt');
+  });
+
+  startSession(type: InterviewScenario['id']) {
+    const scenario = this.scenarios.find((item) => item.id === type);
+    if (!scenario) return;
+
+    this.currentScenarioId.set(scenario.id);
     this.messages.set([
       {
-        id: '1',
+        id: crypto.randomUUID(),
         sender: 'ai',
-        text: starterText,
+        text: this.transloco.translate(scenario.openingPromptKey),
         timestamp: new Date(),
+        scenarioId: scenario.id,
       },
     ]);
-
-    // Auto-enter Focus Mode when session starts
-    this.isFocusMode.set(true);
-    this.toggleParentFocus(true);
   }
 
   // Store timeout IDs for cleanup
@@ -125,7 +155,7 @@ export class InterviewViewComponent {
         if (this.isRecording()) {
           this.addMessage(
             'user',
-            'I believe scalability is about decoupled services and efficient data flow.',
+            this.transloco.translate('workstation.interview.mock.voiceAnswer'),
           );
           this.isRecording.set(false);
 
@@ -133,7 +163,7 @@ export class InterviewViewComponent {
           const timeout2 = setTimeout(() => {
             this.addMessage(
               'ai',
-              'Interesting. How would you handle state synchronization across those decoupled services?',
+              this.transloco.translate('workstation.interview.mock.followUp'),
             );
           }, 1000);
           this.pendingTimeouts.push(timeout2);
@@ -161,7 +191,9 @@ export class InterviewViewComponent {
     const timeout = setTimeout(() => {
       this.addMessage(
         'ai',
-        'That sounds like a solid approach. Can you elaborate on how you would measure the success of that strategy?',
+        this.currentScenario()
+          ? this.transloco.translate(this.currentScenario()!.nextPromptKey)
+          : this.transloco.translate('workstation.interview.mock.followUp'),
       );
     }, 1500);
     this.pendingTimeouts.push(timeout);
@@ -173,6 +205,7 @@ export class InterviewViewComponent {
     this.pendingTimeouts = [];
 
     this.messages.set([]);
+    this.currentScenarioId.set(null);
     this.isRecording.set(false);
     this.isFocusMode.set(false);
     this.toggleParentFocus(false);
@@ -187,14 +220,20 @@ export class InterviewViewComponent {
     this.focusModeChange.emit(active);
   }
 
+  ngOnDestroy(): void {
+    this.pendingTimeouts.forEach((timeout) => clearTimeout(timeout));
+  }
+
   private addMessage(sender: 'ai' | 'user', text: string) {
+    const scenarioId = this.currentScenarioId() ?? 'technical';
     this.messages.update((msgs) => [
       ...msgs,
       {
-        id: Math.random().toString(36).substring(7),
+        id: crypto.randomUUID(),
         sender,
         text,
         timestamp: new Date(),
+        scenarioId,
       },
     ]);
 

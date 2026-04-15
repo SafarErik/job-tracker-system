@@ -10,14 +10,14 @@ import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
 import { provideIcons } from '@ng-icons/core';
-import { lucideX, lucideSettings, lucideTrash2, lucideSave, lucideAlertCircle } from '@ng-icons/lucide';
+import { lucideX, lucideSettings, lucideTrash2, lucideSave } from '@ng-icons/lucide';
 import { UiStateService } from '../../../../../core/services/ui-state.service';
 import { JobApplicationStore } from '../../../services/job-application.store';
 import { JobApplicationStatus } from '../../../models/application-status.enum';
 import { JobPriority } from '../../../models/job-priority.enum';
 import { JobType } from '../../../models/job-type.enum';
-import { getStatusStyle } from '../../../models/status-styles.util';
 import { toast } from 'ngx-sonner';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-job-settings-sheet',
@@ -32,14 +32,14 @@ import { toast } from 'ngx-sonner';
         ...BrnSelectImports,
         ...HlmIconImports,
         ...BrnSheetImports,
+        TranslocoPipe,
     ],
     providers: [
         provideIcons({
             lucideX,
             lucideSettings,
             lucideTrash2,
-            lucideSave,
-            lucideAlertCircle
+            lucideSave
         })
     ],
     templateUrl: './job-settings-sheet.component.html',
@@ -47,6 +47,7 @@ import { toast } from 'ngx-sonner';
 })
 export class JobSettingsSheetComponent {
     private fb = inject(FormBuilder);
+    private transloco = inject(TranslocoService);
     public uiState = inject(UiStateService);
     public store = inject(JobApplicationStore);
 
@@ -60,8 +61,7 @@ export class JobSettingsSheetComponent {
         salaryMax: [''],
         currency: ['USD'],
         jobType: [null, Validators.required],
-        workplaceType: ['Remote'],
-        notes: ['']
+        workplaceType: ['Remote']
     });
 
     // Expose Enums to Template
@@ -69,34 +69,34 @@ export class JobSettingsSheetComponent {
     JobPriority = JobPriority;
 
     statusOptions = [
-        { value: JobApplicationStatus.Applied, label: getStatusStyle(JobApplicationStatus.Applied).label },
-        { value: JobApplicationStatus.PhoneScreen, label: getStatusStyle(JobApplicationStatus.PhoneScreen).label },
-        { value: JobApplicationStatus.TechnicalTask, label: getStatusStyle(JobApplicationStatus.TechnicalTask).label },
-        { value: JobApplicationStatus.Interviewing, label: getStatusStyle(JobApplicationStatus.Interviewing).label },
-        { value: JobApplicationStatus.Offer, label: getStatusStyle(JobApplicationStatus.Offer).label },
-        { value: JobApplicationStatus.Accepted, label: getStatusStyle(JobApplicationStatus.Accepted).label },
-        { value: JobApplicationStatus.Rejected, label: getStatusStyle(JobApplicationStatus.Rejected).label },
-        { value: JobApplicationStatus.Ghosted, label: getStatusStyle(JobApplicationStatus.Ghosted).label },
+        { value: JobApplicationStatus.Applied, labelKey: 'workstation.status.Applied' },
+        { value: JobApplicationStatus.PhoneScreen, labelKey: 'workstation.status.PhoneScreen' },
+        { value: JobApplicationStatus.TechnicalTask, labelKey: 'workstation.status.TechnicalTask' },
+        { value: JobApplicationStatus.Interviewing, labelKey: 'workstation.status.Interviewing' },
+        { value: JobApplicationStatus.Offer, labelKey: 'workstation.status.Offer' },
+        { value: JobApplicationStatus.Accepted, labelKey: 'workstation.status.Accepted' },
+        { value: JobApplicationStatus.Rejected, labelKey: 'workstation.status.Rejected' },
+        { value: JobApplicationStatus.Ghosted, labelKey: 'workstation.status.Ghosted' },
     ];
 
     priorityOptions = [
-        { value: JobPriority.Low, label: 'Low' },
-        { value: JobPriority.Medium, label: 'Medium' },
-        { value: JobPriority.High, label: 'High' },
+        { value: JobPriority.Low, labelKey: 'workstation.priority.low' },
+        { value: JobPriority.Medium, labelKey: 'workstation.priority.medium' },
+        { value: JobPriority.High, labelKey: 'workstation.priority.high' },
     ];
 
     locationOptions = [
-        { value: 'Remote', label: 'Remote' },
-        { value: 'Hybrid', label: 'Hybrid' },
-        { value: 'On-site', label: 'On-site' },
+        { value: 'Remote', labelKey: 'workstation.roleDetails.workplace.remote' },
+        { value: 'Hybrid', labelKey: 'workstation.roleDetails.workplace.hybrid' },
+        { value: 'On-site', labelKey: 'workstation.roleDetails.workplace.onsite' },
     ];
 
     jobTypeOptions = [
-        { value: JobType.FullTime, label: 'Full-Time' },
-        { value: JobType.PartTime, label: 'Part-Time' },
-        { value: JobType.Internship, label: 'Internship' },
-        { value: JobType.Contract, label: 'Contract' },
-        { value: JobType.Freelance, label: 'Freelance' },
+        { value: JobType.FullTime, labelKey: 'workstation.roleDetails.jobType.fullTime' },
+        { value: JobType.PartTime, labelKey: 'workstation.roleDetails.jobType.partTime' },
+        { value: JobType.Internship, labelKey: 'workstation.roleDetails.jobType.internship' },
+        { value: JobType.Contract, labelKey: 'workstation.roleDetails.jobType.contract' },
+        { value: JobType.Freelance, labelKey: 'workstation.roleDetails.jobType.freelance' },
     ];
 
     constructor() {
@@ -112,8 +112,7 @@ export class JobSettingsSheetComponent {
                     salaryMin: app.baseSalary,
                     salaryMax: app.salaryOffer,
                     jobType: app.jobType,
-                    workplaceType: app.workplaceType || 'Remote',
-                    notes: app.description
+                    workplaceType: app.workplaceType || 'Remote'
                 });
             }
         });
@@ -132,12 +131,13 @@ export class JobSettingsSheetComponent {
                     salaryOffer: this.form.get('salaryMax')?.value === '' || this.form.get('salaryMax')?.value == null ? undefined : Number(this.form.get('salaryMax')?.value),
                     currency: this.form.get('currency')?.value,
                     jobType: this.form.get('jobType')?.value,
-                    workplaceType: this.form.get('workplaceType')?.value,
-                    description: this.form.get('notes')?.value
+                    workplaceType: this.form.get('workplaceType')?.value
                 };
 
                 this.store.updateApplication(app.id, changes);
-                toast.success('Settings Updated', { description: 'Changes saved successfully.' });
+                toast.success(this.transloco.translate('workstation.roleDetails.notifications.saved.title'), {
+                    description: this.transloco.translate('workstation.roleDetails.notifications.saved.body')
+                });
                 this.uiState.closeJobSettings();
             }
         }
@@ -146,7 +146,7 @@ export class JobSettingsSheetComponent {
     delete() {
         const app = this.store.selectedApplication();
         if (app) {
-            if (confirm(`Are you sure you want to delete the application for ${app.companyName}?`)) {
+            if (confirm(this.transloco.translate('workstation.roleDetails.deleteConfirm', { company: app.companyName }))) {
                 this.store.deleteApplication(app.id);
                 this.uiState.closeJobSettings();
             }

@@ -4,6 +4,7 @@ import { WorkplaceType } from './workplace-type.enum';
 import { JobPriority } from './job-priority.enum';
 import { Currency } from './currency.enum';
 import { CompanyContact } from '../../../core/models/company-contact.model';
+import { FitReview } from '../../../core/models/fit-review.model';
 
 // ── Read DTO ─────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ export interface JobApplication {
   // AI-generated fields
   generatedCoverLetter?: string;
   aiFeedback?: string;
+  fitReview?: FitReview | null;
   matchScore: number;
   aiGoodPoints: string[];
   aiGaps: string[];

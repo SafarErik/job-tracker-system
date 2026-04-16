@@ -817,6 +817,18 @@
           "label": "Illeszkedés elemzése",
           "description": "Szerepspecifikus hiányok és következő lépések készítése."
         },
+        "improveBrief": {
+          "label": "Job brief javítása",
+          "description": "A beillesztett szerepleírást a Horizon tisztítja és strukturálja."
+        },
+        "openReview": {
+          "label": "Fit review megnyitása",
+          "description": "A teljes AI által generált szerepreview megnyitása."
+        },
+        "simulateTopGap": {
+          "label": "Fő hiány szimulálása",
+          "description": "Pontszám-emelkedés előnézete a legfontosabb hiány alapján."
+        },
         "generateResume": {
           "label": "CV piszkozat generálása",
           "description": "Dokumentumok megnyitása és célzott CV piszkozat készítése."
@@ -933,6 +945,7 @@
       "pasteManually": "Szöveg beillesztése kézzel",
       "jobUrl": "Álláshirdetés URL beillesztése...",
       "autoFill": "Automatikus kitöltés URL-ből",
+      "autoFillOutOfScope": "Az URL import ebben a verzióban nincs bekapcsolva. Illeszd be a hirdetés szövegét, és a Horizon letisztítja.",
       "overview": "Szerepkör áttekintése",
       "priority": "Prioritás",
       "matchScore": "Illeszkedési pontszám",
@@ -940,8 +953,27 @@
       "gapAnalysis": "Hiányelemzés",
       "refresh": "Elemzés frissítése",
       "simulate": "Javítás szimulálása",
+      "simulationActive": "Szimuláció aktív erre: {{gap}}.",
       "insights": "AI útmutatás",
       "insightsEmpty": "Elemezd az illeszkedést, hogy szerepspecifikus hiányokat és következő lépéseket kapj.",
+      "review": {
+        "title": "Fit review",
+        "summary": "Review összefoglaló",
+        "signals": "Fontos jelek",
+        "open": "Teljes review megnyitása",
+        "ariaLabel": "Fit review",
+        "generated": "Generálva: {{date}}",
+        "fullReview": "Teljes review",
+        "nextActions": "Következő lépések",
+        "addCheckpoint": "Tanulási checkpoint",
+        "copy": "Review másolása",
+        "copied": "Másolva"
+      },
+      "learning": {
+        "title": "Tanulási terv",
+        "topics": "Témák",
+        "searchQueries": "Keresési kulcsszavak"
+      },
       "brief": {
         "title": "Állásösszefoglaló",
         "overview": "Áttekintés",
@@ -956,7 +988,13 @@
       "editor": {
         "title": "Állásleírás szerkesztése",
         "body": "Illeszd be a szerepleírást. A Horizon ezt használja az illeszkedéshez, dokumentumokhoz és interjúútmutatáshoz.",
-        "placeholder": "Illeszd be az állásleírást, feladatokat, elvárásokat és hasznos kontextust..."
+        "placeholder": "Illeszd be az állásleírást, feladatokat, elvárásokat és hasznos kontextust...",
+        "improve": "Javítás AI-val",
+        "refining": "Javítás...",
+        "previewTitle": "AI cleanup előnézet",
+        "previewEmpty": "Illeszd be a hirdetést, majd futtasd az AI cleanupot, hogy mentés előtt lásd a strukturált briefet.",
+        "changes": "Változások",
+        "applyRefined": "Alkalmazás és mentés"
       },
       "score": {
         "strong": "Erős illeszkedés",

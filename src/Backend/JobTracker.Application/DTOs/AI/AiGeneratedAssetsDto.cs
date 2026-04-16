@@ -1,3 +1,5 @@
+using JobTracker.Core.Models;
+
 namespace JobTracker.Application.DTOs.AI;
 
 /// <summary>
@@ -10,6 +12,7 @@ public class AiGeneratedAssetsDto
     public List<string> Gaps { get; set; } = new();
     public List<string> Advice { get; set; } = new();
     public string AiFeedback { get; set; } = string.Empty;
+    public FitReview? FitReview { get; set; }
     public string TailoredResume { get; set; } = string.Empty;
     public string TailoredCoverLetter { get; set; } = string.Empty;
 }

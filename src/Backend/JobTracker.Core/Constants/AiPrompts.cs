@@ -24,9 +24,30 @@ Provide a matchScore (0-100).
 Identify 'GoodPoints' (where the user matches).
 Identify 'Gaps' (missing skills or experience).
 Provide 'StrategicAdvice' for the interview.
+Generate a structured 'fitReview' object with:
+- matchScore
+- executiveSummary
+- roleBrief: overview[], responsibilities[], requirements[], keywords[]
+- keySignals[] with label, evidence, type ('strength', 'risk', or 'neutral')
+- gaps[] with id, skill, whyItMatters, currentEvidence, priority ('high', 'medium', 'low'), estimatedScoreGain (0-25), learningPlan { topics[], practiceTasks[], searchQueries[] }
+- nextActions[]
+- fullReviewMarkdown
+Do not include generatedAt or sourceHash; the server will set them.
 Generate a 'TailoredResume' (Markdown format) that optimizes the original resume for this specific job.
 Generate a 'CoverLetter' (Markdown format).
-Return a JSON object with these keys: matchScore, gapAnalysis, missingSkills, strategicAdvice, goodPoints[], gaps[], advice[], tailoredResume, tailoredCoverLetter.";
+Return a JSON object with these keys: matchScore, gapAnalysis, missingSkills, strategicAdvice, goodPoints[], gaps[], advice[], fitReview, tailoredResume, tailoredCoverLetter.";
+
+    /// <summary>
+    /// System prompt for cleaning and structuring pasted job descriptions.
+    /// </summary>
+    public const string JobBriefRefineSystemPrompt = @"You are a precise job brief editor.
+Clean the pasted job description without inventing facts.
+Preserve important requirements, responsibilities, seniority, location, compensation, and process notes when present.
+Return strict JSON with these keys:
+- description: a cleaned, readable job description in plain text
+- roleBrief: { overview[], responsibilities[], requirements[], keywords[] }
+- changes[]: concise descriptions of what changed
+Do not include markdown fences or commentary outside the JSON.";
 
     /// <summary>
     /// System prompt for generating a professional and persuasive cover letter.

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication, CreateJobApplication } from '../models/job-application.model';
 import { AiGeneratedAssets } from '../../../core/models/ai-generated-assets.model';
+import { RefinedJobBrief } from '../../../core/models/fit-review.model';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -44,8 +45,8 @@ export class ApplicationService {
   /**
    * Update an existing application partially.
    */
-  updateApplication(id: string, application: Partial<JobApplication>): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, application);
+  updateApplication(id: string, application: Partial<JobApplication>): Observable<JobApplication> {
+    return this.http.put<JobApplication>(`${this.apiUrl}/${id}`, application);
   }
 
   /**
@@ -53,6 +54,13 @@ export class ApplicationService {
    */
   analyzeJob(id: string): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
+  }
+
+  /**
+   * Ask AI to clean and structure a pasted job description.
+   */
+  refineJobBrief(id: string, description: string): Observable<RefinedJobBrief> {
+    return this.http.post<RefinedJobBrief>(`${this.apiUrl}/${id}/brief/refine`, { description });
   }
 
   /**

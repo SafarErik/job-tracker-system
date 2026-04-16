@@ -31,6 +31,7 @@ import { TimelineViewComponent } from './timeline-view/timeline-view.component';
 import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
 import { UiStateService } from '../../../../core/services/ui-state.service';
 import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
+import { FitGap, RefinedJobBrief } from '../../../../core/models/fit-review.model';
 
 // Spartan UI
 // ...
@@ -77,6 +78,9 @@ import {
   lucideSettings,
   lucideSearch,
   lucideGavel,
+  lucideMaximize2,
+  lucideTrendingUp,
+  lucideWand2,
 } from '@ng-icons/lucide';
 
 type WorkstationPhase = 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline';
@@ -149,6 +153,9 @@ export interface WorkstationCommandAction {
       lucideSettings,
       lucideSearch,
       lucideGavel,
+      lucideMaximize2,
+      lucideTrendingUp,
+      lucideWand2,
     }),
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -179,6 +186,9 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
 
   simulatedScore = signal<number | null>(null);
+  simulatedGap = signal<string | null>(null);
+  refinedBriefPreview = signal<RefinedJobBrief | null>(null);
+  openReviewRequest = signal(0);
 
   // Computed: Line Numbers
   lineNumbers = computed(() => {
@@ -233,6 +243,18 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   readonly commandActions = computed<WorkstationCommandAction[]>(() => [
     {
+      id: 'improve-job-brief',
+      labelKey: 'workstation.command.actions.improveBrief.label',
+      descriptionKey: 'workstation.command.actions.improveBrief.description',
+      icon: 'lucideWand2',
+      phase: this.Phase.Strategy,
+      disabled: () => this.service.isProcessing(),
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.startManualPaste();
+      },
+    },
+    {
       id: 'analyze-fit',
       labelKey: 'workstation.command.actions.analyzeFit.label',
       descriptionKey: 'workstation.command.actions.analyzeFit.description',
@@ -242,6 +264,31 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       run: () => {
         this.setPhase(this.Phase.Strategy);
         this.triggerAnalysis();
+      },
+    },
+    {
+      id: 'open-fit-review',
+      labelKey: 'workstation.command.actions.openReview.label',
+      descriptionKey: 'workstation.command.actions.openReview.description',
+      icon: 'lucideMaximize2',
+      phase: this.Phase.Strategy,
+      disabled: () => !this.store.selectedApplication()?.fitReview,
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.openReviewRequest.update((value) => value + 1);
+      },
+    },
+    {
+      id: 'simulate-top-gap',
+      labelKey: 'workstation.command.actions.simulateTopGap.label',
+      descriptionKey: 'workstation.command.actions.simulateTopGap.description',
+      icon: 'lucideTrendingUp',
+      phase: this.Phase.Strategy,
+      disabled: () => !this.store.selectedApplication()?.fitReview?.gaps?.length,
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        const gap = this.store.selectedApplication()?.fitReview?.gaps?.[0];
+        if (gap) this.simulateImprovement(gap);
       },
     },
     {
@@ -301,12 +348,15 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     });
   });
 
-  simulateImprovement(skill: string): void {
+  simulateImprovement(gap: FitGap | string): void {
     const app = this.store.selectedApplication();
     if (app) {
+      const skill = typeof gap === 'string' ? gap : gap.skill;
+      const gain = typeof gap === 'string' ? 8 : gap.estimatedScoreGain || 0;
       const currentScore = app.matchScore || 0;
-      const newScore = Math.min(100, currentScore + 8);
+      const newScore = Math.min(100, currentScore + Math.max(1, gain));
       this.simulatedScore.set(newScore);
+      this.simulatedGap.set(skill);
       this.notificationService.info(
         this.transloco.translate('workstation.strategy.notifications.simulation.body', {
           skill,
@@ -316,7 +366,10 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       );
 
       // Auto-reset after some time
-      setTimeout(() => this.simulatedScore.set(null), 5000);
+      setTimeout(() => {
+        this.simulatedScore.set(null);
+        this.simulatedGap.set(null);
+      }, 5000);
     }
   }
 
@@ -527,11 +580,13 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const current = this.store.selectedApplication()?.description || '';
     this.isPastingManually.set(true);
     this.manualPasteText.set(current);
+    this.refinedBriefPreview.set(null);
   }
 
   cancelManualPaste(): void {
     this.isPastingManually.set(false);
     this.manualPasteText.set('');
+    this.refinedBriefPreview.set(null);
   }
 
   saveManualPaste(): void {
@@ -547,5 +602,32 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
         this.transloco.translate('workstation.strategy.jobContext'),
       );
     }
+  }
+
+  refineBrief(description: string): void {
+    const app = this.store.selectedApplication();
+    const text = description.trim();
+    if (!app || !text) return;
+
+    this.store.refineJobBrief(app.id, text).subscribe((result) => {
+      if (result) {
+        this.refinedBriefPreview.set(result);
+      }
+    });
+  }
+
+  applyRefinedBrief(description: string): void {
+    const app = this.store.selectedApplication();
+    const text = description.trim();
+    if (!app || !text) return;
+
+    this.store.updateApplication(app.id, { description: text });
+    this.isPastingManually.set(false);
+    this.manualPasteText.set('');
+    this.refinedBriefPreview.set(null);
+    this.notificationService.success(
+      this.transloco.translate('workstation.strategy.notifications.descriptionSaved'),
+      this.transloco.translate('workstation.strategy.jobContext'),
+    );
   }
 }

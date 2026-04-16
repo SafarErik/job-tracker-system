@@ -2,6 +2,8 @@ using JobTracker.Core.Enums;
 using JobTracker.Application.DTOs.Companies;
 using JobTracker.Application.DTOs.JobApplications;
 using JobTracker.Core.Entities;
+using JobTracker.Core.Models;
+using System.Text.Json;
 
 namespace JobTracker.Application.Mappers;
 
@@ -10,6 +12,12 @@ namespace JobTracker.Application.Mappers;
 /// </summary>
 public static class JobApplicationMapper
 {
+    private static readonly JsonSerializerOptions FitReviewJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true
+    };
+
     /// <summary>
     /// Maps a JobApplication entity to a detailed JobApplicationDto.
     /// Parses AI feedback strings into structured lists.
@@ -24,6 +32,7 @@ public static class JobApplicationMapper
             Description = app.Description,
             GeneratedCoverLetter = app.GeneratedCoverLetter,
             AiFeedback = app.AiFeedback,
+            FitReview = DeserializeFitReview(app.FitReviewJson),
             MatchScore = app.MatchScore,
             AiGoodPoints = new List<string>(),
             AiGaps = new List<string>(),
@@ -144,7 +153,11 @@ public static class JobApplicationMapper
         if (dto.Position != null) entity.Position = dto.Position;
         if (dto.CompanyId.HasValue) entity.CompanyId = dto.CompanyId.Value;
         if (dto.JobUrl != null) entity.JobUrl = dto.JobUrl;
-        if (dto.Description != null) entity.Description = dto.Description;
+        if (dto.Description != null && dto.Description != entity.Description)
+        {
+            entity.Description = dto.Description;
+            entity.FitReviewJson = null;
+        }
         if (dto.Status.HasValue) entity.Status = dto.Status.Value;
         if (dto.JobType.HasValue) entity.JobType = dto.JobType.Value;
         if (dto.WorkplaceType.HasValue) entity.WorkplaceType = dto.WorkplaceType.Value;
@@ -157,5 +170,19 @@ public static class JobApplicationMapper
         if (dto.Currency.HasValue) entity.Currency = dto.Currency.Value;
         if (dto.DocumentIdProvided) entity.DocumentId = dto.DocumentId;
         if (dto.PrimaryContactId.HasValue) entity.PrimaryContactId = dto.PrimaryContactId;
+    }
+
+    private static FitReview? DeserializeFitReview(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return null;
+
+        try
+        {
+            return JsonSerializer.Deserialize<FitReview>(json, FitReviewJsonOptions);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 }

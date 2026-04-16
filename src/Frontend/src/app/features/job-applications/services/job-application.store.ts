@@ -5,6 +5,7 @@ import { ApplicationService } from './application.service';
 import { tap, finalize, map } from 'rxjs/operators';
 import { catchError, of } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
+import { RefinedJobBrief } from '../../../core/models/fit-review.model';
 
 export interface JobApplicationState {
   applications: JobApplication[];
@@ -31,6 +32,7 @@ export class JobApplicationStore {
   private readonly _currentJob = signal<JobApplication | null>(null);
   private readonly _isLoading = signal<boolean>(false);
   private readonly _isAnalyzing = signal<boolean>(false);
+  private readonly _isRefiningBrief = signal<boolean>(false);
   private readonly _isGeneratingAsset = signal<boolean>(false);
   private readonly _isProcessing = signal<boolean>(false);
   private readonly _tailoredResume = signal<string | null>(null);
@@ -47,6 +49,7 @@ export class JobApplicationStore {
   readonly currentJob = this._currentJob.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly isAnalyzing = this._isAnalyzing.asReadonly();
+  readonly isRefiningBrief = this._isRefiningBrief.asReadonly();
   readonly isGeneratingAsset = this._isGeneratingAsset.asReadonly();
   readonly isProcessing = this._isProcessing.asReadonly();
   readonly tailoredResume = this._tailoredResume.asReadonly();
@@ -219,7 +222,10 @@ export class JobApplicationStore {
     if (appIndex === -1) return;
 
     const originalApp = originalApps[appIndex];
-    const updatedApp = { ...originalApp, ...changes };
+    const descriptionChanged =
+      changes.description !== undefined && changes.description !== originalApp.description;
+    const updatedApp = { ...originalApp, ...changes, fitReview: descriptionChanged ? null : originalApp.fitReview };
+    const payload = { ...changes, concurrencyToken: originalApp.concurrencyToken };
 
     // Optimistic Update
     this._applications.update((apps) => {
@@ -227,18 +233,59 @@ export class JobApplicationStore {
       newApps[appIndex] = updatedApp;
       return newApps;
     });
+    const originalCurrent = this._currentJob();
+    if (originalCurrent?.id === id) {
+      this._currentJob.set({
+        ...originalCurrent,
+        ...changes,
+        fitReview: descriptionChanged ? null : originalCurrent.fitReview,
+      });
+    }
 
-    this.applicationService.updateApplication(id, changes).subscribe({
-      next: () => {
-        // Success, nothing to do (already updated)
+    this.applicationService.updateApplication(id, payload).subscribe({
+      next: (serverApp) => {
+        this._applications.update((apps) => apps.map((app) => (app.id === id ? serverApp : app)));
+        if (this._currentJob()?.id === id) {
+          this._currentJob.set(serverApp);
+        }
       },
       error: (err) => {
         console.error('Failed to update application', err);
         this.notificationService.error('Update failed, reverting changes', 'Error');
         // Revert
         this._applications.set(originalApps);
+        this._currentJob.set(originalCurrent);
       },
     });
+  }
+
+  /**
+   * Refine a pasted job description into a cleaned source and structured brief preview.
+   */
+  refineJobBrief(id: string, description: string) {
+    this._isRefiningBrief.set(true);
+    this._isProcessing.set(true);
+    this._error.set(null);
+
+    return this.applicationService.refineJobBrief(id, description).pipe(
+      tap(() => {
+        this.notificationService.success('Job brief refined.', 'Horizon Guide');
+      }),
+      catchError((err) => {
+        console.error('Failed to refine job brief', err);
+        this._error.set('Job brief refinement failed');
+        const message =
+          typeof err?.error === 'string'
+            ? err.error
+            : (err?.error?.message ?? 'Failed to refine job brief');
+        this.notificationService.error(message, 'Error');
+        return of<RefinedJobBrief | null>(null);
+      }),
+      finalize(() => {
+        this._isRefiningBrief.set(false);
+        this._isProcessing.set(false);
+      }),
+    );
   }
 
   /**
@@ -333,6 +380,7 @@ export class JobApplicationStore {
                 aiGaps: res.gaps,
                 aiAdvice: res.advice,
                 aiFeedback: res.aiFeedback,
+                fitReview: res.fitReview,
                 generatedCoverLetter: res.tailoredCoverLetter,
                 tailoredResume: res.tailoredResume,
               }

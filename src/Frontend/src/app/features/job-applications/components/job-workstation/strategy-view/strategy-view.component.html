@@ -1,4 +1,6 @@
-<div class="grid min-h-[calc(100vh-220px)] grid-cols-1 gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 xl:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]">
+<div
+  class="grid min-h-[calc(100vh-220px)] grid-cols-1 gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 xl:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]"
+>
   <section class="flex min-h-0 flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm">
     <div class="flex items-center justify-between border-b border-border bg-background/70 px-5 py-4">
       <div>
@@ -9,53 +11,152 @@
           {{ 'workstation.strategy.brief.title' | transloco }}
         </h2>
       </div>
-      @if (descriptionLines().length > 0) {
-        <button
-          type="button"
-          (click)="startManualPaste.emit()"
-          class="rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-        >
-          {{ 'workstation.strategy.editDescription' | transloco }}
-        </button>
-      }
+      <div class="flex items-center gap-2">
+        @if (hasReview()) {
+          <button
+            type="button"
+            (click)="openReview()"
+            class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          >
+            <ng-icon name="lucideMaximize2" class="text-sm"></ng-icon>
+            {{ 'workstation.strategy.review.open' | transloco }}
+          </button>
+        }
+        @if (descriptionLines().length > 0) {
+          <button
+            type="button"
+            (click)="startManualPaste.emit()"
+            class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          >
+            <ng-icon name="lucideWand2" class="text-sm"></ng-icon>
+            {{ 'workstation.strategy.editDescription' | transloco }}
+          </button>
+        }
+      </div>
     </div>
 
     <div class="flex-1 overflow-y-auto bg-background/40 p-5">
       @if (isPastingManually()) {
-        <div class="flex min-h-[620px] flex-col rounded-lg border border-border bg-card shadow-sm">
-          <div class="border-b border-border px-5 py-4">
-            <h3 class="text-sm font-semibold text-foreground">
-              {{ 'workstation.strategy.editor.title' | transloco }}
-            </h3>
-            <p class="mt-1 text-xs text-muted-foreground">
-              {{ 'workstation.strategy.editor.body' | transloco }}
-            </p>
+        <div class="grid min-h-[620px] gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div class="flex min-h-[520px] flex-col rounded-lg border border-border bg-card shadow-sm">
+            <div class="border-b border-border px-5 py-4">
+              <h3 class="text-sm font-semibold text-foreground">
+                {{ 'workstation.strategy.editor.title' | transloco }}
+              </h3>
+              <p class="mt-1 text-xs text-muted-foreground">
+                {{ 'workstation.strategy.editor.body' | transloco }}
+              </p>
+            </div>
+            <textarea
+              [(ngModel)]="manualPasteText"
+              (ngModelChange)="clearRefinedBrief.emit()"
+              [placeholder]="'workstation.strategy.editor.placeholder' | transloco"
+              class="min-h-[430px] flex-1 resize-none border-0 bg-transparent p-5 text-sm leading-7 text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
+            ></textarea>
+            <div class="flex flex-wrap items-center justify-end gap-3 border-t border-border bg-background/70 px-5 py-4">
+              <button
+                type="button"
+                (click)="cancelManualPaste.emit()"
+                class="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {{ 'common.actions.cancel' | transloco }}
+              </button>
+              <button
+                type="button"
+                (click)="requestBriefRefinement()"
+                [disabled]="isRefiningBrief() || !manualPasteText().trim()"
+                class="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                @if (isRefiningBrief()) {
+                  <ng-icon name="lucideLoader2" class="animate-spin text-base"></ng-icon>
+                  {{ 'workstation.strategy.editor.refining' | transloco }}
+                } @else {
+                  <ng-icon name="lucideWand2" class="text-base"></ng-icon>
+                  {{ 'workstation.strategy.editor.improve' | transloco }}
+                }
+              </button>
+              <button
+                type="button"
+                (click)="saveManualPaste.emit()"
+                [disabled]="!manualPasteText().trim()"
+                class="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {{ 'common.actions.saveChanges' | transloco }}
+              </button>
+            </div>
           </div>
-          <textarea
-            [(ngModel)]="manualPasteText"
-            [placeholder]="'workstation.strategy.editor.placeholder' | transloco"
-            class="min-h-[460px] flex-1 resize-none border-0 bg-transparent p-5 text-sm leading-7 text-foreground outline-none placeholder:text-muted-foreground focus:ring-0"
-          ></textarea>
-          <div class="flex items-center justify-end gap-3 border-t border-border bg-background/70 px-5 py-4">
-            <button
-              type="button"
-              (click)="cancelManualPaste.emit()"
-              class="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              {{ 'common.actions.cancel' | transloco }}
-            </button>
-            <button
-              type="button"
-              (click)="saveManualPaste.emit()"
-              [disabled]="!manualPasteText().trim()"
-              class="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {{ 'common.actions.saveChanges' | transloco }}
-            </button>
-          </div>
+
+          <aside class="rounded-lg border border-border bg-card p-5 shadow-sm">
+            <div class="flex items-center gap-2">
+              <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+              <h3 class="text-sm font-semibold text-foreground">
+                {{ 'workstation.strategy.editor.previewTitle' | transloco }}
+              </h3>
+            </div>
+
+            @if (refinedBriefPreview(); as preview) {
+              <div class="mt-5 space-y-5">
+                <section>
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    {{ 'workstation.strategy.brief.overview' | transloco }}
+                  </p>
+                  <div class="mt-3 space-y-2 text-sm leading-6 text-muted-foreground">
+                    @for (line of preview.roleBrief.overview; track line) {
+                      <p>{{ line }}</p>
+                    }
+                  </div>
+                </section>
+
+                <section>
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    {{ 'workstation.strategy.editor.changes' | transloco }}
+                  </p>
+                  <ul class="mt-3 space-y-2">
+                    @for (change of preview.changes; track change) {
+                      <li class="flex gap-2 text-xs leading-5 text-muted-foreground">
+                        <span class="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></span>
+                        <span>{{ change }}</span>
+                      </li>
+                    }
+                  </ul>
+                </section>
+
+                <button
+                  type="button"
+                  (click)="applyPreview()"
+                  class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  <ng-icon name="lucideCheckCircle2" class="text-base"></ng-icon>
+                  {{ 'workstation.strategy.editor.applyRefined' | transloco }}
+                </button>
+              </div>
+            } @else {
+              <p class="mt-4 text-sm leading-relaxed text-muted-foreground">
+                {{ 'workstation.strategy.editor.previewEmpty' | transloco }}
+              </p>
+            }
+          </aside>
         </div>
       } @else if (descriptionLines().length > 0) {
         <div class="space-y-4">
+          @if (hasReview()) {
+            <div class="rounded-lg border border-primary/20 bg-primary/5 p-5">
+              <div class="flex items-start gap-3">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <ng-icon name="lucideBrain" class="text-lg"></ng-icon>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-foreground">
+                    {{ 'workstation.strategy.review.summary' | transloco }}
+                  </h3>
+                  <p class="mt-2 text-sm leading-7 text-muted-foreground">
+                    {{ fitReview()?.executiveSummary }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+
           <div class="rounded-lg border border-border bg-card p-5">
             <div class="flex items-start gap-3">
               <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -154,36 +255,17 @@
             </p>
 
             <div class="mt-6 space-y-3">
-              <div class="relative">
-                <ng-icon
-                  name="lucideLink"
-                  class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden="true"
-                ></ng-icon>
-                <label for="job-url-input" class="sr-only">{{ 'workstation.strategy.jobUrl' | transloco }}</label>
-                <input
-                  id="job-url-input"
-                  type="text"
-                  [placeholder]="'workstation.strategy.jobUrl' | transloco"
-                  class="h-11 w-full rounded-lg border border-border bg-background pl-10 pr-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/60"
-                />
-              </div>
-
-              <button
-                type="button"
-                class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                <ng-icon name="lucideSparkles" class="text-base"></ng-icon>
-                {{ 'workstation.strategy.autoFill' | transloco }}
-              </button>
-
               <button
                 type="button"
                 (click)="startManualPaste.emit()"
-                class="w-full rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
+                <ng-icon name="lucideWand2" class="text-base"></ng-icon>
                 {{ 'workstation.strategy.pasteManually' | transloco }}
               </button>
+              <p class="text-xs leading-relaxed text-muted-foreground">
+                {{ 'workstation.strategy.autoFillOutOfScope' | transloco }}
+              </p>
             </div>
           </div>
         </div>
@@ -227,6 +309,11 @@
       <p class="mt-4 text-sm leading-relaxed text-muted-foreground">
         {{ 'workstation.strategy.score.body' | transloco }}
       </p>
+      @if (simulatedGap()) {
+        <div class="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs leading-5 text-primary">
+          {{ 'workstation.strategy.simulationActive' | transloco: { gap: simulatedGap() } }}
+        </div>
+      }
       <button
         type="button"
         (click)="triggerAnalysis.emit()"
@@ -243,81 +330,305 @@
       </button>
     </section>
 
-    <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
-      <div class="flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <ng-icon name="lucideBrain" class="text-primary"></ng-icon>
-          <h3 class="text-sm font-semibold text-foreground">
-            {{ 'workstation.strategy.gapAnalysis' | transloco }}
-          </h3>
-        </div>
-        <button
-          type="button"
-          (click)="triggerAnalysis.emit()"
-          class="text-xs font-semibold text-primary transition-colors hover:text-primary/80"
-        >
-          {{ 'workstation.strategy.refresh' | transloco }}
-        </button>
-      </div>
-
-      <div class="mt-4 space-y-3">
-        @for (item of gapAnalysis(); track item.name) {
-          <div
-            class="rounded-lg border p-4"
-            [ngClass]="item.matched ? 'border-primary/20 bg-primary/5' : 'border-destructive/20 bg-destructive/5'"
+    @if (hasReview()) {
+      <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ 'workstation.strategy.review.signals' | transloco }}
+            </h3>
+          </div>
+          <button
+            type="button"
+            (click)="openReview()"
+            class="text-xs font-semibold text-primary transition-colors hover:text-primary/80"
           >
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex gap-3">
-                <span
-                  class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg"
-                  [ngClass]="item.matched ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'"
-                >
-                  <ng-icon [name]="item.matched ? 'lucideCheckCircle2' : 'lucideAlertCircle'" class="text-base"></ng-icon>
-                </span>
-                <div>
-                  <h4 class="text-sm font-semibold text-foreground">{{ item.name }}</h4>
-                  @if (!item.matched && item.suggestion) {
-                    <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ item.suggestion }}</p>
-                  }
-                </div>
-              </div>
-              @if (!item.matched) {
-                <button
-                  type="button"
-                  (click)="simulateImprovement.emit(item.name)"
-                  class="rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                >
-                  {{ 'workstation.strategy.simulate' | transloco }}
-                </button>
-              }
-            </div>
-          </div>
-        } @empty {
-          <div class="rounded-lg border border-dashed border-border bg-background/70 p-5">
-            <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
-              {{ 'workstation.strategy.insights' | transloco }}
-            </div>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {{ 'workstation.strategy.insightsEmpty' | transloco }}
-            </p>
-          </div>
-        }
-      </div>
-    </section>
+            {{ 'workstation.strategy.review.open' | transloco }}
+          </button>
+        </div>
 
-    @if (application()?.aiFeedback) {
+        <div class="mt-4 space-y-3">
+          @for (signal of keySignals().slice(0, 4); track signal.label) {
+            <div class="rounded-lg border p-3" [ngClass]="signalClasses(signal)">
+              <p class="text-sm font-semibold text-foreground">{{ signal.label }}</p>
+              <p class="mt-1 text-xs leading-5 text-muted-foreground">{{ signal.evidence }}</p>
+            </div>
+          }
+        </div>
+      </section>
+
       <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
         <div class="flex items-center gap-2">
-          <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+          <ng-icon name="lucideGraduationCap" class="text-primary"></ng-icon>
           <h3 class="text-sm font-semibold text-foreground">
-            {{ 'workstation.strategy.insights' | transloco }}
+            {{ 'workstation.strategy.learning.title' | transloco }}
           </h3>
         </div>
-        <p class="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
-          {{ application()?.aiFeedback }}
+
+        <div class="mt-4 space-y-4">
+          @for (gap of topGaps(); track gap.id) {
+            <article class="rounded-lg border border-border bg-background/70 p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h4 class="text-sm font-semibold text-foreground">{{ gap.skill }}</h4>
+                    <span
+                      class="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase"
+                      [ngClass]="gapPriorityClasses(gap.priority)"
+                    >
+                      {{ gap.priority }}
+                    </span>
+                  </div>
+                  <p class="mt-2 text-xs leading-5 text-muted-foreground">{{ gap.whyItMatters }}</p>
+                </div>
+                <button
+                  type="button"
+                  (click)="simulateImprovement.emit(gap)"
+                  class="shrink-0 rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                >
+                  +{{ gap.estimatedScoreGain }}
+                  {{ 'workstation.strategy.simulate' | transloco }}
+                </button>
+              </div>
+
+              <div class="mt-4 space-y-3 border-t border-border pt-4">
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    {{ 'workstation.strategy.learning.topics' | transloco }}
+                  </p>
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    @for (topic of gap.learningPlan.topics; track topic) {
+                      <span class="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] text-muted-foreground">
+                        {{ topic }}
+                      </span>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    {{ 'workstation.strategy.learning.searchQueries' | transloco }}
+                  </p>
+                  <ul class="mt-2 space-y-1">
+                    @for (query of gap.learningPlan.searchQueries.slice(0, 2); track query) {
+                      <li class="text-xs leading-5 text-muted-foreground">{{ query }}</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    } @else {
+      <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
+        <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
+          <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+          {{ 'workstation.strategy.insights' | transloco }}
+        </div>
+        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {{ 'workstation.strategy.insightsEmpty' | transloco }}
         </p>
+      </section>
+    }
+
+    @if (!hasReview() && gapAnalysis().length > 0) {
+      <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <ng-icon name="lucideBrain" class="text-primary"></ng-icon>
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ 'workstation.strategy.gapAnalysis' | transloco }}
+            </h3>
+          </div>
+          <button
+            type="button"
+            (click)="triggerAnalysis.emit()"
+            class="text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+          >
+            {{ 'workstation.strategy.refresh' | transloco }}
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-3">
+          @for (item of gapAnalysis(); track item.name) {
+            <div
+              class="rounded-lg border p-4"
+              [ngClass]="item.matched ? 'border-primary/20 bg-primary/5' : 'border-destructive/20 bg-destructive/5'"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex gap-3">
+                  <span
+                    class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg"
+                    [ngClass]="item.matched ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'"
+                  >
+                    <ng-icon [name]="item.matched ? 'lucideCheckCircle2' : 'lucideAlertCircle'" class="text-base"></ng-icon>
+                  </span>
+                  <div>
+                    <h4 class="text-sm font-semibold text-foreground">{{ item.name }}</h4>
+                    @if (!item.matched && item.suggestion) {
+                      <p class="mt-1 text-xs leading-relaxed text-muted-foreground">{{ item.suggestion }}</p>
+                    }
+                  </div>
+                </div>
+                @if (!item.matched) {
+                  <button
+                    type="button"
+                    (click)="simulateImprovement.emit(item.name)"
+                    class="rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                  >
+                    {{ 'workstation.strategy.simulate' | transloco }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
       </section>
     }
   </aside>
 </div>
+
+@if (expandedReview(); as review) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6 backdrop-blur-xl animate-in fade-in duration-300"
+    (click)="closeReview()"
+    (keydown.escape)="closeReview()"
+    tabindex="-1"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'workstation.strategy.review.ariaLabel' | transloco"
+  >
+    <div
+      class="flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-lg border border-border bg-card shadow-2xl animate-in zoom-in-95 duration-300"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="flex items-center justify-between gap-4 border-b border-border bg-muted/30 p-6">
+        <div class="flex items-center gap-4">
+          <div class="flex size-12 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+            <ng-icon name="lucideBrain" class="text-2xl"></ng-icon>
+          </div>
+          <div>
+            <h2 class="text-2xl font-semibold tracking-tight text-foreground">
+              {{ 'workstation.strategy.review.title' | transloco }}
+            </h2>
+            <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+              {{ 'workstation.strategy.review.generated' | transloco: { date: review.generatedAt } }}
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="closeReview()"
+          class="flex size-10 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:text-foreground"
+          [attr.aria-label]="'common.actions.close' | transloco"
+        >
+          <ng-icon name="lucideX" class="text-xl"></ng-icon>
+        </button>
+      </header>
+
+      <div class="grid min-h-0 flex-1 gap-0 overflow-hidden lg:grid-cols-[minmax(0,1fr)_360px]">
+        <main class="min-h-0 overflow-y-auto p-8">
+          <section class="rounded-lg border border-primary/20 bg-primary/5 p-5">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+              {{ 'workstation.strategy.review.summary' | transloco }}
+            </p>
+            <p class="mt-3 text-base leading-7 text-foreground">{{ review.executiveSummary }}</p>
+          </section>
+
+          <section class="mt-6">
+            <h3 class="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              {{ 'workstation.strategy.review.fullReview' | transloco }}
+            </h3>
+            <div class="mt-4 whitespace-pre-wrap rounded-lg border border-border bg-background p-5 text-sm leading-7 text-muted-foreground">
+              {{ review.fullReviewMarkdown }}
+            </div>
+          </section>
+        </main>
+
+        <aside class="min-h-0 overflow-y-auto border-l border-border bg-background/60 p-6">
+          <section>
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ 'workstation.strategy.learning.title' | transloco }}
+            </h3>
+            <div class="mt-4 space-y-4">
+              @for (gap of review.gaps; track gap.id) {
+                <article class="rounded-lg border border-border bg-card p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <h4 class="text-sm font-semibold text-foreground">{{ gap.skill }}</h4>
+                    <button
+                      type="button"
+                      (click)="simulateImprovement.emit(gap)"
+                      class="rounded-lg border border-border px-2 py-1 text-[11px] font-semibold text-muted-foreground hover:text-primary"
+                    >
+                      +{{ gap.estimatedScoreGain }}
+                    </button>
+                  </div>
+                  <p class="mt-2 text-xs leading-5 text-muted-foreground">{{ gap.currentEvidence }}</p>
+                  <ul class="mt-3 space-y-1">
+                    @for (task of gap.learningPlan.practiceTasks.slice(0, 2); track task) {
+                      <li class="flex gap-2 text-xs leading-5 text-muted-foreground">
+                        <span class="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></span>
+                        <span>{{ task }}</span>
+                      </li>
+                    }
+                  </ul>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="mt-6 border-t border-border pt-6">
+            <h3 class="text-sm font-semibold text-foreground">
+              {{ 'workstation.strategy.review.nextActions' | transloco }}
+            </h3>
+            <ul class="mt-3 space-y-2">
+              @for (action of review.nextActions; track action) {
+                <li class="text-xs leading-5 text-muted-foreground">{{ action }}</li>
+              }
+            </ul>
+          </section>
+        </aside>
+      </div>
+
+      <footer class="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 p-5">
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            (click)="openAssets.emit(); closeReview()"
+            class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            <ng-icon name="lucideFileText"></ng-icon>
+            {{ 'workstation.actions.generateResumeDraft' | transloco }}
+          </button>
+          <button
+            type="button"
+            (click)="openInterview.emit(); closeReview()"
+            class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          >
+            <ng-icon name="lucideMic2"></ng-icon>
+            {{ 'workstation.actions.prepareInterview' | transloco }}
+          </button>
+          <button
+            type="button"
+            (click)="addLearningCheckpoint.emit(); closeReview()"
+            class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          >
+            <ng-icon name="lucideGraduationCap"></ng-icon>
+            {{ 'workstation.strategy.review.addCheckpoint' | transloco }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          (click)="copyReview()"
+          class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+        >
+          <ng-icon name="lucideClipboard"></ng-icon>
+          {{ copiedReview() ? ('workstation.strategy.review.copied' | transloco) : ('workstation.strategy.review.copy' | transloco) }}
+        </button>
+      </footer>
+    </div>
+  </div>
+}

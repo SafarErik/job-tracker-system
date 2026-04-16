@@ -6,6 +6,7 @@ using Google.GenAI;
 using Google.GenAI.Types;
 using JobTracker.Core.Interfaces;
 using JobTracker.Core.Constants;
+using JobTracker.Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -85,6 +86,9 @@ public partial class GeminiAIService : IAIService
             result.Advice = analysisResult.Advice ?? new List<string>();
             result.TailoredResume = analysisResult.TailoredResume;
             result.TailoredCoverLetter = analysisResult.TailoredCoverLetter;
+            result.FitReview = analysisResult.FitReview;
+
+            HydrateLegacyFieldsFromFitReview(result);
 
             return result;
         }
@@ -115,6 +119,61 @@ Write a professional cover letter for this position.";
 
         var response = await CallGeminiAsync(AiPrompts.CoverLetterSystemPrompt, userPrompt);
         return response ?? "Failed to generate cover letter. Please try again.";
+    }
+
+    public async Task<RefinedJobBriefResult> RefineJobBriefAsync(string jobDescription, string companyName, string position)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(jobDescription))
+            {
+                return RefinedJobBriefResult.CreateError("A job description is required.");
+            }
+
+            var userPrompt = $@"## Company:
+{companyName}
+
+## Position:
+{position}
+
+## Pasted Job Description:
+{jobDescription}";
+
+            var generationConfig = new GenerateContentConfig
+            {
+                ResponseMimeType = "application/json"
+            };
+
+            var textResponse = await CallGeminiAsync(AiPrompts.JobBriefRefineSystemPrompt, userPrompt, generationConfig);
+            if (string.IsNullOrWhiteSpace(textResponse))
+            {
+                return RefinedJobBriefResult.CreateError("AI request failed. The service provided an empty response.");
+            }
+
+            var response = JsonSerializer.Deserialize<GeminiBriefRefineResponse>(textResponse, _jsonOptions);
+            if (response == null)
+            {
+                return RefinedJobBriefResult.CreateError("Failed to parse AI response. The model returned invalid data.");
+            }
+
+            return new RefinedJobBriefResult
+            {
+                Success = true,
+                Description = string.IsNullOrWhiteSpace(response.Description) ? jobDescription.Trim() : response.Description.Trim(),
+                RoleBrief = response.RoleBrief ?? new RoleBrief(),
+                Changes = response.Changes ?? new List<string>()
+            };
+        }
+        catch (JsonException jsonEx)
+        {
+            _logger.LogError(jsonEx, "Failed to deserialize JSON from Gemini brief refinement response");
+            return RefinedJobBriefResult.CreateError("The AI returned a response that could not be parsed.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error in AI brief refinement");
+            return RefinedJobBriefResult.CreateError("An unexpected system error occurred during brief refinement.");
+        }
     }
 
     public async Task<string> OptimizeResumeAsync(string jobDescription, string resumeText)
@@ -183,6 +242,60 @@ Optimize this resume for the job description.";
         }
     }
 
+    private static void HydrateLegacyFieldsFromFitReview(AiAnalysisResult result)
+    {
+        var review = result.FitReview;
+        if (review == null) return;
+
+        if (result.MatchScore == 0 && review.MatchScore > 0)
+        {
+            result.MatchScore = Math.Clamp(review.MatchScore, 0, 100);
+        }
+
+        if (result.GoodPoints.Count == 0)
+        {
+            result.GoodPoints = review.KeySignals
+                .Where(signal => string.Equals(signal.Type, FitSignalTypes.Strength, StringComparison.OrdinalIgnoreCase))
+                .Select(signal => string.IsNullOrWhiteSpace(signal.Evidence) ? signal.Label : $"{signal.Label}: {signal.Evidence}")
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Take(5)
+                .ToList();
+        }
+
+        if (result.Gaps.Count == 0)
+        {
+            result.Gaps = review.Gaps
+                .Select(gap => string.IsNullOrWhiteSpace(gap.WhyItMatters) ? gap.Skill : $"{gap.Skill}: {gap.WhyItMatters}")
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Take(5)
+                .ToList();
+        }
+
+        if (result.Advice.Count == 0)
+        {
+            result.Advice = review.NextActions.Take(5).ToList();
+        }
+
+        if (result.MissingSkills.Count == 0)
+        {
+            result.MissingSkills = review.Gaps
+                .Select(gap => gap.Skill)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Take(5)
+                .ToList();
+        }
+
+        if (string.IsNullOrWhiteSpace(result.StrategicAdvice))
+        {
+            result.StrategicAdvice = review.ExecutiveSummary;
+        }
+
+        if (string.IsNullOrWhiteSpace(result.GapAnalysis))
+        {
+            result.GapAnalysis = review.FullReviewMarkdown;
+        }
+    }
+
     private sealed class GeminiAnalysisResponse
     {
         public int MatchScore { get; set; }
@@ -192,7 +305,15 @@ Optimize this resume for the job description.";
         public List<string>? GoodPoints { get; set; }
         public List<string>? Gaps { get; set; }
         public List<string>? Advice { get; set; }
+        public FitReview? FitReview { get; set; }
         public string? TailoredResume { get; set; }
         public string? TailoredCoverLetter { get; set; }
+    }
+
+    private sealed class GeminiBriefRefineResponse
+    {
+        public string? Description { get; set; }
+        public RoleBrief? RoleBrief { get; set; }
+        public List<string>? Changes { get; set; }
     }
 }

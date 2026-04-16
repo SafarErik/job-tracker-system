@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, model, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -7,14 +7,26 @@ import {
   lucideAlertCircle,
   lucideBrain,
   lucideCheckCircle2,
+  lucideClipboard,
   lucideFileText,
+  lucideGraduationCap,
   lucideListChecks,
   lucideLink,
   lucideLoader2,
+  lucideMaximize2,
+  lucideMic2,
   lucideSparkles,
   lucideTarget,
+  lucideWand2,
+  lucideX,
 } from '@ng-icons/lucide';
 import { JobApplication } from '../../../models/job-application.model';
+import {
+  FitGap,
+  FitKeySignal,
+  RefinedJobBrief,
+  RoleBrief,
+} from '../../../../../core/models/fit-review.model';
 
 export interface GapAnalysisItem {
   name: string;
@@ -37,12 +49,18 @@ export interface ParsedJobBrief {
       lucideAlertCircle,
       lucideBrain,
       lucideCheckCircle2,
+      lucideClipboard,
       lucideFileText,
+      lucideGraduationCap,
       lucideListChecks,
       lucideLink,
       lucideLoader2,
+      lucideMaximize2,
+      lucideMic2,
       lucideSparkles,
       lucideTarget,
+      lucideWand2,
+      lucideX,
     }),
   ],
   templateUrl: './strategy-view.component.html',
@@ -55,15 +73,35 @@ export class StrategyViewComponent {
   isProcessing = input(false);
   gapAnalysis = input.required<GapAnalysisItem[]>();
   simulatedScore = input<number | null>(null);
+  simulatedGap = input<string | null>(null);
   priorityBadgeClass = input.required<string>();
+  refinedBriefPreview = input<RefinedJobBrief | null>(null);
+  isRefiningBrief = input(false);
+  openReviewRequest = input(0);
 
   manualPasteText = model('');
+  isReviewExpanded = signal(false);
+  copiedReview = signal(false);
 
   startManualPaste = output<void>();
   cancelManualPaste = output<void>();
   saveManualPaste = output<void>();
+  refineBrief = output<string>();
+  applyRefinedBrief = output<string>();
+  clearRefinedBrief = output<void>();
   triggerAnalysis = output<void>();
-  simulateImprovement = output<string>();
+  simulateImprovement = output<FitGap | string>();
+  openAssets = output<void>();
+  openInterview = output<void>();
+  addLearningCheckpoint = output<void>();
+
+  constructor() {
+    effect(() => {
+      if (this.openReviewRequest() > 0 && this.application()?.fitReview) {
+        this.isReviewExpanded.set(true);
+      }
+    });
+  }
 
   readonly descriptionLines = computed(() => {
     const description = this.application()?.description;
@@ -71,9 +109,27 @@ export class StrategyViewComponent {
     return description.split('\n');
   });
 
-  readonly jobBrief = computed(() => this.parseJobBrief(this.application()?.description ?? ''));
+  readonly fitReview = computed(() => this.application()?.fitReview ?? null);
 
-  readonly matchScore = computed(() => this.simulatedScore() ?? this.application()?.matchScore ?? 0);
+  readonly expandedReview = computed(() => (this.isReviewExpanded() ? this.fitReview() : null));
+
+  readonly jobBrief = computed<RoleBrief>(() => {
+    const reviewBrief = this.fitReview()?.roleBrief;
+    if (reviewBrief) return reviewBrief;
+    return this.parseJobBrief(this.application()?.description ?? '');
+  });
+
+  readonly matchScore = computed(() => this.simulatedScore() ?? this.fitReview()?.matchScore ?? this.application()?.matchScore ?? 0);
+
+  readonly keySignals = computed<FitKeySignal[]>(() => this.fitReview()?.keySignals ?? []);
+
+  readonly reviewGaps = computed<FitGap[]>(() => this.fitReview()?.gaps ?? []);
+
+  readonly hasReview = computed(() => !!this.fitReview());
+
+  readonly topGaps = computed(() => this.reviewGaps().slice(0, 3));
+
+  readonly topNextActions = computed(() => this.fitReview()?.nextActions?.slice(0, 4) ?? []);
 
   readonly matchScoreLabelKey = computed(() => {
     const score = this.matchScore();
@@ -82,6 +138,47 @@ export class StrategyViewComponent {
     if (score > 0) return 'workstation.strategy.score.needsWork';
     return 'workstation.strategy.score.notAnalyzed';
   });
+
+  openReview(): void {
+    if (this.fitReview()) this.isReviewExpanded.set(true);
+  }
+
+  closeReview(): void {
+    this.isReviewExpanded.set(false);
+  }
+
+  requestBriefRefinement(): void {
+    const text = this.manualPasteText().trim();
+    if (text) this.refineBrief.emit(text);
+  }
+
+  applyPreview(): void {
+    const preview = this.refinedBriefPreview();
+    if (preview?.description) this.applyRefinedBrief.emit(preview.description);
+  }
+
+  async copyReview(): Promise<void> {
+    const text = this.fitReview()?.fullReviewMarkdown?.trim();
+    if (!text) return;
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+    }
+    this.copiedReview.set(true);
+    setTimeout(() => this.copiedReview.set(false), 1800);
+  }
+
+  signalClasses(signal: FitKeySignal): string {
+    if (signal.type === 'strength') return 'border-primary/20 bg-primary/5 text-primary';
+    if (signal.type === 'risk') return 'border-destructive/20 bg-destructive/5 text-destructive';
+    return 'border-border bg-background text-muted-foreground';
+  }
+
+  gapPriorityClasses(priority: string): string {
+    if (priority === 'high') return 'border-destructive/20 bg-destructive/10 text-destructive';
+    if (priority === 'low') return 'border-muted bg-muted text-muted-foreground';
+    return 'border-primary/20 bg-primary/10 text-primary';
+  }
 
   private parseJobBrief(description: string): ParsedJobBrief {
     const lines = description

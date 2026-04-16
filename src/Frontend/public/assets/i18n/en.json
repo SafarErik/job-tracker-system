@@ -817,6 +817,18 @@
           "label": "Analyze fit",
           "description": "Create role-specific gaps and next actions."
         },
+        "improveBrief": {
+          "label": "Improve job brief",
+          "description": "Clean pasted role text with Horizon Guide."
+        },
+        "openReview": {
+          "label": "Open fit review",
+          "description": "Read the full AI-generated role review."
+        },
+        "simulateTopGap": {
+          "label": "Simulate top gap",
+          "description": "Preview the score lift from the highest-priority gap."
+        },
         "generateResume": {
           "label": "Generate resume draft",
           "description": "Open Documents and draft a tailored CV."
@@ -933,6 +945,7 @@
       "pasteManually": "Paste text manually",
       "jobUrl": "Paste job URL...",
       "autoFill": "Auto-fill from URL",
+      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Horizon clean it up.",
       "overview": "Role overview",
       "priority": "Priority",
       "matchScore": "Match score",
@@ -940,8 +953,27 @@
       "gapAnalysis": "Gap analysis",
       "refresh": "Refresh analysis",
       "simulate": "Simulate improvement",
+      "simulationActive": "Simulation active for {{gap}}.",
       "insights": "AI guidance",
       "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
+      "review": {
+        "title": "Fit review",
+        "summary": "Review summary",
+        "signals": "Key signals",
+        "open": "Open full review",
+        "ariaLabel": "Fit review",
+        "generated": "Generated {{date}}",
+        "fullReview": "Full review",
+        "nextActions": "Next actions",
+        "addCheckpoint": "Add learning checkpoint",
+        "copy": "Copy review",
+        "copied": "Copied"
+      },
+      "learning": {
+        "title": "Learning plan",
+        "topics": "Topics",
+        "searchQueries": "Search queries"
+      },
       "brief": {
         "title": "Job brief",
         "overview": "Overview",
@@ -956,7 +988,13 @@
       "editor": {
         "title": "Edit job description",
         "body": "Paste the role description here. Horizon uses this source for fit, documents, and interview guidance.",
-        "placeholder": "Paste the job description, responsibilities, requirements, and useful context..."
+        "placeholder": "Paste the job description, responsibilities, requirements, and useful context...",
+        "improve": "Improve with AI",
+        "refining": "Refining...",
+        "previewTitle": "AI cleanup preview",
+        "previewEmpty": "Paste the posting, then run AI cleanup to see the structured brief before saving.",
+        "changes": "Changes",
+        "applyRefined": "Apply and save"
       },
       "score": {
         "strong": "Strong fit",

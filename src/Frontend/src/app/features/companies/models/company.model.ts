@@ -134,3 +134,45 @@ export interface EventAsset {
   label: string;
   url: string;
 }
+
+export interface CompanyResearchBrief {
+  generatedAt: string;
+  sourceHash: string;
+  readinessScore: number;
+  executiveSummary: string;
+  strategicInsights: CompanyStrategicInsight[];
+  marketSignals: CompanyMarketSignal[];
+  roleContext: CompanyRoleContext;
+  nextActions: CompanyNextAction[];
+}
+
+export interface CompanyStrategicInsight {
+  title: string;
+  evidence: string;
+  recommendation: string;
+  tone: 'strength' | 'risk' | 'neutral';
+}
+
+export interface CompanyMarketSignal {
+  id: string;
+  title: string;
+  source: string;
+  date: string;
+  summary: string;
+  whyItMatters: string;
+  interviewAngle: string;
+}
+
+export interface CompanyRoleContext {
+  strengths: string[];
+  risks: string[];
+  interviewQuestions: string[];
+  techEvidence: string[];
+  learningPrompts: string[];
+}
+
+export interface CompanyNextAction {
+  label: string;
+  target: 'applications' | 'people' | 'market' | 'fit';
+  context: string;
+}

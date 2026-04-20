@@ -95,6 +95,27 @@ export const routes: Routes = [
     data: { breadcrumb: 'View Application' },
   },
   {
+    // Company Workstation - immersive full page view without app shell header
+    path: 'companies/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/companies/components/company-details/company-details').then(
+        (m) => m.CompanyDetailsComponent,
+      ),
+    title: 'Company Workstation - Horizon',
+    data: { breadcrumb: 'Company Workstation' },
+  },
+  {
+    path: 'company/:id',
+    redirectTo: 'companies/:id',
+    pathMatch: 'full',
+  },
+  {
+    path: 'companies/:id/details',
+    redirectTo: 'companies/:id',
+    pathMatch: 'full',
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/app-shell/app-shell.component').then((m) => m.AppShellComponent),
@@ -144,15 +165,6 @@ export const routes: Routes = [
         title: 'Edit Company - Horizon',
         data: { breadcrumb: 'Edit Company' },
       },
-      {
-        path: 'companies/:id',
-        loadComponent: () =>
-          import('./features/companies/components/company-details/company-details').then(
-            (m) => m.CompanyDetailsComponent,
-          ),
-        title: 'Company Details - Horizon',
-        data: { breadcrumb: 'Company Details' },
-      },
 
       // Documents
       {
@@ -193,17 +205,6 @@ export const routes: Routes = [
         data: { breadcrumb: 'Global Signals' },
       },
 
-      // Compatibility Redirects
-      {
-        path: 'company/:id',
-        redirectTo: 'companies/:id',
-        pathMatch: 'full',
-      },
-      {
-        path: 'companies/:id/details',
-        redirectTo: 'companies/:id',
-        pathMatch: 'full',
-      },
     ],
   },
 

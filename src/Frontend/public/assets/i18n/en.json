@@ -667,13 +667,27 @@
     "actions": {
       "add": "Add company",
       "clearSearch": "Clear search",
-      "fetchData": "Fetch data"
+      "fetchData": "Fetch data",
+      "reviewResearch": "Review research"
     },
     "card": {
       "viewResearch": "Open research for {{name}}",
       "activeApplications": "{{count}} active",
       "noActivePipeline": "No active pipeline",
       "open": "Open"
+    },
+    "evidence": {
+      "empty": "No evidence yet"
+    },
+    "fallback": {
+      "industry": "Sector not set"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active pipelines",
+      "priority": "Priority targets",
+      "needsResearch": "Needs research",
+      "noPipeline": "No active pipeline"
     },
     "form": {
       "actions": {
@@ -714,8 +728,65 @@
       "researchBaseBody": "Tracked companies",
       "activePipelines": "Active pipelines",
       "activePipelinesBody": "Companies with open applications",
+      "priorityTargets": "Priority targets",
       "responseRate": "Response rate",
       "responseRateBody": "Company-level traction"
+    },
+    "nextActions": {
+      "addContext": "Add research context",
+      "findRole": "Find a fitting role",
+      "openResearch": "Open company brief",
+      "prepare": "Prepare next step"
+    },
+    "pipeline": {
+      "active": "{{count}} active",
+      "none": "No active pipeline",
+      "noRole": "No role linked yet"
+    },
+    "portfolio": {
+      "eyebrow": {
+        "empty": "Company research",
+        "focus": "Research focus",
+        "pipeline": "Pipeline context",
+        "watchlist": "Watchlist"
+      },
+      "empty": {
+        "title": "Start with the companies behind your opportunities.",
+        "body": "Add companies you are applying to, researching, or considering. Horizon will keep company context next to applications and interview prep.",
+        "action": "Add the first company or import one from an application."
+      },
+      "research": {
+        "title": "Some companies need more context before they are useful.",
+        "body": "Prioritize profiles without industry, website, active role, or research notes so the workstation can produce better guidance later.",
+        "action": "Review the profiles that need context first."
+      },
+      "pipeline": {
+        "title": "Company research is connected to active applications.",
+        "body": "Use this view to move from company context into applications, contacts, market signals, and interview angles.",
+        "action": "Open a company with an active pipeline and prepare the next step."
+      },
+      "watchlist": {
+        "title": "Your company watchlist is ready for targeting.",
+        "body": "No company needs urgent research. Use priority targets to decide where to spend deeper preparation time.",
+        "action": "Pick a priority target and connect it to a role."
+      },
+      "metric": {
+        "total": "Tracked",
+        "needsResearch": "Need research",
+        "active": "Active",
+        "priority": "Priority"
+      }
+    },
+    "priority": {
+      "top": "Priority",
+      "mid": "Active",
+      "low": "Watchlist",
+      "archived": "Archived"
+    },
+    "research": {
+      "ready": "Research ready",
+      "partial": "Partial context",
+      "needsContext": "Needs context"
     },
     "searchLabel": "Search companies by name, industry, or domain",
     "searchPlaceholder": "Search company, industry, or domain...",
@@ -731,6 +802,155 @@
     "results": {
       "showing": "Showing",
       "total": "Total"
+    }
+  },
+  "companyWorkspace": {
+    "loading": "Loading company workspace...",
+    "error": {
+      "title": "Could not load company workspace"
+    },
+    "actions": {
+      "back": "Back to companies",
+      "refreshBrief": "Refresh brief",
+      "copied": "Copied"
+    },
+    "nav": {
+      "overview": "Overview",
+      "market": "Market",
+      "applications": "Applications",
+      "people": "People",
+      "fit": "Fit Context"
+    },
+    "hero": {
+      "title": "{{company}} research workspace",
+      "body": "Review company context, active applications, contacts, market signals, and fit angles in one focused space."
+    },
+    "metrics": {
+      "readiness": "Readiness",
+      "applications": "Applications",
+      "contacts": "Contacts"
+    },
+    "overview": {
+      "briefEyebrow": "Company brief",
+      "briefTitle": "Generated company review",
+      "generated": "Generated {{date}}",
+      "generating": "Building the company brief...",
+      "companyBase": "Company base",
+      "relationship": "Relationship context",
+      "noContact": "No contact added yet. Add a recruiter, hiring manager, or team member.",
+      "nextActions": "Next actions",
+      "noActions": "No actions available yet.",
+      "quickHandoff": "Quick handoff"
+    },
+    "market": {
+      "eyebrow": "Market context",
+      "title": "Signals to use before outreach or interviews",
+      "body": "These frontend-generated signals show how the company context can later connect to real backend research.",
+      "generating": "Building market context...",
+      "openSignal": "Open market signal",
+      "dialogLabel": "Market signal details",
+      "summary": "Summary",
+      "whyItMatters": "Why it matters",
+      "interviewAngle": "Interview angle"
+    },
+    "applications": {
+      "eyebrow": "Company pipeline",
+      "title": "Applications connected to this company",
+      "body": "Move from company research into the application workstation when a role needs fit review, assets, or interview prep.",
+      "applied": "Added {{date}}",
+      "noOffer": "No offer",
+      "emptyTitle": "No applications linked yet",
+      "emptyBody": "Keep the company on the watchlist or add an application when a fitting role appears."
+    },
+    "people": {
+      "eyebrow": "Relationship map",
+      "title": "Contacts and notes",
+      "body": "Keep recruiter, hiring manager, peer, and research notes close to the company context.",
+      "notesTitle": "Research notes",
+      "notesBody": "Capture useful context, outreach ideas, interview questions, or team details.",
+      "notesPlaceholder": "Add company notes, contact context, questions, or interview details...",
+      "deleteContactTitle": "Remove contact?",
+      "deleteContactBody": "This removes the contact from this company profile."
+    },
+    "fit": {
+      "eyebrow": "AI fit context",
+      "title": "Role relevance, risks, and interview angles",
+      "body": "Use this as the bridge between company research and application preparation. Raw tech context stays as evidence, not the main story.",
+      "strengths": "Strengths",
+      "risks": "Risks",
+      "questions": "Interview questions",
+      "questionLabel": "Question {{index}}",
+      "evidence": "Evidence",
+      "noEvidence": "No tech or capability evidence has been added yet.",
+      "learningPrompts": "Learning and search prompts",
+      "generating": "Building fit context..."
+    },
+    "command": {
+      "label": "Company command palette",
+      "placeholderShort": "Search company actions...",
+      "placeholder": "Search company actions or ask Horizon Guide...",
+      "quickActions": "Quick actions",
+      "noResults": "No matching actions",
+      "actions": {
+        "refreshBrief": {
+          "label": "Refresh company brief",
+          "description": "Rebuild the frontend research brief from current company data."
+        },
+        "openMarket": {
+          "label": "Open market context",
+          "description": "Review signals, interview angles, and source context."
+        },
+        "addContact": {
+          "label": "Add contact",
+          "description": "Open the people view for recruiter or team context."
+        },
+        "openApplication": {
+          "label": "Open active application",
+          "description": "Jump into the application workstation for this company."
+        },
+        "prepareAngle": {
+          "label": "Prepare interview angle",
+          "description": "Open fit context and review questions to ask."
+        },
+        "copyBrief": {
+          "label": "Copy brief",
+          "description": "Copy the generated company review and next actions."
+        }
+      }
+    },
+    "notifications": {
+      "briefFailed": {
+        "title": "Brief failed",
+        "body": "The company brief could not be generated."
+      },
+      "addContact": {
+        "title": "People view opened",
+        "body": "Use the contact form to add recruiter or team context."
+      },
+      "prepareAngle": {
+        "title": "Fit context opened",
+        "body": "Review strengths, risks, and questions before the next conversation."
+      },
+      "copied": {
+        "title": "Brief copied",
+        "body": "The company brief is ready to paste."
+      },
+      "copyFailed": {
+        "title": "Copy failed",
+        "body": "Clipboard access was not available."
+      },
+      "contactSaved": {
+        "title": "Contact saved",
+        "body": "The company relationship map was updated."
+      },
+      "contactFailed": {
+        "title": "Contact failed",
+        "body": "The contact could not be saved."
+      },
+      "contactRemoved": {
+        "title": "Contact removed",
+        "body": "The contact was removed from this company."
+      }
     }
   },
   "documents": {

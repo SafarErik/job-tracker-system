@@ -667,13 +667,27 @@
     "actions": {
       "add": "Cég hozzáadása",
       "clearSearch": "Keresés törlése",
-      "fetchData": "Adatok lekérése"
+      "fetchData": "Adatok lekérése",
+      "reviewResearch": "Kutatás átnézése"
     },
     "card": {
       "viewResearch": "{{name}} kutatásának megnyitása",
       "activeApplications": "{{count}} aktív",
       "noActivePipeline": "Nincs aktív folyamat",
       "open": "Megnyitás"
+    },
+    "evidence": {
+      "empty": "Még nincs bizonyíték"
+    },
+    "fallback": {
+      "industry": "Nincs iparág megadva"
+    },
+    "filters": {
+      "all": "Összes",
+      "active": "Aktív folyamatok",
+      "priority": "Prioritás cégek",
+      "needsResearch": "Kutatást igényel",
+      "noPipeline": "Nincs aktív folyamat"
     },
     "form": {
       "actions": {
@@ -714,8 +728,65 @@
       "researchBaseBody": "Követett cégek",
       "activePipelines": "Aktív folyamatok",
       "activePipelinesBody": "Cégek nyitott jelentkezéssel",
+      "priorityTargets": "Prioritás cégek",
       "responseRate": "Válaszarány",
       "responseRateBody": "Cégszintű visszajelzés"
+    },
+    "nextActions": {
+      "addContext": "Kutatási kontextus hozzáadása",
+      "findRole": "Megfelelő pozíció keresése",
+      "openResearch": "Cégbrief megnyitása",
+      "prepare": "Következő lépés előkészítése"
+    },
+    "pipeline": {
+      "active": "{{count}} aktív",
+      "none": "Nincs aktív folyamat",
+      "noRole": "Még nincs pozíció kapcsolva"
+    },
+    "portfolio": {
+      "eyebrow": {
+        "empty": "Cégkutatás",
+        "focus": "Kutatási fókusz",
+        "pipeline": "Folyamat kontextus",
+        "watchlist": "Figyelőlista"
+      },
+      "empty": {
+        "title": "Kezdd azokkal a cégekkel, amelyek a lehetőségeid mögött vannak.",
+        "body": "Add hozzá azokat a cégeket, ahova jelentkezel, amelyeket kutatsz, vagy amelyeket figyelsz. A Horizon a cégkontextust az application és interview prep mellett tartja.",
+        "action": "Add hozzá az első céget, vagy hozd át egy jelentkezésből."
+      },
+      "research": {
+        "title": "Néhány céghez még több kontextus kell, hogy használható legyen.",
+        "body": "Először azokat a profilokat érdemes rendbe tenni, ahol hiányzik az iparág, weboldal, aktív pozíció vagy kutatási jegyzet.",
+        "action": "Nézd át először a kontextust igénylő profilokat."
+      },
+      "pipeline": {
+        "title": "A cégkutatás kapcsolódik az aktív jelentkezésekhez.",
+        "body": "Innen tudsz cégkontextusból application, kontakt, market signal és interview angle irányba továbbmenni.",
+        "action": "Nyiss meg egy aktív folyamatban lévő céget és készítsd elő a következő lépést."
+      },
+      "watchlist": {
+        "title": "A céges figyelőlistád készen áll a priorizálásra.",
+        "body": "Nincs sürgős kutatási hiány. A prioritás cégek alapján dönts, hova érdemes több felkészülési időt tenni.",
+        "action": "Válassz egy prioritás céget és kapcsold egy pozícióhoz."
+      },
+      "metric": {
+        "total": "Követve",
+        "needsResearch": "Kutatást igényel",
+        "active": "Aktív",
+        "priority": "Prioritás"
+      }
+    },
+    "priority": {
+      "top": "Prioritás",
+      "mid": "Aktív",
+      "low": "Figyelőlista",
+      "archived": "Archivált"
+    },
+    "research": {
+      "ready": "Kutatás kész",
+      "partial": "Részleges kontextus",
+      "needsContext": "Kontextus kell"
     },
     "searchLabel": "Cégek keresése név, iparág vagy domain alapján",
     "searchPlaceholder": "Cég, iparág vagy domain keresése...",
@@ -731,6 +802,155 @@
     "results": {
       "showing": "Megjelenítve",
       "total": "Összesen"
+    }
+  },
+  "companyWorkspace": {
+    "loading": "Cég workspace betöltése...",
+    "error": {
+      "title": "Nem sikerült betölteni a cég workspace-t"
+    },
+    "actions": {
+      "back": "Vissza a cégekhez",
+      "refreshBrief": "Brief frissítése",
+      "copied": "Másolva"
+    },
+    "nav": {
+      "overview": "Overview",
+      "market": "Market",
+      "applications": "Applications",
+      "people": "People",
+      "fit": "Fit Context"
+    },
+    "hero": {
+      "title": "{{company}} research workspace",
+      "body": "Nézd át egy helyen a cégkontextust, aktív jelentkezéseket, kontaktokat, market signalokat és fit angle-öket."
+    },
+    "metrics": {
+      "readiness": "Readiness",
+      "applications": "Jelentkezések",
+      "contacts": "Kontaktok"
+    },
+    "overview": {
+      "briefEyebrow": "Cégbrief",
+      "briefTitle": "Generált cég review",
+      "generated": "Generálva: {{date}}",
+      "generating": "Cégbrief építése...",
+      "companyBase": "Cég alapok",
+      "relationship": "Kapcsolati kontextus",
+      "noContact": "Még nincs kontakt. Adj hozzá recruitert, hiring managert vagy csapattagot.",
+      "nextActions": "Következő lépések",
+      "noActions": "Még nincs elérhető lépés.",
+      "quickHandoff": "Gyors átadás"
+    },
+    "market": {
+      "eyebrow": "Market context",
+      "title": "Signalok outreach vagy interjú előtt",
+      "body": "Ezek a frontend által generált signalok mutatják, hogyan tud majd a cégkontextus valós backend kutatáshoz kapcsolódni.",
+      "generating": "Market context építése...",
+      "openSignal": "Market signal megnyitása",
+      "dialogLabel": "Market signal részletek",
+      "summary": "Összegzés",
+      "whyItMatters": "Miért fontos",
+      "interviewAngle": "Interview angle"
+    },
+    "applications": {
+      "eyebrow": "Céges pipeline",
+      "title": "Ehhez a céghez kapcsolt jelentkezések",
+      "body": "A cégkutatásból menj át az application workstationbe, ha fit review, dokumentum vagy interjú prep kell.",
+      "applied": "Hozzáadva: {{date}}",
+      "noOffer": "Nincs offer",
+      "emptyTitle": "Még nincs kapcsolt jelentkezés",
+      "emptyBody": "Tartsd a céget figyelőlistán, vagy adj hozzá applicationt, amikor megjelenik egy passzoló pozíció."
+    },
+    "people": {
+      "eyebrow": "Kapcsolati térkép",
+      "title": "Kontaktok és jegyzetek",
+      "body": "Tartsd a recruiter, hiring manager, peer és kutatási jegyzeteket a cégkontextus mellett.",
+      "notesTitle": "Kutatási jegyzetek",
+      "notesBody": "Rögzíts hasznos kontextust, outreach ötleteket, interjúkérdéseket vagy csapatrészleteket.",
+      "notesPlaceholder": "Adj hozzá céges jegyzeteket, kontakt kontextust, kérdéseket vagy interjú részleteket...",
+      "deleteContactTitle": "Kontakt eltávolítása?",
+      "deleteContactBody": "Ez eltávolítja a kontaktot ebből a cégprofilból."
+    },
+    "fit": {
+      "eyebrow": "AI fit context",
+      "title": "Role relevance, riskek és interview angle-ök",
+      "body": "Ez köti össze a cégkutatást az application felkészüléssel. A raw tech context csak bizonyíték marad, nem a fő sztori.",
+      "strengths": "Erősségek",
+      "risks": "Riskek",
+      "questions": "Interjúkérdések",
+      "questionLabel": "{{index}}. kérdés",
+      "evidence": "Bizonyíték",
+      "noEvidence": "Még nincs tech vagy capability evidence hozzáadva.",
+      "learningPrompts": "Tanulási és keresési promptok",
+      "generating": "Fit context építése..."
+    },
+    "command": {
+      "label": "Company command palette",
+      "placeholderShort": "Céges actionök keresése...",
+      "placeholder": "Céges actionök keresése vagy Horizon Guide kérdezése...",
+      "quickActions": "Gyors actionök",
+      "noResults": "Nincs találat",
+      "actions": {
+        "refreshBrief": {
+          "label": "Cégbrief frissítése",
+          "description": "Frontend research brief újraépítése az aktuális cégadatokból."
+        },
+        "openMarket": {
+          "label": "Market context megnyitása",
+          "description": "Signalok, interview angle-ök és forrás kontextus átnézése."
+        },
+        "addContact": {
+          "label": "Kontakt hozzáadása",
+          "description": "People nézet megnyitása recruiter vagy csapat kontextushoz."
+        },
+        "openApplication": {
+          "label": "Aktív application megnyitása",
+          "description": "Ugrás a céghez tartozó application workstationbe."
+        },
+        "prepareAngle": {
+          "label": "Interview angle előkészítése",
+          "description": "Fit context és kérdések átnézése."
+        },
+        "copyBrief": {
+          "label": "Brief másolása",
+          "description": "Generált cég review és next actionök másolása."
+        }
+      }
+    },
+    "notifications": {
+      "briefFailed": {
+        "title": "Brief hiba",
+        "body": "Nem sikerült generálni a cégbriefet."
+      },
+      "addContact": {
+        "title": "People nézet megnyitva",
+        "body": "A kontakt formmal adj hozzá recruiter vagy csapat kontextust."
+      },
+      "prepareAngle": {
+        "title": "Fit context megnyitva",
+        "body": "Nézd át az erősségeket, riskeket és kérdéseket a következő beszélgetés előtt."
+      },
+      "copied": {
+        "title": "Brief másolva",
+        "body": "A cégbrief beilleszthető."
+      },
+      "copyFailed": {
+        "title": "Másolás sikertelen",
+        "body": "A clipboard nem volt elérhető."
+      },
+      "contactSaved": {
+        "title": "Kontakt mentve",
+        "body": "A céges kapcsolati térkép frissült."
+      },
+      "contactFailed": {
+        "title": "Kontakt hiba",
+        "body": "Nem sikerült menteni a kontaktot."
+      },
+      "contactRemoved": {
+        "title": "Kontakt eltávolítva",
+        "body": "A kontakt eltávolítva ebből a cégből."
+      }
     }
   },
   "documents": {

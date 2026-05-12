@@ -50,14 +50,14 @@ export class ApplicationService {
   }
 
   /**
-   * Trigger AI analysis for a job application.
+   * Trigger Signal analysis for a job application.
    */
   analyzeJob(id: string): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/${id}/analyze`, {});
   }
 
   /**
-   * Ask AI to clean and structure a pasted job description.
+   * Ask Signal to clean and structure a pasted job description.
    */
   refineJobBrief(id: string, description: string): Observable<RefinedJobBrief> {
     return this.http.post<RefinedJobBrief>(`${this.apiUrl}/${id}/brief/refine`, { description });

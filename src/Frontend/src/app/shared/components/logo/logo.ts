@@ -21,7 +21,7 @@ import { ThemeService } from '../../../core/services/theme.service';
         <img src="assets/brand/horizon-guided-path.svg"
              [style.width.px]="imgSize()"
              [style.height.px]="imgSize()"
-             alt="Horizon"
+             alt="Aptelion"
              class="relative z-10 object-contain drop-shadow-sm transition-all duration-300"
              [class.grayscale]="mono()"
              [class.brightness-200]="mono() && isDark()"
@@ -39,7 +39,7 @@ import { ThemeService } from '../../../core/services/theme.service';
            
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
           <span class="font-display font-bold uppercase leading-none tracking-[0.08em] text-foreground">
-            HORIZON
+            APTELION
           </span>
         </div>
 

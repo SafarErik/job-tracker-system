@@ -529,12 +529,12 @@ export class ProfileComponent implements OnInit {
         this.profileForm.patchValue({ bio: res.polishedBio });
         this.saveField('bio');
         this.isPolishingBio.set(false);
-        toast.success('AI Polish Complete', { description: 'Your narrative has been optimized for impact.' });
+        toast.success('Signal polish complete', { description: 'Your narrative has been refined for impact.' });
       },
       error: (err) => {
         this.isPolishingBio.set(false);
         // Fallback or error message
-        toast.error('AI Polish Failed', { description: 'System currently unavailable. Try again later.' });
+        toast.error('Signal polish failed', { description: 'System currently unavailable. Try again later.' });
         console.error(err);
       }
     });

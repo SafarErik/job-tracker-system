@@ -75,7 +75,7 @@ interface ChatMessage {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiCommandWidgetComponent {
-  title = input('AI Assistant');
+  title = input('Signal Guidance');
   insightCards = input.required<AiInsightCard[]>();
   placeholder = input('Ask anything about your career or companies...');
   context = input.required<AiCopilotContext>();

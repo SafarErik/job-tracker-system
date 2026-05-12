@@ -11,7 +11,7 @@
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Engagement</p>
                 </div>
                 <div class="flex items-end gap-2">
-                    <h4 class="text-4xl font-serif font-bold text-foreground leading-none tracking-tight">{{
+                    <h4 class="text-4xl font-heading font-bold text-foreground leading-none tracking-tight">{{
                         totalApplications() }}</h4>
                     <ng-icon name="lucideTrendingUp" class="mb-1.5 text-primary h-4 w-4 opacity-50"></ng-icon>
                 </div>
@@ -24,7 +24,7 @@
                     <p class="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Yield</p>
                 </div>
                 <div class="flex items-end gap-2">
-                    <h4 class="text-4xl font-serif font-bold text-foreground leading-none tracking-tight">{{
+                    <h4 class="text-4xl font-heading font-bold text-foreground leading-none tracking-tight">{{
                         successRate() }}%</h4>
                     <ng-icon name="lucideTrendingUp" class="mb-1.5 text-success h-4 w-4"></ng-icon>
                 </div>
@@ -33,7 +33,7 @@
     </div>
     }
 
-    <!-- Tactical Stack (Hidden in compact mode) -->
+    <!-- Context Stack (Hidden in compact mode) -->
     @if (!compact()) {
     <div
         class="rounded-3xl bg-linear-to-b from-card/40 to-transparent border border-border p-5 flex flex-col flex-1 min-h-[140px]">

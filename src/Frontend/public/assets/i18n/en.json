@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Horizon",
+    "name": "Aptelion",
     "tagline": "Career growth, intelligently guided.",
     "planLabel": "Workspace",
     "dashboard": "Dashboard"
@@ -51,7 +51,7 @@
       "documents": "Documents"
     },
     "header": {
-      "searchPlaceholder": "Search your pipeline or ask Horizon Guide...",
+      "searchPlaceholder": "Search your pipeline or ask Signal Guidance...",
       "openSearch": "Open command menu",
       "profile": "Profile",
       "settings": "Settings",
@@ -66,7 +66,7 @@
         "companyDetails": "Company research"
       },
       "account": {
-        "workspaceName": "Horizon account",
+        "workspaceName": "Aptelion account",
         "workspaceGroup": "Account",
         "preferencesGroup": "Preferences",
         "workspaceKind": "Career workspace"
@@ -86,12 +86,12 @@
       "commands": {
         "workspace": "Workspace",
         "actions": "Actions",
-        "assistant": "Horizon Guide",
+        "assistant": "Signal Guidance",
         "openDashboard": "Open dashboard",
         "openApplications": "Open applications",
         "openCompanies": "Open companies",
         "addApplication": "Add opportunity",
-        "openAssistant": "Open Horizon Guide",
+        "openAssistant": "Open Signal Guidance",
         "pipelineSummary": "Pipeline summary",
         "nextBestAction": "Next best action"
       }
@@ -128,19 +128,19 @@
       "eyebrow": "Career growth, intelligently guided.",
       "title": "Build a career with direction",
       "subtitle": "Clarity, strategy, and momentum for your next move.",
-      "body": "From job search to long-term growth, Horizon helps you understand where you stand, choose the smartest next step, and keep moving with confidence.",
-      "cta": "Start with Horizon",
+      "body": "From job search to long-term growth, Aptelion helps you understand where you stand, choose the smartest next step, and keep moving with confidence.",
+      "cta": "Start with Aptelion",
       "secondaryCta": "See the workflow"
     },
     "proof": {
       "guidance": "A calm workspace for applications, companies, documents, and decisions.",
-      "documents": "AI-assisted CV, cover letter, and role-specific document preparation.",
+      "documents": "Signal-guided CV, cover letter, and role-specific document preparation.",
       "practice": "Interview practice and follow-up planning tied to real opportunities."
     },
     "pillars": {
-      "eyebrow": "The Horizon system",
+      "eyebrow": "The Aptelion system",
       "title": "Less noise. More useful next steps.",
-      "subtitle": "Horizon is not a one-time job search tool. It is a structured career workspace for the decisions that shape your next role and the one after it.",
+      "subtitle": "Aptelion is not a one-time job search tool. It is a structured career workspace for the decisions that shape your next role and the one after it.",
       "clarity": {
         "title": "Clarity",
         "body": "See your pipeline, role fit, company context, and risks without switching between scattered notes and spreadsheets."
@@ -157,7 +157,7 @@
     "workspace": {
       "eyebrow": "One career surface",
       "title": "Everything around an opportunity lives in one guided flow.",
-      "body": "Horizon connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The AI guide supports the workflow without turning the product into a noisy chat screen.",
+      "body": "Aptelion connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The Signal guidance supports the workflow without turning the product into a noisy chat screen.",
       "previewTitle": "Application workstation",
       "previewSubtitle": "Role context, documents, practice, and next actions",
       "previewBadge": "Guided",
@@ -174,7 +174,7 @@
       },
       "documents": {
         "title": "Documents",
-        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled AI help."
+        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled Signal guidance."
       },
       "applications": {
         "title": "Applications",
@@ -188,21 +188,21 @@
     "pricing": {
       "eyebrow": "A product people can grow into",
       "title": "Start simple, pay for serious career leverage.",
-      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and a Horizon Guide that understands the user’s whole career context.",
-      "planTitle": "Horizon Pro",
+      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and Signal Guidance that understands the user’s whole career context.",
+      "planTitle": "Aptelion Cloud",
       "planBody": "For active job seekers and ambitious professionals who want structure, better decisions, and less manual work.",
       "benefits": {
         "tracker": "Unlimited applications and company research spaces.",
         "documents": "CV and cover letter generation with role-specific revision guidance.",
         "interview": "Interview practice plans, answer feedback, and follow-up suggestions.",
-        "guide": "Horizon Guide context across applications, documents, and goals."
+        "guide": "Signal Guidance context across applications, documents, and goals."
       },
       "cta": "Create your workspace"
     },
     "closing": {
       "eyebrow": "Your choice. Your future.",
       "title": "Build the next move with direction, not reaction.",
-      "body": "Horizon helps people move through job search and long-term growth with a calmer system, clearer decisions, and steady progress.",
+      "body": "Aptelion helps people move through job search and long-term growth with a calmer system, clearer decisions, and steady progress.",
       "cta": "Start your guided path"
     }
   },
@@ -241,8 +241,8 @@
       "states": {
         "noSignal": {
           "label": "No momentum yet",
-          "body": "Momentum starts once Horizon has one real opportunity to track.",
-          "recommendation": "Add an opportunity you would actually pursue and let Horizon structure the next step."
+          "body": "Momentum starts once Aptelion has one real opportunity to track.",
+          "recommendation": "Add an opportunity you would actually pursue and let Aptelion structure the next step."
         },
         "decision": {
           "label": "Decision momentum",
@@ -314,7 +314,7 @@
       "insights": {
         "empty": {
           "label": "No pipeline yet",
-          "body": "Start with one opportunity. Horizon will turn it into a guided workflow.",
+          "body": "Start with one opportunity. Aptelion will turn it into a guided workflow.",
           "recommendation": "Add one opportunity with a real job description.",
           "target": "Week target: 3 quality opportunities"
         },
@@ -371,7 +371,7 @@
         "add": {
           "eyebrow": "Recommended",
           "title": "Add your next opportunity",
-          "meta": "One strong opportunity gives Horizon better context",
+          "meta": "One strong opportunity gives Aptelion better context",
           "cta": "Add opportunity"
         },
         "documents": {
@@ -420,7 +420,7 @@
       },
       "empty": {
         "title": "Start with one opportunity.",
-        "body": "Horizon will turn it into a guided workflow with fit, documents, follow-up, and interview prep.",
+        "body": "Aptelion will turn it into a guided workflow with fit, documents, follow-up, and interview prep.",
         "cta": "Add your first opportunity"
       },
       "status": {
@@ -493,7 +493,7 @@
       },
       "empty": {
         "title": "Start with one real opportunity",
-        "body": "Add the role you would actually pursue. Horizon will use it to organize fit, documents, follow-up, and preparation.",
+        "body": "Add the role you would actually pursue. Aptelion will use it to organize fit, documents, follow-up, and preparation.",
         "action": "Capture the opportunity first, then build the workflow around it."
       },
       "offers": {
@@ -549,7 +549,7 @@
     },
     "empty": {
       "firstTitle": "Add your first opportunity",
-      "firstBody": "Start with one role. Horizon will turn it into a guided workflow for fit, documents, follow-up, and interview prep.",
+      "firstBody": "Start with one role. Aptelion will turn it into a guided workflow for fit, documents, follow-up, and interview prep.",
       "filteredTitle": "No opportunities match this view",
       "filteredBody": "Clear the filters or add a new opportunity if your pipeline has moved forward.",
       "clear": "Clear filters"
@@ -582,7 +582,7 @@
     },
     "card": {
       "fit": "Fit estimate",
-      "matchTooltip": "Horizon fit estimate based on the role, your profile, and available materials.",
+      "matchTooltip": "Aptelion fit estimate based on the role, your profile, and available materials.",
       "insightLabel": "Signal",
       "nextActionLabel": "Next action",
       "jobType": {
@@ -752,7 +752,7 @@
       },
       "empty": {
         "title": "Start with the companies behind your opportunities.",
-        "body": "Add companies you are applying to, researching, or considering. Horizon will keep company context next to applications and interview prep.",
+        "body": "Add companies you are applying to, researching, or considering. Aptelion will keep company context next to applications and interview prep.",
         "action": "Add the first company or import one from an application."
       },
       "research": {
@@ -873,7 +873,7 @@
       "deleteContactBody": "This removes the contact from this company profile."
     },
     "fit": {
-      "eyebrow": "AI fit context",
+      "eyebrow": "Signal fit context",
       "title": "Role relevance, risks, and interview angles",
       "body": "Use this as the bridge between company research and application preparation. Raw tech context stays as evidence, not the main story.",
       "strengths": "Strengths",
@@ -888,7 +888,7 @@
     "command": {
       "label": "Company command palette",
       "placeholderShort": "Search company actions...",
-      "placeholder": "Search company actions or ask Horizon Guide...",
+      "placeholder": "Search company actions or ask Signal Guidance...",
       "quickActions": "Quick actions",
       "noResults": "No matching actions",
       "actions": {
@@ -967,13 +967,13 @@
       "badge": "Master",
       "updated": "Updated {{date}}",
       "primaryDocument": "Master document",
-      "body": "This is the base document Horizon uses for tailored resumes and cover letters. Keep it complete and current.",
+      "body": "This is the base document Aptelion uses for tailored resumes and cover letters. Keep it complete and current.",
       "update": "Update master",
       "openPreview": "Open preview"
     },
     "emptyMaster": {
       "title": "No master resume set",
-      "body": "Upload a complete resume so Horizon can tailor documents to each opportunity.",
+      "body": "Upload a complete resume so Aptelion can tailor documents to each opportunity.",
       "cta": "Upload master resume"
     },
     "tailored": {
@@ -990,9 +990,9 @@
   },
   "ai": {
     "drawer": {
-      "title": "Horizon Guide",
-      "ariaLabel": "Horizon Guide",
-      "close": "Close Horizon Guide",
+      "title": "Signal Guidance",
+      "ariaLabel": "Signal Guidance",
+      "close": "Close Signal Guidance",
       "modeFast": "Fast",
       "modeDeep": "Deep reason",
       "placeholder": "Ask anything about your career workflow...",
@@ -1003,7 +1003,7 @@
         "followUps": "follow-ups",
         "interviewPrep": "interview prep"
       },
-      "welcomeTitle": "Welcome to Horizon Guide",
+      "welcomeTitle": "Welcome to Signal Guidance",
       "welcomeBody": "I can help with pipeline summaries, follow-up strategy, and interview preparation. Try asking for a next best action.",
       "responses": {
         "summaryTitle": "Pipeline summary",
@@ -1023,12 +1023,12 @@
   },
   "workstation": {
     "command": {
-      "searchPlaceholder": "Ask AI or search...",
-      "searchLabel": "Search or ask AI",
-      "placeholder": "Ask AI anything about this application...",
+      "searchPlaceholder": "Ask Signal or search...",
+      "searchLabel": "Search or ask Signal",
+      "placeholder": "Ask Signal about this application...",
       "quickActions": "Quick actions",
-      "guideLabel": "Horizon Guide",
-      "openGuide": "Open Horizon Guide",
+      "guideLabel": "Signal Guidance",
+      "openGuide": "Open Signal Guidance",
       "navigate": "Navigate",
       "select": "Select",
       "noResults": "No matching command.",
@@ -1039,11 +1039,11 @@
         },
         "improveBrief": {
           "label": "Improve job brief",
-          "description": "Clean pasted role text with Horizon Guide."
+          "description": "Clean pasted role text with Signal Guidance."
         },
         "openReview": {
           "label": "Open fit review",
-          "description": "Read the full AI-generated role review."
+          "description": "Read the full Signal-generated role review."
         },
         "simulateTopGap": {
           "label": "Simulate top gap",
@@ -1129,7 +1129,7 @@
       "currency": "Currency",
       "baseSalary": "Base salary",
       "offerGoal": "Offer / goal",
-      "fitOwnsDescription": "Job description editing lives in Fit so Horizon can keep the role brief, match score, and guidance aligned.",
+      "fitOwnsDescription": "Job description editing lives in Fit so Aptelion can keep the role brief, match score, and guidance aligned.",
       "sections": {
         "basics": "Opportunity basics",
         "pipeline": "Pipeline",
@@ -1165,7 +1165,7 @@
       "pasteManually": "Paste text manually",
       "jobUrl": "Paste job URL...",
       "autoFill": "Auto-fill from URL",
-      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Horizon clean it up.",
+      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Aptelion clean it up.",
       "overview": "Role overview",
       "priority": "Priority",
       "matchScore": "Match score",
@@ -1174,7 +1174,7 @@
       "refresh": "Refresh analysis",
       "simulate": "Simulate improvement",
       "simulationActive": "Simulation active for {{gap}}.",
-      "insights": "AI guidance",
+      "insights": "Signal Guidance",
       "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
       "review": {
         "title": "Fit review",
@@ -1207,12 +1207,12 @@
       },
       "editor": {
         "title": "Edit job description",
-        "body": "Paste the role description here. Horizon uses this source for fit, documents, and interview guidance.",
+        "body": "Paste the role description here. Aptelion uses this source for fit, documents, and interview guidance.",
         "placeholder": "Paste the job description, responsibilities, requirements, and useful context...",
-        "improve": "Improve with AI",
+        "improve": "Improve with Signal",
         "refining": "Refining...",
-        "previewTitle": "AI cleanup preview",
-        "previewEmpty": "Paste the posting, then run AI cleanup to see the structured brief before saving.",
+        "previewTitle": "Signal cleanup preview",
+        "previewEmpty": "Paste the posting, then run Signal cleanup to see the structured brief before saving.",
         "changes": "Changes",
         "applyRefined": "Apply and save"
       },
@@ -1221,7 +1221,7 @@
         "workable": "Workable fit",
         "needsWork": "Needs positioning",
         "notAnalyzed": "Not analyzed",
-        "body": "The score becomes more useful after Horizon compares the role against your resume and profile."
+        "body": "The score becomes more useful after Aptelion compares the role against your resume and profile."
       },
       "notifications": {
         "descriptionSaved": "Job description updated.",
@@ -1232,18 +1232,18 @@
       }
     },
     "assets": {
-      "assistant": "AI document assistant",
+      "assistant": "Document Studio guide",
       "resume": "Resume",
       "source": "Source document",
       "output": "Tailored output",
-      "masterProtected": "The original source content is protected. Horizon uses it as the base for targeted generation.",
+      "masterProtected": "The original source content is protected. Aptelion uses it as the base for targeted generation.",
       "awaiting": "Awaiting document generation",
       "awaitingBody": "Use \"Generate documents\" to create a tailored CV and cover letter.",
-      "suggestions": "AI suggestions",
+      "suggestions": "Signal suggestions",
       "coverLetter": "Tailored cover letter",
       "noCoverTitle": "No cover letter yet",
-      "noCoverBody": "Let Horizon draft a professional, position-aware cover letter for you.",
-      "draftCover": "Draft with Horizon Guide",
+      "noCoverBody": "Let Aptelion draft a professional, position-aware cover letter for you.",
+      "draftCover": "Draft with Signal Guidance",
       "drafting": "Drafting...",
       "studioEyebrow": "Document Studio",
       "studioTitle": "Prepare role-specific documents",
@@ -1252,13 +1252,13 @@
       "resumeDraftBody": "Tailor the resume angle for this opportunity. Keep the draft concise, specific, and aligned with the role.",
       "coverLetterBody": "Shape a focused cover letter that connects your experience to the company and role.",
       "unsavedSession": "Edited in this session",
-      "missingInputs": "Horizon needs a master resume, job description, and profile skills before generating reliable drafts.",
+      "missingInputs": "Aptelion needs a master resume, job description, and profile skills before generating reliable drafts.",
       "editorPlaceholder": "Generate a draft or start writing here...",
       "wordCount": "{{count}} words",
       "sessionOnly": "Manual edits are kept in this workstation session. Copy or export the draft before refreshing.",
       "visual": {
         "title": "Visual CV editor",
-        "body": "Work from a structured CV preview instead of a raw text box. Select a block, give Horizon a clear instruction, then copy or export the session draft.",
+        "body": "Work from a structured CV preview instead of a raw text box. Select a block, give Aptelion a clear instruction, then copy or export the session draft.",
         "v1Badge": "Visual block V1",
         "profileImage": "Profile image placeholder",
         "basics": {
@@ -1289,20 +1289,20 @@
         },
         "empty": {
           "title": "Generate the first visual draft",
-          "body": "Horizon will map the generated text into editable CV blocks so you can refine the document like a real application asset.",
+          "body": "Aptelion will map the generated text into editable CV blocks so you can refine the document like a real application asset.",
           "cta": "Generate draft"
         },
         "agent": {
-          "title": "Horizon Document Agent",
+          "title": "Document Studio Guide",
           "subtitle": "Block-level guidance for this draft",
           "selectedBlock": "Selected block",
           "noBlockContent": "This block is ready for your instruction.",
           "noSelectionTitle": "Select a CV block",
-          "noSelectionBody": "Click a section in the document preview to focus Horizon on the exact part you want to improve.",
+          "noSelectionBody": "Click a section in the document preview to focus Aptelion on the exact part you want to improve.",
           "emptyTitle": "Guide the next edit",
           "emptyBody": "Use a quick prompt or write an instruction. V1 updates the structured preview locally and keeps the draft plaintext-safe.",
-          "thinking": "Horizon is refining the selected block...",
-          "inputLabel": "Instruction for Horizon Document Agent",
+          "thinking": "Aptelion is refining the selected block...",
+          "inputLabel": "Instruction for Document Studio Guide",
           "placeholder": "Example: Make this summary more specific to the job description",
           "send": "Send instruction",
           "updatedResponse": "Updated the selected block in this session. Review the wording before copying or exporting.",
@@ -1353,7 +1353,7 @@
       "source": {
         "title": "Source",
         "noMasterTitle": "No master resume",
-        "noMasterBody": "Horizon needs a master resume before it can tailor a reliable CV or cover letter."
+        "noMasterBody": "Aptelion needs a master resume before it can tailor a reliable CV or cover letter."
       },
       "roleContext": {
         "title": "Opportunity context",
@@ -1367,7 +1367,7 @@
         "generating": "Generating..."
       },
       "guide": {
-        "title": "Horizon Guide",
+        "title": "Signal Guidance",
         "subtitle": "Focused editing prompts",
         "results": {
           "label": "Make it more results-oriented",
@@ -1388,13 +1388,13 @@
       },
       "v2": {
         "title": "Block editing planned",
-        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level AI edits are live."
+        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level Signal edits are live."
       }
     },
     "interview": {
       "title": "Interview practice",
       "readyTitle": "Ready to practice?",
-      "readyBody": "Choose an interview simulation to begin your session with Horizon Guide.",
+      "readyBody": "Choose an interview simulation to begin your session with Signal Guidance.",
       "listening": "Listening...",
       "endSession": "End session",
       "performance": "Performance",
@@ -1408,7 +1408,7 @@
         "noPrompt": "No prompt yet. Choose a practice scenario to begin.",
         "noScenario": "No active scenario",
         "nextTitle": "Next recommended prompt",
-        "nextEmpty": "Choose a scenario and Horizon will guide the next prompt."
+        "nextEmpty": "Choose a scenario and Aptelion will guide the next prompt."
       },
       "metrics": {
         "clarity": "Clarity",

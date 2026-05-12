@@ -13,14 +13,14 @@ export const AUTH_ROUTES: Routes = [
         loadComponent: () =>
           import('./components/login/login.component').then((m) => m.LoginComponent),
         canActivate: [guestGuard],
-        title: 'Sign In | Horizon',
+        title: 'Sign In | Aptelion',
       },
       {
         path: 'register',
         loadComponent: () =>
           import('./components/register/register.component').then((m) => m.RegisterComponent),
         canActivate: [guestGuard],
-        title: 'Create Account | Horizon',
+        title: 'Create Account | Aptelion',
       },
       {
         path: 'callback',
@@ -28,7 +28,7 @@ export const AUTH_ROUTES: Routes = [
           import('./components/auth-callback/auth-callback.component').then(
             (m) => m.AuthCallbackComponent,
           ),
-        title: 'Authenticating... | Horizon',
+        title: 'Authenticating... | Aptelion',
       },
     ],
   },

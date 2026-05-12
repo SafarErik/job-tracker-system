@@ -93,7 +93,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
   readonly chatMessages = signal<{ sender: 'user' | 'agent'; text: string }[]>([
     {
       sender: 'agent',
-      text: 'Horizon Agent initialized. Grid monitoring active. Awaiting command.',
+      text: 'Signal Guidance is ready. Monitoring relevant career and market signals.',
     },
   ]);
   readonly isScanning = signal(false);
@@ -191,7 +191,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
     this.selectedItem.set(item);
     this.startTypewriter(
       item.summary ||
-        'Deep strategic analysis in progress. Correlating market signals with your career trajectory...',
+        'Signal analysis in progress. Connecting market context to your career direction...',
     );
   }
 
@@ -269,7 +269,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
         ...msgs,
         {
           sender: 'agent',
-          text: `Acknowledged. Scanning global sectors for "${message}". Correlation matrix updated.`,
+          text: `I found the request for "${message}". I will connect relevant market signals to your current profile.`,
         },
       ]);
     }, 2000);

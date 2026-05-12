@@ -28,13 +28,14 @@ export default {
             },
         },
         extend: {
-            // Typography - Sora for Horizon display copy, Inter for UI/body
+            // Typography - Sora for Aptelion headings, Inter for UI/body
             fontFamily: {
                 sans: ['Inter', 'Geist', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                heading: ['Sora', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
                 display: ['Sora', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             },
 
-            // Horizon keeps primitives compact and product-like
+            // Aptelion keeps primitives compact and product-like
             borderRadius: {
                 lg: 'var(--radius)',
                 xl: 'var(--radius)',

@@ -18,7 +18,7 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
         (m) => m.ApplicationsComponent,
       ),
     canActivate: [authGuard],
-    title: 'Applications - Horizon',
+    title: 'Applications - Aptelion',
   },
   {
     // Workstation route - full page view with tabs
@@ -26,7 +26,7 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'Application Workstation - Horizon',
+    title: 'Application Workstation - Aptelion',
   },
   {
     // Keep edit/:id as alias to workstation for backwards compatibility
@@ -34,7 +34,7 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'Edit Application - Horizon',
+    title: 'Edit Application - Aptelion',
   },
   {
     // Keep view/:id as alias to workstation for backwards compatibility
@@ -42,6 +42,6 @@ export const JOB_APPLICATIONS_ROUTES: Routes = [
     loadComponent: () =>
       import('./components/job-workstation/job-workstation').then((m) => m.JobWorkstationComponent),
     canActivate: [authGuard],
-    title: 'View Application - Horizon',
+    title: 'View Application - Aptelion',
   },
 ];

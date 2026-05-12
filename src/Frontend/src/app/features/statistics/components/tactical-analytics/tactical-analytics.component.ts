@@ -60,7 +60,7 @@ export class TacticalAnalyticsComponent {
         { month: 'Jun', value: 125000 }
     ]);
 
-    // Skill Comparison (My Arsenal vs Target Profile)
+    // Skill Comparison (My Skills vs Target Profile)
     readonly skillRadarData = signal([
         { skill: 'TypeScript', user: 90, target: 85 },
         { skill: 'Angular', user: 95, target: 90 },
@@ -101,6 +101,6 @@ export class TacticalAnalyticsComponent {
     }
 
     startDeepAudit(): void {
-        // Future implementation: trigger AI analysis session
+        // Future implementation: trigger Signal analysis session
     }
 }

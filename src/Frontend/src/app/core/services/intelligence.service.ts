@@ -86,9 +86,9 @@ export class IntelligenceService {
     },
     {
       id: '5',
-      headline: 'Fintech Unicorn "Horizon" Acquires Competitor for $1.2B',
+      headline: 'Fintech Unicorn "LumaPay" Acquires Competitor for $1.2B',
       summary:
-        'In a surprise move, Horizon consolidate market share in the job tracking and career intelligence space. New hire initiatives expected for their London R&D hub.',
+        'In a surprise move, LumaPay consolidates market share in the financial workflow space. New hire initiatives are expected for its London R&D hub.',
       impactScore: 88,
       source: 'Bloomberg',
       sourceFavicon: 'https://www.bloomberg.com/favicon.ico',
@@ -102,7 +102,7 @@ export class IntelligenceService {
     {
       id: '101',
       roleTitle: 'Senior Frontend Engineer',
-      company: 'Horizon Systems',
+      company: 'Northstar Systems',
       location: 'London, UK (Hybrid)',
       matchScore: 98,
       salaryRange: '£90k - £120k',

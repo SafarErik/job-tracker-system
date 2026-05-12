@@ -3,7 +3,7 @@
  * APPLICATION ROUTES
  * ============================================================================
  *
- * Defines all routes for the Horizon application.
+ * Defines all routes for the Aptelion application.
  * Uses lazy loading for feature modules for better initial load performance.
  *
  * Route categories:
@@ -31,7 +31,7 @@ export const routes: Routes = [
         (m) => m.EntryRedirectComponent,
       ),
     pathMatch: 'full',
-    title: 'Horizon',
+    title: 'Aptelion',
   },
 
   // ============================================
@@ -44,7 +44,7 @@ export const routes: Routes = [
         (m) => m.LandingPageComponent,
       ),
     pathMatch: 'full',
-    title: 'Horizon - Career growth, intelligently guided',
+    title: 'Aptelion - Career progress, clearly guided',
   },
 
   // ============================================
@@ -65,7 +65,7 @@ export const routes: Routes = [
       import('./features/dashboard/pages/global-footprint-screen/global-footprint-screen.component').then(
         (m) => m.GlobalFootprintScreenComponent,
     ),
-    title: 'Global Footprint - Horizon',
+    title: 'Global Footprint - Aptelion',
   },
   {
     path: 'mission/global-footprint',
@@ -80,7 +80,7 @@ export const routes: Routes = [
       import('./features/job-applications/components/job-workstation/job-workstation').then(
         (m) => m.JobWorkstationComponent,
       ),
-    title: 'Application Workstation - Horizon',
+    title: 'Application Workstation - Aptelion',
     data: { breadcrumb: 'Workstation' },
   },
   {
@@ -91,7 +91,7 @@ export const routes: Routes = [
       import('./features/job-applications/components/job-workstation/job-workstation').then(
         (m) => m.JobWorkstationComponent,
       ),
-    title: 'View Application - Horizon',
+    title: 'View Application - Aptelion',
     data: { breadcrumb: 'View Application' },
   },
   {
@@ -102,7 +102,7 @@ export const routes: Routes = [
       import('./features/companies/components/company-details/company-details').then(
         (m) => m.CompanyDetailsComponent,
       ),
-    title: 'Company Workstation - Horizon',
+    title: 'Company Workstation - Aptelion',
     data: { breadcrumb: 'Company Workstation' },
   },
   {
@@ -125,7 +125,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-        title: 'Dashboard - Horizon',
+        title: 'Dashboard - Aptelion',
         data: { breadcrumb: 'Dashboard' },
       },
       {
@@ -134,7 +134,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/job-list/applications/applications.component').then(
             (m) => m.ApplicationsComponent,
           ),
-        title: 'Applications - Horizon',
+        title: 'Applications - Aptelion',
         data: { breadcrumb: 'Applications' },
       },
       {
@@ -143,7 +143,7 @@ export const routes: Routes = [
           import('./features/job-applications/components/new-application-redirect/new-application-redirect.component').then(
             (m) => m.NewApplicationRedirectComponent,
           ),
-        title: 'New Application - Horizon',
+        title: 'New Application - Aptelion',
         data: { breadcrumb: 'New Application' },
       },
       // Companies
@@ -153,7 +153,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-list/company-list').then(
             (m) => m.CompanyListComponent,
           ),
-        title: 'Companies - Horizon',
+        title: 'Companies - Aptelion',
         data: { breadcrumb: 'Companies' },
       },
       {
@@ -162,7 +162,7 @@ export const routes: Routes = [
           import('./features/companies/components/company-form/company-form').then(
             (m) => m.CompanyFormComponent,
           ),
-        title: 'Edit Company - Horizon',
+        title: 'Edit Company - Aptelion',
         data: { breadcrumb: 'Edit Company' },
       },
 
@@ -173,7 +173,7 @@ export const routes: Routes = [
           import('./features/documents/components/documents-list/documents-list').then(
             (m) => m.DocumentsListComponent,
           ),
-        title: 'Documents - Horizon',
+        title: 'Documents - Aptelion',
         data: { breadcrumb: 'Documents' },
       },
 
@@ -182,7 +182,7 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-        title: 'Profile - Horizon',
+        title: 'Profile - Aptelion',
         data: { breadcrumb: 'Profile' },
       },
 
@@ -191,7 +191,7 @@ export const routes: Routes = [
         path: 'statistics',
         loadChildren: () =>
           import('./features/statistics/statistics.routes').then((m) => m.STATISTICS_ROUTES),
-        title: 'Intelligence Analytics - Horizon',
+        title: 'Signal Analytics - Aptelion',
         data: { breadcrumb: 'Intelligence' },
       },
 
@@ -201,7 +201,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/signals/signals.component').then((m) => m.SignalsComponent),
 
-        title: 'Global Feed - Horizon',
+        title: 'Global Feed - Aptelion',
         data: { breadcrumb: 'Global Signals' },
       },
 

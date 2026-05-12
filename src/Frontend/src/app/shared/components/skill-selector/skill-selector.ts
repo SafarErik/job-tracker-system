@@ -70,7 +70,7 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
             </div>
             }
             @if (selectedSkills().length === 0) {
-            <span class="text-xs text-muted-foreground/60 py-2">Search and add the skills you want Horizon to consider.</span>
+            <span class="text-xs text-muted-foreground/60 py-2">Search and add the skills you want Aptelion to consider.</span>
             }
           </div>
         </div>

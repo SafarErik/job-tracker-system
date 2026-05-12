@@ -3,8 +3,8 @@
     min-height: 100vh;
 }
 
-.font-serif {
-    font-family: 'Playfair Display', 'Georgia', serif;
+.font-heading {
+    font-family: var(--font-heading);
 }
 
 .no-scrollbar::-webkit-scrollbar {

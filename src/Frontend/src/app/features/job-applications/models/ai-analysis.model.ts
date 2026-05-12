@@ -1,13 +1,13 @@
 /**
  * ============================================================================
- * AI ANALYSIS MODELS - Workstation AI Features
+ * SIGNAL ANALYSIS MODELS - Workstation guidance features
  * ============================================================================
  */
 
 import { FitReview } from '../../../core/models/fit-review.model';
 
 /**
- * Result of AI analysis on a job description
+ * Result of Signal analysis on a job description
  */
 export interface AiAnalysisResult {
     matchScore: number; // 0-100
@@ -19,7 +19,7 @@ export interface AiAnalysisResult {
 }
 
 /**
- * AI-generated tailored assets
+ * Signal-generated tailored assets
  */
 export interface AiGeneratedAssets {
     matchScore: number;

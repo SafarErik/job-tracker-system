@@ -533,7 +533,7 @@ export class AssetsViewComponent implements OnInit {
 
   private createBasics(app: JobApplication): CvBasics {
     const profile = this.profileStore.profile();
-    const fullName = profile?.fullName?.trim() || 'Horizon Candidate';
+    const fullName = profile?.fullName?.trim() || 'Aptelion Candidate';
     const title = profile?.currentJobTitle?.trim() || app.position;
 
     return {

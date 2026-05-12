@@ -11,7 +11,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '../../core/auth';
 
 // Shared app name constant for consistent branding
-const APP_NAME = 'Horizon';
+const APP_NAME = 'Aptelion';
 
 export const COMPANIES_ROUTES: Routes = [
   {

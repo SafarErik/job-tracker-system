@@ -19,7 +19,7 @@ export class AiAnalystChatComponent {
 
 
   messages = signal([
-    { role: 'analyst', content: 'Horizon Guide is ready. I can help summarize company context, identify interview angles, and connect this research to your pipeline.' }
+    { role: 'analyst', content: 'Signal Guidance is ready. I can summarize company context, identify interview angles, and connect this research to your pipeline.' }
   ]);
 
   currentInput = signal('');

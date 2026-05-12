@@ -151,7 +151,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
                 <span class="text-[9px] font-semibold uppercase tracking-widest">Data protection</span>
               </div>
               <p class="text-[9px] text-muted-foreground leading-tight">
-                Account settings are handled through the Horizon workspace layer.
+                Account settings are handled through the Aptelion workspace layer.
               </p>
             </div>
           </aside>
@@ -163,9 +163,9 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'intelligence') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-display font-semibold">Horizon Guide</h4>
+                    <h4 class="text-xl font-display font-semibold">Signal Guidance</h4>
                     <p class="text-xs text-muted-foreground">
-                      Tune how Horizon supports research, documents, and next actions.
+                      Tune how Aptelion supports research, documents, and next actions.
                     </p>
                   </header>
 
@@ -261,7 +261,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'connectivity') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-serif font-bold">Signal Bridges</h4>
+                    <h4 class="text-xl font-heading font-bold">Signal Bridges</h4>
                     <p class="text-xs text-muted-foreground">
                       Manage external connections and data ingestion pipelines.
                     </p>
@@ -338,7 +338,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'preferences') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-serif font-bold">Environment</h4>
+                    <h4 class="text-xl font-heading font-bold">Environment</h4>
                     <p class="text-xs text-muted-foreground">
                       Tailor the visual interface and local parameters.
                     </p>
@@ -456,7 +456,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'security') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-serif font-bold">Data & Sovereignty</h4>
+                    <h4 class="text-xl font-heading font-bold">Data & Sovereignty</h4>
                     <p class="text-xs text-muted-foreground">
                       Export your datasets or wipe all traces from the core.
                     </p>

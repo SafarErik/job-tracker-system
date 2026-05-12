@@ -1,260 +1,300 @@
-# AGENTS.md
+# Repository Agent Instructions
 
-This file provides guidance to WARP (warp.dev) when working with code in this repository.
+## Scope
 
-## Quick Start Commands
+These instructions apply to the whole repository. More specific instructions may exist in subdirectories and should be followed together with this file.
 
-### Backend (.NET 10)
-```powershell
-# Restore dependencies
-dotnet restore JobTracker.slnx
+This repository contains Aptelion, a career operating system for focused professional growth.
 
-# Build entire solution
-dotnet build JobTracker.slnx
+Aptelion helps users evaluate opportunities, improve career materials, prepare for interviews, understand offers, and keep applications moving with clarity and intent.
 
-# Run API (with database migrations)
-dotnet run --project src/Backend/JobTracker.API
+## Brand And Product Direction
 
-# Run API with database reset (Development only - DESTRUCTIVE)
-dotnet run --project src/Backend/JobTracker.API -- --reset-db
+Always read `BRAND.md` before making UI, copy, layout, naming, architecture, or product experience changes.
 
-# Run from specific project directory
-cd src/Backend/JobTracker.API
-dotnet run
+Use the current Aptelion brand architecture:
 
-# Create new migration
-cd src/Backend
-dotnet ef migrations add MigrationName --project JobTracker.Infrastructure --startup-project JobTracker.API
+- **Aptelion**: the main product and platform brand.
+- **Aptelion Core**: the open-source foundation.
+- **Aptelion Cloud**: the hosted commercial SaaS product.
+- **Aptelion Signal**: the private AI guidance and decision-support layer.
+- **Aptelion Studio**: the workspace experience for documents, applications, interviews, offers, and timelines.
 
-# Apply migrations
-dotnet ef database update --project JobTracker.Infrastructure --startup-project JobTracker.API
+Some internal technical names may still use legacy `JobTracker` naming during the transition. Do not rename projects, namespaces, folders, deployment paths, or package names unless explicitly requested.
 
-# Publish for production
-dotnet publish src/Backend/JobTracker.API -c Release -o publish
-```
+## Product Experience
 
-### Frontend (Angular 21)
+Aptelion should feel like a premium, calm, intelligent career operating system. It should help users answer:
+
+- Which opportunity fits me?
+- What should I improve before applying?
+- How should I prepare?
+- What needs attention today?
+- What is the clearest next step?
+
+The product should reduce career uncertainty, not add another dashboard to manage.
+
+Prefer product language such as:
+
+- Fit Overview
+- Analyze fit
+- Document Studio
+- Interview Studio
+- Offer Overview
+- Timeline
+- Signal Guidance
+- Next best move
+- Momentum
+- Application Queue
+- Recommended next action
+
+Avoid tactical, combat, weapon, magic AI, bot, or hype-heavy language in product surfaces.
+
+## Current Technical Stack
+
+Frontend:
+
+- Angular
+- Tailwind CSS
+- Spartan UI
+- Lucide icons
+
+Backend:
+
+- ASP.NET Core
+- Clean Architecture
+- Entity Framework Core
+- SQL Server
+- ASP.NET Core Identity
+- JWT Bearer Authentication
+
+## Working Style
+
+Act like a senior engineer working inside an existing codebase.
+
+Before editing:
+
+- inspect relevant files first;
+- search for existing patterns before adding new ones;
+- understand the current feature boundary;
+- keep the patch cohesive and reviewable.
+
+When implementing:
+
+- deliver working code, not just a plan;
+- preserve existing behavior unless the task explicitly asks for a behavior change;
+- prefer simple, maintainable solutions over clever hacks;
+- avoid broad rewrites unless explicitly requested;
+- avoid speculative abstractions;
+- avoid hidden behavior changes;
+- keep changes consistent across all relevant UI surfaces.
+
+Do not stop with only a plan unless the task is clearly blocked.
+
+## Git Safety
+
+The working tree may contain user changes.
+
+- Never run destructive commands such as `git reset --hard`, `git checkout --`, or mass deletion commands unless explicitly requested.
+- Never revert changes you did not make.
+- If unexpected unrelated changes appear, stop and report the situation.
+- Do not amend commits unless explicitly requested.
+- Do not rename large project structures unless explicitly requested.
+
+## Search And File Exploration
+
+Prefer fast, targeted repository exploration.
+
+- Use `rg` for text search when available.
+- Use `rg --files` for file discovery when available.
+- Search before adding new helpers, components, services, or constants.
+- Read enough surrounding context before patching.
+- Batch related edits instead of making many tiny, disconnected changes.
+
+## Code Quality
+
+Optimize for correctness, clarity, type safety, and long-term maintainability.
+
+Do:
+
+- follow existing Angular and .NET conventions;
+- keep components focused and readable;
+- use proper TypeScript and C# types;
+- reuse existing utilities, models, pipes, stores, services, DTOs, and abstractions;
+- keep naming consistent and domain-specific;
+- surface errors using existing notification/error patterns;
+- keep UI logic, application logic, domain logic, and infrastructure concerns separated;
+- prefer small composable helpers over large template expressions or god services;
+- add or update tests when behavior changes.
+
+Avoid:
+
+- spaghetti code;
+- duplicated logic;
+- large untyped objects;
+- unnecessary `any`;
+- broad `try/catch` blocks that hide errors;
+- silent fallbacks;
+- deeply nested template logic;
+- controller-heavy business logic;
+- copy-pasted Tailwind class blobs when a reusable pattern is obvious;
+- fragile DOM hacks;
+- unnecessary dependencies.
+
+## Visual Direction
+
+Use the Aptelion visual direction from `BRAND.md`.
+
+Preferred direction:
+
+- premium light-first UI;
+- calm dark mode support;
+- clean surfaces;
+- generous spacing;
+- soft depth;
+- clear hierarchy;
+- selective cyan/blue accents;
+- subtle motion;
+- meaningful progress signals;
+- Sora for headings;
+- Inter for UI and body text.
+
+Core palette:
+
+- Aptelion Navy: `#0B1020`
+- Deep Signal: `#16213E`
+- Slate: `#5E6B82`
+- Soft Surface: `#F5F8FC`
+- Line Gray: `#D7DFEA`
+
+Brand accents:
+
+- Aptelion Cyan: `#4FC3E8`
+- Signal Blue: `#2E7CF6`
+- Clear Mist: `#DDF6FF`
+
+Semantic colors:
+
+- Success: `#2FBF71`
+- Warning: `#F59E0B`
+- Danger: `#E5484D`
+- Neutral: `#64748B`
+
+Avoid excessive glow, excessive violet as the main brand color, noisy animated backgrounds, crypto/cyberpunk styling, generic AI orb visuals, and decoration without product meaning.
+
+Violet may only be used sparingly as a secondary accent, especially in Interview-related surfaces.
+
+## Main Product Areas
+
+Use the following workspace structure:
+
+- **Fit**: role fit, match score, strengths, gaps, missing keywords, recommended next action.
+- **Documents**: CV, cover letter, tailored versions, block-level editing, reusable content blocks.
+- **Interview**: guided preparation, scenario selection, answer practice, follow-up questions, session recap.
+- **Offer**: compensation, negotiation, offer comparison, decision clarity.
+- **Timeline**: milestones, deadlines, follow-ups, reminders, application history.
+
+## Open-Core Boundaries
+
+Design the codebase so that Aptelion Core remains useful and open, while Aptelion Cloud, Aptelion Signal, and advanced Aptelion Studio features can remain private.
+
+Aptelion Core may include:
+
+- shared UI foundation;
+- design system primitives;
+- basic application tracker;
+- basic document workspace;
+- basic timeline primitives;
+- public schemas;
+- public API contracts;
+- public extension interfaces;
+- reusable frontend components;
+- local development setup;
+- documentation.
+
+Private/proprietary areas may include:
+
+- AI scoring logic;
+- recommendation engine;
+- proprietary prompts;
+- document generation logic;
+- advanced fit analysis;
+- advanced interview preparation;
+- offer comparison logic;
+- multi-tenant SaaS infrastructure;
+- billing;
+- premium integrations;
+- commercial analytics;
+- production deployment configuration;
+- internal evaluation datasets;
+- advanced automation logic.
+
+Do not hard-code premium checks randomly across controllers, services, or components. If premium gating is needed later, isolate it behind explicit abstractions.
+
+## Security And Privacy
+
+Never commit secrets.
+
+Do not add:
+
+- API keys;
+- database credentials;
+- JWT secrets;
+- OAuth secrets;
+- production connection strings;
+- private tokens;
+- real user data.
+
+Use:
+
+- environment variables;
+- user secrets;
+- existing configuration patterns;
+- safe local development defaults.
+
+Do not weaken authentication, authorization, validation, CORS, file upload restrictions, or user data isolation.
+
+## Scoped Instructions
+
+Additional scoped instructions exist in subdirectories:
+
+- `src/Frontend/AGENTS.md` for frontend-specific UI, Angular, Spartan UI, Tailwind, and design-system rules.
+- `src/Backend/AGENTS.md` for backend-specific ASP.NET Core, Clean Architecture, EF Core, API, security, and open-core rules.
+
+When editing files under a scoped directory, follow both this root file and the nearest scoped `AGENTS.md`.
+
+## Validation Commands
+
+For frontend changes, run when feasible:
+
 ```bash
 cd src/Frontend
-
-# Install dependencies
 npm install
-
-# Start dev server (http://localhost:4200)
-npm start
-
-# Build for production
 npm run build
-
-# Run tests (Vitest)
-npm test
-
-# Watch mode for development
-npm run watch
 ```
 
-### Infrastructure
+For backend changes, run when feasible:
+
 ```bash
-# Start SQL Server in Docker
-docker-compose up -d
-
-# Stop containers
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# Rebuild containers
-docker-compose up -d --build
+dotnet build
 ```
 
-## Architecture Overview
+If backend tests exist, run:
 
-### Clean Architecture Layers
-The backend follows strict Clean Architecture with clear dependency flow: **API → Application → Core ← Infrastructure**
-
-- **Core** (`JobTracker.Core`): Pure domain layer with zero framework dependencies
-  - Entities: `ApplicationUser`, `JobApplication`, `Company`, `Document`, `Skill`
-  - Enums: `JobApplicationStatus` (Applied, Interviewing, Rejected, Offer, PhoneScreen, Ghosted, TechnicalTask)
-  - Interfaces: Repository contracts (`IJobApplicationRepository`, `ICompanyRepository`, etc.)
-
-- **Application** (`JobTracker.Application`): Business logic layer
-  - DTOs for API contracts
-  - FluentValidation validators
-  - Depends on Core only (not Infrastructure)
-
-- **Infrastructure** (`JobTracker.Infrastructure`): Data access and external services
-  - `ApplicationDbContext`: EF Core DbContext inheriting from `IdentityDbContext<ApplicationUser>`
-  - Repositories implementing Core interfaces
-  - Entity configurations
-  - Migrations directory contains EF Core migrations
-  - `Data/skills.json`: Seed data for skills (copied to output)
-
-- **API** (`JobTracker.API`): Entry point
-  - Controllers: `AuthController`, `JobApplicationsController`, `CompaniesController`, `DocumentsController`, `ProfileController`, `SkillsController`
-  - `Program.cs`: Extensive DI configuration including JWT, Identity, rate limiting, CORS, Swagger
-  - Middleware for security headers and logging
-  - `uploads/` folder for file storage (must be writable)
-
-### Frontend Architecture
-Angular 21 using standalone components with signal-based reactivity:
-
-- **core/**: Singleton services, guards, interceptors
-  - `auth/`: Authentication guards and services
-  - `models/`: TypeScript interfaces matching backend DTOs
-  - `services/`: HTTP services for API communication
-
-- **features/**: Feature modules (one per major entity)
-  - `auth/`: Login, register, Google OAuth
-  - `job-applications/`: Application tracking and Kanban board
-  - `companies/`: Company management
-  - `documents/`: Resume/CV upload and management
-  - `profile/`: User profile and skills
-  - `skills/`: Skill management
-
-- **shared/**: Reusable components, directives, pipes
-- **layout/**: Navigation, header, footer components
-
-## Database
-
-### Provider Configuration
-The application supports SQL Server (used for both dev and prod for consistency):
-- Development: SQL Server in Docker (`localhost:1433`)
-- Production: Azure SQL Database
-- Provider is selected in `Program.cs` via `DatabaseServiceExtensions.AddDatabaseContext()`
-
-### Connection String
-Default dev connection (set in `appsettings.json` or environment):
-```
-Server=localhost,1433;Database=JobTracker;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
-```
-
-### Important Database Relationships
-- `JobApplication` belongs to `ApplicationUser` (restrict delete to prevent cascade conflicts)
-- `JobApplication` belongs to `Company` (restrict delete)
-- `JobApplication` optionally links to `Document` (set null on document delete)
-- `Document` belongs to `ApplicationUser` (cascade delete)
-- Many-to-many: `Skill ↔ JobApplication` (via `JobApplicationSkills` table)
-- Many-to-many: `Skill ↔ ApplicationUser` (via `UserSkills` table)
-
-### Critical: Cascade Delete Configuration
-EF Core relationships use `DeleteBehavior.Restrict` for JobApplication → User and JobApplication → Company to avoid SQL Server cascade path conflicts. Only Document → User uses cascade delete.
-
-## Authentication & Security
-
-### JWT Configuration
-- Secret key stored in user-secrets (Development) or Azure Key Vault (Production)
-- Set via: `dotnet user-secrets set "JwtSettings:SecretKey" "Your_Super_Strong_Secret_Key_Here_123!" --project src/Backend/JobTracker.API`
-- Token includes user ID, email, and expiration
-- Validated with: issuer, audience, signing key, lifetime (no clock skew)
-
-### ASP.NET Core Identity
-- Custom `ApplicationUser` extends `IdentityUser`
-- Password requirements: 8+ chars, digit, lowercase, uppercase, non-alphanumeric
-- Lockout: 5 failed attempts → 5 minute lockout
-- Unique email required
-
-### Rate Limiting
-Configured in `Program.cs`:
-- Global: 100 requests/minute per IP
-- `/auth/login`: 5 attempts/minute
-- `/auth/register`: 3 attempts/hour
-- `/documents/upload`: 10 uploads/minute
-
-### Security Headers & Middleware
-- Custom security middleware adds X-Frame-Options, HSTS, CSP, X-Content-Type-Options
-- Security logging middleware for audit trails
-- FluentValidation for all DTOs
-
-### Google OAuth (Optional)
-- Only enabled if `Authentication:Google:ClientId` and `ClientSecret` are configured
-- Handled via `AddGoogle()` authentication scheme
-
-## File Uploads
-
-- Documents stored in `src/Backend/JobTracker.API/uploads/`
-- Max file size: 10MB
-- Allowed types: PDF only
-- Path traversal prevention implemented
-- Files named by GUID with document metadata stored in database
-
-## CORS Configuration
-
-Development default: `http://localhost:4200`  
-Production: Configured via `AllowedOrigins` array in `appsettings.json`  
-Credentials enabled for authentication cookies.
-
-## Development Workflow
-
-### Starting from Scratch
-1. Ensure Docker Desktop is running
-2. `docker-compose up -d` to start SQL Server
-3. Set JWT secret: `dotnet user-secrets set "JwtSettings:SecretKey" "YourSecretKey123!" --project src/Backend/JobTracker.API`
-4. Run backend with DB reset: `dotnet run --project src/Backend/JobTracker.API -- --reset-db`
-5. In new terminal: `cd src/Frontend && npm install && npm start`
-6. Access frontend at `http://localhost:4200`, API at `http://localhost:5053`, Swagger at `http://localhost:5053/swagger`
-
-### Demo User
-After running with `--reset-db`, a demo user is seeded:
-- Email: `demo@jobtracker.com`
-- Password: `Demo123!`
-
-### Making Code Changes
-
-**Backend:**
-- Entity changes require new migration: `dotnet ef migrations add MigrationName --project JobTracker.Infrastructure --startup-project JobTracker.API`
-- Always apply migrations: `dotnet ef database update --project JobTracker.Infrastructure --startup-project JobTracker.API`
-- Run from `src/Backend` directory for EF Core commands
-- Repository changes must update interface in Core layer first
-
-**Frontend:**
-- Follow Angular standalone component pattern
-- Use signals for reactivity
-- Services must be provided in component or root
-- API models in `core/models/` should match backend DTOs exactly
-
-## Testing
-
-**Backend:** No test project currently exists. If creating tests, use xUnit or NUnit and reference the appropriate layer.
-
-**Frontend:** Tests use Vitest (configured in `package.json`). Run with `npm test`.
-
-## Deployment
-
-### Azure Production Environment
-- Backend: Azure App Service (.NET 10)
-- Frontend: Azure App Service (static files, shared with backend B1 plan)
-- Database: Azure SQL Database (Basic tier)
-- Secrets: Azure Key Vault
-- Monitoring: Application Insights (enabled in non-Development environments)
-
-### Production Build
 ```bash
-# Backend
-dotnet publish src/Backend/JobTracker.API -c Release -o publish
-
-# Frontend
-cd src/Frontend && npm run build
+dotnet test
 ```
 
-## Important Notes
+If a command fails, report the failing command, include the relevant error summary, and distinguish between pre-existing failures and failures caused by the current changes when possible.
 
-### --reset-db Flag Behavior
-- **ONLY works in Development environment** - hard-blocked in production via environment check
-- **DESTRUCTIVE**: Deletes entire database and recreates from scratch
-- Seeds demo user and sample data
-- 3-second warning before execution
-- Never use on production data
+## Final Response Expectations
 
-### Rate Limiting in Production
-- Current implementation uses `DistributedMemoryCache`
-- For multi-instance scaling, replace with Redis: `AddStackExchangeRedisCache()`
+When finishing a task, report:
 
-### Application Insights
-- Only registered in non-Development environments
-- Requires Azure configuration for production
+- what changed;
+- files touched;
+- build/test results;
+- known limitations;
+- recommended next step, if there is one.
 
-### Swagger
-- Enabled in all environments (consider restricting in production)
-- JWT authentication integrated via "Authorize" button
-- Access at `/swagger` endpoint
+Be concise, but do not hide uncertainty or failed validation.

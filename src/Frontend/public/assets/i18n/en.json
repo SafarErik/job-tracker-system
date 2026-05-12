@@ -39,19 +39,19 @@
     "switchTo": "Switch language"
   },
   "shell": {
-    "brandSubtitle": "Career workspace",
-    "footerTitle": "Career workspace 2026",
+    "brandSubtitle": "Aptelion Studio",
+    "footerTitle": "Aptelion Studio",
     "nav": {
       "workspace": "Workspace",
       "dashboard": "Dashboard",
       "applications": "Applications",
       "companies": "Companies",
       "insights": "Insights",
-      "signals": "Opportunities",
+      "signals": "Signal",
       "documents": "Documents"
     },
     "header": {
-      "searchPlaceholder": "Search your pipeline or ask Signal Guidance...",
+      "searchPlaceholder": "Search Aptelion Studio or ask Signal...",
       "openSearch": "Open command menu",
       "profile": "Profile",
       "settings": "Settings",
@@ -66,18 +66,18 @@
         "companyDetails": "Company research"
       },
       "account": {
-        "workspaceName": "Aptelion account",
+        "workspaceName": "Aptelion Studio",
         "workspaceGroup": "Account",
         "preferencesGroup": "Preferences",
-        "workspaceKind": "Career workspace"
+        "workspaceKind": "Workspace"
       },
       "descriptions": {
-        "dashboard": "See what matters now and where you need to react.",
-        "applications": "Track active applications and react quickly.",
+        "dashboard": "Review Today's Focus, Momentum, and the next best move.",
+        "applications": "Track the Application Queue and keep each opportunity moving.",
         "companies": "Manage company research and outreach context.",
-        "insights": "Review trends, charts, and performance signals.",
-        "signals": "Find opportunities and useful market signals.",
-        "documents": "Keep resumes and job-search documents ready.",
+        "insights": "Review trends, charts, and progress signals.",
+        "signals": "Open Signal Guidance for recommendations and next moves.",
+        "documents": "Keep CVs, cover letters, and tailored documents ready.",
         "profile": "Manage your career profile and preferences.",
         "newApplication": "Capture the opportunity basics, pipeline stage, materials, and readiness.",
         "editCompany": "Update company research, priority, contacts, and context.",
@@ -86,14 +86,14 @@
       "commands": {
         "workspace": "Workspace",
         "actions": "Actions",
-        "assistant": "Signal Guidance",
+        "assistant": "Signal",
         "openDashboard": "Open dashboard",
         "openApplications": "Open applications",
         "openCompanies": "Open companies",
-        "addApplication": "Add opportunity",
-        "openAssistant": "Open Signal Guidance",
-        "pipelineSummary": "Pipeline summary",
-        "nextBestAction": "Next best action"
+        "addApplication": "Add application",
+        "openAssistant": "Open Signal",
+        "pipelineSummary": "Application Queue summary",
+        "nextBestAction": "Next best move"
       }
     }
   },

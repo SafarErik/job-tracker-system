@@ -1,48 +1,49 @@
 <hlm-sidebar
   collapsible="icon"
   variant="sidebar"
-  class="h-full border-r border-sidebar-border bg-sidebar transition-[width,background-color,border-color,color] duration-200 ease-in-out"
+  class="h-full border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width,background-color,border-color,color] duration-200 ease-in-out"
 >
   <div
     hlmSidebarHeader
-    class="overflow-hidden border-b border-sidebar-border/80 px-3 py-3.5 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center"
+    class="overflow-hidden border-b border-sidebar-border/80 px-3 py-3.5 whitespace-nowrap transition-all duration-300 group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:py-3"
   >
     <div
-      class="flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border border-sidebar-border/70 bg-sidebar-accent/35 px-3 py-2.5 shadow-[inset_0_1px_0_hsl(var(--sidebar-foreground)/0.04)] transition-all group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:min-h-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:shadow-none"
+      class="flex min-h-14 w-full items-center gap-3 overflow-hidden rounded-lg border border-sidebar-border/70 bg-sidebar-accent/45 px-3 py-2.5 shadow-[inset_0_1px_0_hsl(var(--sidebar-foreground)/0.05)] transition-all duration-300 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:min-h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0 group-data-[collapsible=icon]:shadow-none"
     >
       <app-logo
-        class="min-w-0 transition-all duration-300"
+        class="min-w-0 text-sidebar-foreground transition-all duration-300 group-data-[collapsible=icon]:[&_.aptelion-logo-text]:hidden group-data-[collapsible=icon]:[&_.aptelion-logo]:justify-center"
         size="sm"
-        [withGlow]="true"
+        [withGlow]="false"
         [subtitle]="'shell.brandSubtitle' | transloco"
       ></app-logo>
     </div>
   </div>
-  <div hlmSidebarContent>
-    <div hlmSidebarGroup class="px-2 py-3">
+  <div hlmSidebarContent class="px-1 group-data-[collapsible=icon]:px-0">
+    <div hlmSidebarGroup class="px-2 py-3 group-data-[collapsible=icon]:px-1">
       <div
         hlmSidebarGroupLabel
-        hlmClassName="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.24em] text-sidebar-foreground/45"
+        hlmClassName="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/55"
       >
         {{ 'shell.nav.workspace' | transloco }}
       </div>
       <div hlmSidebarGroupContent>
-        <ul hlmSidebarMenu class="px-0">
+        <ul hlmSidebarMenu class="px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
           @for (item of navItems; track item.labelKey) {
-            <li hlmSidebarMenuItem>
+            <li hlmSidebarMenuItem class="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
               <a
                 hlmSidebarMenuButton
                 [routerLink]="item.link"
-                routerLinkActive="bg-sidebar-primary/12 text-sidebar-foreground border-sidebar-primary/30 shadow-[0_12px_30px_hsl(var(--sidebar-primary)/0.08)]"
+                [attr.aria-label]="item.labelKey | transloco"
+                routerLinkActive="border-sidebar-primary/35 bg-sidebar-primary/10 text-sidebar-primary shadow-[0_10px_26px_hsl(var(--sidebar-primary)/0.08)] group-data-[collapsible=icon]:border-sidebar-primary/30 group-data-[collapsible=icon]:bg-sidebar-primary group-data-[collapsible=icon]:text-sidebar-primary-foreground group-data-[collapsible=icon]:shadow-none"
                 [routerLinkActiveOptions]="{ exact: item.exact }"
-                class="group mb-1 flex justify-start rounded-lg border border-transparent px-3 py-3 text-sidebar-foreground/72 transition-all hover:border-sidebar-border hover:bg-sidebar-accent/65 hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:h-11 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:px-0"
+                class="group mb-1 flex justify-start rounded-lg border border-transparent px-3 py-3 text-sidebar-foreground/72 transition-[background-color,border-color,color,box-shadow,width,height,padding] hover:border-sidebar-border hover:bg-sidebar-accent/75 hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring/45 group-data-[collapsible=icon]:!size-10 group-data-[collapsible=icon]:!justify-center group-data-[collapsible=icon]:rounded-lg group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0"
               >
                 <ng-icon
                   hlm
                   [name]="item.icon"
-                  hlmClassName="h-5 w-5 shrink-0 transition-colors group-hover:text-sidebar-primary"
+                  hlmClassName="h-5 w-5 shrink-0 transition-colors"
                 />
-                <span class="block truncate text-sm font-semibold group-data-[collapsible=icon]:hidden">
+                <span class="block truncate text-sm font-medium group-data-[collapsible=icon]:hidden">
                   {{ item.labelKey | transloco }}
                 </span>
               </a>
@@ -53,5 +54,5 @@
     </div>
   </div>
 
-  <button hlmSidebarRail></button>
+  <button hlmSidebarRail aria-label="Toggle sidebar"></button>
 </hlm-sidebar>

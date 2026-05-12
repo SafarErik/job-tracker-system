@@ -6,14 +6,14 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
 import { provideIcons } from '@ng-icons/core';
 import {
   lucideSearch,
-  lucideCommand,
-  lucideCalculator,
-  lucideCalendar,
+  lucideLayoutDashboard,
+  lucideBriefcase,
+  lucideBuilding2,
   lucideUser,
   lucideSettings,
-  lucideMail,
-  lucideBrain,
-  lucideZap,
+  lucidePlus,
+  lucideListChecks,
+  lucideRadio,
   lucideChevronDown,
   lucideSun,
   lucideMoon,
@@ -53,14 +53,14 @@ import { Theme, ThemeService } from '../../../core/services/theme.service';
   providers: [
     provideIcons({
       lucideSearch,
-      lucideCommand,
-      lucideCalculator,
-      lucideCalendar,
+      lucideLayoutDashboard,
+      lucideBriefcase,
+      lucideBuilding2,
       lucideUser,
       lucideSettings,
-      lucideMail,
-      lucideBrain,
-      lucideZap,
+      lucidePlus,
+      lucideListChecks,
+      lucideRadio,
       lucideChevronDown,
       lucideSun,
       lucideMoon,
@@ -111,6 +111,10 @@ export class GlobalHeaderComponent {
     { value: 'en', labelKey: 'language.english' },
     { value: 'hu', labelKey: 'language.hungarian' },
   ];
+
+  readonly logoAsset = computed(() =>
+    this.themeService.isDark() ? 'assets/brand/aptelion-mark-dark.svg' : 'assets/brand/aptelion-mark-light.svg',
+  );
 
   private sectionTitleKey(section: string): string {
     switch (section) {

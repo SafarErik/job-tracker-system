@@ -12,6 +12,7 @@ import { provideRouter, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideTransloco, translocoConfig } from '@jsverse/transloco';
+import { provideHlmSidebarConfig } from '@spartan-ng/helm/sidebar';
 
 import { routes } from './app.routes';
 import { authInterceptor, errorInterceptor } from './core/interceptors';
@@ -32,6 +33,12 @@ export const appConfig: ApplicationConfig = {
 
     // Enable Animations
     provideAnimationsAsync(),
+
+    provideHlmSidebarConfig({
+      sidebarWidth: '16rem',
+      sidebarWidthIcon: '3.5rem',
+      sidebarWidthMobile: '18rem',
+    }),
 
     provideTransloco({
       config: translocoConfig({

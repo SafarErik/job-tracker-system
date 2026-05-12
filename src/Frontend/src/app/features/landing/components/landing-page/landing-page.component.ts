@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../../../core/auth';
@@ -83,6 +83,10 @@ export class LandingPageComponent {
     readonly languageService = inject(LanguageService);
 
     readonly isAuthenticated = this.authService.isAuthenticated;
+
+    readonly logoAsset = computed(() =>
+        this.themeService.isDark() ? '/assets/brand/aptelion-mark-dark.svg' : '/assets/brand/aptelion-mark-light.svg',
+    );
 
     readonly proofPoints = [
         'landing.proof.guidance',

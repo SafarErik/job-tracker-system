@@ -324,21 +324,29 @@ html.theme-switching *::after {
   @apply grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4;
 }
 
-@utility horizon-widget-item {
+@utility aptelion-widget-item {
   @apply rounded-xl border border-border bg-muted/20 p-3;
 }
 
-@utility horizon-pill-action {
+@utility aptelion-pill-action {
   @apply rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary;
 }
 
-/* Backward compatibility */
+/* Backward compatibility for feature files outside the shell polish scope. */
+@utility horizon-widget-item {
+  @apply aptelion-widget-item;
+}
+
+@utility horizon-pill-action {
+  @apply aptelion-pill-action;
+}
+
 @utility vantage-widget-item {
-  @apply horizon-widget-item;
+  @apply aptelion-widget-item;
 }
 
 @utility vantage-pill-action {
-  @apply horizon-pill-action;
+  @apply aptelion-pill-action;
 }
 
 @utility surface-elevated {
@@ -369,12 +377,18 @@ html.theme-switching *::after {
   @apply rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl;
 }
 
-.horizon-search-trigger::before {
+.aptelion-search-trigger::before {
   content: '';
   position: absolute;
   inset: auto 0 0 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(var(--brand-aurora) / 0.66), hsl(var(--brand-electric) / 0.22), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--brand-cyan) / 0.66),
+    hsl(var(--brand-signal-blue) / 0.22),
+    transparent
+  );
   opacity: 0;
   transform: translateX(-12%);
   transition:
@@ -382,15 +396,15 @@ html.theme-switching *::after {
     transform 180ms ease;
 }
 
-.horizon-search-trigger:hover::before,
-.horizon-search-trigger:focus-visible::before {
+.aptelion-search-trigger:hover::before,
+.aptelion-search-trigger:focus-visible::before {
   opacity: 1;
   transform: translateX(0);
 }
 
-.horizon-account-menu {
+.aptelion-account-menu {
   box-shadow:
-    0 24px 60px hsl(var(--brand-midnight) / 0.16),
+    0 24px 60px hsl(var(--brand-navy) / 0.16),
     inset 0 1px 0 hsl(var(--foreground) / 0.04);
 }
 

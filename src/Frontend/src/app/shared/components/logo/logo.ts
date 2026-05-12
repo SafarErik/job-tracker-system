@@ -6,23 +6,22 @@ import { ThemeService } from '../../../core/services/theme.service';
   selector: 'app-logo',
   imports: [CommonModule],
   template: `
-    <div class="flex items-center gap-2.5 select-none transition-all duration-300 ease-in-out"
+    <div class="aptelion-logo flex items-center gap-2.5 select-none text-current transition-all duration-300 ease-in-out"
          [class.flex-col]="vertical()"
          [class.justify-center]="vertical() || iconOnly()">
 
       <!-- ICON CONTAINER -->
-      <div class="relative flex items-center justify-center shrink-0 transition-all duration-300" [class]="sizeClasses()">
+      <div class="aptelion-logo-mark relative flex shrink-0 items-center justify-center transition-all duration-300" [class]="sizeClasses()">
 
         <!-- Optional Glow -->
         <div class="absolute inset-0 rounded-lg bg-accent/20 blur-xl transition-opacity duration-500"
              [class.opacity-0]="!withGlow()"
              [class.opacity-100]="withGlow()"></div>
 
-        <img src="assets/brand/horizon-guided-path.svg"
-             [style.width.px]="imgSize()"
-             [style.height.px]="imgSize()"
+        <img [src]="logoAsset()"
              alt="Aptelion"
              class="relative z-10 object-contain drop-shadow-sm transition-all duration-300"
+             [class]="imageSizeClasses()"
              [class.grayscale]="mono()"
              [class.brightness-200]="mono() && isDark()"
              [class.invert]="mono() && !isDark()"
@@ -30,7 +29,7 @@ import { ThemeService } from '../../../core/services/theme.service';
       </div>
 
       <!-- TEXT CONTAINER -->
-      <div class="flex flex-col justify-center whitespace-nowrap overflow-hidden transition-all duration-300 origin-left"
+      <div class="aptelion-logo-text flex origin-left flex-col justify-center overflow-hidden whitespace-nowrap transition-all duration-300"
            [class.w-0]="iconOnly() && !vertical()"
            [class.opacity-0]="iconOnly() && !vertical()"
            [class.w-auto]="!iconOnly() || vertical()"
@@ -38,7 +37,7 @@ import { ThemeService } from '../../../core/services/theme.service';
            [class.items-center]="vertical()">
            
         <div class="flex items-baseline gap-1.5" [class]="textSizeClasses()">
-          <span class="font-display font-bold uppercase leading-none tracking-[0.08em] text-foreground">
+          <span class="font-display font-bold uppercase leading-none tracking-[0.08em] text-current">
             APTELION
           </span>
         </div>
@@ -68,6 +67,10 @@ export class LogoComponent {
   private readonly _themeService = inject(ThemeService);
   readonly isDark = this._themeService.isDark;
 
+  logoAsset = computed(() =>
+    this.isDark() ? 'assets/brand/aptelion-mark-dark.svg' : 'assets/brand/aptelion-mark-light.svg',
+  );
+
   sizeClasses = computed(() => {
     switch (this.size()) {
       case 'sm': return 'h-9 w-9';
@@ -78,13 +81,13 @@ export class LogoComponent {
     }
   });
 
-  imgSize = computed(() => {
+  imageSizeClasses = computed(() => {
     switch (this.size()) {
-      case 'sm': return 36;
-      case 'md': return 48;
-      case 'lg': return 80;
-      case 'xl': return 112;
-      default: return 48;
+      case 'sm': return 'h-9 w-9';
+      case 'md': return 'h-12 w-12';
+      case 'lg': return 'h-20 w-20';
+      case 'xl': return 'h-28 w-28';
+      default: return 'h-12 w-12';
     }
   });
 

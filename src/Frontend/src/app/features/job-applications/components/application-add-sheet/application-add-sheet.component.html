@@ -4,52 +4,55 @@
 
         <!-- 1. Header -->
         <hlm-sheet-header
-            class="px-8 pt-8 pb-4 space-y-2 sticky top-0 bg-card/80 backdrop-blur-xl z-20 border-b border-border/50">
+            class="px-6 pt-6 pb-4 space-y-2 sticky top-0 bg-card/90 backdrop-blur-xl z-20 border-b border-border/60">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div
-                        class="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                        class="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
                         <ng-icon name="lucideSparkles" class="h-5 w-5"></ng-icon>
                     </div>
                     <div>
-                        <h3 hlmSheetTitle class="text-xl font-semibold text-foreground tracking-tight">Add Application
+                        <h3 hlmSheetTitle class="text-xl font-semibold text-foreground tracking-tight">
+                            {{ 'applications.addSheet.title' | transloco }}
                         </h3>
                         <p hlmSheetDescription
                             class="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-                            Track a new job opportunity</p>
+                            {{ 'applications.addSheet.description' | transloco }}</p>
                     </div>
                 </div>
             </div>
         </hlm-sheet-header>
 
         <!-- 2. Main Content (Scrollable) -->
-        <div class="flex-1 px-8 py-6 space-y-8" [formGroup]="form">
+        <div class="flex-1 px-6 py-6 space-y-7" [formGroup]="form">
 
             <!-- MAGIC INPUT: Auto-Fill from URL -->
             <section class="space-y-4 relative group">
                 <div
-                    class="absolute -inset-4 bg-linear-to-b from-primary/5 to-transparent rounded-[2rem] -z-10 group-focus-within:from-primary/10 transition-all duration-500">
+                    class="absolute -inset-3 bg-linear-to-b from-primary/5 to-transparent rounded-lg -z-10 group-focus-within:from-primary/10 transition-all duration-300">
                 </div>
 
                 <div class="flex items-center gap-2">
                     <ng-icon name="lucideSparkles" class="text-primary h-4 w-4"></ng-icon>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">Magic Auto-Fill</h4>
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary">
+                        {{ 'applications.addSheet.import.title' | transloco }}
+                    </h4>
                 </div>
 
                 <div class="flex gap-2">
                     <div class="relative flex-1">
-                        <input hlmInput formControlName="jobUrl" placeholder="Paste Job URL to auto-fill..."
-                            class="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20 h-11 w-full rounded-xl transition-all"
+                        <input hlmInput formControlName="jobUrl" [placeholder]="'applications.addSheet.import.placeholder' | transloco"
+                            class="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20 h-11 w-full rounded-lg transition-all"
                             autoFocus />
                     </div>
                     <button hlmBtn (click)="autoFill()" [disabled]="isAutoFilling()"
-                        class="h-11 px-5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 border-0 shadow-md dark:shadow-primary/20 transition-all font-semibold">
-                        {{ isAutoFilling() ? 'Thinking...' : 'Auto-Fill' }}
+                        class="h-11 px-5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 border-0 shadow-md dark:shadow-primary/20 transition-all font-semibold">
+                        {{ (isAutoFilling() ? 'applications.addSheet.import.reading' : 'applications.addSheet.import.action') | transloco }}
                     </button>
                 </div>
 
                 <p class="text-[10px] text-muted-foreground font-medium ml-1">
-                    Paste a job posting URL to automatically extract position details.
+                    {{ 'applications.addSheet.import.hint' | transloco }}
                 </p>
             </section>
 
@@ -59,22 +62,27 @@
             <section class="space-y-5">
                 <h4
                     class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Position Details
+                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>
+                    {{ 'applications.addSheet.sections.basics' | transloco }}
                 </h4>
 
                 <div class="grid gap-5">
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Position *</label>
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.position' | transloco }}
+                        </label>
                         <input hlmInput formControlName="position"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                            placeholder="e.g. Frontend Developer" />
+                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-lg h-12"
+                            [placeholder]="'applications.addSheet.placeholders.position' | transloco" />
                     </div>
 
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Company *</label>
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.company' | transloco }}
+                        </label>
                         <input hlmInput formControlName="companyName"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
-                            placeholder="e.g. Acme Corp" />
+                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-lg h-12"
+                            [placeholder]="'applications.addSheet.placeholders.company' | transloco" />
                     </div>
 
 
@@ -85,27 +93,32 @@
             <section class="space-y-5">
                 <h4
                     class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Status & Priority
+                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>
+                    {{ 'applications.addSheet.sections.pipeline' | transloco }}
                 </h4>
 
                 <div class="grid gap-5">
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Status</label>
-                        <brn-select class="w-full" formControlName="status" placeholder="Select Status">
-                            <hlm-select-trigger class="w-full h-12 rounded-xl bg-muted/50 border-border">
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.status' | transloco }}
+                        </label>
+                        <brn-select class="w-full" formControlName="status" [placeholder]="'applications.addSheet.placeholders.status' | transloco">
+                            <hlm-select-trigger class="w-full h-12 rounded-lg bg-muted/50 border-border">
                                 <hlm-select-value />
                             </hlm-select-trigger>
                             <hlm-select-content class="w-full bg-popover border-border">
                                 @for (option of statusOptions; track option.value) {
-                                <hlm-option [value]="option.value">{{ option.label }}</hlm-option>
+                                <hlm-option [value]="option.value">{{ option.labelKey | transloco }}</hlm-option>
                                 }
                             </hlm-select-content>
                         </brn-select>
                     </div>
 
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Priority</label>
-                        <div class="flex items-center gap-2 p-1.5 bg-muted/50 border border-border rounded-xl">
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.priority' | transloco }}
+                        </label>
+                        <div class="flex items-center gap-2 p-1.5 bg-muted/50 border border-border rounded-lg">
                             <button type="button"
                                 class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
                                 [class.bg-card]="form.get('priority')?.value === JobPriority.Low"
@@ -113,7 +126,7 @@
                                 [class.text-foreground]="form.get('priority')?.value === JobPriority.Low"
                                 [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Low"
                                 (click)="form.patchValue({priority: JobPriority.Low})">
-                                Low
+                                {{ 'dashboard.workQueue.priority.low' | transloco }}
                             </button>
                             <button type="button"
                                 class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
@@ -122,7 +135,7 @@
                                 [class.text-foreground]="form.get('priority')?.value === JobPriority.Medium"
                                 [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.Medium"
                                 (click)="form.patchValue({priority: JobPriority.Medium})">
-                                Med
+                                {{ 'dashboard.workQueue.priority.medium' | transloco }}
                             </button>
                             <button type="button"
                                 class="flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all"
@@ -131,7 +144,7 @@
                                 [class.text-foreground]="form.get('priority')?.value === JobPriority.High"
                                 [class.text-muted-foreground]="form.get('priority')?.value !== JobPriority.High"
                                 (click)="form.patchValue({priority: JobPriority.High})">
-                                High
+                                {{ 'dashboard.workQueue.priority.high' | transloco }}
                             </button>
                         </div>
                     </div>
@@ -142,20 +155,25 @@
             <section class="space-y-5">
                 <h4
                     class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span> Location & Compensation
+                    <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground/50"></span>
+                    {{ 'applications.addSheet.sections.compensation' | transloco }}
                 </h4>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Base Salary</label>
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.baseSalary' | transloco }}
+                        </label>
                         <input hlmInput type="number" formControlName="salaryMin"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
+                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-lg h-12"
                             placeholder="0" />
                     </div>
                     <div class="space-y-2">
-                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">Offer / Target</label>
+                        <label hlmLabel class="text-xs font-semibold text-muted-foreground ml-1">
+                            {{ 'applications.addSheet.fields.targetSalary' | transloco }}
+                        </label>
                         <input hlmInput type="number" formControlName="salaryMax"
-                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-xl h-12"
+                            class="bg-muted/50 border-border text-foreground focus:border-primary/50 rounded-lg h-12"
                             placeholder="0" />
                     </div>
                 </div>
@@ -163,10 +181,10 @@
         </div>
 
         <!-- 3. Footer Actions -->
-        <hlm-sheet-footer class="sticky bottom-0 p-6 bg-card/80 backdrop-blur-xl border-t border-border z-20">
+        <hlm-sheet-footer class="sticky bottom-0 p-6 bg-card/90 backdrop-blur-xl border-t border-border z-20">
             <button hlmBtn size="lg" (click)="onSubmit()" [disabled]="form.invalid"
-                class="w-full h-14 rounded-2xl bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold uppercase tracking-widest text-xs shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
-                Create Application
+                class="w-full h-12 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm shadow-lg dark:shadow-primary/20 transition-all border-0 disabled:opacity-50 disabled:cursor-not-allowed">
+                {{ 'applications.addSheet.actions.save' | transloco }}
             </button>
         </hlm-sheet-footer>
 

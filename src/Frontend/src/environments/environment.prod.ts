@@ -24,4 +24,5 @@ export const environment = {
   // Falls back to empty string - Google auth will be disabled if missing
   googleClientId: getRequiredEnvVar('GOOGLE_CLIENT_ID', ''),
   logoDevToken: getRequiredEnvVar('LOGO_DEV_TOKEN', ''),
+  mapboxAccessToken: getRequiredEnvVar('MAPBOX_ACCESS_TOKEN', ''),
 };

@@ -6,6 +6,7 @@ import {
   HlmCardFooter,
 } from '@spartan-ng/helm/card';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Company } from '../../models/company.model';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideBuilding2, lucideMapPin, lucideChevronRight, lucideCrown, lucideStar, lucideCircle } from '@ng-icons/lucide';
@@ -18,6 +19,7 @@ import { CompanyPriority } from '../../models/company-priority.enum';
   selector: 'app-company-card',
   imports: [
     CommonModule,
+    TranslocoPipe,
     NgIcon,
     HlmCard,
     HlmCardHeader,
@@ -122,19 +124,17 @@ export class CompanyCardComponent {
 
   /**
    * Get color class for tech stack chips
-   * Highlights matched skills in Obsidian (Purple/Violet)
-   * Others in Blue theme
+   * Highlights matched skills with the primary brand token
+   * Others with the accent token
    */
   getTechColor(tech: string): string {
     const isMatched = this.profileStore.hasSkill(tech);
 
     if (isMatched) {
-      // Obsidian / Purple theme for matched skills
-      return 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20 hover:border-violet-500/40';
+      return 'bg-primary/10 text-primary border-primary/20 hover:border-primary/40';
     }
 
-    // Default Blue theme for unmatched skills
-    return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20 hover:border-blue-500/40';
+    return 'bg-accent/10 text-accent border-accent/20 hover:border-accent/40';
   }
 
   /**

@@ -26,7 +26,7 @@
     <!-- Middle Row: Company + Role -->
     <div class="flex flex-col pl-2 min-w-0">
         <h4 class="text-sm font-bold text-foreground truncate leading-tight group-hover:text-primary transition-colors">
-            {{ application().companyName || 'Unknown' }}
+            {{ application().companyName || ('common.states.unknown' | transloco) }}
         </h4>
         <p class="text-xs text-muted-foreground truncate leading-tight mt-0.5">
             {{ application().position }}
@@ -46,10 +46,10 @@
         <!-- Dropdown Menu -->
         <ng-template #statusMenu>
             <div hlmDropdownMenu
-                class="w-48 bg-popover/95 backdrop-blur-xl border-border p-1 rounded-xl shadow-2xl z-50">
+                class="w-48 bg-popover/95 backdrop-blur-xl border-border p-1 rounded-lg shadow-2xl z-50">
                 <div hlmDropdownMenuLabel
                     hlmClassName="px-2 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                    Update Status
+                    {{ 'applications.kanban.updateStatus' | transloco }}
                 </div>
                 <div hlmDropdownMenuSeparator hlmClassName="bg-border/50"></div>
                 <div class="max-h-64 overflow-y-auto custom-scrollbar">

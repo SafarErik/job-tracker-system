@@ -3,7 +3,7 @@
  * APPLICATION ROUTES
  * ============================================================================
  *
- * Defines all routes for the JobTracker application.
+ * Defines all routes for the Horizon application.
  * Uses lazy loading for feature modules for better initial load performance.
  *
  * Route categories:
@@ -17,22 +17,34 @@
  */
 
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth';
+import { authGuard } from './core/guards';
 // import { SignalsComponent } from './features/signals/signals.component'; // Managed via lazy load
-
 
 export const routes: Routes = [
   // ============================================
-  // PUBLIC ROOT (Landing Page)
+  // SMART ROOT ENTRY
   // ============================================
   {
     path: '',
+    loadComponent: () =>
+      import('./features/landing/components/entry-redirect/entry-redirect.component').then(
+        (m) => m.EntryRedirectComponent,
+      ),
+    pathMatch: 'full',
+    title: 'Horizon',
+  },
+
+  // ============================================
+  // PUBLIC WELCOME PAGE
+  // ============================================
+  {
+    path: 'welcome',
     loadComponent: () =>
       import('./features/landing/components/landing-page/landing-page.component').then(
         (m) => m.LandingPageComponent,
       ),
     pathMatch: 'full',
-    title: 'VantageCursus - Your Career, Autopilot Engaged',
+    title: 'Horizon - Career growth, intelligently guided',
   },
 
   // ============================================
@@ -47,6 +59,63 @@ export const routes: Routes = [
   // PROTECTED APP SHELL
   // ============================================
   {
+    path: 'global-footprint',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/dashboard/pages/global-footprint-screen/global-footprint-screen.component').then(
+        (m) => m.GlobalFootprintScreenComponent,
+    ),
+    title: 'Global Footprint - Horizon',
+  },
+  {
+    path: 'mission/global-footprint',
+    redirectTo: 'global-footprint',
+    pathMatch: 'full',
+  },
+  {
+    // Application Workstation - immersive full page view without app shell header
+    path: 'applications/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
+      ),
+    title: 'Application Workstation - Horizon',
+    data: { breadcrumb: 'Workstation' },
+  },
+  {
+    // Keep view/:id as alias for backwards compatibility
+    path: 'view/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/job-applications/components/job-workstation/job-workstation').then(
+        (m) => m.JobWorkstationComponent,
+      ),
+    title: 'View Application - Horizon',
+    data: { breadcrumb: 'View Application' },
+  },
+  {
+    // Company Workstation - immersive full page view without app shell header
+    path: 'companies/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/companies/components/company-details/company-details').then(
+        (m) => m.CompanyDetailsComponent,
+      ),
+    title: 'Company Workstation - Horizon',
+    data: { breadcrumb: 'Company Workstation' },
+  },
+  {
+    path: 'company/:id',
+    redirectTo: 'companies/:id',
+    pathMatch: 'full',
+  },
+  {
+    path: 'companies/:id/details',
+    redirectTo: 'companies/:id',
+    pathMatch: 'full',
+  },
+  {
     path: '',
     loadComponent: () =>
       import('./layout/shell/app-shell/app-shell.component').then((m) => m.AppShellComponent),
@@ -56,46 +125,27 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-        title: 'Dashboard - VantageCursus',
-        data: { breadcrumb: 'Dashboard' }
+        title: 'Dashboard - Horizon',
+        data: { breadcrumb: 'Dashboard' },
       },
       {
         path: 'applications',
         loadComponent: () =>
-          import('./features/job-applications/components/job-list/applications/applications.component').then((m) => m.ApplicationsComponent),
-        title: 'Applications - VantageCursus',
-        data: { breadcrumb: 'Applications' }
+          import('./features/job-applications/components/job-list/applications/applications.component').then(
+            (m) => m.ApplicationsComponent,
+          ),
+        title: 'Applications - Horizon',
+        data: { breadcrumb: 'Applications' },
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('./features/job-applications/components/add-job-form/add-job-form').then(
-            (m) => m.AddJobFormComponent,
+          import('./features/job-applications/components/new-application-redirect/new-application-redirect.component').then(
+            (m) => m.NewApplicationRedirectComponent,
           ),
-        title: 'New Application - VantageCursus',
-        data: { breadcrumb: 'New Application' }
+        title: 'New Application - Horizon',
+        data: { breadcrumb: 'New Application' },
       },
-      {
-        // Application Workstation - full page view with tabs
-        path: 'applications/:id',
-        loadComponent: () =>
-          import('./features/job-applications/components/job-workstation/job-workstation').then(
-            (m) => m.JobWorkstationComponent,
-          ),
-        title: 'Application Workstation - VantageCursus',
-        data: { breadcrumb: 'Workstation' }
-      },
-      {
-        // Keep view/:id as alias for backwards compatibility
-        path: 'view/:id',
-        loadComponent: () =>
-          import('./features/job-applications/components/job-workstation/job-workstation').then(
-            (m) => m.JobWorkstationComponent,
-          ),
-        title: 'View Application - VantageCursus',
-        data: { breadcrumb: 'View Application' }
-      },
-
       // Companies
       {
         path: 'companies',
@@ -103,8 +153,8 @@ export const routes: Routes = [
           import('./features/companies/components/company-list/company-list').then(
             (m) => m.CompanyListComponent,
           ),
-        title: 'Companies - VantageCursus',
-        data: { breadcrumb: 'Companies' }
+        title: 'Companies - Horizon',
+        data: { breadcrumb: 'Companies' },
       },
       {
         path: 'companies/edit/:id',
@@ -112,17 +162,8 @@ export const routes: Routes = [
           import('./features/companies/components/company-form/company-form').then(
             (m) => m.CompanyFormComponent,
           ),
-        title: 'Edit Company - VantageCursus',
-        data: { breadcrumb: 'Edit Company' }
-      },
-      {
-        path: 'companies/:id',
-        loadComponent: () =>
-          import('./features/companies/components/company-details/company-details').then(
-            (m) => m.CompanyDetailsComponent,
-          ),
-        title: 'Company Details - VantageCursus',
-        data: { breadcrumb: 'Company Details' }
+        title: 'Edit Company - Horizon',
+        data: { breadcrumb: 'Edit Company' },
       },
 
       // Documents
@@ -132,8 +173,8 @@ export const routes: Routes = [
           import('./features/documents/components/documents-list/documents-list').then(
             (m) => m.DocumentsListComponent,
           ),
-        title: 'Documents - VantageCursus',
-        data: { breadcrumb: 'Documents' }
+        title: 'Documents - Horizon',
+        data: { breadcrumb: 'Documents' },
       },
 
       // Profile
@@ -141,38 +182,29 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/components/profile/profile').then((m) => m.ProfileComponent),
-        title: 'Profile - VantageCursus',
-        data: { breadcrumb: 'Profile' }
+        title: 'Profile - Horizon',
+        data: { breadcrumb: 'Profile' },
       },
 
       // Statistics & Intelligence
       {
         path: 'statistics',
-        loadChildren: () => import('./features/statistics/statistics.routes').then(m => m.STATISTICS_ROUTES),
-        title: 'Intelligence Analytics - VantageCursus',
-        data: { breadcrumb: 'Intelligence' }
+        loadChildren: () =>
+          import('./features/statistics/statistics.routes').then((m) => m.STATISTICS_ROUTES),
+        title: 'Intelligence Analytics - Horizon',
+        data: { breadcrumb: 'Intelligence' },
       },
 
       // Global Signals
       {
         path: 'signals',
-        loadComponent: () => import('./features/signals/signals.component').then(m => m.SignalsComponent),
+        loadComponent: () =>
+          import('./features/signals/signals.component').then((m) => m.SignalsComponent),
 
-        title: 'Global Feed - VantageCursus',
-        data: { breadcrumb: 'Global Signals' }
+        title: 'Global Feed - Horizon',
+        data: { breadcrumb: 'Global Signals' },
       },
 
-      // Compatibility Redirects
-      {
-        path: 'company/:id',
-        redirectTo: 'companies/:id',
-        pathMatch: 'full',
-      },
-      {
-        path: 'companies/:id/details',
-        redirectTo: 'companies/:id',
-        pathMatch: 'full',
-      },
     ],
   },
 

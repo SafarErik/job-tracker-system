@@ -4,6 +4,7 @@ import { WorkplaceType } from '../../features/job-applications/models/workplace-
 import { JobPriority } from '../../features/job-applications/models/job-priority.enum';
 import { Currency } from '../../features/job-applications/models/currency.enum';
 import { CompanyContact } from './company-contact.model';
+import { FitReview } from './fit-review.model';
 
 export interface JobApplication {
     id: string;
@@ -32,6 +33,7 @@ export interface JobApplication {
     description?: string;
     location?: string;
     generatedCoverLetter?: string;
+    fitReview?: FitReview | null;
     matchScore: number;
     skills: string[];
     aiFeedback?: string;

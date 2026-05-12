@@ -1,6 +1,7 @@
 import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -21,7 +22,8 @@ import { ApplicationKanbanCardComponent } from './application-kanban-card/applic
  */
 interface BucketColumn {
   id: string;
-  title: string;
+  titleKey: string;
+  emptyKey: string;
   statuses: JobApplicationStatus[];
   borderColor: string;
   textColor: string;
@@ -32,7 +34,7 @@ interface BucketColumn {
 
 @Component({
   selector: 'app-application-kanban',
-  imports: [CommonModule, DragDropModule, ApplicationKanbanCardComponent],
+  imports: [CommonModule, DragDropModule, ApplicationKanbanCardComponent, TranslocoPipe],
   templateUrl: './kanban-board.html',
   styleUrl: './kanban-board.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,33 +59,37 @@ export class ApplicationKanbanComponent {
     const cols: BucketColumn[] = [
       {
         id: 'inbox',
-        title: 'Inbox',
+        titleKey: 'applications.categories.inbox',
+        emptyKey: 'applications.kanban.empty.inbox',
         statuses: [JobApplicationStatus.Applied],
-        borderColor: 'border-zinc-800',
+      borderColor: 'border-border',
         textColor: 'text-zinc-500',
         applications: [],
       },
       {
         id: 'active',
-        title: 'Active',
+        titleKey: 'applications.categories.active',
+        emptyKey: 'applications.kanban.empty.active',
         statuses: [JobApplicationStatus.PhoneScreen, JobApplicationStatus.TechnicalTask, JobApplicationStatus.Interviewing],
-        borderColor: 'border-zinc-800',
+      borderColor: 'border-border',
         textColor: 'text-zinc-500',
         applications: [],
       },
       {
         id: 'offers',
-        title: 'Offers',
+        titleKey: 'applications.categories.offers',
+        emptyKey: 'applications.kanban.empty.offers',
         statuses: [JobApplicationStatus.Offer, JobApplicationStatus.Accepted],
-        borderColor: 'border-zinc-800',
+      borderColor: 'border-border',
         textColor: 'text-zinc-500',
         applications: [],
       },
       {
         id: 'archive',
-        title: 'Archive',
+        titleKey: 'applications.categories.archive',
+        emptyKey: 'applications.kanban.empty.archive',
         statuses: [JobApplicationStatus.Rejected, JobApplicationStatus.Ghosted],
-        borderColor: 'border-zinc-800',
+      borderColor: 'border-border',
         textColor: 'text-zinc-600',
         applications: [],
         limit: 25, // Performance limit

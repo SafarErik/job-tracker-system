@@ -119,8 +119,8 @@ export class ContactListComponent {
     if (url) {
       window.open(url, '_blank');
     } else {
-      toast.error('No Signal Detected', {
-        description: 'This personnel does not have a linked intelligence profile.',
+      toast.error('No LinkedIn profile', {
+        description: 'This contact does not have a LinkedIn URL yet.',
         duration: 3000
       });
     }

@@ -1,0 +1,1602 @@
+{
+  "app": {
+    "name": "Horizon",
+    "tagline": "Career growth, intelligently guided.",
+    "planLabel": "Workspace",
+    "dashboard": "Dashboard"
+  },
+  "common": {
+    "actions": {
+      "back": "Back",
+      "backToDashboard": "Back to dashboard",
+      "cancel": "Cancel",
+      "close": "Close",
+      "copy": "Copy",
+      "downloadPdf": "Download PDF",
+      "open": "Open",
+      "regenerate": "Regenerate",
+      "resetView": "Reset view",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "search": "Search"
+    },
+    "states": {
+      "error": "Error",
+      "loading": "Loading...",
+      "noResults": "No results found.",
+      "unknown": "Unknown"
+    },
+    "time": {
+      "today": "Today",
+      "dayAgo": "1 day ago",
+      "daysAgo": "{{count}} days ago"
+    }
+  },
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "hungarian": "Hungarian",
+    "switchTo": "Switch language"
+  },
+  "shell": {
+    "brandSubtitle": "Career workspace",
+    "footerTitle": "Career workspace 2026",
+    "nav": {
+      "workspace": "Workspace",
+      "dashboard": "Dashboard",
+      "applications": "Applications",
+      "companies": "Companies",
+      "insights": "Insights",
+      "signals": "Opportunities",
+      "documents": "Documents"
+    },
+    "header": {
+      "searchPlaceholder": "Search your pipeline or ask Horizon Guide...",
+      "openSearch": "Open command menu",
+      "profile": "Profile",
+      "settings": "Settings",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "logout": "Log out",
+      "titles": {
+        "newApplication": "New application",
+        "editCompany": "Edit company",
+        "companyDetails": "Company research"
+      },
+      "account": {
+        "workspaceName": "Horizon account",
+        "workspaceGroup": "Account",
+        "preferencesGroup": "Preferences",
+        "workspaceKind": "Career workspace"
+      },
+      "descriptions": {
+        "dashboard": "See what matters now and where you need to react.",
+        "applications": "Track active applications and react quickly.",
+        "companies": "Manage company research and outreach context.",
+        "insights": "Review trends, charts, and performance signals.",
+        "signals": "Find opportunities and useful market signals.",
+        "documents": "Keep resumes and job-search documents ready.",
+        "profile": "Manage your career profile and preferences.",
+        "newApplication": "Capture the opportunity basics, pipeline stage, materials, and readiness.",
+        "editCompany": "Update company research, priority, contacts, and context.",
+        "companyDetails": "Review company context, active applications, contacts, and interview angles."
+      },
+      "commands": {
+        "workspace": "Workspace",
+        "actions": "Actions",
+        "assistant": "Horizon Guide",
+        "openDashboard": "Open dashboard",
+        "openApplications": "Open applications",
+        "openCompanies": "Open companies",
+        "addApplication": "Add opportunity",
+        "openAssistant": "Open Horizon Guide",
+        "pipelineSummary": "Pipeline summary",
+        "nextBestAction": "Next best action"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue your career workspace.",
+      "email": "Email",
+      "password": "Password",
+      "togglePassword": "Toggle password visibility",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "orConnect": "Or continue with",
+      "google": "Google",
+      "needAccess": "Need access?",
+      "register": "Create an account",
+      "emailError": "Enter a valid email address.",
+      "passwordError": "Enter at least 6 characters."
+    }
+  },
+  "landing": {
+    "nav": {
+      "capabilities": "Guidance",
+      "intelligence": "Workspace",
+      "pricing": "Plans",
+      "login": "Login",
+      "dashboard": "Dashboard",
+      "getAccess": "Start free"
+    },
+    "hero": {
+      "eyebrow": "Career growth, intelligently guided.",
+      "title": "Build a career with direction",
+      "subtitle": "Clarity, strategy, and momentum for your next move.",
+      "body": "From job search to long-term growth, Horizon helps you understand where you stand, choose the smartest next step, and keep moving with confidence.",
+      "cta": "Start with Horizon",
+      "secondaryCta": "See the workflow"
+    },
+    "proof": {
+      "guidance": "A calm workspace for applications, companies, documents, and decisions.",
+      "documents": "AI-assisted CV, cover letter, and role-specific document preparation.",
+      "practice": "Interview practice and follow-up planning tied to real opportunities."
+    },
+    "pillars": {
+      "eyebrow": "The Horizon system",
+      "title": "Less noise. More useful next steps.",
+      "subtitle": "Horizon is not a one-time job search tool. It is a structured career workspace for the decisions that shape your next role and the one after it.",
+      "clarity": {
+        "title": "Clarity",
+        "body": "See your pipeline, role fit, company context, and risks without switching between scattered notes and spreadsheets."
+      },
+      "strategy": {
+        "title": "Strategy",
+        "body": "Turn job descriptions, company research, and your profile into sharper positioning, tailored documents, and better questions."
+      },
+      "momentum": {
+        "title": "Momentum",
+        "body": "Know what to do today: follow up, prepare, improve a document, research a company, or move an opportunity forward."
+      }
+    },
+    "workspace": {
+      "eyebrow": "One career surface",
+      "title": "Everything around an opportunity lives in one guided flow.",
+      "body": "Horizon connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The AI guide supports the workflow without turning the product into a noisy chat screen.",
+      "previewTitle": "Application workstation",
+      "previewSubtitle": "Role context, documents, practice, and next actions",
+      "previewBadge": "Guided",
+      "outcomes": {
+        "nextMove": "Get a practical next move based on status, deadlines, and missing context.",
+        "fit": "Understand fit and gaps before sending a generic application.",
+        "followUp": "Keep follow-ups and interview preparation connected to the actual role."
+      }
+    },
+    "workflow": {
+      "research": {
+        "title": "Research",
+        "body": "Capture company context, role signals, and questions worth asking."
+      },
+      "documents": {
+        "title": "Documents",
+        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled AI help."
+      },
+      "applications": {
+        "title": "Applications",
+        "body": "Track status, deadlines, contacts, follow-ups, and decisions in one place."
+      },
+      "practice": {
+        "title": "Interview practice",
+        "body": "Prepare answers, rehearse stories, and build a clearer interview narrative."
+      }
+    },
+    "pricing": {
+      "eyebrow": "A product people can grow into",
+      "title": "Start simple, pay for serious career leverage.",
+      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and a Horizon Guide that understands the user’s whole career context.",
+      "planTitle": "Horizon Pro",
+      "planBody": "For active job seekers and ambitious professionals who want structure, better decisions, and less manual work.",
+      "benefits": {
+        "tracker": "Unlimited applications and company research spaces.",
+        "documents": "CV and cover letter generation with role-specific revision guidance.",
+        "interview": "Interview practice plans, answer feedback, and follow-up suggestions.",
+        "guide": "Horizon Guide context across applications, documents, and goals."
+      },
+      "cta": "Create your workspace"
+    },
+    "closing": {
+      "eyebrow": "Your choice. Your future.",
+      "title": "Build the next move with direction, not reaction.",
+      "body": "Horizon helps people move through job search and long-term growth with a calmer system, clearer decisions, and steady progress.",
+      "cta": "Start your guided path"
+    }
+  },
+  "dashboard": {
+    "fallbackUser": "there",
+    "period": {
+      "morning": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening"
+    },
+    "actions": {
+      "addOpportunity": "Add opportunity"
+    },
+    "focus": {
+      "eyebrow": "Today's Focus",
+      "title": "What needs attention now",
+      "updated": "Updated {{date}}.",
+      "summary": {
+        "empty": "No tracked opportunities yet. Add one opportunity to start building momentum.",
+        "offers": "Offer-stage items: {{count}}. Decision quality matters more than volume.",
+        "interviews": "Active interviews: {{count}}. Let them drive today's work.",
+        "followUps": "Pending applications: {{count}}. They can go stale without follow-up.",
+        "default": "Tracked applications: {{count}}. No urgent next action yet. Review one application or add a strong opportunity."
+      },
+      "briefing": {
+        "interviews": "Active interviews: {{count}}",
+        "followUps": "Follow-ups pending: {{count}}",
+        "offers": "Offers received: {{count}}",
+        "empty": "Add a strong opportunity to start building momentum"
+      }
+    },
+    "momentum": {
+      "title": "Momentum",
+      "badge": "Guidance",
+      "recommendation": "Recommendation",
+      "states": {
+        "noSignal": {
+          "label": "No momentum yet",
+          "body": "Momentum starts once Horizon has one real opportunity to track.",
+          "recommendation": "Add an opportunity you would actually pursue and let Horizon structure the next step."
+        },
+        "decision": {
+          "label": "Decision momentum",
+          "body": "You have an offer-stage application. The next move is response quality, not more volume.",
+          "recommendation": "Review compensation, timing, and negotiation notes before replying.",
+          "cta": "Review offers"
+        },
+        "noInterviews": {
+          "label": "Applications need attention",
+          "body": "You have applications in motion, but no active interview yet.",
+          "recommendation": "Review fit and follow up on the strongest opportunities before adding more.",
+          "cta": "Review pipeline"
+        },
+        "thinFunnel": {
+          "label": "Pipeline is thin",
+          "body": "Momentum is low because there are not enough targeted opportunities in motion.",
+          "recommendation": "Add two well-matched opportunities this week, then update materials for the strongest one."
+        },
+        "interview": {
+          "label": "Interview momentum",
+          "body": "Your strongest progress is in active interviews.",
+          "recommendation": "Prepare opportunity-specific stories and questions before sending more applications.",
+          "cta": "Prepare now"
+        },
+        "healthy": {
+          "label": "Healthy rhythm",
+          "body": "Your pipeline has useful activity. Keep the cadence steady."
+        },
+        "building": {
+          "label": "Momentum building",
+          "body": "Your profile readiness is improving, but the application pace still needs work.",
+          "recommendation": "Protect the next action: follow up, tailor one document, or add one strong opportunity."
+        }
+      }
+    },
+    "pipeline": {
+      "title": "Pipeline Strategy",
+      "state": {
+        "strong": "Ready",
+        "watch": "Review",
+        "quiet": "Quiet"
+      },
+      "stages": {
+        "applied": {
+          "label": "Applied",
+          "helper": "Targeted opportunities added",
+          "actionMore": "{{count}} more this week",
+          "actionMaintain": "Maintain quality"
+        },
+        "screen": {
+          "label": "Screen",
+          "helper": "Recruiter conversations",
+          "actionImprove": "Review opportunity fit",
+          "actionKeepWarm": "Practice for screen"
+        },
+        "interview": {
+          "label": "Interview",
+          "helper": "Active interviews",
+          "actionPrepare": "Prepare before the next screen",
+          "actionPractice": "Practice answers"
+        },
+        "offer": {
+          "label": "Offer",
+          "helper": "Decision zone",
+          "actionNotYet": "Not there yet",
+          "actionReview": "Review response"
+        }
+      },
+      "insights": {
+        "empty": {
+          "label": "No pipeline yet",
+          "body": "Start with one opportunity. Horizon will turn it into a guided workflow.",
+          "recommendation": "Add one opportunity with a real job description.",
+          "target": "Week target: 3 quality opportunities"
+        },
+        "decision": {
+          "label": "Decision stage",
+          "body": "You have offer-stage traction. Reduce risk before optimizing volume.",
+          "recommendation": "Review compensation, timing, and negotiation notes.",
+          "target": "Target: one clean response path"
+        },
+        "topHeavy": {
+          "label": "Pipeline needs attention",
+          "body": "Applications are not turning into conversations yet.",
+          "recommendation": "Review fit, strengthen the CV angle, and follow up on the strongest opportunities.",
+          "target": "Target: 1 recruiter conversation"
+        },
+        "screening": {
+          "label": "Screening bottleneck",
+          "body": "You have early conversations, but no active interview yet.",
+          "recommendation": "Prepare sharper stories and opportunity-specific questions.",
+          "target": "Target: convert one screen"
+        },
+        "activeLoop": {
+          "label": "Active interview",
+          "body": "Your strongest application is already in motion.",
+          "recommendation": "Prioritize interview prep before adding more applications.",
+          "target": "Target: one prepared interview"
+        },
+        "forming": {
+          "label": "Pipeline is taking shape",
+          "body": "Your pipeline has activity, but no clear priority yet.",
+          "recommendation": "Keep one follow-up and one new opportunity moving each week.",
+          "target": "Target: steady weekly cadence"
+        }
+      }
+    },
+    "suggestedActions": {
+      "roleAtCompany": "{{role}} at {{company}}",
+      "interview": {
+        "eyebrow": "Prepare now",
+        "meta": "This interview should lead today's work",
+        "cta": "Prepare"
+      },
+      "offer": {
+        "eyebrow": "Decision needed",
+        "meta": "Review package and response timing",
+        "cta": "Review"
+      },
+      "followUp": {
+        "eyebrow": "Follow-up",
+        "meta": "Follow up before this opportunity goes stale",
+        "cta": "Follow up"
+      },
+      "empty": {
+        "add": {
+          "eyebrow": "Recommended",
+          "title": "Add your next opportunity",
+          "meta": "One strong opportunity gives Horizon better context",
+          "cta": "Add opportunity"
+        },
+        "documents": {
+          "eyebrow": "Readiness",
+          "title": "Update your materials",
+          "meta": "Keep your CV ready for the strongest opportunities",
+          "cta": "Update materials"
+        }
+      }
+    },
+    "readiness": {
+      "title": "Readiness",
+      "heading": "Prepared for the next step",
+      "body": "Keep documents and practice tied to the opportunities that matter.",
+      "openDocuments": "Update materials",
+      "items": {
+        "documents": {
+          "label": "Documents",
+          "ready": "Materials are attached to part of the pipeline.",
+          "empty": "Attach or generate a tailored CV for your next strong opportunity."
+        },
+        "fit": {
+          "label": "Opportunity fit",
+          "ready": "Strong-fit opportunities are ready for focused preparation.",
+          "empty": "Review fit before sending more generic applications."
+        },
+        "practice": {
+          "label": "Practice",
+          "ready": "Active interviews need prepared stories and questions.",
+          "empty": "No active interview yet. Build momentum first."
+        }
+      }
+    },
+    "workQueue": {
+      "title": "Application Queue",
+      "subtitle": "Next actions and applications that need attention",
+      "open": "Review next actions",
+      "companyFallback": "Company",
+      "itemCount": "{{count}} items",
+      "columns": {
+        "opportunity": "Opportunity",
+        "signal": "Attention",
+        "nextAction": "Next action",
+        "age": "Age",
+        "fit": "Fit"
+      },
+      "empty": {
+        "title": "Start with one opportunity.",
+        "body": "Horizon will turn it into a guided workflow with fit, documents, follow-up, and interview prep.",
+        "cta": "Add your first opportunity"
+      },
+      "status": {
+        "Applied": "Applied",
+        "PhoneScreen": "Phone screen",
+        "TechnicalTask": "Technical task",
+        "Interviewing": "Interviewing",
+        "Offer": "Offer",
+        "Rejected": "Rejected",
+        "Ghosted": "Ghosted",
+        "Accepted": "Accepted"
+      },
+      "attention": {
+        "decision": "Decision needed",
+        "activeInterview": "Active interview",
+        "followUp": "Follow-up due",
+        "promisingFit": "Promising fit",
+        "archive": "Ready to archive",
+        "nextStep": "Next step open"
+      },
+      "nextAction": {
+        "offer": "Prepare response",
+        "interview": "Prepare answers",
+        "technicalTask": "Plan task",
+        "phoneScreen": "Practice for screen",
+        "followUp": "Follow up",
+        "applied": "Review fit",
+        "updateMaterials": "Update materials",
+        "reengage": "Re-engage",
+        "reengageOrArchive": "Re-engage or archive",
+        "archive": "Archive",
+        "reviewNextAction": "Review next action"
+      },
+      "priority": {
+        "label": "priority",
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      }
+    }
+  },
+  "applications": {
+    "actions": {
+      "add": "Add opportunity",
+      "prioritize": "Prioritize pipeline"
+    },
+    "categories": {
+      "all": "All",
+      "inbox": "Inbox",
+      "active": "Active",
+      "offers": "Offers",
+      "archive": "Archive"
+    },
+    "focusFilters": {
+      "label": "Focus",
+      "all": "All",
+      "needsAction": "Needs action",
+      "highFit": "High fit",
+      "missingMaterials": "No materials",
+      "stale": "Stale",
+      "archived": "Archived"
+    },
+    "cockpit": {
+      "eyebrow": {
+        "empty": "Pipeline cockpit",
+        "decision": "Decision focus",
+        "focus": "Recommended focus",
+        "readiness": "Readiness focus",
+        "steady": "Pipeline cockpit"
+      },
+      "empty": {
+        "title": "Start with one real opportunity",
+        "body": "Add the role you would actually pursue. Horizon will use it to organize fit, documents, follow-up, and preparation.",
+        "action": "Capture the opportunity first, then build the workflow around it."
+      },
+      "offers": {
+        "title": "Offer-stage work needs a clean response path",
+        "body": "Decision quality matters more than adding more volume right now.",
+        "action": "Review compensation, timing, and negotiation notes before replying."
+      },
+      "attention": {
+        "title": "Several applications need a next action",
+        "body": "Prioritize the items where a follow-up, preparation step, or response can move the pipeline forward.",
+        "action": "Open the work queue and clear the highest-priority action first."
+      },
+      "highFit": {
+        "title": "Strong-fit opportunities are ready for deeper prep",
+        "body": "Use the stronger matches to sharpen materials and interview stories before sending more generic applications.",
+        "action": "Review fit and update materials on the strongest opportunity."
+      },
+      "steady": {
+        "title": "Pipeline is stable, but the next step should stay explicit",
+        "body": "Keep one follow-up, one readiness action, and one new opportunity moving each week.",
+        "action": "Use the focus filters to choose the next concrete action."
+      },
+      "metric": {
+        "total": "Tracked",
+        "offers": "Offers",
+        "needsAction": "Need action",
+        "highFit": "High fit",
+        "active": "Active"
+      }
+    },
+    "stats": {
+      "total": {
+        "label": "Total",
+        "hint": "opportunities"
+      },
+      "active": {
+        "label": "Active",
+        "hint": "in pipeline"
+      },
+      "interviews": {
+        "label": "Interviews",
+        "hint": "to prepare"
+      },
+      "offers": {
+        "label": "Offers",
+        "hint": "{{rate}}% rate"
+      }
+    },
+    "searchPlaceholder": "Search opportunity or company...",
+    "loading": "Loading pipeline...",
+    "results": {
+      "count": "Showing {{shown}} of {{total}} opportunities"
+    },
+    "empty": {
+      "firstTitle": "Add your first opportunity",
+      "firstBody": "Start with one role. Horizon will turn it into a guided workflow for fit, documents, follow-up, and interview prep.",
+      "filteredTitle": "No opportunities match this view",
+      "filteredBody": "Clear the filters or add a new opportunity if your pipeline has moved forward.",
+      "clear": "Clear filters"
+    },
+    "view": {
+      "grid": "Grid view",
+      "kanban": "Kanban view",
+      "list": "List view"
+    },
+    "list": {
+      "columns": {
+        "opportunity": "Opportunity",
+        "pipeline": "Pipeline",
+        "compensation": "Compensation",
+        "readiness": "Readiness",
+        "activity": "Last activity",
+        "nextAction": "Next action"
+      },
+      "notSpecified": "Not specified",
+      "archive": "Archive application"
+    },
+    "nextActions": {
+      "followUp": "Follow up",
+      "reviewFit": "Review fit",
+      "prepareResponse": "Prepare response",
+      "archive": "Archive",
+      "practiceForScreen": "Practice for screen",
+      "updateMaterials": "Update materials",
+      "reengage": "Re-engage"
+    },
+    "card": {
+      "fit": "Fit estimate",
+      "matchTooltip": "Horizon fit estimate based on the role, your profile, and available materials.",
+      "insightLabel": "Signal",
+      "nextActionLabel": "Next action",
+      "jobType": {
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "internship": "Internship",
+        "contract": "Contract",
+        "freelance": "Freelance"
+      },
+      "workplace": {
+        "onSite": "On-site",
+        "remote": "Remote",
+        "hybrid": "Hybrid"
+      },
+      "insights": {
+        "offer": "Offer received",
+        "interview": "Interview stage",
+        "noActivity": "No activity for {{days}}d",
+        "followUpDue": "Follow-up due",
+        "strongFit": "Strong profile fit",
+        "analysis": "Analysis: {{snippet}}",
+        "sent": "Application sent"
+      }
+    },
+    "kanban": {
+      "updateStatus": "Update status",
+      "daysShort": "{{count}}d",
+      "limit": "Showing latest {{count}} items",
+      "empty": {
+        "inbox": "No new opportunities",
+        "active": "No active applications",
+        "offers": "No offers yet",
+        "archive": "Archive is clear",
+        "default": "Drop opportunity here"
+      }
+    },
+    "addSheet": {
+      "title": "Add opportunity",
+      "description": "Track a new career move",
+      "import": {
+        "title": "Import from job post",
+        "placeholder": "Paste job post URL...",
+        "action": "Import",
+        "reading": "Reading...",
+        "hint": "Paste a job posting URL to prefill the opportunity basics."
+      },
+      "sections": {
+        "basics": "Opportunity basics",
+        "pipeline": "Pipeline",
+        "compensation": "Optional compensation"
+      },
+      "fields": {
+        "position": "Position *",
+        "company": "Company *",
+        "status": "Current status",
+        "priority": "Priority",
+        "baseSalary": "Base salary",
+        "targetSalary": "Offer / target"
+      },
+      "placeholders": {
+        "position": "e.g. Frontend Developer",
+        "company": "e.g. Acme Corp",
+        "status": "Select status"
+      },
+      "actions": {
+        "save": "Save opportunity"
+      },
+      "errors": {
+        "companyCreate": "Could not create the company for this opportunity."
+      }
+    },
+    "notifications": {
+      "archived": {
+        "heading": "Pipeline updated",
+        "title": "Application for {{company}} archived",
+        "body": "Moved to rejected status.",
+        "undo": "Undo"
+      }
+    }
+  },
+  "companies": {
+    "actions": {
+      "add": "Add company",
+      "clearSearch": "Clear search",
+      "fetchData": "Fetch data",
+      "reviewResearch": "Review research"
+    },
+    "card": {
+      "viewResearch": "Open research for {{name}}",
+      "activeApplications": "{{count}} active",
+      "noActivePipeline": "No active pipeline",
+      "open": "Open"
+    },
+    "evidence": {
+      "empty": "No evidence yet"
+    },
+    "fallback": {
+      "industry": "Sector not set"
+    },
+    "filters": {
+      "all": "All",
+      "active": "Active pipelines",
+      "priority": "Priority targets",
+      "needsResearch": "Needs research",
+      "noPipeline": "No active pipeline"
+    },
+    "form": {
+      "actions": {
+        "saving": "Saving company...",
+        "save": "Save company",
+        "update": "Update company"
+      },
+      "sections": {
+        "identity": "Company identity",
+        "research": "Research context",
+        "tech": "Tech ecosystem",
+        "contact": "Key contact"
+      },
+      "fields": {
+        "companyName": "Company name",
+        "industry": "Industry",
+        "website": "Website",
+        "priority": "Priority",
+        "hqLocation": "HQ location",
+        "applications": "Applications",
+        "status": "Status",
+        "active": "Active",
+        "contactName": "Recruiter name",
+        "contactEmail": "Email address",
+        "contactLinkedIn": "LinkedIn profile"
+      },
+      "placeholders": {
+        "companyName": "e.g. Acme Corp",
+        "industry": "Select industry",
+        "hqLocation": "City, country",
+        "contactName": "e.g. Sarah Smith",
+        "contactEmail": "sarah@company.com",
+        "contactLinkedIn": "linkedin.com/in/..."
+      }
+    },
+    "metrics": {
+      "researchBase": "Research base",
+      "researchBaseBody": "Tracked companies",
+      "activePipelines": "Active pipelines",
+      "activePipelinesBody": "Companies with open applications",
+      "priorityTargets": "Priority targets",
+      "responseRate": "Response rate",
+      "responseRateBody": "Company-level traction"
+    },
+    "nextActions": {
+      "addContext": "Add research context",
+      "findRole": "Find a fitting role",
+      "openResearch": "Open company brief",
+      "prepare": "Prepare next step"
+    },
+    "pipeline": {
+      "active": "{{count}} active",
+      "none": "No active pipeline",
+      "noRole": "No role linked yet"
+    },
+    "portfolio": {
+      "eyebrow": {
+        "empty": "Company research",
+        "focus": "Research focus",
+        "pipeline": "Pipeline context",
+        "watchlist": "Watchlist"
+      },
+      "empty": {
+        "title": "Start with the companies behind your opportunities.",
+        "body": "Add companies you are applying to, researching, or considering. Horizon will keep company context next to applications and interview prep.",
+        "action": "Add the first company or import one from an application."
+      },
+      "research": {
+        "title": "Some companies need more context before they are useful.",
+        "body": "Prioritize profiles without industry, website, active role, or research notes so the workstation can produce better guidance later.",
+        "action": "Review the profiles that need context first."
+      },
+      "pipeline": {
+        "title": "Company research is connected to active applications.",
+        "body": "Use this view to move from company context into applications, contacts, market signals, and interview angles.",
+        "action": "Open a company with an active pipeline and prepare the next step."
+      },
+      "watchlist": {
+        "title": "Your company watchlist is ready for targeting.",
+        "body": "No company needs urgent research. Use priority targets to decide where to spend deeper preparation time.",
+        "action": "Pick a priority target and connect it to a role."
+      },
+      "metric": {
+        "total": "Tracked",
+        "needsResearch": "Need research",
+        "active": "Active",
+        "priority": "Priority"
+      }
+    },
+    "priority": {
+      "top": "Priority",
+      "mid": "Active",
+      "low": "Watchlist",
+      "archived": "Archived"
+    },
+    "research": {
+      "ready": "Research ready",
+      "partial": "Partial context",
+      "needsContext": "Needs context"
+    },
+    "searchLabel": "Search companies by name, industry, or domain",
+    "searchPlaceholder": "Search company, industry, or domain...",
+    "loading": "Loading company data...",
+    "error": {
+      "title": "Could not load company data"
+    },
+    "empty": {
+      "title": "No companies found",
+      "body": "Add your first company to build a research base around your applications.",
+      "searchBody": "No results for this search. Adjust the query and try again."
+    },
+    "results": {
+      "showing": "Showing",
+      "total": "Total"
+    }
+  },
+  "companyWorkspace": {
+    "loading": "Loading company workspace...",
+    "error": {
+      "title": "Could not load company workspace"
+    },
+    "actions": {
+      "back": "Back to companies",
+      "refreshBrief": "Refresh brief",
+      "copied": "Copied"
+    },
+    "nav": {
+      "overview": "Overview",
+      "market": "Market",
+      "applications": "Applications",
+      "people": "People",
+      "fit": "Fit Context"
+    },
+    "hero": {
+      "title": "{{company}} research workspace",
+      "body": "Review company context, active applications, contacts, market signals, and fit angles in one focused space."
+    },
+    "metrics": {
+      "readiness": "Readiness",
+      "applications": "Applications",
+      "contacts": "Contacts"
+    },
+    "overview": {
+      "briefEyebrow": "Company brief",
+      "briefTitle": "Generated company review",
+      "generated": "Generated {{date}}",
+      "generating": "Building the company brief...",
+      "companyBase": "Company base",
+      "relationship": "Relationship context",
+      "noContact": "No contact added yet. Add a recruiter, hiring manager, or team member.",
+      "nextActions": "Next actions",
+      "noActions": "No actions available yet.",
+      "quickHandoff": "Quick handoff"
+    },
+    "market": {
+      "eyebrow": "Market context",
+      "title": "Signals to use before outreach or interviews",
+      "body": "These frontend-generated signals show how the company context can later connect to real backend research.",
+      "generating": "Building market context...",
+      "openSignal": "Open market signal",
+      "dialogLabel": "Market signal details",
+      "summary": "Summary",
+      "whyItMatters": "Why it matters",
+      "interviewAngle": "Interview angle"
+    },
+    "applications": {
+      "eyebrow": "Company pipeline",
+      "title": "Applications connected to this company",
+      "body": "Move from company research into the application workstation when a role needs fit review, assets, or interview prep.",
+      "applied": "Added {{date}}",
+      "noOffer": "No offer",
+      "emptyTitle": "No applications linked yet",
+      "emptyBody": "Keep the company on the watchlist or add an application when a fitting role appears."
+    },
+    "people": {
+      "eyebrow": "Relationship map",
+      "title": "Contacts and notes",
+      "body": "Keep recruiter, hiring manager, peer, and research notes close to the company context.",
+      "notesTitle": "Research notes",
+      "notesBody": "Capture useful context, outreach ideas, interview questions, or team details.",
+      "notesPlaceholder": "Add company notes, contact context, questions, or interview details...",
+      "deleteContactTitle": "Remove contact?",
+      "deleteContactBody": "This removes the contact from this company profile."
+    },
+    "fit": {
+      "eyebrow": "AI fit context",
+      "title": "Role relevance, risks, and interview angles",
+      "body": "Use this as the bridge between company research and application preparation. Raw tech context stays as evidence, not the main story.",
+      "strengths": "Strengths",
+      "risks": "Risks",
+      "questions": "Interview questions",
+      "questionLabel": "Question {{index}}",
+      "evidence": "Evidence",
+      "noEvidence": "No tech or capability evidence has been added yet.",
+      "learningPrompts": "Learning and search prompts",
+      "generating": "Building fit context..."
+    },
+    "command": {
+      "label": "Company command palette",
+      "placeholderShort": "Search company actions...",
+      "placeholder": "Search company actions or ask Horizon Guide...",
+      "quickActions": "Quick actions",
+      "noResults": "No matching actions",
+      "actions": {
+        "refreshBrief": {
+          "label": "Refresh company brief",
+          "description": "Rebuild the frontend research brief from current company data."
+        },
+        "openMarket": {
+          "label": "Open market context",
+          "description": "Review signals, interview angles, and source context."
+        },
+        "addContact": {
+          "label": "Add contact",
+          "description": "Open the people view for recruiter or team context."
+        },
+        "openApplication": {
+          "label": "Open active application",
+          "description": "Jump into the application workstation for this company."
+        },
+        "prepareAngle": {
+          "label": "Prepare interview angle",
+          "description": "Open fit context and review questions to ask."
+        },
+        "copyBrief": {
+          "label": "Copy brief",
+          "description": "Copy the generated company review and next actions."
+        }
+      }
+    },
+    "notifications": {
+      "briefFailed": {
+        "title": "Brief failed",
+        "body": "The company brief could not be generated."
+      },
+      "addContact": {
+        "title": "People view opened",
+        "body": "Use the contact form to add recruiter or team context."
+      },
+      "prepareAngle": {
+        "title": "Fit context opened",
+        "body": "Review strengths, risks, and questions before the next conversation."
+      },
+      "copied": {
+        "title": "Brief copied",
+        "body": "The company brief is ready to paste."
+      },
+      "copyFailed": {
+        "title": "Copy failed",
+        "body": "Clipboard access was not available."
+      },
+      "contactSaved": {
+        "title": "Contact saved",
+        "body": "The company relationship map was updated."
+      },
+      "contactFailed": {
+        "title": "Contact failed",
+        "body": "The contact could not be saved."
+      },
+      "contactRemoved": {
+        "title": "Contact removed",
+        "body": "The contact was removed from this company."
+      }
+    }
+  },
+  "documents": {
+    "actions": {
+      "upload": "Upload document"
+    },
+    "capacity": {
+      "label": "Workspace capacity",
+      "used": "{{size}} used"
+    },
+    "loading": "Loading documents...",
+    "master": {
+      "label": "Master resume",
+      "badge": "Master",
+      "updated": "Updated {{date}}",
+      "primaryDocument": "Master document",
+      "body": "This is the base document Horizon uses for tailored resumes and cover letters. Keep it complete and current.",
+      "update": "Update master",
+      "openPreview": "Open preview"
+    },
+    "emptyMaster": {
+      "title": "No master resume set",
+      "body": "Upload a complete resume so Horizon can tailor documents to each opportunity.",
+      "cta": "Upload master resume"
+    },
+    "tailored": {
+      "title": "Tailored documents",
+      "resumes": "Tailored resumes ({{count}})",
+      "coverLetters": "Cover letters ({{count}})",
+      "emptyResumes": "No tailored documents yet. Generate a tailored resume in the Application Workstation to see it here."
+    },
+    "emptyLibrary": {
+      "body": "Your document workspace is empty.",
+      "cta": "Upload your first document"
+    },
+    "dropToUpload": "Drop to upload"
+  },
+  "ai": {
+    "drawer": {
+      "title": "Horizon Guide",
+      "ariaLabel": "Horizon Guide",
+      "close": "Close Horizon Guide",
+      "modeFast": "Fast",
+      "modeDeep": "Deep reason",
+      "placeholder": "Ask anything about your career workflow...",
+      "send": "Send message",
+      "quickPrompts": {
+        "summary": "summary",
+        "nextAction": "next action",
+        "followUps": "follow-ups",
+        "interviewPrep": "interview prep"
+      },
+      "welcomeTitle": "Welcome to Horizon Guide",
+      "welcomeBody": "I can help with pipeline summaries, follow-up strategy, and interview preparation. Try asking for a next best action.",
+      "responses": {
+        "summaryTitle": "Pipeline summary",
+        "summaryBody": "Your applications are being tracked. Open the dashboard for detailed metrics.",
+        "nextTitle": "Recommended next action",
+        "nextBody": "Review your active interviews and prepare STAR examples for upcoming sessions.",
+        "followTitle": "Follow-up plan",
+        "followBody": "Send concise updates to pending applications. Mention one relevant achievement and reconfirm interest.",
+        "interviewTitle": "Interview preparation",
+        "interviewBody": "Build a 30-60-90 narrative and rehearse STAR answers focused on ownership and ambiguity.",
+        "fallbackTitle": "I can help with this",
+        "fallbackBody": "Try: summary, next action, follow-ups, or interview prep.",
+        "modeFast": "Mode: Fast",
+        "modeDeep": "Mode: Deep reason"
+      }
+    }
+  },
+  "workstation": {
+    "command": {
+      "searchPlaceholder": "Ask AI or search...",
+      "searchLabel": "Search or ask AI",
+      "placeholder": "Ask AI anything about this application...",
+      "quickActions": "Quick actions",
+      "guideLabel": "Horizon Guide",
+      "openGuide": "Open Horizon Guide",
+      "navigate": "Navigate",
+      "select": "Select",
+      "noResults": "No matching command.",
+      "actions": {
+        "analyzeFit": {
+          "label": "Analyze fit",
+          "description": "Create role-specific gaps and next actions."
+        },
+        "improveBrief": {
+          "label": "Improve job brief",
+          "description": "Clean pasted role text with Horizon Guide."
+        },
+        "openReview": {
+          "label": "Open fit review",
+          "description": "Read the full AI-generated role review."
+        },
+        "simulateTopGap": {
+          "label": "Simulate top gap",
+          "description": "Preview the score lift from the highest-priority gap."
+        },
+        "generateResume": {
+          "label": "Generate resume draft",
+          "description": "Open Documents and draft a tailored CV."
+        },
+        "openDocuments": {
+          "label": "Open Documents",
+          "description": "Review resume and cover letter drafts."
+        },
+        "practiceInterview": {
+          "label": "Practice interview",
+          "description": "Start a focused interview session."
+        },
+        "addTimeline": {
+          "label": "Add timeline event",
+          "description": "Schedule an interview, task, or deadline."
+        },
+        "roleDetails": {
+          "label": "Edit role details",
+          "description": "Update status, priority, and compensation context."
+        }
+      }
+    },
+    "nav": {
+      "strategy": "Fit",
+      "assets": "Documents",
+      "interview": "Interview",
+      "deal": "Offer",
+      "timeline": "Timeline"
+    },
+    "actions": {
+      "analyze": "Analyze fit",
+      "analyzing": "Analyzing...",
+      "prepareInterview": "Prepare for interview",
+      "generateDocuments": "Generate documents",
+      "generateResumeDraft": "Generate resume draft",
+      "generateCoverLetter": "Generate cover letter",
+      "refreshAnalysis": "Refresh analysis",
+      "simulateTopGap": "Simulate top gap",
+      "analyzeOffer": "Analyze offer",
+      "syncCalendar": "Sync calendar",
+      "focusMode": "Focus mode",
+      "addEvent": "Add timeline event"
+    },
+    "status": {
+      "update": "Update status",
+      "Applied": "Applied",
+      "PhoneScreen": "Phone screen",
+      "TechnicalTask": "Technical task",
+      "Interviewing": "Interviewing",
+      "Offer": "Offer",
+      "Accepted": "Accepted",
+      "Rejected": "Rejected",
+      "Ghosted": "No response",
+      "Unknown": "Unknown"
+    },
+    "priority": {
+      "suffix": "priority",
+      "set": "Set priority",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "none": "No"
+    },
+    "roleDetails": {
+      "title": "Role details",
+      "description": "Update the core opportunity fields. Edit the job description from Fit.",
+      "edit": "Edit role details",
+      "deleteApplication": "Delete application",
+      "deleteConfirm": "Are you sure you want to delete the application for {{company}}?",
+      "company": "Company",
+      "companyPlaceholder": "Company name",
+      "position": "Position *",
+      "positionPlaceholder": "e.g. Senior Frontend Engineer",
+      "jobUrl": "Job posting URL",
+      "currentStatus": "Current status",
+      "selectStatus": "Select status",
+      "priority": "Priority",
+      "currency": "Currency",
+      "baseSalary": "Base salary",
+      "offerGoal": "Offer / goal",
+      "fitOwnsDescription": "Job description editing lives in Fit so Horizon can keep the role brief, match score, and guidance aligned.",
+      "sections": {
+        "basics": "Opportunity basics",
+        "pipeline": "Pipeline",
+        "compensation": "Compensation"
+      },
+      "jobType": {
+        "label": "Job type",
+        "placeholder": "Select type",
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "internship": "Internship",
+        "contract": "Contract",
+        "freelance": "Freelance"
+      },
+      "workplace": {
+        "label": "Workplace type",
+        "remote": "Remote",
+        "hybrid": "Hybrid",
+        "onsite": "On-site"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Role details updated",
+          "body": "Changes saved successfully."
+        }
+      }
+    },
+    "strategy": {
+      "jobContext": "Job context",
+      "editDescription": "Edit description",
+      "noDescriptionTitle": "No job description yet",
+      "noDescriptionBody": "Add the role requirements to unlock tailored fit analysis and next-step guidance.",
+      "pasteManually": "Paste text manually",
+      "jobUrl": "Paste job URL...",
+      "autoFill": "Auto-fill from URL",
+      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Horizon clean it up.",
+      "overview": "Role overview",
+      "priority": "Priority",
+      "matchScore": "Match score",
+      "type": "Type",
+      "gapAnalysis": "Gap analysis",
+      "refresh": "Refresh analysis",
+      "simulate": "Simulate improvement",
+      "simulationActive": "Simulation active for {{gap}}.",
+      "insights": "AI guidance",
+      "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
+      "review": {
+        "title": "Fit review",
+        "summary": "Review summary",
+        "signals": "Key signals",
+        "open": "Open full review",
+        "ariaLabel": "Fit review",
+        "generated": "Generated {{date}}",
+        "fullReview": "Full review",
+        "nextActions": "Next actions",
+        "addCheckpoint": "Add learning checkpoint",
+        "copy": "Copy review",
+        "copied": "Copied"
+      },
+      "learning": {
+        "title": "Learning plan",
+        "topics": "Topics",
+        "searchQueries": "Search queries"
+      },
+      "brief": {
+        "title": "Job brief",
+        "overview": "Overview",
+        "overviewFallback": "Add more role context to build a useful brief.",
+        "responsibilities": "Responsibilities",
+        "noResponsibilities": "No responsibilities detected yet.",
+        "requirements": "Requirements",
+        "noRequirements": "No explicit requirements detected yet.",
+        "keywords": "Keywords",
+        "noKeywords": "No keywords detected yet."
+      },
+      "editor": {
+        "title": "Edit job description",
+        "body": "Paste the role description here. Horizon uses this source for fit, documents, and interview guidance.",
+        "placeholder": "Paste the job description, responsibilities, requirements, and useful context...",
+        "improve": "Improve with AI",
+        "refining": "Refining...",
+        "previewTitle": "AI cleanup preview",
+        "previewEmpty": "Paste the posting, then run AI cleanup to see the structured brief before saving.",
+        "changes": "Changes",
+        "applyRefined": "Apply and save"
+      },
+      "score": {
+        "strong": "Strong fit",
+        "workable": "Workable fit",
+        "needsWork": "Needs positioning",
+        "notAnalyzed": "Not analyzed",
+        "body": "The score becomes more useful after Horizon compares the role against your resume and profile."
+      },
+      "notifications": {
+        "descriptionSaved": "Job description updated.",
+        "simulation": {
+          "title": "Simulation active",
+          "body": "Simulating {{skill}}. Match score would increase to {{score}}%."
+        }
+      }
+    },
+    "assets": {
+      "assistant": "AI document assistant",
+      "resume": "Resume",
+      "source": "Source document",
+      "output": "Tailored output",
+      "masterProtected": "The original source content is protected. Horizon uses it as the base for targeted generation.",
+      "awaiting": "Awaiting document generation",
+      "awaitingBody": "Use \"Generate documents\" to create a tailored CV and cover letter.",
+      "suggestions": "AI suggestions",
+      "coverLetter": "Tailored cover letter",
+      "noCoverTitle": "No cover letter yet",
+      "noCoverBody": "Let Horizon draft a professional, position-aware cover letter for you.",
+      "draftCover": "Draft with Horizon Guide",
+      "drafting": "Drafting...",
+      "studioEyebrow": "Document Studio",
+      "studioTitle": "Prepare role-specific documents",
+      "studioBody": "Generate a strong starting point, then edit the draft directly before copying or exporting it.",
+      "resumeDraft": "Resume draft",
+      "resumeDraftBody": "Tailor the resume angle for this opportunity. Keep the draft concise, specific, and aligned with the role.",
+      "coverLetterBody": "Shape a focused cover letter that connects your experience to the company and role.",
+      "unsavedSession": "Edited in this session",
+      "missingInputs": "Horizon needs a master resume, job description, and profile skills before generating reliable drafts.",
+      "editorPlaceholder": "Generate a draft or start writing here...",
+      "wordCount": "{{count}} words",
+      "sessionOnly": "Manual edits are kept in this workstation session. Copy or export the draft before refreshing.",
+      "visual": {
+        "title": "Visual CV editor",
+        "body": "Work from a structured CV preview instead of a raw text box. Select a block, give Horizon a clear instruction, then copy or export the session draft.",
+        "v1Badge": "Visual block V1",
+        "profileImage": "Profile image placeholder",
+        "basics": {
+          "subtitle": "Tailored for {{role}} at {{company}}"
+        },
+        "sections": {
+          "header": "Profile header",
+          "summary": "Professional summary",
+          "experience": "Relevant experience",
+          "skills": "Skills",
+          "education": "Education and credentials",
+          "coverLetter": "Cover letter"
+        },
+        "fallback": {
+          "summary": "Focused candidate summary for {{role}}, tailored to the strongest requirements in this opportunity.",
+          "experience": "Position the strongest relevant experience for {{role}} with clear scope, ownership, and outcomes.",
+          "skills": "Role-relevant skills",
+          "education": "Add education, certifications, or training that support this application.",
+          "blockContent": "Add a concise, role-relevant version of this block.",
+          "coverClosing": "I would welcome the chance to discuss how this experience can support the role.",
+          "resultSentence": "Add a concrete metric or outcome where you can verify it.",
+          "alignmentSentence": "Tie this point more directly to the role requirements and the company's context."
+        },
+        "mock": {
+          "resultLine": "with clearer emphasis on measurable business impact.",
+          "alignLine": "aligned to the strongest requirements in this opportunity.",
+          "fitLine": "clarified for stronger role fit."
+        },
+        "empty": {
+          "title": "Generate the first visual draft",
+          "body": "Horizon will map the generated text into editable CV blocks so you can refine the document like a real application asset.",
+          "cta": "Generate draft"
+        },
+        "agent": {
+          "title": "Horizon Document Agent",
+          "subtitle": "Block-level guidance for this draft",
+          "selectedBlock": "Selected block",
+          "noBlockContent": "This block is ready for your instruction.",
+          "noSelectionTitle": "Select a CV block",
+          "noSelectionBody": "Click a section in the document preview to focus Horizon on the exact part you want to improve.",
+          "emptyTitle": "Guide the next edit",
+          "emptyBody": "Use a quick prompt or write an instruction. V1 updates the structured preview locally and keeps the draft plaintext-safe.",
+          "thinking": "Horizon is refining the selected block...",
+          "inputLabel": "Instruction for Horizon Document Agent",
+          "placeholder": "Example: Make this summary more specific to the job description",
+          "send": "Send instruction",
+          "updatedResponse": "Updated the selected block in this session. Review the wording before copying or exporting.",
+          "editedBadge": "Edited"
+        },
+        "quick": {
+          "results": "Make it results-led",
+          "tighten": "Tighten wording",
+          "align": "Align to role",
+          "cover": "Sharpen the letter"
+        },
+        "instructions": {
+          "results": "Make the selected block more results-oriented without inventing metrics.",
+          "tighten": "Tighten the selected block and remove filler.",
+          "align": "Align the selected block more clearly with the job description.",
+          "cover": "Make the cover letter more direct and role-specific."
+        },
+        "notifications": {
+          "missingInputs": "Add a master resume, job description, and profile skills before generating a reliable draft.",
+          "contextTitle": "Document context",
+          "copied": "Draft copied as plaintext.",
+          "studioTitle": "Document Studio",
+          "exported": "Exported as a plaintext draft."
+        }
+      },
+      "context": {
+        "title": "Document context",
+        "heading": "Generation readiness"
+      },
+      "readiness": {
+        "master": {
+          "label": "Master resume",
+          "ready": "A master resume is available as the source.",
+          "missing": "Upload or set a master resume in Documents."
+        },
+        "job": {
+          "label": "Job description",
+          "ready": "The role context is available for targeting.",
+          "missing": "Add the job description in the Fit phase."
+        },
+        "skills": {
+          "label": "Profile skills",
+          "ready": "Your skill profile can guide the draft.",
+          "loading": "Loading profile skills...",
+          "missing": "Add skills to your profile before generating."
+        }
+      },
+      "source": {
+        "title": "Source",
+        "noMasterTitle": "No master resume",
+        "noMasterBody": "Horizon needs a master resume before it can tailor a reliable CV or cover letter."
+      },
+      "roleContext": {
+        "title": "Opportunity context",
+        "missing": "No job description yet. Add one in the Fit phase to improve document quality."
+      },
+      "actions": {
+        "resetDraft": "Reset",
+        "copyDraft": "Copy",
+        "exportText": "Export .txt",
+        "generateCurrent": "Generate draft",
+        "generating": "Generating..."
+      },
+      "guide": {
+        "title": "Horizon Guide",
+        "subtitle": "Focused editing prompts",
+        "results": {
+          "label": "Make it more results-oriented",
+          "body": "Review the draft and replace responsibilities with measurable outcomes where you have real numbers."
+        },
+        "tighten": {
+          "label": "Tighten wording",
+          "body": "Shorten long sentences, remove filler, and keep the strongest evidence for the role."
+        },
+        "align": {
+          "label": "Align with job description",
+          "body": "Regenerate the resume draft using the current job description, master resume, and profile skills."
+        },
+        "coverTone": {
+          "label": "Make the cover letter more direct",
+          "body": "Use a clear opening, one strong evidence paragraph, and a concise closing line."
+        }
+      },
+      "v2": {
+        "title": "Block editing planned",
+        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level AI edits are live."
+      }
+    },
+    "interview": {
+      "title": "Interview practice",
+      "readyTitle": "Ready to practice?",
+      "readyBody": "Choose an interview simulation to begin your session with Horizon Guide.",
+      "listening": "Listening...",
+      "endSession": "End session",
+      "performance": "Performance",
+      "inputPlaceholder": "Type your response...",
+      "textMode": "Text response mode",
+      "stopRecording": "Stop recording",
+      "startRecording": "Start recording",
+      "send": "Send response",
+      "session": {
+        "title": "Session",
+        "noPrompt": "No prompt yet. Choose a practice scenario to begin.",
+        "noScenario": "No active scenario",
+        "nextTitle": "Next recommended prompt",
+        "nextEmpty": "Choose a scenario and Horizon will guide the next prompt."
+      },
+      "metrics": {
+        "clarity": "Clarity",
+        "tone": "Tone",
+        "specificity": "Specificity"
+      },
+      "scenarios": {
+        "technical": {
+          "title": "Mock technical interview",
+          "description": "Practice architecture, tradeoffs, and problem solving.",
+          "opening": "Let's start with a technical scenario. Walk me through how you would design a scalable system for this role.",
+          "next": "Good. Now explain the main tradeoff you made and what you would monitor in production."
+        },
+        "behavioral": {
+          "title": "Behavioral prep",
+          "description": "Shape clear STAR stories for leadership and ambiguity.",
+          "opening": "Tell me about a time you handled a significant conflict within your team.",
+          "next": "Now tighten the answer into a clear situation, action, result, and lesson."
+        },
+        "salary": {
+          "title": "Salary negotiation",
+          "description": "Practice compensation conversations without leaving this workspace.",
+          "opening": "Let's practice the opening of a compensation conversation. State your target calmly and anchor it with evidence.",
+          "next": "Now respond to pushback without lowering your position too quickly."
+        }
+      },
+      "mock": {
+        "voiceAnswer": "I would start by clarifying the requirements, then propose a design with clear tradeoffs and failure modes.",
+        "followUp": "Good. Make the answer more specific: name the constraint, explain your decision, and finish with the measurable outcome."
+      }
+    },
+    "offer": {
+      "title": "Offer workspace",
+      "upload": {
+        "title": "Upload offer letter",
+        "body": "Start a simulated V1 analysis to structure compensation, risks, and response strategy. No legal advice is provided.",
+        "cta": "Upload offer letter",
+        "analyzing": "Reading offer..."
+      },
+      "snapshot": {
+        "title": "Offer snapshot",
+        "body": "Review the compensation structure, risk items, and response angle before drafting your reply.",
+        "salaryRating": "Salary signal",
+        "salaryRatingValue": "Above market for this stage",
+        "equityComplexity": "Equity complexity",
+        "equityComplexityValue": "High: 4-year vesting"
+      },
+      "risks": {
+        "title": "Risk checklist",
+        "variableBonus": "Variable bonus is not guaranteed.",
+        "nonCompete": "Non-compete language needs review."
+      },
+      "compensation": {
+        "title": "Compensation breakdown",
+        "total": "Total",
+        "note": "Illustrative local V1 calculation.",
+        "base": "Base",
+        "equity": "Equity",
+        "bonus": "Bonus"
+      },
+      "checklist": {
+        "title": "Review before reply",
+        "base": "Base salary matches your minimum target.",
+        "equity": "Equity schedule and strike details are clear.",
+        "bonus": "Bonus conditions are written down.",
+        "restrictions": "Restrictions and notice period are understood."
+      },
+      "playbook": {
+        "title": "Negotiation playbook",
+        "body": "Use these calmer response angles to prepare a clear, evidence-led reply.",
+        "draftCta": "Draft response",
+        "valueAlignment": {
+          "title": "Value alignment",
+          "type": "Evidence-led angle",
+          "script": "I am excited about the role. Based on the scope we discussed and the impact I can bring, I would like to align the base closer to the upper range.",
+          "impact": "Best when the match is strong and you want to keep the tone constructive."
+        },
+        "marketEvidence": {
+          "title": "Market evidence",
+          "type": "Compensation angle",
+          "script": "For roles with this scope and skill mix, I am seeing stronger base ranges. A revised base would make this much easier to accept quickly.",
+          "impact": "Best when you have comparable data or competing process momentum."
+        },
+        "riskClarification": {
+          "title": "Risk clarification",
+          "type": "Decision clarity angle",
+          "script": "Before I can make a final decision, I would like to clarify the bonus conditions, equity terms, and restrictions in writing.",
+          "impact": "Best when the offer has unclear terms or legal/compensation risk."
+        }
+      },
+      "notifications": {
+        "analyzed": {
+          "title": "Offer analysis",
+          "body": "Offer snapshot prepared."
+        },
+        "generating": {
+          "title": "Draft response",
+          "body": "Preparing a response draft from the current offer context."
+        },
+        "ready": {
+          "title": "Draft ready",
+          "body": "Response draft prepared for review."
+        }
+      }
+    },
+    "timeline": {
+      "title": "Timeline",
+      "body": "Scheduling and key milestones for this application.",
+      "nextMilestone": "Next milestone",
+      "calendarStatus": "Calendar status",
+      "disconnected": "Disconnected",
+      "synced": "Synced: {{time}}",
+      "connect": "Connect",
+      "addEvent": "Add timeline event",
+      "saveEvent": "Save event",
+      "actions": {
+        "joinMeeting": "Join meeting",
+        "interviewPrep": "Interview prep",
+        "viewTask": "View task"
+      },
+      "form": {
+        "title": "Event title",
+        "titlePlaceholder": "e.g. Technical interview",
+        "type": "Event type",
+        "date": "Event date",
+        "details": "Details"
+      },
+      "types": {
+        "technical": "Technical task",
+        "interview": "Interview session",
+        "deadline": "Deadline",
+        "other": "Other milestone"
+      },
+      "time": {
+        "passed": "Passed",
+        "daysHoursLeft": "{{days}}d {{hours}}h left",
+        "hoursLeft": "{{hours}}h left"
+      },
+      "notifications": {
+        "reminder": {
+          "title": "Technical task",
+          "body": "Reminder set 24h before the deadline."
+        },
+        "scheduled": {
+          "title": "Timeline",
+          "body": "Timeline event scheduled."
+        },
+        "removed": {
+          "title": "Timeline",
+          "body": "Event removed."
+        },
+        "connecting": {
+          "title": "Calendar",
+          "body": "Connecting calendar..."
+        },
+        "connected": {
+          "title": "Calendar",
+          "body": "Calendar connected."
+        }
+      }
+    }
+  },
+  "footprint": {
+    "cardTitle": "Market footprint",
+    "cardSubtitle": "Secondary context for where your applications live.",
+    "empty": "No location data available yet.",
+    "locationCount": "{{count}} locations",
+    "trackedHubCount": "{{count}} tracked hubs",
+    "liveOrbit": "Map view",
+    "interactiveGlobe": "Market context",
+    "openTitle": "Explore the market map",
+    "openBody": "Review application locations and nearby market context when you need it.",
+    "openCta": "Open map",
+    "screenEyebrow": "World view",
+    "screenTitle": "Global application map",
+    "screenBody": "Rotate the globe, inspect city clusters, and review market context.",
+    "allSignal": "All context",
+    "applications": "Applications",
+    "yourApplications": "Your applications",
+    "nearby": "Nearby",
+    "tracked": "Tracked",
+    "nearbyMarketSignal": "Nearby market context",
+    "autoOrbitOn": "Auto orbit on",
+    "autoOrbitOff": "Auto orbit off",
+    "dragHint": "Drag to rotate",
+    "clickHint": "Click a marker for company overview"
+  },
+  "opportunities": {
+    "save": "Save opportunity"
+  }
+}

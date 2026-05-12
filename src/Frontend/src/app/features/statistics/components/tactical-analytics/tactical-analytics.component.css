@@ -83,11 +83,11 @@
 }
 
 /* AI Special Card Overrides */
-[hlmCard].border-violet-500\/30 {
+[hlmCard].border-primary\/30 {
     background-image: radial-gradient(circle at top right, hsla(var(--primary), 0.05), transparent);
 }
 
-.dark [hlmCard].border-violet-500\/30 {
+.dark [hlmCard].border-primary\/30 {
     background-image: radial-gradient(circle at top right, hsla(var(--primary), 0.1), transparent);
 }
 
@@ -101,10 +101,10 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #27272a;
+    background: hsl(var(--scrollbar-thumb));
     border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #3f3f46;
+    background: hsl(var(--scrollbar-thumb-hover));
 }

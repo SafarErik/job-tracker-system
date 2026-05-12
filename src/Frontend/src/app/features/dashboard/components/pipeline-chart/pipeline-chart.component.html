@@ -1,0 +1,56 @@
+<article
+  class="rounded-2xl border border-border/40 bg-linear-to-br from-card to-surface-raised p-5 backdrop-blur-md shadow-sm"
+>
+  <div class="mb-4 flex items-center justify-between">
+    <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+      Application Pipeline Chart
+    </h2>
+    <span class="text-xs text-muted-foreground">Funnel</span>
+  </div>
+
+  @if (hasData()) {
+    <div class="pipeline-grid space-y-3">
+      @for (stage of stages(); track stage.label) {
+        <div>
+          <div class="mb-1 flex items-center justify-between text-xs text-muted-foreground">
+            <span>{{ stage.label }}</span>
+            <span class="metric-value">{{ stage.count }}</span>
+          </div>
+
+          <div
+            class="pipeline-track h-8 overflow-hidden rounded-lg border border-border bg-muted/40"
+          >
+            <div
+              class="pipeline-bar h-full rounded-lg"
+              [style.width.%]="barWidth(stage.count)"
+            ></div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="pipeline-grid space-y-3">
+      @for (stage of stages(); track stage.label) {
+        <div>
+          <div class="mb-1 flex items-center justify-between text-xs text-muted-foreground">
+            <span>{{ stage.label }}</span>
+            <span class="metric-value">—</span>
+          </div>
+          <div
+            class="ghost-funnel h-8 rounded-lg border border-dashed border-border bg-transparent"
+            title="Start applying to populate your pipeline."
+          ></div>
+        </div>
+      }
+      <p class="pt-1 text-xs text-muted-foreground">Start applying to populate your pipeline.</p>
+    </div>
+  }
+
+  <div
+    class="mt-4 grid grid-cols-3 text-center text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+  >
+    <span>Applied</span>
+    <span>Screen</span>
+    <span>Offer</span>
+  </div>
+</article>

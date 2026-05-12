@@ -1,0 +1,65 @@
+<section class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="p-2 rounded-xl bg-primary/10 text-primary">
+        <ng-icon name="lucideBriefcase" class="h-5 w-5"></ng-icon>
+      </div>
+      <h3 class="text-sm font-semibold uppercase tracking-widest text-foreground">
+        Active applications
+      </h3>
+    </div>
+    <span class="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+      {{ applications().length }} in progress
+    </span>
+  </div>
+
+  <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+    @for (app of applications(); track app.id) {
+      <button
+        (click)="viewApplication.emit(app.id)"
+        class="shrink-0 w-80 group p-6 rounded-lg bg-card border-border hover:border-primary/50 transition-all text-left relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"
+        ></div>
+
+        <div class="relative z-10 space-y-4">
+          <div class="flex items-center justify-between">
+            <span
+              [class]="
+                'px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ' +
+                (app.status === 'Offer'
+                  ? 'bg-success/10 border-success/20 text-success'
+                  : app.status === 'Rejected'
+                    ? 'bg-destructive/10 border-destructive/20 text-destructive'
+                    : 'bg-primary/10 border-primary/20 text-primary')
+              "
+            >
+              {{ app.status }}
+            </span>
+            <ng-icon
+              name="lucideArrowLeft"
+              class="h-4 w-4 rotate-180 text-muted-foreground group-hover:text-primary transition-all"
+            ></ng-icon>
+          </div>
+          <div>
+            <h4
+            class="text-base font-semibold text-foreground group-hover:text-primary transition-colors"
+            >
+              {{ app.position }}
+            </h4>
+            <p class="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 font-bold">
+              Added: {{ app.appliedAt | date: 'MMM yyyy' }}
+            </p>
+          </div>
+        </div>
+      </button>
+    } @empty {
+      <div
+        class="w-full flex flex-col items-center justify-center py-12 rounded-lg bg-card/30 border border-dashed border-border text-muted-foreground"
+      >
+        <p class="text-xs font-medium">No active applications yet.</p>
+      </div>
+    }
+  </div>
+</section>

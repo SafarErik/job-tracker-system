@@ -1,33 +1,84 @@
-import { Component, OnInit, signal, ViewChild, ElementRef, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { CompanyStore } from '../../services/company.store';
 import { Company, JobApplicationHistory } from '../../models/company.model';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { CompanyCardComponent } from '../company-card/company-card';
+import { CompanyPriority } from '../../models/company-priority.enum';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
-import { HlmInputImports } from '../../../../../../libs/ui/input';
-import { HlmLabelImports } from '../../../../../../libs/ui/label';
 import { provideIcons, NgIcon } from '@ng-icons/core';
-import { lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp } from '@ng-icons/lucide';
+import {
+  lucideAlertTriangle,
+  lucideArrowRight,
+  lucideBriefcase,
+  lucideBuilding2,
+  lucideCheckCircle2,
+  lucideFilter,
+  lucideGauge,
+  lucideLoader2,
+  lucidePlus,
+  lucideSearch,
+  lucideSparkles,
+  lucideTarget,
+  lucideUsers,
+} from '@ng-icons/lucide';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
-
+import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
 import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet.component';
+
+type CompanyFocusFilter = 'all' | 'active' | 'priority' | 'needsResearch' | 'noPipeline';
+
+interface CompanyFilter {
+  id: CompanyFocusFilter;
+  labelKey: string;
+}
+
+interface CompanyPortfolioInsight {
+  eyebrowKey: string;
+  titleKey: string;
+  bodyKey: string;
+  actionKey: string;
+  metricKey: string;
+  metricValue: number | string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-company-list',
   imports: [
     CommonModule,
+    TranslocoPipe,
     ...HlmButtonImports,
-    ...HlmInputImports,
-    ...HlmLabelImports,
-    CompanyCardComponent,
     NgIcon,
     ErrorStateComponent,
-    CompanyAddSheetComponent
+    LogoPlaceholderComponent,
+    CompanyAddSheetComponent,
   ],
   providers: [
-    provideIcons({ lucideBuilding2, lucidePlus, lucideSearch, lucideLoader2, lucideAlertTriangle, lucideActivity, lucideTrendingUp })
+    provideIcons({
+      lucideAlertTriangle,
+      lucideArrowRight,
+      lucideBriefcase,
+      lucideBuilding2,
+      lucideCheckCircle2,
+      lucideFilter,
+      lucideGauge,
+      lucideLoader2,
+      lucidePlus,
+      lucideSearch,
+      lucideSparkles,
+      lucideTarget,
+      lucideUsers,
+    }),
   ],
   templateUrl: './company-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,63 +89,120 @@ import { CompanyAddSheetComponent } from '../company-add-sheet/company-add-sheet
 export class CompanyListComponent implements OnInit {
   private readonly companyStore = inject(CompanyStore);
   private readonly router = inject(Router);
-  private readonly notificationService = inject(NotificationService);
 
-  // Read signals from store
-  isLoading = this.companyStore.isLoading;
-  error = this.companyStore.error;
-  companies = this.companyStore.companies;
+  readonly isLoading = this.companyStore.isLoading;
+  readonly error = this.companyStore.error;
+  readonly companies = this.companyStore.companies;
 
-  // Local state
-  searchTerm = signal('');
-  logoFailedIds = signal<Set<string>>(new Set());
+  readonly searchTerm = signal('');
+  readonly selectedFilter = signal<CompanyFocusFilter>('all');
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
-  // Computed: Filtered companies
-  filteredCompanies = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    const allCompanies = this.companyStore.companies();
+  readonly filters: CompanyFilter[] = [
+    { id: 'all', labelKey: 'companies.filters.all' },
+    { id: 'active', labelKey: 'companies.filters.active' },
+    { id: 'priority', labelKey: 'companies.filters.priority' },
+    { id: 'needsResearch', labelKey: 'companies.filters.needsResearch' },
+    { id: 'noPipeline', labelKey: 'companies.filters.noPipeline' },
+  ];
 
-    if (!term) return allCompanies;
-
-    return allCompanies.filter(
-      (company) =>
-        company.name.toLowerCase().includes(term) ||
-        company.website?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term) ||
-        company.industry?.toLowerCase().includes(term),
-    );
-  });
-
-  // Computed: Metrics for the Command Deck
-  totalNetwork = computed(() => this.companies().length);
-  activePursuits = computed(() =>
-    this.companies().filter(c => c.totalApplications > 0).length
+  readonly totalNetwork = computed(() => this.companies().length);
+  readonly activePursuits = computed(() =>
+    this.companies().filter((company) => this.hasActivePipeline(company)).length,
   );
-  responseRate = computed(() => {
-    const totalWithApps = this.companies().filter(c => c.totalApplications > 0);
-    if (totalWithApps.length === 0) return '0%';
+  readonly priorityTargets = computed(() =>
+    this.companies().filter((company) => company.priority === CompanyPriority.TopTier).length,
+  );
+  readonly needsResearchCount = computed(() =>
+    this.companies().filter((company) => this.needsResearch(company)).length,
+  );
 
-    // Simple heuristic: if furthest status is past 'Applied', it's a response
-    const statusWeights: Record<string, number> = {
-      'Applied': 1,
-      'Rejected': 1,
-      'Ghosted': 1
+  readonly portfolioInsight = computed<CompanyPortfolioInsight>(() => {
+    const total = this.totalNetwork();
+
+    if (total === 0) {
+      return {
+        eyebrowKey: 'companies.portfolio.eyebrow.empty',
+        titleKey: 'companies.portfolio.empty.title',
+        bodyKey: 'companies.portfolio.empty.body',
+        actionKey: 'companies.portfolio.empty.action',
+        metricKey: 'companies.portfolio.metric.total',
+        metricValue: 0,
+        icon: 'lucideSparkles',
+      };
+    }
+
+    if (this.needsResearchCount() > 0) {
+      return {
+        eyebrowKey: 'companies.portfolio.eyebrow.focus',
+        titleKey: 'companies.portfolio.research.title',
+        bodyKey: 'companies.portfolio.research.body',
+        actionKey: 'companies.portfolio.research.action',
+        metricKey: 'companies.portfolio.metric.needsResearch',
+        metricValue: this.needsResearchCount(),
+        icon: 'lucideGauge',
+      };
+    }
+
+    if (this.activePursuits() > 0) {
+      return {
+        eyebrowKey: 'companies.portfolio.eyebrow.pipeline',
+        titleKey: 'companies.portfolio.pipeline.title',
+        bodyKey: 'companies.portfolio.pipeline.body',
+        actionKey: 'companies.portfolio.pipeline.action',
+        metricKey: 'companies.portfolio.metric.active',
+        metricValue: this.activePursuits(),
+        icon: 'lucideBriefcase',
+      };
+    }
+
+    return {
+      eyebrowKey: 'companies.portfolio.eyebrow.watchlist',
+      titleKey: 'companies.portfolio.watchlist.title',
+      bodyKey: 'companies.portfolio.watchlist.body',
+      actionKey: 'companies.portfolio.watchlist.action',
+      metricKey: 'companies.portfolio.metric.priority',
+      metricValue: this.priorityTargets(),
+      icon: 'lucideTarget',
     };
-
-    const responses = totalWithApps.filter(c => {
-      const apps = c.recentApplications || [];
-      return apps.some(a => {
-        const s = a.status || 'Applied';
-        return !statusWeights[s] || statusWeights[s] > 1;
-      });
-    }).length;
-
-    return Math.round((responses / totalWithApps.length) * 100) + '%';
   });
 
-  /** Global keyboard listener for search shortcut (Cmd+K or Ctrl+K) */
+  readonly filteredCompanies = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    const filter = this.selectedFilter();
+
+    return this.companies()
+      .filter((company) => {
+        const matchesSearch =
+          !term ||
+          [company.name, company.website, company.address, company.hqLocation, company.industry]
+            .filter(Boolean)
+            .some((value) => value!.toLowerCase().includes(term));
+
+        if (!matchesSearch) return false;
+
+        switch (filter) {
+          case 'active':
+            return this.hasActivePipeline(company);
+          case 'priority':
+            return company.priority === CompanyPriority.TopTier;
+          case 'needsResearch':
+            return this.needsResearch(company);
+          case 'noPipeline':
+            return !this.hasActivePipeline(company);
+          case 'all':
+          default:
+            return true;
+        }
+      })
+      .sort((left, right) => this.getCompanyPriorityScore(right) - this.getCompanyPriorityScore(left));
+  });
+
+  ngOnInit(): void {
+    this.companyStore.loadAll();
+  }
+
   handleKeyDown(event: KeyboardEvent): void {
     if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
       event.preventDefault();
@@ -102,62 +210,31 @@ export class CompanyListComponent implements OnInit {
     }
   }
 
-  /** Focus the search input field */
   focusSearch(): void {
-    if (this.searchInput) {
-      this.searchInput.nativeElement.focus();
-    }
+    this.searchInput?.nativeElement?.focus();
   }
 
-  ngOnInit(): void {
-    this.companyStore.loadAll();
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
   }
 
-  /**
-   * Navigate to company details page
-   */
-  viewCompanyDetails(companyId: string): void {
-    this.router.navigate(['/companies', companyId]);
+  setFilter(filter: CompanyFocusFilter): void {
+    this.selectedFilter.set(filter);
   }
 
-  /**
-   * Update search term
-   */
-  onSearchChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm.set(input.value);
+  clearFilters(): void {
+    this.searchTerm.set('');
+    this.selectedFilter.set('all');
   }
 
-  /**
-   * Retry loading companies
-   */
   retry(): void {
     this.companyStore.loadAll();
   }
 
-  /** Navigate to edit company */
-  editCompany(companyId: string, event: Event): void {
-    event.stopPropagation();
-    this.router.navigate(['/companies/edit', companyId]);
+  viewCompanyDetails(companyId: string): void {
+    this.router.navigate(['/companies', companyId]);
   }
 
-  /** Delete company */
-  async deleteCompany(company: Company, event: Event): Promise<void> {
-    event.stopPropagation();
-
-    const confirmed = await this.notificationService.confirm(
-      `Are you sure you want to delete "${company.name}"? This will also delete all associated job applications. This action cannot be undone.`,
-      'Delete Company',
-    );
-
-    if (!confirmed) return;
-
-    this.companyStore.delete(company.id);
-  }
-
-  /**
-   * Handle keyboard navigation for table rows
-   */
   onRowKeyDown(event: KeyboardEvent, companyId: string): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -165,64 +242,124 @@ export class CompanyListComponent implements OnInit {
     }
   }
 
-  /**
-   * Get Clearbit logo URL for a company
-   */
-  getLogoUrl(company: Company): string | null {
-    if (this.logoFailedIds().has(company.id)) return null;
-    const name = company.name.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return `https://logo.clearbit.com/${name}.com`;
+  getFilterCount(filter: CompanyFocusFilter): number {
+    switch (filter) {
+      case 'active':
+        return this.activePursuits();
+      case 'priority':
+        return this.priorityTargets();
+      case 'needsResearch':
+        return this.needsResearchCount();
+      case 'noPipeline':
+        return this.companies().filter((company) => !this.hasActivePipeline(company)).length;
+      case 'all':
+      default:
+        return this.companies().length;
+    }
   }
 
-  /**
-   * Handle logo load error
-   */
-  onLogoError(companyId: string): void {
-    this.logoFailedIds.update((ids) => {
-      const newSet = new Set(ids);
-      newSet.add(companyId);
-      return newSet;
-    });
+  hasActivePipeline(company: Company): boolean {
+    return this.getActiveApplications(company).length > 0;
   }
 
-  /**
-   * Check if logo failed for company
-   */
-  isLogoFailed(companyId: string): boolean {
-    return this.logoFailedIds().has(companyId);
+  getActiveApplications(company: Company): JobApplicationHistory[] {
+    return (company.recentApplications ?? []).filter(
+      (application) => !['Rejected', 'Ghosted'].includes(application.status),
+    );
   }
 
-  /**
-   * Get status icon/emoji for application status
-   */
-  getStatusIcon(status: string): string {
-    const icons: Record<string, string> = {
-      Applied: '🔵',
-      PhoneScreen: '📞',
-      TechnicalTask: '💻',
-      Interviewing: '🟡',
-      Interview: '🟡',
-      Offer: '🟢',
-      Rejected: '🔴',
-      Accepted: '✅',
-      Ghosted: '👻',
-    };
-    return icons[status] || '⚪';
+  getPrimaryApplication(company: Company): JobApplicationHistory | null {
+    return this.getActiveApplications(company)[0] ?? company.recentApplications?.[0] ?? null;
   }
 
-  /**
-   * Get visible applications (max 2) for display
-   */
-  getVisibleApplications(company: Company): JobApplicationHistory[] {
-    return company.recentApplications?.slice(0, 2) || [];
+  getResearchCompleteness(company: Company): number {
+    let score = 0;
+    if (company.website) score += 20;
+    if (company.industry) score += 18;
+    if (company.address || company.hqLocation) score += 14;
+    if (company.description) score += 16;
+    if (company.techStack?.length) score += Math.min(16, company.techStack.length * 4);
+    if (company.totalApplications > 0) score += 16;
+    return Math.min(100, score);
   }
 
-  /**
-   * Get remaining applications count
-   */
-  getRemainingCount(company: Company): number {
-    const total = company.recentApplications?.length || 0;
-    return Math.max(0, total - 2);
+  needsResearch(company: Company): boolean {
+    return this.getResearchCompleteness(company) < 58;
+  }
+
+  getResearchLabelKey(company: Company): string {
+    const score = this.getResearchCompleteness(company);
+    if (score >= 76) return 'companies.research.ready';
+    if (score >= 50) return 'companies.research.partial';
+    return 'companies.research.needsContext';
+  }
+
+  getNextActionKey(company: Company): string {
+    if (this.needsResearch(company)) return 'companies.nextActions.addContext';
+    if (!this.hasActivePipeline(company)) return 'companies.nextActions.findRole';
+    if (!company.recentApplications?.length) return 'companies.nextActions.openResearch';
+    return 'companies.nextActions.prepare';
+  }
+
+  getEvidenceChips(company: Company): string[] {
+    const chips = [
+      company.industry,
+      this.getDomain(company),
+      ...(company.techStack ?? []),
+    ].filter((item): item is string => Boolean(item?.trim()));
+
+    return [...new Set(chips)].slice(0, 3);
+  }
+
+  getDomain(company: Company): string | null {
+    if (!company.website) return null;
+    try {
+      const value = company.website.startsWith('http')
+        ? company.website
+        : `https://${company.website}`;
+      return new URL(value).hostname.replace(/^www\./, '');
+    } catch {
+      return company.website.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    }
+  }
+
+  getPriorityLabelKey(priority: CompanyPriority): string {
+    switch (priority) {
+      case CompanyPriority.TopTier:
+        return 'companies.priority.top';
+      case CompanyPriority.MidTier:
+        return 'companies.priority.mid';
+      case CompanyPriority.Archived:
+        return 'companies.priority.archived';
+      case CompanyPriority.LowTier:
+      default:
+        return 'companies.priority.low';
+    }
+  }
+
+  getPriorityClasses(priority: CompanyPriority): string {
+    switch (priority) {
+      case CompanyPriority.TopTier:
+        return 'border-primary/40 bg-primary/10 text-primary';
+      case CompanyPriority.MidTier:
+        return 'border-accent/35 bg-accent/10 text-accent';
+      case CompanyPriority.Archived:
+        return 'border-border bg-muted text-muted-foreground';
+      case CompanyPriority.LowTier:
+      default:
+        return 'border-border bg-card text-muted-foreground';
+    }
+  }
+
+  private getCompanyPriorityScore(company: Company): number {
+    let score = 0;
+    if (company.priority === CompanyPriority.TopTier) score += 90;
+    if (company.priority === CompanyPriority.MidTier) score += 50;
+    if (this.hasActivePipeline(company)) score += 70;
+    if (this.needsResearch(company)) score += 28;
+    score += Math.min(25, this.getResearchCompleteness(company) / 4);
+    score += Math.min(20, company.totalApplications * 4);
+    if (company.priority === CompanyPriority.Archived) score -= 120;
+    return score;
   }
 }
-

@@ -11,6 +11,8 @@ public interface IJobApplicationService
     Task<bool> UpdateJobAsync(Guid id, UpdateJobApplicationDto dto, string userId);
     Task<bool> DeleteJobAsync(Guid id, string userId);
 
+    Task<RefinedJobBriefDto> RefineJobBriefAsync(Guid jobId, string userId, string description);
+
     Task<string> GenerateCoverLetterAsync(Guid jobId, string userId);
 
     /// <summary>

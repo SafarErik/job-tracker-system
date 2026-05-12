@@ -37,6 +37,6 @@
 
 /* Glassmorphism subtle effect for light mode */
 :host-context(.light) .glass-card {
-    background: rgba(255, 255, 255, 0.8);
+    background: hsl(var(--card) / 0.8);
     backdrop-filter: blur(8px);
 }

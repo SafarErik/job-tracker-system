@@ -6,28 +6,32 @@ import {
   computed,
   ChangeDetectionStrategy,
   inject,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { JobApplicationStore } from '../../services/job-application.store';
-import { DocumentService } from '../../../documents/services/document.service';
 import { DocumentStore } from '../../../documents/services/document.store';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
-import { CompanyService } from '../../../companies/services/company.service';
 import { JobApplicationStatus } from '../../models/application-status.enum';
-import { getStatusBadgeClasses, getStatusStyle, getPriorityBadgeClasses } from '../../models/status-styles.util';
-import { JobPriorityPipe } from '../../pipes/job-priority.pipe';
-import { JobTypePipe } from '../../pipes/job-type.pipe';
+import {
+  getPriorityBadgeClasses,
+  getStatusBadgeClasses,
+} from '../../models/status-styles.util';
 import { JobPriority } from '../../models/job-priority.enum';
+import { StrategyViewComponent, GapAnalysisItem } from './strategy-view/strategy-view.component';
 import { AssetsViewComponent } from './assets-view/assets-view.component';
 import { InterviewViewComponent } from './interview-view/interview-view.component';
 import { DealViewComponent } from './deal-view/deal-view.component';
 import { TimelineViewComponent } from './timeline-view/timeline-view.component';
 import { JobSettingsSheetComponent } from './job-settings-sheet/job-settings-sheet.component';
 import { UiStateService } from '../../../../core/services/ui-state.service';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
+import { FitGap, RefinedJobBrief } from '../../../../core/models/fit-review.model';
 
 // Spartan UI
 // ...
@@ -63,10 +67,7 @@ import {
   lucideLoader2,
   lucideChevronLeft,
   lucideActivity,
-  lucideArrowRight,
-  lucideZap,
   lucideTrash2,
-  lucidePlus,
   lucideLinkedin,
   lucideRotateCw,
   lucideArrowLeft,
@@ -75,13 +76,23 @@ import {
   lucideAlertCircle,
   lucideLink,
   lucideSettings,
-  lucideSearch
+  lucideSearch,
+  lucideGavel,
+  lucideMaximize2,
+  lucideTrendingUp,
+  lucideWand2,
 } from '@ng-icons/lucide';
 
-interface GapAnalysisItem {
-  name: string;
-  matched: boolean;
-  suggestion?: string;
+type WorkstationPhase = 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline';
+
+export interface WorkstationCommandAction {
+  id: string;
+  labelKey: string;
+  descriptionKey: string;
+  icon: string;
+  phase?: WorkstationPhase;
+  disabled?: () => boolean;
+  run: () => void;
 }
 
 @Component({
@@ -90,6 +101,7 @@ interface GapAnalysisItem {
     CommonModule,
     FormsModule,
     NgIcon,
+    TranslocoPipe,
     ReactiveFormsModule,
     ...HlmInputImports,
     ...HlmLabelImports,
@@ -100,13 +112,13 @@ interface GapAnalysisItem {
     ...HlmBreadCrumbImports,
     ...HlmDropdownMenuImports,
     HlmDropdownMenuTrigger,
-    JobPriorityPipe,
-    JobTypePipe,
+    StrategyViewComponent,
     AssetsViewComponent,
     InterviewViewComponent,
     DealViewComponent,
     TimelineViewComponent,
-    JobSettingsSheetComponent
+    JobSettingsSheetComponent,
+    ThemeToggleComponent,
   ],
   providers: [
     provideIcons({
@@ -130,10 +142,7 @@ interface GapAnalysisItem {
       lucideLoader2,
       lucideChevronLeft,
       lucideActivity,
-      lucideArrowRight,
-      lucideZap,
       lucideTrash2,
-      lucidePlus,
       lucideLinkedin,
       lucideRotateCw,
       lucideArrowLeft,
@@ -142,8 +151,12 @@ interface GapAnalysisItem {
       lucideAlertCircle,
       lucideLink,
       lucideSettings,
-      lucideSearch
-    })
+      lucideSearch,
+      lucideGavel,
+      lucideMaximize2,
+      lucideTrendingUp,
+      lucideWand2,
+    }),
   ],
   styleUrls: ['./workstation-animations.css'],
   templateUrl: './job-workstation.html',
@@ -152,81 +165,30 @@ interface GapAnalysisItem {
 export class JobWorkstationComponent implements OnInit, OnDestroy {
   public readonly route = inject(ActivatedRoute);
   public readonly uiState = inject(UiStateService);
-  private readonly router = inject(Router);
   private readonly location = inject(Location);
   public readonly store = inject(JobApplicationStore);
   public readonly service = this.store;
-  private readonly documentService = inject(DocumentService);
   private readonly documentStore = inject(DocumentStore);
   private readonly notificationService = inject(NotificationService);
-  private readonly breadcrumbService = inject(BreadcrumbService);
-  private readonly companyService = inject(CompanyService);
+  private readonly transloco = inject(TranslocoService);
 
   // Workstation State
-  currentPhase = signal<'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'>('strategy');
+  currentPhase = signal<WorkstationPhase>('strategy');
   isCommandBarOpen = signal(false);
   isPastingManually = signal(false);
+  commandBarFocusedIndex = signal(0);
+  commandQuery = signal('');
   manualPasteText = signal('');
   isFocusMode = signal(false);
+  timelineAddRequest = signal(0);
 
-  // Context-aware Commands
-  commands = computed(() => {
-    const phase = this.currentPhase();
-    if (phase === 'strategy') {
-      return [
-        { id: 'analyze', label: 'Refresh AI Scan', icon: 'lucideRotateCw', action: () => this.triggerAnalysis() },
-        {
-          id: 'simulate', label: 'Simulate Top Gap', icon: 'lucideZap', action: () => {
-            const firstGap = this.gapAnalysis().find(g => !g.matched);
-            if (firstGap) this.simulateImprovement(firstGap.name);
-          }
-        }
-      ];
-    } else if (phase === 'assets') {
-      return [
-        { id: 'tailor', label: 'Forge Document', icon: 'lucideSparkles', action: () => this.generateAssets() }
-      ];
-    } else if (phase === 'deal') {
-      return [
-        { id: 'analyze-offer', label: 'Analyze Offer', icon: 'lucideGavel', action: () => this.notificationService.info('Triggering AI Offer Audit...', 'The Deal') }
-      ];
-    } else if (phase === 'timeline') {
-      return [
-        { id: 'sync', label: 'Sync Calendar', icon: 'lucideRefreshCw', action: () => this.notificationService.info('Syncing mission roadmap...', 'Timeline') },
-        { id: 'add-event', label: 'Add Mission Event', icon: 'lucidePlus', action: () => this.notificationService.info('Opening tactical event form...', 'Timeline') }
-      ];
-    } else {
-      return [
-        { id: 'focus', label: 'Combat Focus', icon: 'lucideMaximize2', action: () => this.toggleFocusMode() }
-      ];
-    }
-  });
+  // Command bar input element for programmatic focus
+  @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
 
   simulatedScore = signal<number | null>(null);
-
-  // Computed: Highlighted Job Description
-  highlightedDescription = computed<string | null>(() => {
-    const desc = this.store.selectedApplication()?.description;
-    if (!desc) return null;
-
-    const keywords = ['Angular', 'Scalability', 'TypeScript', 'Performance', 'Fintech', 'Signals', 'Optimization', 'Frontend', 'Distributed Systems', 'Architecture', 'UI/UX'];
-
-    // Escape HTML
-    let html = desc
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;')
-      .replaceAll('\n', '<br>');
-
-    keywords.forEach(kw => {
-      const regex = new RegExp(`(${kw})`, 'gi');
-      html = html.replace(regex, '<span class="keyword-highlight">$1</span>');
-    });
-
-    return html;
-  });
+  simulatedGap = signal<string | null>(null);
+  refinedBriefPreview = signal<RefinedJobBrief | null>(null);
+  openReviewRequest = signal(0);
 
   // Computed: Line Numbers
   lineNumbers = computed(() => {
@@ -246,12 +208,15 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     const advice = app.aiAdvice ?? [];
 
     return [
-      ...goodPoints.map(point => ({ name: point, matched: true } as GapAnalysisItem)),
-      ...gaps.map((gap, index) => ({
-        name: gap,
-        matched: false,
-        suggestion: advice[index]
-      } as GapAnalysisItem))
+      ...goodPoints.map((point) => ({ name: point, matched: true }) as GapAnalysisItem),
+      ...gaps.map(
+        (gap, index) =>
+          ({
+            name: gap,
+            matched: false,
+            suggestion: advice[index],
+          }) as GapAnalysisItem,
+      ),
     ];
   });
 
@@ -261,7 +226,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     Assets: 'assets' as const,
     Interview: 'interview' as const,
     Deal: 'deal' as const,
-    Timeline: 'timeline' as const
+    Timeline: 'timeline' as const,
   };
 
   readonly JobStatus = JobApplicationStatus;
@@ -269,33 +234,152 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   // Phase Configuration
   phases = [
-    { id: 'strategy' as const, label: 'Strategy', icon: 'lucideSwords' },
-    { id: 'assets' as const, label: 'Assets', icon: 'lucideFolderKanban' },
-    { id: 'interview' as const, label: 'Interview', icon: 'lucideMic2' },
-    { id: 'deal' as const, label: 'The Deal', icon: 'lucideGavel' },
-    { id: 'timeline' as const, label: 'Timeline', icon: 'lucideCalendar' },
+    { id: 'strategy' as const, labelKey: 'workstation.nav.strategy', icon: 'lucideSwords' },
+    { id: 'assets' as const, labelKey: 'workstation.nav.assets', icon: 'lucideFileText' },
+    { id: 'interview' as const, labelKey: 'workstation.nav.interview', icon: 'lucideMic2' },
+    { id: 'deal' as const, labelKey: 'workstation.nav.deal', icon: 'lucideGavel' },
+    { id: 'timeline' as const, labelKey: 'workstation.nav.timeline', icon: 'lucideCalendar' },
   ];
 
-  simulateImprovement(skill: string): void {
+  readonly commandActions = computed<WorkstationCommandAction[]>(() => [
+    {
+      id: 'improve-job-brief',
+      labelKey: 'workstation.command.actions.improveBrief.label',
+      descriptionKey: 'workstation.command.actions.improveBrief.description',
+      icon: 'lucideWand2',
+      phase: this.Phase.Strategy,
+      disabled: () => this.service.isProcessing(),
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.startManualPaste();
+      },
+    },
+    {
+      id: 'analyze-fit',
+      labelKey: 'workstation.command.actions.analyzeFit.label',
+      descriptionKey: 'workstation.command.actions.analyzeFit.description',
+      icon: 'lucideBrain',
+      phase: this.Phase.Strategy,
+      disabled: () => this.service.isProcessing() || !this.store.selectedApplication()?.description?.trim(),
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.triggerAnalysis();
+      },
+    },
+    {
+      id: 'open-fit-review',
+      labelKey: 'workstation.command.actions.openReview.label',
+      descriptionKey: 'workstation.command.actions.openReview.description',
+      icon: 'lucideMaximize2',
+      phase: this.Phase.Strategy,
+      disabled: () => !this.store.selectedApplication()?.fitReview,
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        this.openReviewRequest.update((value) => value + 1);
+      },
+    },
+    {
+      id: 'simulate-top-gap',
+      labelKey: 'workstation.command.actions.simulateTopGap.label',
+      descriptionKey: 'workstation.command.actions.simulateTopGap.description',
+      icon: 'lucideTrendingUp',
+      phase: this.Phase.Strategy,
+      disabled: () => !this.store.selectedApplication()?.fitReview?.gaps?.length,
+      run: () => {
+        this.setPhase(this.Phase.Strategy);
+        const gap = this.store.selectedApplication()?.fitReview?.gaps?.[0];
+        if (gap) this.simulateImprovement(gap);
+      },
+    },
+    {
+      id: 'generate-resume',
+      labelKey: 'workstation.command.actions.generateResume.label',
+      descriptionKey: 'workstation.command.actions.generateResume.description',
+      icon: 'lucideSparkles',
+      phase: this.Phase.Assets,
+      disabled: () => this.service.isProcessing(),
+      run: () => {
+        this.setPhase(this.Phase.Assets);
+        this.generateResumeDraft();
+      },
+    },
+    {
+      id: 'open-documents',
+      labelKey: 'workstation.command.actions.openDocuments.label',
+      descriptionKey: 'workstation.command.actions.openDocuments.description',
+      icon: 'lucideFileText',
+      phase: this.Phase.Assets,
+      run: () => this.setPhase(this.Phase.Assets),
+    },
+    {
+      id: 'practice-interview',
+      labelKey: 'workstation.command.actions.practiceInterview.label',
+      descriptionKey: 'workstation.command.actions.practiceInterview.description',
+      icon: 'lucideMic2',
+      phase: this.Phase.Interview,
+      run: () => this.setPhase(this.Phase.Interview),
+    },
+    {
+      id: 'add-timeline-event',
+      labelKey: 'workstation.command.actions.addTimeline.label',
+      descriptionKey: 'workstation.command.actions.addTimeline.description',
+      icon: 'lucideCalendar',
+      phase: this.Phase.Timeline,
+      run: () => this.requestTimelineEvent(),
+    },
+    {
+      id: 'edit-role-details',
+      labelKey: 'workstation.command.actions.roleDetails.label',
+      descriptionKey: 'workstation.command.actions.roleDetails.description',
+      icon: 'lucideSettings',
+      run: () => this.uiState.openJobSettings(),
+    },
+  ]);
+
+  readonly filteredCommandActions = computed(() => {
+    const query = this.commandQuery().trim().toLowerCase();
+    const actions = this.commandActions();
+    if (!query) return actions;
+
+    return actions.filter((action) => {
+      const label = this.transloco.translate(action.labelKey).toLowerCase();
+      const description = this.transloco.translate(action.descriptionKey).toLowerCase();
+      return label.includes(query) || description.includes(query);
+    });
+  });
+
+  simulateImprovement(gap: FitGap | string): void {
     const app = this.store.selectedApplication();
     if (app) {
+      const skill = typeof gap === 'string' ? gap : gap.skill;
+      const gain = typeof gap === 'string' ? 8 : gap.estimatedScoreGain || 0;
       const currentScore = app.matchScore || 0;
-      const newScore = Math.min(100, currentScore + 8);
+      const newScore = Math.min(100, currentScore + Math.max(1, gain));
       this.simulatedScore.set(newScore);
-      this.notificationService.info(`Simulating ${skill}... Match Score would increase to ${newScore}%`, 'Simulation Active');
+      this.simulatedGap.set(skill);
+      this.notificationService.info(
+        this.transloco.translate('workstation.strategy.notifications.simulation.body', {
+          skill,
+          score: newScore,
+        }),
+        this.transloco.translate('workstation.strategy.notifications.simulation.title'),
+      );
 
       // Auto-reset after some time
-      setTimeout(() => this.simulatedScore.set(null), 5000);
+      setTimeout(() => {
+        this.simulatedScore.set(null);
+        this.simulatedGap.set(null);
+      }, 5000);
     }
   }
 
   toggleFocusMode(): void {
-    this.isFocusMode.update(v => !v);
+    this.isFocusMode.update((v) => !v);
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id') ||
-      this.route.parent?.snapshot.paramMap.get('id');
+    const id =
+      this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
 
     // Ensure applications are loaded (handles page refresh)
     if (this.store.applications().length === 0) {
@@ -318,20 +402,67 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   // Helpers
-  setPhase(phase: 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline'): void {
+  setPhase(phase: WorkstationPhase): void {
     this.currentPhase.set(phase);
   }
 
   toggleCommandBar(): void {
     this.isCommandBarOpen.update((v: boolean) => !v);
+    // Focus the input when opening the command bar
+    if (this.isCommandBarOpen()) {
+      setTimeout(() => {
+        this.commandBarInput?.nativeElement?.focus();
+      }, 0);
+    }
   }
 
   closeCommandBar(): void {
     this.isCommandBarOpen.set(false);
+    this.commandBarFocusedIndex.set(0);
+    this.commandQuery.set('');
   }
 
-  onAddWorkstationItem(): void {
-    this.notificationService.info('Adding new items to the workstation is coming soon.', 'Feature Preview');
+  onCommandBarKeydown(event: KeyboardEvent): void {
+    const buttonCount = this.filteredCommandActions().length;
+    if (buttonCount === 0) return;
+
+    const currentIndex = this.commandBarFocusedIndex();
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.commandBarFocusedIndex.set((currentIndex + 1) % buttonCount);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.commandBarFocusedIndex.set(currentIndex <= 0 ? buttonCount - 1 : currentIndex - 1);
+        break;
+      case 'Enter':
+        event.preventDefault();
+        this.executeCommandBarAction(this.filteredCommandActions()[currentIndex]);
+        break;
+    }
+  }
+
+  executeCommandBarAction(action: WorkstationCommandAction | undefined): void {
+    if (!action || this.isCommandActionDisabled(action)) return;
+
+    action.run();
+    this.closeCommandBar();
+  }
+
+  isCommandActionDisabled(action: WorkstationCommandAction): boolean {
+    return action.disabled?.() ?? false;
+  }
+
+  onCommandQueryChange(query: string): void {
+    this.commandQuery.set(query);
+    this.commandBarFocusedIndex.set(0);
+  }
+
+  requestTimelineEvent(): void {
+    this.setPhase(this.Phase.Timeline);
+    this.timelineAddRequest.update((value) => value + 1);
   }
 
   goBack(): void {
@@ -339,7 +470,8 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   getStatusBadgeClasses(status: JobApplicationStatus | undefined): string {
-    if (status === undefined) return 'bg-muted text-muted-foreground border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
+    if (status === undefined)
+      return 'bg-muted text-muted-foreground border border-border px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider';
     return getStatusBadgeClasses(status);
   }
 
@@ -348,8 +480,43 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   getStatusLabel(status: JobApplicationStatus | undefined): string {
-    if (status === undefined) return 'Unknown';
-    return getStatusStyle(status).label;
+    return this.transloco.translate(this.getStatusLabelKey(status));
+  }
+
+  getStatusLabelKey(status: JobApplicationStatus | undefined): string {
+    switch (status) {
+      case JobApplicationStatus.Applied:
+        return 'workstation.status.Applied';
+      case JobApplicationStatus.PhoneScreen:
+        return 'workstation.status.PhoneScreen';
+      case JobApplicationStatus.TechnicalTask:
+        return 'workstation.status.TechnicalTask';
+      case JobApplicationStatus.Interviewing:
+        return 'workstation.status.Interviewing';
+      case JobApplicationStatus.Offer:
+        return 'workstation.status.Offer';
+      case JobApplicationStatus.Accepted:
+        return 'workstation.status.Accepted';
+      case JobApplicationStatus.Rejected:
+        return 'workstation.status.Rejected';
+      case JobApplicationStatus.Ghosted:
+        return 'workstation.status.Ghosted';
+      default:
+        return 'workstation.status.Unknown';
+    }
+  }
+
+  getPriorityLabelKey(priority: JobPriority | undefined): string {
+    switch (priority) {
+      case JobPriority.Low:
+        return 'workstation.priority.low';
+      case JobPriority.Medium:
+        return 'workstation.priority.medium';
+      case JobPriority.High:
+        return 'workstation.priority.high';
+      default:
+        return 'workstation.priority.none';
+    }
   }
 
   updateStatus(status: JobApplicationStatus): void {
@@ -369,7 +536,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   deleteApplication(): void {
     const app = this.store.selectedApplication();
     if (app) {
-      if (confirm(`Are you sure you want to delete the application for ${app.companyName}?`)) {
+      if (confirm(this.transloco.translate('workstation.roleDetails.deleteConfirm', { company: app.companyName }))) {
         this.store.deleteApplication(app.id);
         this.goBack();
       }
@@ -394,16 +561,32 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
     }
   }
 
+  generateResumeDraft(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.generateResumeDraft(app.id).subscribe();
+    }
+  }
+
+  generateCoverLetterDraft(): void {
+    const app = this.store.selectedApplication();
+    if (app) {
+      this.store.generateCoverLetterDraft(app.id).subscribe();
+    }
+  }
+
   // Manual Paste Methods
   startManualPaste(): void {
     const current = this.store.selectedApplication()?.description || '';
     this.isPastingManually.set(true);
     this.manualPasteText.set(current);
+    this.refinedBriefPreview.set(null);
   }
 
   cancelManualPaste(): void {
     this.isPastingManually.set(false);
     this.manualPasteText.set('');
+    this.refinedBriefPreview.set(null);
   }
 
   saveManualPaste(): void {
@@ -414,7 +597,37 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       this.store.updateApplication(app.id, { description: text });
       this.isPastingManually.set(false);
       this.manualPasteText.set('');
-      this.notificationService.success('Job description saved!', 'Job Context');
+      this.notificationService.success(
+        this.transloco.translate('workstation.strategy.notifications.descriptionSaved'),
+        this.transloco.translate('workstation.strategy.jobContext'),
+      );
     }
+  }
+
+  refineBrief(description: string): void {
+    const app = this.store.selectedApplication();
+    const text = description.trim();
+    if (!app || !text) return;
+
+    this.store.refineJobBrief(app.id, text).subscribe((result) => {
+      if (result) {
+        this.refinedBriefPreview.set(result);
+      }
+    });
+  }
+
+  applyRefinedBrief(description: string): void {
+    const app = this.store.selectedApplication();
+    const text = description.trim();
+    if (!app || !text) return;
+
+    this.store.updateApplication(app.id, { description: text });
+    this.isPastingManually.set(false);
+    this.manualPasteText.set('');
+    this.refinedBriefPreview.set(null);
+    this.notificationService.success(
+      this.transloco.translate('workstation.strategy.notifications.descriptionSaved'),
+      this.transloco.translate('workstation.strategy.jobContext'),
+    );
   }
 }

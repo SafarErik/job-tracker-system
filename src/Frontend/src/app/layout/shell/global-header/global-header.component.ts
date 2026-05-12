@@ -1,71 +1,212 @@
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { HlmBreadCrumbImports } from '@spartan-ng/helm/breadcrumb';
+import { Router, RouterModule } from '@angular/router';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
 import { provideIcons } from '@ng-icons/core';
 import {
-    lucideSearch,
-    lucideCommand,
-    lucideCalculator,
-    lucideCalendar,
-    lucideSmile,
-    lucideUser,
-    lucideSettings,
-    lucideMail,
-    lucidePlus,
+  lucideSearch,
+  lucideCommand,
+  lucideCalculator,
+  lucideCalendar,
+  lucideUser,
+  lucideSettings,
+  lucideMail,
+  lucideBrain,
+  lucideZap,
+  lucideChevronDown,
+  lucideSun,
+  lucideMoon,
+  lucideLaptop,
+  lucideLogOut,
+  lucideSparkles,
+  lucideCheck,
+  lucideLanguages,
 } from '@ng-icons/lucide';
 import { BrnCommandImports } from '@spartan-ng/brain/command';
 import { HlmCommandImports } from '@spartan-ng/helm/command';
 import { BrnDialogImports } from '@spartan-ng/brain/dialog';
 import { HlmDialogImports } from '@spartan-ng/helm/dialog';
-import { UiStateService, BreadcrumbService } from '../../../core/services';
-import { inject } from '@angular/core';
+import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { UiStateService, BreadcrumbService, LanguageService } from '../../../core/services';
 import { NotificationCenterComponent } from '../../../features/notifications/notification-center.component';
-import { ThemeToggleComponent } from '../../../shared/components/theme-toggle/theme-toggle';
+import { AuthService } from '../../../core/auth/auth.service';
+import { Theme, ThemeService } from '../../../core/services/theme.service';
 
 @Component({
-    selector: 'app-global-header',
-    imports: [
-        CommonModule,
-        RouterModule,
-        HlmBreadCrumbImports,
-        HlmIconImports,
-        HlmButton,
-        BrnCommandImports,
-        HlmCommandImports,
-        BrnDialogImports,
-        HlmDialogImports,
-        NotificationCenterComponent,
-        ThemeToggleComponent,
-    ],
-    providers: [
-        provideIcons({
-            lucideSearch,
-            lucideCommand,
-            lucideCalculator,
-            lucideCalendar,
-            lucideSmile,
-            lucideUser,
-            lucideSettings,
-            lucideMail,
-            lucidePlus,
-        }),
-    ],
-    templateUrl: './global-header.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-global-header',
+  imports: [
+    CommonModule,
+    RouterModule,
+    HlmIconImports,
+    HlmButton,
+    BrnCommandImports,
+    HlmCommandImports,
+    BrnDialogImports,
+    HlmDialogImports,
+    HlmDropdownMenuImports,
+    HlmDropdownMenuTrigger,
+    NotificationCenterComponent,
+    TranslocoPipe,
+  ],
+  providers: [
+    provideIcons({
+      lucideSearch,
+      lucideCommand,
+      lucideCalculator,
+      lucideCalendar,
+      lucideUser,
+      lucideSettings,
+      lucideMail,
+      lucideBrain,
+      lucideZap,
+      lucideChevronDown,
+      lucideSun,
+      lucideMoon,
+      lucideLaptop,
+      lucideLogOut,
+      lucideSparkles,
+      lucideCheck,
+      lucideLanguages,
+    }),
+  ],
+  templateUrl: './global-header.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:keydown)': 'onKeyDown($event)',
+  },
 })
 export class GlobalHeaderComponent {
-    public readonly isOpen = signal(false);
-    public readonly uiService = inject(UiStateService);
-    public readonly breadcrumbService = inject(BreadcrumbService);
+  public readonly isOpen = signal(false);
+  public readonly uiService = inject(UiStateService);
+  public readonly breadcrumbService = inject(BreadcrumbService);
+  public readonly authService = inject(AuthService);
+  public readonly themeService = inject(ThemeService);
+  public readonly languageService = inject(LanguageService);
+  private readonly router = inject(Router);
 
-    @HostListener('window:keydown', ['$event'])
-    onKeyDown(event: KeyboardEvent) {
-        if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
-            event.preventDefault();
-            this.isOpen.update((prev) => !prev);
-        }
+  readonly currentSection = computed(() => {
+    const breadcrumbs = this.breadcrumbService.breadcrumbs();
+    return breadcrumbs.length ? breadcrumbs[breadcrumbs.length - 1].label : 'Dashboard';
+  });
+
+  readonly pageTitleKey = computed(() => {
+    const section = this.currentSection();
+    return this.sectionTitleKey(section);
+  });
+
+  readonly pageDescriptionKey = computed(() => {
+    const section = this.currentSection();
+    return this.sectionDescriptionKey(section);
+  });
+
+  readonly themeOptions: Array<{ value: Theme; labelKey: string; icon: string }> = [
+    { value: 'light', labelKey: 'shell.header.light', icon: 'lucideSun' },
+    { value: 'dark', labelKey: 'shell.header.dark', icon: 'lucideMoon' },
+    { value: 'system', labelKey: 'shell.header.system', icon: 'lucideLaptop' },
+  ];
+
+  readonly languageOptions: Array<{ value: 'en' | 'hu'; labelKey: string }> = [
+    { value: 'en', labelKey: 'language.english' },
+    { value: 'hu', labelKey: 'language.hungarian' },
+  ];
+
+  private sectionTitleKey(section: string): string {
+    switch (section) {
+      case 'Applications':
+        return 'shell.nav.applications';
+      case 'Companies':
+        return 'shell.nav.companies';
+      case 'Insights':
+      case 'Intelligence':
+        return 'shell.nav.insights';
+      case 'Signals':
+      case 'Global Signals':
+        return 'shell.nav.signals';
+      case 'Documents':
+        return 'shell.nav.documents';
+      case 'Profile':
+        return 'shell.header.profile';
+      case 'New Application':
+        return 'shell.header.titles.newApplication';
+      case 'Edit Company':
+        return 'shell.header.titles.editCompany';
+      case 'Company Details':
+        return 'shell.header.titles.companyDetails';
+      case 'Dashboard':
+      default:
+        return 'app.dashboard';
     }
+  }
+
+  private sectionDescriptionKey(section: string): string {
+    switch (section) {
+      case 'Applications':
+        return 'shell.header.descriptions.applications';
+      case 'Companies':
+        return 'shell.header.descriptions.companies';
+      case 'Insights':
+      case 'Intelligence':
+        return 'shell.header.descriptions.insights';
+      case 'Signals':
+      case 'Global Signals':
+        return 'shell.header.descriptions.signals';
+      case 'Documents':
+        return 'shell.header.descriptions.documents';
+      case 'Profile':
+        return 'shell.header.descriptions.profile';
+      case 'New Application':
+        return 'shell.header.descriptions.newApplication';
+      case 'Edit Company':
+        return 'shell.header.descriptions.editCompany';
+      case 'Company Details':
+        return 'shell.header.descriptions.companyDetails';
+      case 'Dashboard':
+      default:
+        return 'shell.header.descriptions.dashboard';
+    }
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      this.isOpen.update((prev) => !prev);
+    }
+  }
+
+  navigateTo(path: string) {
+    this.isOpen.set(false);
+    this.router.navigateByUrl(path);
+  }
+
+  openSettings() {
+    this.isOpen.set(false);
+    this.uiService.openProfileSettings();
+  }
+
+  openAiDrawer() {
+    this.isOpen.set(false);
+    this.uiService.openAiDrawer();
+  }
+
+  setTheme(theme: Theme) {
+    this.themeService.setTheme(theme);
+  }
+
+  setLanguage(locale: 'en' | 'hu') {
+    this.languageService.setLocale(locale);
+  }
+
+  isThemeSelected(theme: Theme): boolean {
+    return this.themeService.themeSetting() === theme;
+  }
+
+  isLanguageSelected(locale: 'en' | 'hu'): boolean {
+    return this.languageService.locale() === locale;
+  }
+
+  logout() {
+    this.authService.logout();
+  }
 }

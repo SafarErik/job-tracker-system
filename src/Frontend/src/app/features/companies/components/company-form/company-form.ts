@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { CompanyService } from '../../services/company.service';
@@ -18,6 +19,7 @@ import { SkillSelectorComponent } from '../../../../shared/components/skill-sele
   selector: 'app-company-form',
   imports: [
     CommonModule,
+    TranslocoPipe,
     ReactiveFormsModule,
     RouterModule,
     NgIcon,

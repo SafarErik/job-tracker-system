@@ -1,38 +1,62 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Horizon</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/brand/horizon-guided-path.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="env.js"></script>
+    <style>
+      html {
+        --background: 213 54% 97%;
+        --foreground: 226 49% 8%;
+        color-scheme: light;
+      }
 
-<head>
-  <meta charset="utf-8" />
-  <title>VantageCursus</title>
-  <base href="/" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <script src="env.js"></script>
-  <style>
-    /* Prevent white flash on load */
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-  </style>
-  <script>
-    (function () {
-      try {
-        const theme = localStorage.getItem('theme') || 'system';
-        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
-        if (theme === 'dark' || (theme === 'system' && supportDarkMode)) {
-          document.documentElement.classList.add('dark');
-          document.documentElement.style.colorScheme = 'dark';
-        }
-      } catch (e) { }
-    })();
-  </script>
-</head>
+      html.dark {
+        --background: 226 49% 8%;
+        --foreground: 213 54% 97%;
+        color-scheme: dark;
+      }
 
-<body>
-  <app-root></app-root>
-</body>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+      }
+    </style>
+    <script>
+      (function () {
+        try {
+          const storedTheme = localStorage.getItem('theme');
+          const theme =
+            storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system'
+              ? storedTheme
+              : 'system';
+          const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+          const effectiveTheme = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
+          const root = document.documentElement;
 
+          root.dataset.theme = theme;
+          root.classList.toggle('dark', effectiveTheme === 'dark');
+          root.style.colorScheme = effectiveTheme;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+
+  <body>
+    <app-root></app-root>
+  </body>
 </html>

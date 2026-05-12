@@ -58,6 +58,11 @@ public class JobApplication
 
     public string? AiFeedback { get; set; }
 
+    /// <summary>
+    /// Structured AI fit review JSON. Kept nullable so existing applications do not need backfill.
+    /// </summary>
+    public string? FitReviewJson { get; set; }
+
     // ============================================
     // APPLICATION METADATA
     // ============================================

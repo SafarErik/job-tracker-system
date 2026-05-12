@@ -1,47 +1,139 @@
-import { Component, OnInit, OnDestroy, signal, ChangeDetectionStrategy, inject, effect, computed, untracked, DestroyRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { firstValueFrom } from 'rxjs';
 import { CompanyService } from '../../services/company.service';
 import { CompanyStore } from '../../services/company.store';
 import { CompanyIntelligenceService } from '../../services/company-intelligence.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { CompanyNews, CompanyContact, IntelligenceBriefing, TacticalEvent, EventAsset } from '../../models/company.model';
-import { CompanyPriority } from '../../models/company-priority.enum';
 import { BreadcrumbService } from '../../../../core/services/breadcrumb.service';
+import {
+  CompanyContact,
+  CompanyDetail,
+  CompanyMarketSignal,
+  CompanyNextAction,
+  CompanyResearchBrief,
+  CompanyStrategicInsight,
+} from '../../models/company.model';
+import { CompanyPriority } from '../../models/company-priority.enum';
 import { HlmButtonImports } from '../../../../../../libs/ui/button';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideSearch, lucideGlobe, lucideSettings, lucideCalendarPlus, lucideBriefcase, lucideUsers, lucideCpu, lucideTrendingUp, lucideShieldCheck, lucideZap, lucideAlertTriangle, lucideChevronRight, lucideActivity } from '@ng-icons/lucide';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
-// Dumb Components
-import { CompanyHeaderComponent } from './company-header/company-header';
-import { CompanyStatsComponent } from './company-stats/company-stats';
-import { CompanyNotesComponent } from './company-notes/company-notes';
 import { ContactListComponent } from './contact-list/contact-list';
-import { CompanyIntelComponent } from './company-intel/company-intel';
-import { InterviewTacticsComponent } from './interview-tactics/interview-tactics';
-import { AiAnalystChatComponent } from './ai-analyst-chat/ai-analyst-chat';
+import { ThemeToggleComponent } from '../../../../shared/components/theme-toggle/theme-toggle';
+import { LogoPlaceholderComponent } from '../../../../shared/components/logo-placeholder/logo-placeholder.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  lucideArrowLeft,
+  lucideArrowRight,
+  lucideBriefcase,
+  lucideBuilding2,
+  lucideCalendarPlus,
+  lucideCheckCircle2,
+  lucideChevronDown,
+  lucideChevronRight,
+  lucideClipboard,
+  lucideCommand,
+  lucideExternalLink,
+  lucideFileText,
+  lucideGauge,
+  lucideGlobe,
+  lucideLightbulb,
+  lucideLoader2,
+  lucideMapPin,
+  lucideMaximize2,
+  lucideMessageSquare,
+  lucideRefreshCw,
+  lucideSearch,
+  lucideSettings,
+  lucideShieldAlert,
+  lucideSparkles,
+  lucideTarget,
+  lucideUsers,
+  lucideX,
+} from '@ng-icons/lucide';
+
+type CompanyWorkstationPhase = 'overview' | 'market' | 'applications' | 'people' | 'fit';
+
+interface CompanyPhase {
+  id: CompanyWorkstationPhase;
+  labelKey: string;
+  icon: string;
+}
+
+interface CompanyCommandAction {
+  id: string;
+  labelKey: string;
+  descriptionKey: string;
+  icon: string;
+  phase?: CompanyWorkstationPhase;
+  disabled?: () => boolean;
+  run: () => void;
+}
 
 @Component({
   selector: 'app-company-details',
   imports: [
     CommonModule,
+    FormsModule,
+    TranslocoPipe,
     NgIcon,
     ...HlmButtonImports,
-    CompanyHeaderComponent,
-    CompanyStatsComponent,
-    CompanyNotesComponent,
     ContactListComponent,
-    CompanyIntelComponent,
-    InterviewTacticsComponent,
-    AiAnalystChatComponent
+    ThemeToggleComponent,
+    LogoPlaceholderComponent,
   ],
-  providers: [provideIcons({ lucideLoader2, lucideBuilding2, lucideArrowLeft, lucideLayoutDashboard, lucideSearch, lucideGlobe, lucideSettings, lucideCalendarPlus, lucideBriefcase, lucideUsers, lucideCpu, lucideTrendingUp, lucideShieldCheck, lucideZap, lucideAlertTriangle, lucideChevronRight, lucideActivity })],
+  providers: [
+    provideIcons({
+      lucideArrowLeft,
+      lucideArrowRight,
+      lucideBriefcase,
+      lucideBuilding2,
+      lucideCalendarPlus,
+      lucideCheckCircle2,
+      lucideChevronDown,
+      lucideChevronRight,
+      lucideClipboard,
+      lucideCommand,
+      lucideExternalLink,
+      lucideFileText,
+      lucideGauge,
+      lucideGlobe,
+      lucideLightbulb,
+      lucideLoader2,
+      lucideMapPin,
+      lucideMaximize2,
+      lucideMessageSquare,
+      lucideRefreshCw,
+      lucideSearch,
+      lucideSettings,
+      lucideShieldAlert,
+      lucideSparkles,
+      lucideTarget,
+      lucideUsers,
+      lucideX,
+    }),
+  ],
   templateUrl: './company-details.html',
   styleUrl: './company-details.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:keydown)': 'handleKeyDown($event)',
+  },
 })
-export class CompanyDetailsComponent implements OnInit, OnDestroy {
+export class CompanyDetailsComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly companyService = inject(CompanyService);
@@ -49,241 +141,289 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
   private readonly intelligenceService = inject(CompanyIntelligenceService);
   private readonly notificationService = inject(NotificationService);
   private readonly breadcrumbService = inject(BreadcrumbService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly transloco = inject(TranslocoService);
+  private readonly routeParamMap = toSignal(this.route.paramMap, {
+    initialValue: this.route.snapshot.paramMap,
+  });
 
-  // Read state from store
-  company = this.companyStore.activeCompany;
-  isLoading = this.companyStore.isLoading;
-  error = this.companyStore.error;
+  readonly company = this.companyStore.activeCompany;
+  readonly isLoading = this.companyStore.isLoading;
+  readonly error = this.companyStore.error;
 
-  // Local state for Intel (News)
-  companyNews = signal<CompanyNews[]>([]);
-  newsLoading = signal(false);
+  readonly currentPhase = signal<CompanyWorkstationPhase>('overview');
+  readonly isCommandBarOpen = signal(false);
+  readonly commandQuery = signal('');
+  readonly commandBarFocusedIndex = signal(0);
+  readonly selectedMarketSignal = signal<CompanyMarketSignal | null>(null);
+  readonly researchBrief = signal<CompanyResearchBrief | null>(null);
+  readonly briefLoading = signal(false);
+  readonly copiedBrief = signal(false);
+  readonly companyNotes = signal('');
 
-  // AI Briefing State
-  intelligenceBriefing = signal<IntelligenceBriefing | null>(null);
-  briefingLoading = signal(false);
-  private latestBriefingRequestId = 0;
+  @ViewChild('commandBarInput') commandBarInput!: ElementRef<HTMLInputElement>;
 
-  // Tactical Timeline State
-  manualEvents = signal<TacticalEvent[]>([]); // For manual adds in this session
-
-  // Tab Navigation State
-  activeTab = signal<'overview' | 'intelligence' | 'marketPulse' | 'ecosystem'>('overview');
-
-  // Local state for Notes (to handle debouncing without glitching)
-  companyNotes = signal('');
+  private latestBriefRequestId = 0;
   private lastCompanyId: string | null = null;
+  private lastLoadedRouteCompanyId: string | null = null;
+  private notesTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Derived state
-  successRate = computed(() => {
+  readonly phases: CompanyPhase[] = [
+    { id: 'overview', labelKey: 'companyWorkspace.nav.overview', icon: 'lucideGauge' },
+    { id: 'market', labelKey: 'companyWorkspace.nav.market', icon: 'lucideGlobe' },
+    { id: 'applications', labelKey: 'companyWorkspace.nav.applications', icon: 'lucideBriefcase' },
+    { id: 'people', labelKey: 'companyWorkspace.nav.people', icon: 'lucideUsers' },
+    { id: 'fit', labelKey: 'companyWorkspace.nav.fit', icon: 'lucideTarget' },
+  ];
+
+  readonly priorityOptions = [
+    { value: CompanyPriority.TopTier, labelKey: 'companies.priority.top' },
+    { value: CompanyPriority.MidTier, labelKey: 'companies.priority.mid' },
+    { value: CompanyPriority.LowTier, labelKey: 'companies.priority.low' },
+    { value: CompanyPriority.Archived, labelKey: 'companies.priority.archived' },
+  ];
+
+  readonly activeApplications = computed(() => {
     const details = this.company();
-    // Guard against missing/zero applications or undefined history
-    if (!details || !details.totalApplications || details.totalApplications === 0) return 0;
-
-    const history = details.applicationHistory || [];
-    const offers = history.filter(
-      (app) => app.status === 'Offer' || app.status === 'Accepted',
-    ).length;
-
-    return Math.round((offers / details.totalApplications) * 100);
+    return (details?.applicationHistory ?? []).filter(
+      (application) => !['Rejected', 'Ghosted'].includes(application.status),
+    );
   });
 
-  logoUrl = computed(() => {
-    const details = this.company();
-    if (!details) return null;
+  readonly readinessScore = computed(() => {
+    const brief = this.researchBrief();
+    if (brief) return brief.readinessScore;
 
-    let domain = '';
-    if (details.website) {
-      try {
-        let urlStr = details.website;
-        if (!urlStr.startsWith('http')) urlStr = `https://${urlStr}`;
-        domain = new URL(urlStr).hostname.replace(/^www\./, '');
-      } catch { }
+    const details = this.company();
+    if (!details) return 0;
+
+    let score = 42;
+    if (details.priority === CompanyPriority.TopTier) score += 14;
+    if (details.priority === CompanyPriority.MidTier) score += 8;
+    if (details.totalApplications > 0) score += 16;
+    if (details.contacts?.length) score += 12;
+    if (details.notes?.trim() || details.description?.trim()) score += 12;
+    if (details.techStack?.length) score += Math.min(12, details.techStack.length * 2);
+    return Math.min(96, score);
+  });
+
+  readonly primaryContact = computed(() => this.company()?.contacts?.[0] ?? null);
+
+  readonly commandActions = computed<CompanyCommandAction[]>(() => [
+    {
+      id: 'refresh-brief',
+      labelKey: 'companyWorkspace.command.actions.refreshBrief.label',
+      descriptionKey: 'companyWorkspace.command.actions.refreshBrief.description',
+      icon: 'lucideRefreshCw',
+      disabled: () => this.briefLoading(),
+      run: () => this.refreshCompanyBrief(),
+    },
+    {
+      id: 'open-market',
+      labelKey: 'companyWorkspace.command.actions.openMarket.label',
+      descriptionKey: 'companyWorkspace.command.actions.openMarket.description',
+      icon: 'lucideGlobe',
+      phase: 'market',
+      disabled: () => !this.researchBrief()?.marketSignals?.length,
+      run: () => this.setPhase('market'),
+    },
+    {
+      id: 'add-contact',
+      labelKey: 'companyWorkspace.command.actions.addContact.label',
+      descriptionKey: 'companyWorkspace.command.actions.addContact.description',
+      icon: 'lucideUsers',
+      phase: 'people',
+      run: () => this.focusPeople(),
+    },
+    {
+      id: 'open-application',
+      labelKey: 'companyWorkspace.command.actions.openApplication.label',
+      descriptionKey: 'companyWorkspace.command.actions.openApplication.description',
+      icon: 'lucideBriefcase',
+      phase: 'applications',
+      disabled: () => !this.activeApplications().length,
+      run: () => this.openPrimaryApplication(),
+    },
+    {
+      id: 'prepare-angle',
+      labelKey: 'companyWorkspace.command.actions.prepareAngle.label',
+      descriptionKey: 'companyWorkspace.command.actions.prepareAngle.description',
+      icon: 'lucideLightbulb',
+      phase: 'fit',
+      run: () => this.prepareInterviewAngle(),
+    },
+    {
+      id: 'copy-brief',
+      labelKey: 'companyWorkspace.command.actions.copyBrief.label',
+      descriptionKey: 'companyWorkspace.command.actions.copyBrief.description',
+      icon: 'lucideClipboard',
+      disabled: () => !this.researchBrief(),
+      run: () => this.copyBrief(),
+    },
+  ]);
+
+  readonly filteredCommandActions = computed(() => {
+    const query = this.commandQuery().trim().toLowerCase();
+    const actions = this.commandActions();
+    if (!query) return actions;
+
+    return actions.filter((action) => {
+      const label = this.transloco.translate(action.labelKey).toLowerCase();
+      const description = this.transloco.translate(action.descriptionKey).toLowerCase();
+      return label.includes(query) || description.includes(query);
+    });
+  });
+
+  readonly logoUrl = computed(() => {
+    const details = this.company();
+    if (!details?.website) return null;
+
+    try {
+      const urlStr = details.website.startsWith('http') ? details.website : `https://${details.website}`;
+      const domain = new URL(urlStr).hostname.replace(/^www\./, '');
+      return `https://logo.clearbit.com/${domain}`;
+    } catch {
+      return null;
     }
-
-    if (!domain) {
-      domain = details.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
-    }
-    return domain ? `https://logo.clearbit.com/${domain}` : null;
   });
-
-  activeApplications = computed(() => {
-    const details = this.company();
-    return details?.applicationHistory || [];
-  });
-
-  primaryContacts = computed(() => {
-    const details = this.company();
-    return (details?.contacts || []).slice(0, 3);
-  });
-
-  dossierSnippet = computed(() => {
-    const briefing = this.intelligenceBriefing();
-    if (!briefing || !briefing.mission) return null;
-
-    // Split by newlines and take the first paragraph
-    const paragraphs = briefing.mission.split('\n').filter(p => p.trim().length > 0);
-    return paragraphs[0] || null;
-  });
-
-  compatibilityIndex = computed(() => {
-    const details = this.company();
-    if (!details) return null;
-
-    // Simulated intelligence logic
-    const score = details.priority === CompanyPriority.TopTier ? 94 : details.priority === CompanyPriority.MidTier ? 78 : 62;
-
-    return {
-      score,
-      pros: [
-        'Strong overlap with core technical stack',
-        'Company culture favors individual contributor growth'
-      ],
-      cons: [
-        'Geographic distance might require hybrid negotiation',
-        'Recent leadership transition could shift project focus'
-      ]
-    };
-  });
-
-  // Engagement Log moved to Application Timeline
-
-
 
   constructor() {
-    // Effect to sync notes and load news when company changes
     effect(() => {
-      const current = this.company();
-      if (current) {
-        // Sync notes only if company ID changed to avoid cursor jumps
-        if (current.id !== this.lastCompanyId) {
-          // Flush pending notes save if switching companies
-          if (this.notesTimer && this.lastCompanyId) {
-            // Use untracked to read the signal without creating a dependency
-            const pendingNotes = untracked(() => this.companyNotes());
-            const oldId = this.lastCompanyId;
-            untracked(() => {
-              this.companyService.updateCompany(oldId, { notes: pendingNotes }).subscribe();
-            });
-            clearTimeout(this.notesTimer);
-            this.notesTimer = null;
-          }
+      const id = this.routeParamMap().get('id');
+      if (!id) {
+        void this.router.navigate(['/companies']);
+        return;
+      }
 
-          untracked(() => {
-            this.companyNotes.set(current.notes || '');
-            this.loadCompanyNews(current.name);
-            this.handleRegenerateBriefing(); // Load initial briefing
-            this.lastCompanyId = current.id;
-          });
-        }
+      if (id !== this.lastLoadedRouteCompanyId) {
+        this.lastLoadedRouteCompanyId = id;
+        this.companyStore.loadDetails(id);
       }
     });
-  }
 
-  ngOnInit(): void {
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.companyStore.loadDetails(id);
-      } else {
-        this.router.navigate(['/companies']);
+    effect(() => {
+      const current = this.company();
+      if (!current || current.id === this.lastCompanyId) return;
+
+      if (this.notesTimer && this.lastCompanyId) {
+        const pendingNotes = untracked(() => this.companyNotes());
+        const oldId = this.lastCompanyId;
+        untracked(() => {
+          void this.persistCompanyUpdate(oldId, { notes: pendingNotes });
+        });
+        clearTimeout(this.notesTimer);
+        this.notesTimer = null;
       }
+
+      untracked(() => {
+        this.companyNotes.set(current.notes || '');
+        this.researchBrief.set(null);
+        this.refreshCompanyBrief();
+        this.lastCompanyId = current.id;
+      });
     });
   }
 
   ngOnDestroy(): void {
-    // Check for pending notes and save immediately
     if (this.notesTimer) {
       const current = untracked(this.company);
       if (current) {
         const pendingNotes = untracked(this.companyNotes);
-        // Use immediate update since we're destroying
-        this.companyService.updateCompany(current.id, { notes: pendingNotes }).subscribe();
+        void this.persistCompanyUpdate(current.id, { notes: pendingNotes });
       }
       clearTimeout(this.notesTimer);
       this.notesTimer = null;
     }
 
-    // Clear active company state to free memory when leaving detail view
     this.companyStore.clearActiveCompany();
   }
 
-  handleRegenerateBriefing(): void {
+  handleKeyDown(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      this.toggleCommandBar();
+    }
+
+    if (event.key === 'Escape') {
+      this.closeCommandBar();
+      this.closeMarketSignal();
+    }
+  }
+
+  setPhase(phase: CompanyWorkstationPhase): void {
+    this.currentPhase.set(phase);
+  }
+
+  toggleCommandBar(): void {
+    this.isCommandBarOpen.update((value) => !value);
+    if (this.isCommandBarOpen()) {
+      setTimeout(() => this.commandBarInput?.nativeElement?.focus(), 0);
+    }
+  }
+
+  closeCommandBar(): void {
+    this.isCommandBarOpen.set(false);
+    this.commandQuery.set('');
+    this.commandBarFocusedIndex.set(0);
+  }
+
+  onCommandQueryChange(query: string): void {
+    this.commandQuery.set(query);
+    this.commandBarFocusedIndex.set(0);
+  }
+
+  onCommandBarKeydown(event: KeyboardEvent): void {
+    const buttonCount = this.filteredCommandActions().length;
+    if (buttonCount === 0) return;
+
+    const currentIndex = this.commandBarFocusedIndex();
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.commandBarFocusedIndex.set((currentIndex + 1) % buttonCount);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.commandBarFocusedIndex.set(currentIndex <= 0 ? buttonCount - 1 : currentIndex - 1);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      this.executeCommandBarAction(this.filteredCommandActions()[currentIndex]);
+    }
+  }
+
+  executeCommandBarAction(action: CompanyCommandAction | undefined): void {
+    if (!action || this.isCommandActionDisabled(action)) return;
+    action.run();
+    this.closeCommandBar();
+  }
+
+  isCommandActionDisabled(action: CompanyCommandAction): boolean {
+    return action.disabled?.() ?? false;
+  }
+
+  async refreshCompanyBrief(): Promise<void> {
     const current = this.company();
     if (!current) return;
 
-    const requestId = ++this.latestBriefingRequestId;
-    this.briefingLoading.set(true);
-    this.intelligenceService.generateIntelligenceBriefing(current.name)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (briefing) => {
-          if (requestId === this.latestBriefingRequestId) {
-            this.intelligenceBriefing.set(briefing);
-            this.briefingLoading.set(false);
-          }
-        },
-        error: () => {
-          if (requestId === this.latestBriefingRequestId) {
-            this.briefingLoading.set(false);
-          }
-        }
-      });
-  }
+    const requestId = ++this.latestBriefRequestId;
+    this.briefLoading.set(true);
 
-  private latestNewsRequestId = 0;
-  loadCompanyNews(name: string): void {
-    const requestId = ++this.latestNewsRequestId;
-    this.newsLoading.set(true);
-    this.intelligenceService.getCompanyNews(name, 3)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (news) => {
-          if (requestId === this.latestNewsRequestId) {
-            this.companyNews.set(news);
-            this.newsLoading.set(false);
-          }
-        },
-        error: () => {
-          if (requestId === this.latestNewsRequestId) {
-            this.newsLoading.set(false);
-          }
-        }
-      });
-  }
-
-  // ==========================================
-  // Actions
-  // ==========================================
-
-  // Tab Actions
-  setTab(tab: 'overview' | 'intelligence' | 'marketPulse' | 'ecosystem'): void {
-    this.activeTab.set(tab);
-  }
-
-  handleSummarizeNews(): void {
-    const current = this.company();
-    if (!current) return;
-
-    this.notificationService.info('Synthesizing market intelligence...', 'AI Analyst');
-    setTimeout(() => {
-      this.notificationService.success('News digest updated in Intelligence Lab.', 'Summary Ready');
-    }, 2000);
-  }
-
-  addManualEvent(): void {
-    const newEvent: TacticalEvent = {
-      id: crypto.randomUUID(),
-      type: 'Networking',
-      date: new Date(),
-      title: 'Coffee Chat with Tech Lead',
-      subtitle: 'Internal Referral Opportunity',
-      description: 'Discussed clean architecture and team culture. Strong positive signal.',
-      meta: { aiInsight: 'High potential for internal referral. Follow up in 3 days.' }
-    };
-    this.manualEvents.update(events => [newEvent, ...events]);
-    this.notificationService.success('Tactical timeline updated.', 'Event Logged');
+    try {
+      const brief = await firstValueFrom(
+        this.intelligenceService.generateCompanyResearchBrief(current),
+      );
+      if (requestId === this.latestBriefRequestId) {
+        this.researchBrief.set(brief);
+      }
+    } catch (error) {
+      console.error('Failed to generate company research brief:', error);
+      this.notificationService.error(
+        this.transloco.translate('companyWorkspace.notifications.briefFailed.body'),
+        this.transloco.translate('companyWorkspace.notifications.briefFailed.title'),
+      );
+    } finally {
+      if (requestId === this.latestBriefRequestId) {
+        this.briefLoading.set(false);
+      }
+    }
   }
 
   goBack(): void {
@@ -295,116 +435,131 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleUpdateName(name: string): void {
+  viewApplication(appId: string): void {
     const current = this.company();
-    if (current) {
-      this.companyStore.update(current.id, { name });
-    }
+    this.router.navigate(['/applications', appId], {
+      queryParams: { from: 'company', companyId: current?.id },
+    });
   }
 
-  handleUpdatePriority(priority: string): void {
-    const current = this.company();
-    if (current) {
-      this.companyStore.update(current.id, { priority: priority as CompanyPriority });
-    }
-  }
-
-  handleUpdateIndustry(industry: string): void {
-    const current = this.company();
-    if (current) {
-      this.companyStore.update(current.id, { industry });
-    }
-  }
-
-  async handleDeleteCompany(): Promise<void> {
-    const current = this.company();
-    if (!current) return;
-
-    const confirmed = await this.notificationService.confirm(
-      `This will permanently delete "${current.name}"`,
-      'Delete Asset?',
-      { confirmText: 'Delete Asset', isDangerous: true }
-    );
-
-    if (confirmed) {
-      this.companyStore.delete(current.id);
-      this.router.navigate(['/companies']);
-    }
-  }
-
-  handleOpenSettings(): void {
-    this.notificationService.info('Asset configuration panel coming soon.', 'Settings');
-  }
-
-  // Tech Stack Actions
-  handleAddTech(skill: string): void {
-    if (!skill) {
-      this.notificationService.info('Skill selection interface is offline.', 'Intelligence Collection');
+  openPrimaryApplication(): void {
+    const app = this.activeApplications()[0];
+    if (app) {
+      this.viewApplication(app.id);
       return;
     }
-    const current = this.company();
-    if (!current) return;
-    const stack = current.techStack || [];
-    if (stack.includes(skill)) return;
 
-    this.companyService.updateCompany(current.id, { techStack: [...stack, skill] }).subscribe({
-      next: () => this.notificationService.success('Skill added', 'Updated'),
-      error: () => this.notificationService.error('Failed to add skill', 'Error')
-    });
+    this.setPhase('applications');
   }
 
-  handleRemoveTech(skill: string): void {
-    const current = this.company();
-    if (!current) return;
-    const stack = current.techStack || [];
-    const newStack = stack.filter(s => s !== skill);
-
-    this.companyService.updateCompany(current.id, { techStack: newStack }).subscribe({
-      next: () => this.notificationService.success('Skill removed', 'Updated'),
-      error: () => this.notificationService.error('Failed to remove skill', 'Error')
-    });
+  focusPeople(): void {
+    this.setPhase('people');
+    this.notificationService.info(
+      this.transloco.translate('companyWorkspace.notifications.addContact.body'),
+      this.transloco.translate('companyWorkspace.notifications.addContact.title'),
+    );
   }
 
-  // Notes Actions
-  private notesTimer: any;
+  prepareInterviewAngle(): void {
+    this.setPhase('fit');
+    this.notificationService.info(
+      this.transloco.translate('companyWorkspace.notifications.prepareAngle.body'),
+      this.transloco.translate('companyWorkspace.notifications.prepareAngle.title'),
+    );
+  }
+
+  executeNextAction(action: CompanyNextAction): void {
+    this.setPhase(action.target === 'applications' ? 'applications' : action.target);
+  }
+
+  openMarketSignal(signal: CompanyMarketSignal): void {
+    this.selectedMarketSignal.set(signal);
+  }
+
+  closeMarketSignal(): void {
+    this.selectedMarketSignal.set(null);
+  }
+
+  async copyBrief(): Promise<void> {
+    const brief = this.researchBrief();
+    const details = this.company();
+    if (!brief || !details) return;
+
+    const text = [
+      `${details.name} - Company brief`,
+      '',
+      brief.executiveSummary,
+      '',
+      'Strategic insights',
+      ...brief.strategicInsights.map(
+        (insight, index) => `${index + 1}. ${insight.title}: ${insight.recommendation}`,
+      ),
+      '',
+      'Next actions',
+      ...brief.nextActions.map((action, index) => `${index + 1}. ${action.label}: ${action.context}`),
+    ].join('\n');
+
+    try {
+      await navigator.clipboard.writeText(text);
+      this.copiedBrief.set(true);
+      this.notificationService.success(
+        this.transloco.translate('companyWorkspace.notifications.copied.body'),
+        this.transloco.translate('companyWorkspace.notifications.copied.title'),
+      );
+      setTimeout(() => this.copiedBrief.set(false), 2500);
+    } catch {
+      this.notificationService.error(
+        this.transloco.translate('companyWorkspace.notifications.copyFailed.body'),
+        this.transloco.translate('companyWorkspace.notifications.copyFailed.title'),
+      );
+    }
+  }
+
+  handlePrioritySelect(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value as CompanyPriority;
+    const current = this.company();
+    if (!current || current.priority === value) return;
+
+    this.companyStore.update(current.id, { priority: value });
+    setTimeout(() => this.refreshCompanyBrief(), 0);
+  }
+
   handleNotesChange(notes: string): void {
-    this.companyNotes.set(notes); // Update local immediately
+    this.companyNotes.set(notes);
 
     const current = this.company();
     if (!current) return;
 
-    // Clear previous timer
     if (this.notesTimer) clearTimeout(this.notesTimer);
-
-    // Debounce save
     this.notesTimer = setTimeout(() => {
-      this.companyService.updateCompany(current.id, { notes }).subscribe();
-    }, 1000);
+      void this.persistCompanyUpdate(current.id, { notes });
+      void this.refreshCompanyBrief();
+    }, 800);
   }
 
-  // Contact Actions
-  handleSaveContact(contact: CompanyContact): void {
+  async handleSaveContact(contact: CompanyContact): Promise<void> {
     const current = this.company();
     if (!current) return;
 
     const contacts = current.contacts || [];
-    let newContacts: CompanyContact[];
+    const nextContacts =
+      !contact.id || contact.id === '0'
+        ? [...contacts, { ...contact, id: '0' }]
+        : contacts.map((item) => (item.id === contact.id ? contact : item));
 
-    if (!contact.id || contact.id === '0') {
-      // Create new
-      newContacts = [...contacts, { ...contact, id: '0' }];
+    const ok = await this.persistCompanyUpdate(current.id, { contacts: nextContacts });
+    if (ok) {
+      this.companyStore.loadDetails(current.id);
+      this.notificationService.success(
+        this.transloco.translate('companyWorkspace.notifications.contactSaved.body'),
+        this.transloco.translate('companyWorkspace.notifications.contactSaved.title'),
+      );
     } else {
-      // Update
-      newContacts = contacts.map(c => c.id === contact.id ? contact : c);
+      this.notificationService.error(
+        this.transloco.translate('companyWorkspace.notifications.contactFailed.body'),
+        this.transloco.translate('companyWorkspace.notifications.contactFailed.title'),
+      );
     }
-
-    this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
-      next: () => {
-        this.companyStore.loadDetails(current.id);
-        this.notificationService.success('Contact saved', 'Success');
-      },
-      error: () => this.notificationService.error('Failed to save contact', 'Error')
-    });
   }
 
   async handleDeleteContact(contactId: string): Promise<void> {
@@ -412,35 +567,118 @@ export class CompanyDetailsComponent implements OnInit, OnDestroy {
     if (!current) return;
 
     const confirmed = await this.notificationService.confirm(
-      'Remove this contact?', 'Confirm Removal', { isDangerous: true }
+      this.transloco.translate('companyWorkspace.people.deleteContactBody'),
+      this.transloco.translate('companyWorkspace.people.deleteContactTitle'),
+      { isDangerous: true },
     );
 
-    if (confirmed) {
-      const newContacts = (current.contacts || []).filter(c => c.id !== contactId);
-      this.companyService.updateCompany(current.id, { contacts: newContacts }).subscribe({
-        next: () => this.notificationService.success('Contact removed', 'Success'),
-        error: () => this.notificationService.error('Failed to remove contact', 'Error')
-      });
+    if (!confirmed) return;
+
+    const contacts = (current.contacts || []).filter((contact) => contact.id !== contactId);
+    const ok = await this.persistCompanyUpdate(current.id, { contacts });
+    if (ok) {
+      this.companyStore.loadDetails(current.id);
+      this.notificationService.success(
+        this.transloco.translate('companyWorkspace.notifications.contactRemoved.body'),
+        this.transloco.translate('companyWorkspace.notifications.contactRemoved.title'),
+      );
     }
   }
 
-  // Navigation
-  viewApplication(appId: string): void {
-    const current = this.company();
-    this.router.navigate(['/view', appId], {
-      queryParams: { from: 'company', companyId: current?.id }
-    });
+  normalizeWebsiteUrl(website: string | null | undefined): string | null {
+    if (!website) return null;
+    try {
+      const urlStr = website.startsWith('http') ? website : `https://${website}`;
+      new URL(urlStr);
+      return urlStr;
+    } catch {
+      return null;
+    }
   }
 
-  formatDate(dateString: string | Date | undefined): string | null {
-    if (!dateString) return null;
-    return new Date(dateString).toLocaleString('en-US', {
+  getWebsiteDomain(company: CompanyDetail): string | null {
+    if (!company.website) return null;
+    try {
+      const url = company.website.startsWith('http') ? company.website : `https://${company.website}`;
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return company.website.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+    }
+  }
+
+  getPriorityLabelKey(priority: CompanyPriority): string {
+    switch (priority) {
+      case CompanyPriority.TopTier:
+        return 'companies.priority.top';
+      case CompanyPriority.MidTier:
+        return 'companies.priority.mid';
+      case CompanyPriority.Archived:
+        return 'companies.priority.archived';
+      case CompanyPriority.LowTier:
+      default:
+        return 'companies.priority.low';
+    }
+  }
+
+  getPriorityBadgeClasses(priority: CompanyPriority): string {
+    switch (priority) {
+      case CompanyPriority.TopTier:
+        return 'border-primary/40 bg-primary/10 text-primary';
+      case CompanyPriority.MidTier:
+        return 'border-accent/35 bg-accent/10 text-accent';
+      case CompanyPriority.Archived:
+        return 'border-border bg-muted text-muted-foreground';
+      case CompanyPriority.LowTier:
+      default:
+        return 'border-border bg-card text-muted-foreground';
+    }
+  }
+
+  getInsightToneClasses(insight: CompanyStrategicInsight): string {
+    switch (insight.tone) {
+      case 'strength':
+        return 'border-success/25 bg-success/5';
+      case 'risk':
+        return 'border-warning/25 bg-warning/5';
+      case 'neutral':
+      default:
+        return 'border-border bg-background/70';
+    }
+  }
+
+  getInsightToneIcon(insight: CompanyStrategicInsight): string {
+    switch (insight.tone) {
+      case 'strength':
+        return 'lucideCheckCircle2';
+      case 'risk':
+        return 'lucideShieldAlert';
+      case 'neutral':
+      default:
+        return 'lucideLightbulb';
+    }
+  }
+
+  formatDate(dateString: string | Date | undefined): string {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString(undefined, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
     });
+  }
+
+  private async persistCompanyUpdate(
+    companyId: string,
+    changes: {
+      notes?: string;
+      contacts?: CompanyContact[];
+    },
+  ): Promise<boolean> {
+    try {
+      await firstValueFrom(this.companyService.updateCompany(companyId, changes));
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

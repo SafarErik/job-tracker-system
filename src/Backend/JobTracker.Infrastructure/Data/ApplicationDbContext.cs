@@ -116,6 +116,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(j => j.AppliedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+            entity.Property(j => j.FitReviewJson)
+                .HasColumnType("text");
+
         });
 
         // ============================================

@@ -1,90 +1,55 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HlmSidebarImports } from '@spartan-ng/helm/sidebar';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { provideIcons } from '@ng-icons/core';
 import {
   lucideLayoutDashboard,
   lucideBriefcase,
   lucideBuilding2,
   lucideFileText,
-  lucideUser,
-  lucideSettings,
-  lucideLogOut,
-  lucideChevronUp,
-  lucideSun,
-  lucideMoon,
   lucidePieChart,
   lucideRadio,
+  lucidePanelLeftClose,
 } from '@ng-icons/lucide';
-import { HlmButton } from '@spartan-ng/helm/button';
-import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
-import { HlmDropdownMenuImports, HlmDropdownMenuTrigger } from '@spartan-ng/helm/dropdown-menu';
-import { HlmSwitchImports } from '@spartan-ng/helm/switch';
-import { ThemeService, UiStateService } from '../../../core/services';
-import { AuthService } from '../../../core/auth/auth.service';
 import { LogoComponent } from '../../../shared/components/logo/logo';
+
+interface NavItem {
+  labelKey: string;
+  icon: string;
+  link: string;
+  exact: boolean;
+}
 
 @Component({
   selector: 'app-sidebar',
-  imports: [
-    CommonModule,
-    RouterModule,
-    HlmSidebarImports,
-    HlmIconImports,
-    HlmButton,
-    HlmAvatarImports,
-    HlmDropdownMenuImports,
-    HlmDropdownMenuTrigger,
-    HlmSwitchImports,
-    LogoComponent,
-  ],
+  imports: [CommonModule, RouterModule, HlmSidebarImports, HlmIconImports, LogoComponent, TranslocoPipe],
   providers: [
     provideIcons({
       lucideLayoutDashboard,
       lucideBriefcase,
       lucideBuilding2,
       lucideFileText,
-      lucideUser,
-      lucideSettings,
-      lucideLogOut,
-      lucideChevronUp,
-      lucideSun,
-      lucideMoon,
       lucidePieChart,
       lucideRadio,
+      lucidePanelLeftClose,
     }),
   ],
   templateUrl: './sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'border-r border-sidebar-border bg-background block h-full relative z-20',
+    class: 'block h-full relative z-20',
   },
 })
 export class SidebarComponent {
-  private themeService = inject(ThemeService);
-  private authService = inject(AuthService);
-  public uiService = inject(UiStateService);
-
-  onLogout() {
-    this.authService.logout();
-  }
-
-  navItems = [
-    { label: 'Dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
-    { label: 'Applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
-    { label: 'Companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
-    { label: 'Intelligence', icon: 'lucidePieChart', link: '/statistics', exact: false },
-    { label: 'Signals', icon: 'lucideRadio', link: '/signals', exact: false },
-    { label: 'Documents', icon: 'lucideFileText', link: '/documents', exact: false },
+  navItems: NavItem[] = [
+    { labelKey: 'shell.nav.dashboard', icon: 'lucideLayoutDashboard', link: '/dashboard', exact: true },
+    { labelKey: 'shell.nav.applications', icon: 'lucideBriefcase', link: '/applications', exact: false },
+    { labelKey: 'shell.nav.companies', icon: 'lucideBuilding2', link: '/companies', exact: false },
+    { labelKey: 'shell.nav.insights', icon: 'lucidePieChart', link: '/statistics', exact: false },
+    { labelKey: 'shell.nav.signals', icon: 'lucideRadio', link: '/signals', exact: false },
+    { labelKey: 'shell.nav.documents', icon: 'lucideFileText', link: '/documents', exact: false },
   ];
-
-  get isDarkMode() {
-    return this.themeService.isDark();
-  }
-
-  toggleTheme() {
-    this.themeService.toggle();
-  }
 }

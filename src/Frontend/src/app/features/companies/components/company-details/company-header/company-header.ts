@@ -73,7 +73,7 @@ export class CompanyHeaderComponent {
 
   // Constants
   readonly priorityOptions = [
-    { value: 'Tier1', label: 'Dream Target', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
+    { value: 'Tier1', label: 'Priority Company', color: 'text-primary', bg: 'bg-primary/10', border: 'border-primary/20' },
     { value: 'Tier2', label: 'High Interest', color: 'text-info', bg: 'bg-info/10', border: 'border-info/20' },
     { value: 'Tier3', label: 'Opportunistic', color: 'text-muted-foreground', bg: 'bg-muted/10', border: 'border-border/20' }
   ];

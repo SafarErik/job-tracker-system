@@ -1,0 +1,319 @@
+@if (isCardMode()) {
+  <article class="bento-card global-footprint-card flex h-full flex-col p-5">
+    <div class="mb-4 flex items-center justify-between gap-4">
+      <div>
+        <h2 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+          {{ 'footprint.cardTitle' | transloco }}
+        </h2>
+        <p class="mt-1 text-xs text-muted-foreground">
+          {{ 'footprint.cardSubtitle' | transloco }}
+        </p>
+      </div>
+
+      <span class="text-xs text-muted-foreground">
+        {{ 'footprint.locationCount' | transloco: { count: locationStats().total } }}
+      </span>
+    </div>
+
+    @if (loading()) {
+      <div class="flex flex-1 items-center justify-center">
+        <div hlmSkeleton class="h-56 w-full rounded-[1.5rem]"></div>
+      </div>
+    } @else if (!filteredLocations().length) {
+      <div
+        class="flex min-h-[15rem] flex-1 flex-col items-center justify-center rounded-[1.5rem] border border-dashed border-border bg-muted/10 p-6 text-center"
+      >
+        <p class="text-sm font-medium text-muted-foreground">{{ 'footprint.empty' | transloco }}</p>
+      </div>
+    } @else {
+      <button
+        type="button"
+        class="global-footprint-preview group relative flex flex-1 overflow-hidden rounded-[1.5rem] border border-border/70 text-left"
+        (click)="openScreenView()"
+      >
+        <div #previewGlobeHost class="global-footprint-canvas global-footprint-canvas--preview"></div>
+        <div class="global-footprint-preview__chrome"></div>
+        <div class="global-footprint-preview__meta">
+          <span class="global-footprint-preview__meta-pill">{{ 'footprint.liveOrbit' | transloco }}</span>
+          <span class="global-footprint-preview__meta-pill">{{
+            'footprint.trackedHubCount' | transloco: { count: locationStats().applicationHubs }
+          }}</span>
+        </div>
+        <div class="global-footprint-preview__veil"></div>
+
+        <div class="global-footprint-preview__content">
+          <div class="footprint-preview-badge">{{ 'footprint.interactiveGlobe' | transloco }}</div>
+          <h3 class="mt-3 text-lg font-semibold tracking-tight text-foreground">
+            {{ 'footprint.openTitle' | transloco }}
+          </h3>
+          <p class="mt-2 max-w-xs text-sm text-muted-foreground">
+            {{ 'footprint.openBody' | transloco }}
+          </p>
+          <span class="global-footprint-preview__cta">{{ 'footprint.openCta' | transloco }}</span>
+        </div>
+      </button>
+    }
+  </article>
+}
+
+@if (isScreenMode()) {
+  <section class="global-footprint-shell">
+    <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+          {{ 'footprint.screenEyebrow' | transloco }}
+        </p>
+        <h2 class="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-[2.35rem]">
+          {{ 'footprint.screenTitle' | transloco }}
+        </h2>
+        <p class="mt-2 max-w-3xl text-sm text-muted-foreground">
+          {{ 'footprint.screenBody' | transloco }}
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          hlmBtn
+          size="sm"
+          [variant]="activeFilter() === 'all' ? 'default' : 'outline'"
+          class="rounded-full px-4"
+          (click)="setFilter('all')"
+        >
+          {{ 'footprint.allSignal' | transloco }}
+        </button>
+        <button
+          hlmBtn
+          size="sm"
+          [variant]="activeFilter() === 'applications' ? 'default' : 'outline'"
+          class="rounded-full px-4"
+          (click)="setFilter('applications')"
+        >
+          {{ 'footprint.applications' | transloco }}
+        </button>
+        <button
+          hlmBtn
+          size="sm"
+          [variant]="activeFilter() === 'nearby' ? 'default' : 'outline'"
+          class="rounded-full px-4"
+          (click)="setFilter('nearby')"
+        >
+          {{ 'footprint.nearby' | transloco }}
+        </button>
+        <button
+          hlmBtn
+          size="sm"
+          [variant]="autoOrbitEnabled() ? 'default' : 'outline'"
+          class="rounded-full px-4"
+          (click)="toggleAutoOrbit()"
+        >
+          {{ autoOrbitEnabled() ? ('footprint.autoOrbitOn' | transloco) : ('footprint.autoOrbitOff' | transloco) }}
+        </button>
+        <button hlmBtn size="sm" variant="outline" class="rounded-full px-4" (click)="resetWorldView()">
+          {{ 'common.actions.resetView' | transloco }}
+        </button>
+        <button hlmBtn size="sm" variant="outline" class="rounded-full px-4" (click)="leaveScreen()">
+          {{ 'common.actions.backToDashboard' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="grid flex-1 gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(22rem,0.8fr)]">
+        <div hlmSkeleton class="min-h-[42rem] rounded-[2rem]"></div>
+        <div hlmSkeleton class="min-h-[42rem] rounded-[2rem]"></div>
+      </div>
+    } @else if (!filteredLocations().length) {
+      <div
+        class="flex min-h-[42rem] flex-1 flex-col items-center justify-center rounded-[2rem] border border-dashed border-border/80 bg-card/30 p-6 text-center"
+      >
+        <p class="text-sm font-medium text-muted-foreground">{{ 'footprint.empty' | transloco }}</p>
+      </div>
+    } @else {
+      <div class="grid flex-1 gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(22rem,0.8fr)]">
+        <section
+          class="global-footprint-stage relative min-h-[42rem] overflow-hidden rounded-[2rem] border border-border/70"
+        >
+          <div #screenGlobeHost class="global-footprint-canvas global-footprint-canvas--screen"></div>
+
+          <div class="absolute left-4 top-4 z-10 flex flex-wrap items-center gap-2">
+            <span class="footprint-hint-pill">{{ 'footprint.dragHint' | transloco }}</span>
+            <span class="footprint-hint-pill">{{ 'footprint.clickHint' | transloco }}</span>
+          </div>
+
+          @if (hoveredLocation(); as hovered) {
+            <div class="footprint-hover-card absolute right-4 top-4 z-10 max-w-[16rem]">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                {{ hovered.city }}, {{ hovered.country }}
+              </p>
+              <p class="mt-2 text-sm text-foreground">
+                {{ hovered.applications.length }} tracked application{{
+                  hovered.applications.length === 1 ? '' : 's'
+                }}
+                and {{ hovered.nearbyRoles.length }} nearby context item{{
+                  hovered.nearbyRoles.length === 1 ? '' : 's'
+                }}
+              </p>
+            </div>
+          }
+
+          <div class="absolute bottom-4 left-4 right-4 z-10 flex flex-wrap gap-2">
+            @for (location of quickJumpLocations(); track trackByLocation($index, location)) {
+              <button
+                type="button"
+                class="footprint-jump-chip"
+                [class.footprint-jump-chip--active]="selectedLocationKey() === location.id"
+                (click)="focusLocation(location)"
+              >
+                {{ location.city }}
+                <span class="text-muted-foreground"
+                  >{{ location.applications.length + location.nearbyRoles.length }}</span
+                >
+              </button>
+            }
+          </div>
+        </section>
+
+        <section class="global-footprint-panel flex min-h-[42rem] flex-col rounded-[2rem] border border-border/70">
+          @if (selectedLocation(); as location) {
+            <header class="border-b border-border/70 px-5 py-5">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+                    {{ location.city }}, {{ location.country }}
+                  </p>
+                  <h3 class="mt-2 text-2xl font-semibold tracking-tight text-foreground">
+                    {{ location.detail }}
+                  </h3>
+                  <p class="mt-2 text-sm text-muted-foreground">
+                    {{ location.pulse[0] }}
+                  </p>
+                </div>
+
+                <div class="grid min-w-[11rem] grid-cols-2 gap-2 text-right">
+                  <div class="footprint-overview-stat">
+                    <span class="footprint-overview-stat__label">{{ 'footprint.tracked' | transloco }}</span>
+                    <span class="footprint-overview-stat__value">{{
+                      location.applications.length
+                    }}</span>
+                  </div>
+                  <div class="footprint-overview-stat">
+                    <span class="footprint-overview-stat__label">{{ 'footprint.nearby' | transloco }}</span>
+                    <span class="footprint-overview-stat__value">{{
+                      location.nearbyRoles.length
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+
+              @if (location.pulse.length > 1) {
+                <div class="mt-4 flex flex-wrap gap-2">
+                  @for (signal of location.pulse; track signal) {
+                    <span class="footprint-inline-pill">{{ signal }}</span>
+                  }
+                </div>
+              }
+            </header>
+
+            <div class="flex-1 space-y-5 overflow-y-auto p-5">
+              @if (location.applications.length) {
+                <section class="space-y-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <h4 class="text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
+                      {{ 'footprint.yourApplications' | transloco }}
+                    </h4>
+                    <span class="text-xs text-muted-foreground"
+                      >{{ location.applications.length }} tracked</span
+                    >
+                  </div>
+
+                  <div class="space-y-3">
+                    @for (card of location.applications; track card.id) {
+                      <article class="footprint-card">
+                        <div class="flex items-start justify-between gap-3">
+                          <div>
+                            <p class="text-sm font-semibold text-foreground">{{ card.companyName }}</p>
+                            <p class="mt-1 text-sm text-muted-foreground">{{ card.roleTitle }}</p>
+                          </div>
+                          <span class="footprint-badge footprint-badge--primary">{{
+                            card.statusLabel
+                          }}</span>
+                        </div>
+
+                        <p class="mt-3 text-sm leading-6 text-muted-foreground">{{ card.summary }}</p>
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                          <span class="footprint-inline-pill">{{ card.workplaceLabel }}</span>
+                          <span class="footprint-inline-pill">{{ card.sourceLabel }}</span>
+                          @if (card.emphasis) {
+                            <span class="footprint-inline-pill">{{ card.emphasis }}</span>
+                          }
+                        </div>
+
+                        @if (card.techStack.length) {
+                          <div class="mt-3 flex flex-wrap gap-2">
+                            @for (tech of card.techStack; track tech) {
+                              <span class="footprint-tech-pill">{{ tech }}</span>
+                            }
+                          </div>
+                        }
+                      </article>
+                    }
+                  </div>
+                </section>
+              }
+
+              @if (location.nearbyRoles.length) {
+                <section class="space-y-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <h4 class="text-xs font-semibold uppercase tracking-[0.18em] text-foreground">
+                      {{ 'footprint.nearbyMarketSignal' | transloco }}
+                    </h4>
+                    <span class="text-xs text-muted-foreground"
+                      >{{ location.nearbyRoles.length }} context item{{
+                        location.nearbyRoles.length === 1 ? '' : 's'
+                      }}</span
+                    >
+                  </div>
+
+                  <div class="space-y-3">
+                    @for (card of location.nearbyRoles; track card.id) {
+                      <article class="footprint-card footprint-card--muted">
+                        <div class="flex items-start justify-between gap-3">
+                          <div>
+                            <p class="text-sm font-semibold text-foreground">{{ card.companyName }}</p>
+                            <p class="mt-1 text-sm text-muted-foreground">{{ card.roleTitle }}</p>
+                          </div>
+                          <span class="footprint-badge footprint-badge--accent">{{
+                            card.statusLabel
+                          }}</span>
+                        </div>
+
+                        <p class="mt-3 text-sm leading-6 text-muted-foreground">{{ card.summary }}</p>
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                          <span class="footprint-inline-pill">{{ card.workplaceLabel }}</span>
+                          <span class="footprint-inline-pill">{{ card.sourceLabel }}</span>
+                          @if (card.emphasis) {
+                            <span class="footprint-inline-pill">{{ card.emphasis }}</span>
+                          }
+                        </div>
+
+                        @if (card.techStack.length) {
+                          <div class="mt-3 flex flex-wrap gap-2">
+                            @for (tech of card.techStack; track tech) {
+                              <span class="footprint-tech-pill">{{ tech }}</span>
+                            }
+                          </div>
+                        }
+                      </article>
+                    }
+                  </div>
+                </section>
+              }
+            </div>
+          }
+        </section>
+      </div>
+    }
+  </section>
+}

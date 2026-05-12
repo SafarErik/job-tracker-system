@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JobTracker.Core.Enums;
+using JobTracker.Core.Models;
 using JobTracker.Application.DTOs.Companies;
 
 namespace JobTracker.Application.DTOs.JobApplications;
@@ -13,6 +14,7 @@ public class JobApplicationDto
 
     public string? GeneratedCoverLetter { get; set; }
     public string? AiFeedback { get; set; }
+    public FitReview? FitReview { get; set; }
     public int MatchScore { get; set; }
 
     public List<string> AiGoodPoints { get; set; } = new();

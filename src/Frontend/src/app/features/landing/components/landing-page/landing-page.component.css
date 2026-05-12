@@ -1,140 +1,67 @@
 @reference "tailwindcss";
 
 :host {
-    display: block;
+  display: block;
 }
 
-/* 3D Perspective Utilities */
-.perspective-1000 {
-    perspective: 1000px;
+.brand-page {
+  background:
+    linear-gradient(145deg, hsl(var(--background)) 0%, hsl(var(--surface-inset)) 46%, hsl(var(--muted)) 100%);
 }
 
-.rotate-y-n10 {
-    transform: rotateY(-10deg) rotateX(5deg);
+.dark .brand-page {
+  background:
+    linear-gradient(145deg, hsl(var(--background)) 0%, hsl(var(--surface-inset)) 54%, hsl(var(--brand-indigo)) 100%);
 }
 
-.rotate-3d {
-    transform: rotateY(-5deg) rotateX(5deg);
+.brand-backdrop {
+  background-image:
+    linear-gradient(90deg, hsl(var(--border) / 0.22) 1px, transparent 1px),
+    linear-gradient(180deg, hsl(var(--border) / 0.18) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.78) 44%, transparent 100%);
 }
 
-/* Animations */
-@keyframes scan {
-    0% {
-        top: 0;
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 1;
-    }
-
-    90% {
-        opacity: 1;
-    }
-
-    100% {
-        top: 100%;
-        opacity: 0;
-    }
+.horizon-path path {
+  stroke-dasharray: 1240;
+  stroke-dashoffset: 1240;
+  animation: draw-path 6s ease-in-out infinite;
 }
 
-.animate-scan {
-    animation: scan 3s linear infinite;
+.career-board {
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes bounce-slow {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-15px);
-    }
+.career-board::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 0%, hsl(var(--brand-aurora) / 0.1) 50%, transparent 100%),
+    linear-gradient(180deg, hsl(var(--brand-electric) / 0.08), transparent 42%);
 }
 
-.animate-bounce-slow {
-    animation: bounce-slow 4s ease-in-out infinite;
+.career-board > * {
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes spin-slow {
-    from {
-        transform: rotate(0deg);
-    }
+@keyframes draw-path {
+  0% {
+    stroke-dashoffset: 1240;
+    opacity: 0.1;
+  }
 
-    to {
-        transform: rotate(360deg);
-    }
-}
+  16%,
+  72% {
+    stroke-dashoffset: 0;
+    opacity: 0.72;
+  }
 
-.animate-spin-slow {
-    animation: spin-slow 10s linear infinite;
-}
-
-/* Custom Gradients & Glows */
-.bg-mesh-gradient {
-    background-image:
-        radial-gradient(at 0% 0%, var(--background) 0, transparent 50%),
-        radial-gradient(at 50% 0%, var(--primary-muted) 10%, transparent 50%),
-        radial-gradient(at 100% 0%, var(--secondary-muted) 0, transparent 50%);
-}
-
-.text-glow {
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.4);
-}
-
-.box-glow-indigo {
-    box-shadow: 0 0 40px hsl(var(--primary) / 0.2);
-}
-
-/* Bento Card Hover Utility */
-.bento-hover {
-    @apply transition-all duration-500;
-
-    &:hover {
-        border-color: hsl(var(--primary) / 0.3);
-        box-shadow: 0 0 50px hsl(var(--primary) / 0.1);
-    }
-}
-
-/* Glassmorphism */
-.glass {
-    background-color: hsl(var(--card) / 0.4);
-    backdrop-filter: blur(24px);
-    border: 1px solid hsl(var(--border) / 0.5);
-}
-
-/* Elite Tactical Updates */
-.bg-grid-white {
-    background-size: 40px 40px;
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    mask-image: linear-gradient(to bottom, transparent, black, transparent);
-}
-
-@keyframes drift {
-    0% {
-        background-position: 0 0;
-    }
-
-    100% {
-        background-position: 40px 40px;
-    }
-}
-
-.animate-drift {
-    animation: drift 20s linear infinite;
-}
-
-/* Typewriter Cursor */
-.typewriter-cursor::after {
-    content: '|';
-    animation: blink 1s step-start infinite;
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0;
-    }
+  100% {
+    stroke-dashoffset: -1240;
+    opacity: 0.1;
+  }
 }

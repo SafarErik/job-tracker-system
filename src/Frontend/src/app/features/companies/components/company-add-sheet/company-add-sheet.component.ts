@@ -117,12 +117,12 @@ export class CompanyAddSheetComponent {
                     });
                 }
 
-                this.notificationService.success(`Data retrieved for ${data.companyName}`, 'Intelligence Gathered');
+                this.notificationService.success(`Data retrieved for ${data.companyName}`, 'Research updated');
                 this.isScanning.set(false);
             },
             error: (err) => {
-                const msg = err.error?.message || 'Target intelligence could not be retrieved.';
-                this.notificationService.error(msg, 'Scout Failed');
+                const msg = err.error?.message || 'Company data could not be retrieved.';
+                this.notificationService.error(msg, 'Research failed');
                 this.isScanning.set(false);
             }
         });
@@ -181,14 +181,14 @@ export class CompanyAddSheetComponent {
         this.companyService.createCompany(payload).subscribe({
             next: () => {
                 this.isLoading.set(false);
-                this.notificationService.success(`${payload.name} added to registry.`, 'Asset Initialized');
+                this.notificationService.success(`${payload.name} added to company research.`, 'Company saved');
                 this.resetForm();
                 // Refresh the store list
                 this.companyStore.loadAll();
             },
             error: () => {
                 this.isLoading.set(false);
-                this.notificationService.error('Could not create company.', 'Initialization Failed');
+                this.notificationService.error('Could not create company.', 'Save failed');
             }
         });
     }

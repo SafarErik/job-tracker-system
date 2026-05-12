@@ -10,21 +10,26 @@ export const AUTH_ROUTES: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       {
         path: 'login',
-        loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent),
+        loadComponent: () =>
+          import('./components/login/login.component').then((m) => m.LoginComponent),
         canActivate: [guestGuard],
-        title: 'Sign In | VantageCursus'
+        title: 'Sign In | Horizon',
       },
       {
         path: 'register',
-        loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent),
+        loadComponent: () =>
+          import('./components/register/register.component').then((m) => m.RegisterComponent),
         canActivate: [guestGuard],
-        title: 'Create Account | VantageCursus'
+        title: 'Create Account | Horizon',
       },
       {
         path: 'callback',
-        loadComponent: () => import('./components/auth-callback/auth-callback.component').then(m => m.AuthCallbackComponent),
-        title: 'Authenticating... | VantageCursus'
-      }
-    ]
-  }
+        loadComponent: () =>
+          import('./components/auth-callback/auth-callback.component').then(
+            (m) => m.AuthCallbackComponent,
+          ),
+        title: 'Authenticating... | Horizon',
+      },
+    ],
+  },
 ];

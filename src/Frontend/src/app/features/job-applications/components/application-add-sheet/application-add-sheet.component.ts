@@ -1,26 +1,24 @@
-import { Component, ChangeDetectionStrategy, signal, inject, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BrnSheetImports } from '@spartan-ng/brain/sheet';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
-import { HlmSheetImports, HlmSheet } from '@spartan-ng/helm/sheet';
+import { HlmSheetImports } from '@spartan-ng/helm/sheet';
 import { HlmInputImports } from '@spartan-ng/helm/input';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { HlmLabelImports } from '@spartan-ng/helm/label';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
-import { UiStateService } from '../../../../core/services/ui-state.service';
-import { NotificationService } from '../../../../core/services';
-import { toast } from 'ngx-sonner';
+import { LanguageService, NotificationService, UiStateService } from '../../../../core/services';
 import { JobApplicationStore } from '../../services/job-application.store';
 import { CompanyStore } from '../../../companies/services/company.store';
 import { CompanyPriority } from '../../../companies/models/company-priority.enum';
 import { JobApplicationStatus } from '../../models/application-status.enum';
 import { JobPriority } from '../../models/job-priority.enum';
 import { CreateJobApplication } from '../../models/job-application.model';
-import { getStatusStyle } from '../../models/status-styles.util';
 import { provideIcons } from '@ng-icons/core';
 import { lucideSparkles, lucideX } from '@ng-icons/lucide';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-application-add-sheet',
@@ -35,6 +33,7 @@ import { HlmIconImports } from '@spartan-ng/helm/icon';
         ...BrnSelectImports,
         ...HlmIconImports,
         ...BrnSheetImports,
+        TranslocoPipe,
     ],
     providers: [provideIcons({ lucideSparkles, lucideX })],
     templateUrl: './application-add-sheet.component.html',
@@ -46,6 +45,8 @@ export class ApplicationAddSheetComponent {
     public store = inject(JobApplicationStore);
     public companyStore = inject(CompanyStore);
     private notificationService = inject(NotificationService);
+    private languageService = inject(LanguageService);
+    private transloco = inject(TranslocoService);
 
     // Controlled by parent/service now
     // @ViewChild(HlmSheet) sheet!: HlmSheet; 
@@ -68,14 +69,14 @@ export class ApplicationAddSheetComponent {
     JobPriority = JobPriority;
 
     statusOptions = [
-        { value: JobApplicationStatus.Applied, label: getStatusStyle(JobApplicationStatus.Applied).label },
-        { value: JobApplicationStatus.PhoneScreen, label: getStatusStyle(JobApplicationStatus.PhoneScreen).label },
-        { value: JobApplicationStatus.TechnicalTask, label: getStatusStyle(JobApplicationStatus.TechnicalTask).label },
-        { value: JobApplicationStatus.Interviewing, label: getStatusStyle(JobApplicationStatus.Interviewing).label },
-        { value: JobApplicationStatus.Offer, label: getStatusStyle(JobApplicationStatus.Offer).label },
-        { value: JobApplicationStatus.Accepted, label: getStatusStyle(JobApplicationStatus.Accepted).label },
-        { value: JobApplicationStatus.Rejected, label: getStatusStyle(JobApplicationStatus.Rejected).label },
-        { value: JobApplicationStatus.Ghosted, label: getStatusStyle(JobApplicationStatus.Ghosted).label },
+        { value: JobApplicationStatus.Applied, labelKey: 'dashboard.workQueue.status.Applied' },
+        { value: JobApplicationStatus.PhoneScreen, labelKey: 'dashboard.workQueue.status.PhoneScreen' },
+        { value: JobApplicationStatus.TechnicalTask, labelKey: 'dashboard.workQueue.status.TechnicalTask' },
+        { value: JobApplicationStatus.Interviewing, labelKey: 'dashboard.workQueue.status.Interviewing' },
+        { value: JobApplicationStatus.Offer, labelKey: 'dashboard.workQueue.status.Offer' },
+        { value: JobApplicationStatus.Accepted, labelKey: 'dashboard.workQueue.status.Accepted' },
+        { value: JobApplicationStatus.Rejected, labelKey: 'dashboard.workQueue.status.Rejected' },
+        { value: JobApplicationStatus.Ghosted, labelKey: 'dashboard.workQueue.status.Ghosted' },
     ];
 
     public autoFill() {
@@ -120,11 +121,16 @@ export class ApplicationAddSheetComponent {
                         this.createApplication(company.id, formData);
                     },
                     error: () => {
-                        this.notificationService.error('Failed to create company for application', 'Error');
+                        this.notificationService.error(
+                            this.t('applications.addSheet.errors.companyCreate'),
+                            this.t('common.states.error', undefined, 'Error'),
+                        );
                         this.form.enable();
                     }
                 });
             }
+        } else {
+            this.form.markAllAsTouched();
         }
     }
 
@@ -148,5 +154,10 @@ export class ApplicationAddSheetComponent {
             priority: JobPriority.Medium
         });
         this.form.enable();
+    }
+
+    private t(key: string, params?: Record<string, unknown>, fallback?: string): string {
+        this.languageService.locale();
+        return this.transloco.translate(key, params) || fallback || key;
     }
 }

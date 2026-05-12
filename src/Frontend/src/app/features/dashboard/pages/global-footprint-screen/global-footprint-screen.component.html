@@ -1,0 +1,14 @@
+<section class="global-footprint-screen">
+  <div class="global-footprint-screen__backdrop"></div>
+
+  <div class="global-footprint-screen__content">
+    <div class="global-footprint-screen__frame">
+      <app-global-footprint
+        class="block h-full"
+        mode="screen"
+        [locations]="footprintLocations()"
+        [loading]="isLoading()"
+      ></app-global-footprint>
+    </div>
+  </div>
+</section>

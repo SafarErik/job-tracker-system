@@ -1,252 +1,183 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-    <!-- Global Command Bar -->
-    <div class="relative group max-w-2xl mx-auto">
-        <div class="absolute inset-0 bg-primary/10 blur-xl rounded-2xl group-hover:bg-primary/20 transition-all"></div>
-        <div
-            class="relative flex items-center gap-3 px-4 py-3 bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-xl">
-            <lucide-icon name="command" class="w-5 h-5 text-primary"></lucide-icon>
-            <input type="text" placeholder="Search systems or ask AI... (Cmd+K)" aria-label="Search systems or ask AI"
-                class="flex-1 bg-transparent border-none outline-none text-foreground placeholder-muted-foreground text-sm" />
-            <div
-                class="flex items-center gap-1 px-2 py-1 rounded bg-muted border border-border text-[10px] text-muted-foreground font-mono">
-                <span>⌘</span>
-                <span>K</span>
+<section class="app-page animate-in fade-in slide-in-from-bottom-2 duration-500">
+  <div class="dashboard-grid">
+    @if (isLoading()) {
+      <article class="dashboard-focus md:col-span-4">
+        <div class="grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+          <div class="space-y-4">
+            <div hlmSkeleton class="h-5 w-36 rounded-md"></div>
+            <div hlmSkeleton class="h-8 w-72 rounded-md"></div>
+            <div hlmSkeleton class="h-16 w-full rounded-lg"></div>
+            <div class="grid gap-3 md:grid-cols-3">
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
+              <div hlmSkeleton class="h-28 rounded-lg"></div>
             </div>
+          </div>
+          <div hlmSkeleton class="h-full min-h-64 rounded-lg"></div>
         </div>
-    </div>
+      </article>
+    } @else {
+      <article class="dashboard-focus md:col-span-4">
+        <div class="dashboard-focus__topline">
+          <div>
+            <p class="dashboard-eyebrow">{{ 'dashboard.focus.eyebrow' | transloco }}</p>
+            <h1 class="mt-2 font-display text-2xl font-semibold text-foreground sm:text-3xl">
+              {{ 'dashboard.focus.title' | transloco }}
+            </h1>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+              {{ stateSummary() }} {{ 'dashboard.focus.updated' | transloco: { date: currentDateLabel() } }}
+            </p>
+          </div>
 
-    <!-- Bento Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <!-- Daily Briefing (Col-span-8) -->
-        <div
-            class="md:col-span-8 group relative overflow-hidden rounded-3xl bg-card border border-border p-8 transition-all hover:border-primary/30 shadow-sm card-accent-blue">
-            <div
-                class="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2">
-            </div>
-
-            <div class="relative z-10 flex flex-col h-full">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2 text-primary">
-                        <lucide-icon name="calendar" class="w-5 h-5"></lucide-icon>
-                        <span class="text-sm font-medium uppercase tracking-wider">Schedule</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                        <div class="w-2 h-2 rounded-full bg-emerald-500 status-glow"></div>
-                        <span
-                            class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-tighter">Operational
-                            Status: READY</span>
-                    </div>
-                </div>
-
-                <div class="mb-8">
-                    <h1 class="text-3xl font-bold text-foreground mb-2">Good morning, {{ userName() }}.</h1>
-                    <div class="flex items-center gap-2 text-primary font-medium text-sm">
-                        <lucide-icon name="clock" class="w-4 h-4"></lucide-icon>
-                        <span>Next Interview in 2h 15m</span>
-                    </div>
-                </div>
-
-                <div class="mt-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div
-                        class="group/item relative p-4 rounded-2xl bg-muted/50 border border-border hover:bg-card hover:shadow-md transition-all cursor-pointer overflow-hidden">
-                        <p class="text-xs text-muted-foreground mb-1">Today @ 2:00 PM</p>
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-semibold text-foreground">Google - Tech Interview</p>
-                            <lucide-icon name="arrow-up-right" class="w-4 h-4 text-primary"></lucide-icon>
-                        </div>
-                        <!-- Dojo Link -->
-                        <div
-                            class="absolute inset-0 bg-primary/95 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
-                            <button class="flex items-center gap-2 text-white font-bold text-sm">
-                                <lucide-icon name="zap" class="w-4 h-4"></lucide-icon>
-                                Prepare in Dojo
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        class="group/item relative p-4 rounded-2xl bg-muted/50 border border-border hover:bg-card hover:shadow-md transition-all cursor-pointer overflow-hidden">
-                        <p class="text-xs text-muted-foreground mb-1">Tomorrow @ 4:30 PM</p>
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-semibold text-foreground">Stripe - Culture Fit</p>
-                            <lucide-icon name="arrow-up-right" class="w-4 h-4 text-primary"></lucide-icon>
-                        </div>
-                        <div
-                            class="absolute inset-0 bg-primary/95 flex items-center justify-center opacity-0 group-hover/item:opacity-100 transition-opacity">
-                            <button class="flex items-center gap-2 text-white font-bold text-sm">
-                                <lucide-icon name="zap" class="w-4 h-4"></lucide-icon>
-                                Prepare in Dojo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <button type="button" class="dashboard-primary-cta" (click)="uiService.openAddAppSheet()">
+            {{ 'dashboard.actions.addOpportunity' | transloco }}
+          </button>
         </div>
 
-        <!-- Market Pulse (Col-span-4) -->
-        <div
-            class="md:col-span-4 rounded-3xl bg-card border border-border p-8 flex flex-col justify-between group hover:border-primary/30 transition-all shadow-sm card-accent-emerald">
-            <div>
-                <div class="flex items-center gap-2 text-emerald-500 dark:text-emerald-400 mb-6">
-                    <lucide-icon name="trending-up" class="w-5 h-5"></lucide-icon>
-                    <span class="text-sm font-medium uppercase tracking-wider">Market Pulse</span>
-                </div>
-                <p class="text-sm text-muted-foreground mb-1">Tech Market Update</p>
+        <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+          <div>
+            <div class="mb-2 flex flex-wrap items-center gap-2">
+              @for (item of dailyBriefing(); track item.text) {
+                <span class="dashboard-chip">{{ item.text }}</span>
+              }
+            </div>
 
-                <div class="flex items-end gap-3 mb-2">
-                    <h2 class="text-4xl font-bold text-foreground tracking-tight">UP 12%</h2>
-                    <!-- Mini Sparkline SVG -->
-                    <svg class="w-20 h-10 mb-1" viewBox="0 0 100 40">
-                        <path d="M0 35 Q 20 35, 40 25 T 80 10 T 100 5" fill="none"
-                            class="stroke-emerald-500 dark:stroke-emerald-400" stroke-width="3"
-                            stroke-linecap="round" />
-                    </svg>
-                </div>
-                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wide">
-                    Sector focus: AI/ML Engineering
+            <div class="grid gap-3 md:grid-cols-3">
+              @for (item of suggestedActions(); track item.title) {
+                <article class="dashboard-action-card" [ngClass]="getActionClass(item.tone)">
+                  <p class="dashboard-action-card__eyebrow">{{ item.eyebrow }}</p>
+                  <h2 class="mt-2 text-base font-semibold leading-6 text-foreground">{{ item.title }}</h2>
+                  <p class="mt-1 min-h-9 text-sm leading-5 text-muted-foreground">{{ item.meta }}</p>
+                  @if (item.type === 'addSheet') {
+                    <button type="button" class="dashboard-action-card__link" (click)="uiService.openAddAppSheet()">
+                      {{ item.cta }}
+                    </button>
+                  } @else {
+                    <a [routerLink]="item.route" class="dashboard-action-card__link">
+                      {{ item.cta }}
+                    </a>
+                  }
+                </article>
+              }
+            </div>
+          </div>
+
+          <aside class="momentum-panel">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="dashboard-eyebrow">{{ 'dashboard.momentum.title' | transloco }}</p>
+                <h2 class="mt-2 text-lg font-semibold text-foreground">
+                  {{ momentumDiagnosis().label }}
+                </h2>
+              </div>
+              <span class="momentum-panel__badge">{{ 'dashboard.momentum.badge' | transloco }}</span>
+            </div>
+
+            <div class="mt-4 grid items-center gap-4 sm:grid-cols-[8.5rem_1fr] lg:grid-cols-1 xl:grid-cols-[8rem_1fr]">
+              <app-momentum-gauge [score]="momentumScore()" [loading]="isLoading()"></app-momentum-gauge>
+              <div>
+                <p class="text-sm leading-6 text-muted-foreground">
+                  {{ momentumDiagnosis().body }}
                 </p>
-            </div>
-
-            <div class="pt-6 border-t border-border mt-6">
-                <div class="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Performance Matrix</span>
-                    <span class="text-emerald-500 dark:text-emerald-400 font-bold">+4.2% today</span>
+                <div class="mt-3 rounded-lg border border-primary/20 bg-primary/10 p-2.5">
+                  <p class="text-xs font-semibold uppercase text-primary">
+                    {{ 'dashboard.momentum.recommendation' | transloco }}
+                  </p>
+                  <p class="mt-2 text-sm leading-6 text-foreground">
+                    {{ momentumDiagnosis().recommendation }}
+                  </p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Active Pursuits (Col-span-6) -->
-        <div
-            class="md:col-span-6 rounded-3xl bg-card border border-border overflow-hidden flex flex-col shadow-sm card-accent-blue">
-            <div class="p-6 border-b border-border flex items-center justify-between">
-                <h3 class="font-bold text-foreground flex items-center gap-2">
-                    <lucide-icon name="briefcase" class="w-4 h-4 text-primary"></lucide-icon>
-                    Active Pursuits
-                </h3>
-                <span class="text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-md">3 ACTIVE TASKS</span>
-            </div>
-            <div class="divide-y divide-border/50">
-                @for (app of activeApplications(); track app.id) {
-                <div
-                    class="p-4 flex items-center justify-between hover:bg-muted/30 transition-colors cursor-pointer group">
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <img [src]="'https://logo.dev/' + app.domain + '?token=demo'" [alt]="app.company"
-                                class="w-10 h-10 rounded-full border border-border shadow-sm bg-white"
-                                (error)="handleLogoError($event, app)">
-                            <div
-                                class="absolute -bottom-1 -right-1 w-4 h-4 bg-card rounded-full border border-border flex items-center justify-center">
-                                <lucide-icon name="shield-check" class="w-2.5 h-2.5 text-primary"></lucide-icon>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-                                {{ app.company }}
-                            </h4>
-                            <!-- Tiny 5-step pipeline bar -->
-                            <div class="flex gap-1 mt-1">
-                                @for (step of pipelineSteps; track step.label; let i = $index) {
-                                <div class="h-1 w-5 rounded-full"
-                                    [ngClass]="{ 'bg-primary': i < app.pipelineStep, 'bg-muted': i >= app.pipelineStep }">
-                                </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-6">
-                        <!-- Match Score Progress Ring -->
-                        <div class="relative w-10 h-10">
-                            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-muted" stroke-width="3">
-                                </circle>
-                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-primary" stroke-width="3"
-                                    [attr.stroke-dasharray]="app.matchScore + ', 100'"></circle>
-                            </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-[8px] font-bold">{{
-                                app.matchScore }}%</span>
-                        </div>
-
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-tighter uppercase border"
-                            [class]="app.statusColor">
-                            {{ app.status }}
-                        </span>
-                    </div>
-                </div>
+                @if (momentumDiagnosis().type === 'addSheet') {
+                  <button type="button" class="momentum-panel__link" (click)="uiService.openAddAppSheet()">
+                    {{ momentumDiagnosis().cta }}
+                  </button>
+                } @else {
+                  <a [routerLink]="momentumDiagnosis().route" class="momentum-panel__link">
+                    {{ momentumDiagnosis().cta }}
+                  </a>
                 }
+              </div>
             </div>
-            <button
-                class="p-4 text-xs font-bold text-primary hover:text-primary/80 hover:bg-muted/30 transition-all text-center border-t border-border/50">
-                OPEN COMMAND CENTER
-            </button>
+          </aside>
+        </div>
+      </article>
+    }
+
+    <article class="dashboard-pipeline md:col-span-4">
+      <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <div>
+          <p class="dashboard-eyebrow">{{ 'dashboard.pipeline.title' | transloco }}</p>
+          <h2 class="mt-2 font-display text-xl font-semibold tracking-tight text-foreground">
+            {{ pipelineInsight().label }}
+          </h2>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+            {{ pipelineInsight().body }}
+          </p>
         </div>
 
-        <!-- AI suggestions (Intelligence Feed) (Col-span-6) -->
-        <div
-            class="md:col-span-6 rounded-3xl bg-violet-600 dark:bg-violet-900/40 border border-violet-500/50 p-8 flex flex-col relative overflow-hidden shadow-lg shadow-violet-500/10">
-            <div class="absolute top-0 right-0 p-4 opacity-10 rotate-12 scale-150">
-                <lucide-icon name="sparkles" class="w-32 h-32 text-white"></lucide-icon>
-            </div>
-
-            <div class="relative z-10 h-full flex flex-col">
-                <div class="flex items-center gap-2 text-violet-100 mb-6 font-bold text-sm tracking-widest uppercase">
-                    <lucide-icon name="sparkles" class="w-5 h-5 text-violet-200"></lucide-icon>
-                    Intelligence Feed
-                </div>
-
-                <div class="space-y-4">
-                    <!-- Tactical Alert 1 -->
-                    <div
-                        class="flex gap-4 p-4 rounded-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 hover:bg-white/15 transition-all cursor-pointer">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
-                            <lucide-icon name="file-warning" class="w-5 h-5 text-orange-300"></lucide-icon>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white uppercase tracking-tight">Kwd Deficiency Detected</p>
-                            <p class="text-xs text-violet-100 mt-1">
-                                Optimization suggested for "Distributed Systems" in Google resume.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Tactical Alert 2 -->
-                    <div
-                        class="flex gap-4 p-4 rounded-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 hover:bg-white/15 transition-all cursor-pointer">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0">
-                            <lucide-icon name="timer" class="w-5 h-5 text-amber-300"></lucide-icon>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white uppercase tracking-tight">Follow-up due</p>
-                            <p class="text-xs text-violet-100 mt-1">
-                                Stripe hasn't responded in 4 days. Send a tactical nudge?
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Tactical Alert 3 -->
-                    <div
-                        class="flex gap-4 p-4 rounded-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 hover:bg-white/15 transition-all cursor-pointer">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                            <lucide-icon name="rocket" class="w-5 h-5 text-emerald-300"></lucide-icon>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-white uppercase tracking-tight">New high-match found</p>
-                            <p class="text-xs text-violet-100 mt-1">
-                                Coinbase: Staff Backend Engineer (96% Match Score).
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <button
-                    class="mt-8 w-full py-3 bg-white dark:bg-violet-100 text-violet-700 hover:bg-violet-50 rounded-xl text-sm font-bold transition-all ai-glow-button flex items-center justify-center gap-2">
-                    Optimize All Documents
-                    <lucide-icon name="sparkles" class="w-4 h-4"></lucide-icon>
-                </button>
-            </div>
+        <div class="pipeline-insight">
+          <p class="pipeline-insight__target">{{ pipelineInsight().target }}</p>
+          <p class="mt-2 text-sm leading-6 text-foreground">{{ pipelineInsight().recommendation }}</p>
         </div>
-    </div>
-</div>
+      </div>
+
+      <div class="mt-6 grid gap-3 lg:grid-cols-4">
+        @for (stage of pipelineStageSummaries(); track stage.label) {
+          <div class="pipeline-stage" [ngClass]="getStageClass(stage.state)">
+            <p class="pipeline-stage__label">{{ stage.label }}</p>
+            <div class="mt-4 flex items-end justify-between gap-3">
+              <p class="pipeline-stage__count dashboard-mono">{{ stage.count }}</p>
+              <span class="pipeline-stage__state">{{ stage.stateLabel }}</span>
+            </div>
+            <p class="pipeline-stage__helper">{{ stage.helper }}</p>
+            <p class="pipeline-stage__action">{{ stage.action }}</p>
+          </div>
+        }
+      </div>
+    </article>
+
+    <app-pipeline-table-card
+      class="md:col-span-3"
+      [stages]="funnelStages()"
+      [applications]="applications()"
+      [companyMap]="companyMap()"
+      [loading]="isLoading()"
+      [showFunnel]="false"
+      [title]="'dashboard.workQueue.title' | transloco"
+      [subtitle]="'dashboard.workQueue.subtitle' | transloco"
+      (addApplication)="uiService.openAddAppSheet()"
+    ></app-pipeline-table-card>
+
+    <article class="readiness-panel md:col-span-1">
+      <p class="dashboard-eyebrow">{{ 'dashboard.readiness.title' | transloco }}</p>
+      <h2 class="mt-2 text-lg font-semibold text-foreground">
+        {{ 'dashboard.readiness.heading' | transloco }}
+      </h2>
+      <p class="mt-2 text-sm leading-6 text-muted-foreground">
+        {{ 'dashboard.readiness.body' | transloco }}
+      </p>
+
+      <div class="mt-5 space-y-3">
+        @for (item of readinessItems(); track item.label) {
+          <div class="readiness-item" [ngClass]="getReadinessClass(item.state)">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-foreground">{{ item.label }}</p>
+              <span class="dashboard-mono text-sm font-semibold text-foreground">{{ item.value }}</span>
+            </div>
+            <p class="mt-2 text-xs leading-5 text-muted-foreground">{{ item.body }}</p>
+          </div>
+        }
+      </div>
+
+      <a routerLink="/documents" class="readiness-panel__link">
+        {{ 'dashboard.readiness.openDocuments' | transloco }}
+      </a>
+    </article>
+
+    <app-global-footprint
+      class="dashboard-map-card md:col-span-4"
+      [locations]="footprintLocations()"
+      [loading]="isLoading()"
+    ></app-global-footprint>
+  </div>
+</section>

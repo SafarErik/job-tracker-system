@@ -4,6 +4,8 @@
  * ============================================================================
  */
 
+import { FitReview } from '../../../core/models/fit-review.model';
+
 /**
  * Result of AI analysis on a job description
  */
@@ -25,6 +27,7 @@ export interface AiGeneratedAssets {
     gaps: string[];
     advice: string[];
     aiFeedback: string;
+    fitReview?: FitReview | null;
     tailoredResume: string;
     tailoredCoverLetter: string;
 }

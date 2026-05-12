@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8 min-h-screen relative" (dragover)="onDragOver($event)"
+<div class="app-page min-h-screen relative" (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
 
   <!-- Upload Progress -->
@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between mb-2">
       <span class="text-sm font-medium text-primary flex items-center gap-2">
         <ng-icon name="lucideLoader2" class="h-4 w-4 animate-spin"></ng-icon>
-        Scanning & Encrypting...
+        Uploading document...
       </span>
       <span class="text-sm text-muted-foreground">{{ uploadProgress() }}%</span>
     </div>
@@ -18,21 +18,13 @@
   </div>
   }
 
-  <!-- Header -->
-  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-    <div>
-      <h1 class="text-3xl font-bold tracking-tight text-foreground mb-2">Strategic Asset Library</h1>
-      <p class="text-muted-foreground">Manage your deployed career weaponry and master blueprints.</p>
-    </div>
-
-    <!-- Right Side: Search & Storage -->
-    <div class="flex items-center gap-6">
-      <!-- Storage Meter (Thin Elegant Line) -->
-      <div class="flex flex-col items-end gap-1.5 w-48">
+  <section class="surface-card mb-8 p-4 sm:p-5">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex flex-col gap-1.5 md:w-64">
         <div
           class="flex items-center justify-between w-full text-[10px] font-medium uppercase tracking-widest text-muted-foreground">
-          <span>Vault Capacity</span>
-          <span>{{ formatFileSize(store.usedStorage()) }} Used</span>
+          <span>{{ 'documents.capacity.label' | transloco }}</span>
+          <span>{{ 'documents.capacity.used' | transloco: { size: formatFileSize(store.usedStorage()) } }}</span>
         </div>
         <div class="h-1 w-full bg-muted rounded-full overflow-hidden">
           <div class="h-full transition-all duration-500 rounded-full" [style.width.%]="store.storagePercentage()"
@@ -41,28 +33,27 @@
         </div>
       </div>
 
-      <!-- Ingestion Zone (Drop Target) -->
       <div class="relative">
         <input type="file" #fileInput (change)="onFileSelected($event)" accept=".pdf" style="display: none" />
         <button hlmBtn (click)="fileInput.click()"
-          class="bg-card border border-border hover:border-primary/50 hover:bg-muted text-foreground gap-2 rounded-xl transition-all">
+          class="bg-card border border-border hover:border-accent/50 hover:bg-muted text-foreground gap-2 rounded-lg transition-all">
           <ng-icon name="lucideFileUp" class="h-4 w-4"></ng-icon>
-          Ingest Asset
+          {{ 'documents.actions.upload' | transloco }}
         </button>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- Loading & Error -->
   @if (store.isLoading()) {
   <div class="flex flex-col items-center justify-center py-24 text-muted-foreground gap-4">
     <ng-icon name="lucideLoader2" class="h-8 w-8 animate-spin text-primary"></ng-icon>
-    <p>Decryption in progress...</p>
+    <p>{{ 'documents.loading' | transloco }}</p>
   </div>
   }
 
   @if (store.error()) {
-  <app-error-state title="Vault Locked" [message]="store.error()!" icon="lucideFileWarning"
+  <app-error-state title="Library Unavailable" [message]="store.error()!" icon="lucideFileWarning"
     (retry)="store.loadAll()"></app-error-state>
   }
 
@@ -73,17 +64,17 @@
   <section class="mb-16">
     <div class="flex items-center gap-3 mb-4 text-sm font-bold uppercase tracking-widest text-primary/80 pl-1">
       <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
-      The Master Blueprint
+      {{ 'documents.master.label' | transloco }}
     </div>
 
     <div
-      class="relative group w-full bg-card/40 border-2 border-dashed border-primary/30 rounded-3xl p-8 hover:bg-card/60 hover:border-primary/50 transition-all duration-500">
+      class="relative group w-full bg-card/40 border-2 border-dashed border-primary/30 rounded-lg p-8 hover:bg-card/60 hover:border-primary/50 transition-all duration-300">
       <!-- Badge -->
       <div class="absolute -top-3 -right-3">
         <span
-          class="flex items-center gap-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+          class="flex items-center gap-1 bg-primary text-primary-foreground text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
           <ng-icon name="lucideAward" class="h-3 w-3"></ng-icon>
-          Master
+          {{ 'documents.master.badge' | transloco }}
         </span>
       </div>
 
@@ -94,27 +85,25 @@
         </div>
 
         <div class="flex-1 space-y-2 text-center md:text-left">
-          <h2 class="text-3xl font-serif text-foreground tracking-wide">{{ master.originalFileName }}</h2>
+          <h2 class="text-3xl font-display font-semibold text-foreground tracking-tight">{{ master.originalFileName }}</h2>
           <div
             class="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs text-muted-foreground font-medium">
             <span>{{ formatFileSize(master.fileSize) }}</span>
             <span class="w-1 h-1 rounded-full bg-border"></span>
-            <span>Updated {{ formatDate(master.uploadedAt) }}</span>
+            <span>{{ 'documents.master.updated' | transloco: { date: formatDate(master.uploadedAt) } }}</span>
             <span class="w-1 h-1 rounded-full bg-border"></span>
-            <span class="text-primary">Source of Truth</span>
+            <span class="text-primary">{{ 'documents.master.primaryDocument' | transloco }}</span>
           </div>
           <p class="text-sm text-muted-foreground max-w-2xl mt-2">
-            This is your primary source of truth for all AI-powered optimizations. Keep this document comprehensive and
-            up-to-date.
+            {{ 'documents.master.body' | transloco }}
           </p>
         </div>
 
         <div class="flex items-center gap-3">
           <button hlmBtn variant="ghost" class="text-muted-foreground hover:text-foreground"
-            (click)="fileInput.click()">Update
-            Master</button>
+            (click)="fileInput.click()">{{ 'documents.master.update' | transloco }}</button>
           <button hlmBtn class="bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-lg"
-            (click)="previewDocument(master)">Open Preview</button>
+            (click)="previewDocument(master)">{{ 'documents.master.openPreview' | transloco }}</button>
         </div>
       </div>
     </div>
@@ -122,12 +111,10 @@
   } @else {
   <!-- Empty Master State -->
   <section class="mb-16">
-    <div class="border-2 border-dashed border-border bg-muted/20 rounded-3xl p-12 text-center">
-      <h3 class="text-lg font-bold text-foreground mb-2">No Master Blueprint Set</h3>
-      <p class="text-muted-foreground text-sm mb-6">Select a document from your library to promote it to Master status,
-        or
-        upload a new one.</p>
-      <button hlmBtn variant="outline" (click)="fileInput.click()">Upload Master Candidate</button>
+    <div class="border-2 border-dashed border-border bg-muted/20 rounded-lg p-12 text-center">
+      <h3 class="text-lg font-bold text-foreground mb-2">{{ 'documents.emptyMaster.title' | transloco }}</h3>
+      <p class="text-muted-foreground text-sm mb-6">{{ 'documents.emptyMaster.body' | transloco }}</p>
+      <button hlmBtn variant="outline" (click)="fileInput.click()">{{ 'documents.emptyMaster.cta' | transloco }}</button>
     </div>
   </section>
   }
@@ -136,7 +123,7 @@
   <section>
     <div class="flex items-center gap-3 mb-6 text-sm font-bold uppercase tracking-widest text-success/80 pl-1">
       <ng-icon name="lucideLibrary" class="h-4 w-4"></ng-icon>
-      Deployed Asset Library
+      {{ 'documents.tailored.title' | transloco }}
     </div>
 
     <!-- Filter / Sub-Nav could go here -->
@@ -145,8 +132,9 @@
       <!-- Column 1: Tailored Resumes -->
       <div class="lg:col-span-2 space-y-6">
         @if (tailoredResumes().length > 0) {
-        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Tailored Resumes ({{
-          tailoredResumes().length }})</h3>
+        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">
+          {{ 'documents.tailored.resumes' | transloco: { count: tailoredResumes().length } }}
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           @for (doc of tailoredResumes(); track doc.id) {
           <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
@@ -165,8 +153,7 @@
               class="text-muted-foreground group-hover:text-primary transition-colors"></ng-icon>
           </div>
           <p class="text-muted-foreground text-xs max-w-[200px] leading-relaxed">
-            No assets deployed yet. Generate a tailored resume in the <span
-              class="text-primary font-medium hover:underline">Application Workstation</span> to see it here.
+            {{ 'documents.tailored.emptyResumes' | transloco }}
           </p>
         </div>
         }
@@ -175,8 +162,9 @@
       <!-- Column 2: Cover Letters / Other -->
       <div class="space-y-6">
         @if (coverLetters().length > 0) {
-        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Cover Letters ({{
-          coverLetters().length }})</h3>
+        <h3 class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">
+          {{ 'documents.tailored.coverLetters' | transloco: { count: coverLetters().length } }}
+        </h3>
         <div class="grid grid-cols-1 gap-4">
           @for (doc of coverLetters(); track doc.id) {
           <app-document-card [doc]="doc" (preview)="previewDocument($event)" (download)="downloadDocument($event)"
@@ -193,8 +181,8 @@
   <!-- EMPTY STATE (overall) -->
   @if (store.filteredDocuments().length === 0) {
   <div class="text-center py-20">
-    <p class="text-muted-foreground">The vault is complete empty.</p>
-    <button class="text-primary hover:underline mt-2" (click)="fileInput.click()">Ingest your first asset</button>
+    <p class="text-muted-foreground">{{ 'documents.emptyLibrary.body' | transloco }}</p>
+    <button class="text-primary hover:underline mt-2" (click)="fileInput.click()">{{ 'documents.emptyLibrary.cta' | transloco }}</button>
   </div>
   }
   }
@@ -203,9 +191,9 @@
   @if (isDragging()) {
   <div
     class="fixed inset-0 bg-primary/10 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none animate-in fade-in duration-200">
-    <div class="bg-card border border-primary/50 p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4">
+    <div class="bg-card border border-primary/50 p-8 rounded-lg shadow-2xl flex flex-col items-center gap-4">
       <ng-icon name="lucideFileUp" class="h-12 w-12 text-primary"></ng-icon>
-      <p class="text-xl font-bold text-foreground">Drop to Ingest</p>
+      <p class="text-xl font-bold text-foreground">{{ 'documents.dropToUpload' | transloco }}</p>
     </div>
   </div>
   }

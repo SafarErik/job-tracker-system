@@ -39,12 +39,12 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
           <ng-icon name="lucideGraduationCap" class="h-4 w-4 text-primary"></ng-icon>
           {{ title() }}
         </h2>
-        <span class="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{{ selectedSkills().length }} Active</span>
+        <span class="text-[10px] text-muted-foreground uppercase font-semibold tracking-widest">{{ selectedSkills().length }} active</span>
       </div>
       }
 
       <!-- Search Bar (Spartan Command) -->
-      <hlm-command [class]="(compact() ? 'min-h-[150px]' : 'min-h-[300px]') + ' rounded-xl border border-input bg-background shadow-sm overflow-hidden flex flex-col'">
+      <hlm-command [class]="(compact() ? 'min-h-[150px]' : 'min-h-[300px]') + ' rounded-lg border border-input bg-background shadow-sm overflow-hidden flex flex-col'">
         <hlm-command-search class="border-b border-border">
           <ng-icon hlm name="lucideSearch" class="ml-2 h-4 w-4 text-muted-foreground"></ng-icon>
           <input hlm-command-search-input [formControl]="searchControl"
@@ -55,14 +55,14 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
         @if (!compact()) {
         <div class="p-4 bg-muted/20 border-b border-border/40 space-y-3 min-h-[60px]">
           <div class="flex items-center justify-between">
-            <h4 class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Active Stack</h4>
+            <h4 class="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest">Selected skills</h4>
             <span class="text-[9px] text-muted-foreground/60 uppercase font-bold">Click to remove</span>
           </div>
 
           <div class="flex flex-wrap gap-2">
             @for (skill of selectedSkills(); track skill) {
             <div @fadeScale
-              class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-primary/5 text-primary border border-primary/20 cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all select-none"
+              class="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-primary/5 text-primary border border-primary/20 cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all select-none"
               (click)="removeSkill(skill)" title="Remove {{ skill }}">
               {{ skill }}
               <ng-icon name="lucideX"
@@ -70,7 +70,7 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
             </div>
             }
             @if (selectedSkills().length === 0) {
-            <span class="text-xs text-muted-foreground/50 italic py-2">Start typing above to build the stack...</span>
+            <span class="text-xs text-muted-foreground/60 py-2">Search and add the skills you want Horizon to consider.</span>
             }
           </div>
         </div>
@@ -105,11 +105,11 @@ import { lucidePlus, lucideSearch, lucideX, lucideGraduationCap, lucideCheck } f
       <!-- Quick Suggestions - ONLY SHOW IF NOT COMPACT -->
       @if (!compact() && suggestions().length > 0) {
       <div class="space-y-2">
-        <div class="text-[9px] uppercase font-black text-muted-foreground/60 tracking-[0.2em]">Recommendations</div>
+        <div class="text-[9px] uppercase font-semibold text-muted-foreground/60 tracking-[0.16em]">Recommendations</div>
         <div class="flex flex-wrap gap-2">
           @for (skill of suggestions().slice(0, 6); track skill.id) {
           <button (click)="addSkill(skill.name)"
-            class="px-2.5 py-1 text-[10px] font-black uppercase rounded-full bg-secondary/40 text-secondary-foreground hover:bg-primary/10 hover:text-primary transition-colors border border-transparent hover:border-primary/20">
+            class="px-2.5 py-1 text-[10px] font-semibold rounded-full bg-secondary/40 text-secondary-foreground hover:bg-primary/10 hover:text-primary transition-colors border border-transparent hover:border-primary/20">
             + {{ skill.name }}
           </button>
           }
@@ -138,7 +138,7 @@ export class SkillSelectorComponent implements OnInit {
 
   // Inputs
   selectedSkills = input<string[]>([]);
-  title = input<string>('Skills Engine');
+  title = input<string>('Skills');
   placeholder = input<string>('Add a skill (e.g. React)...');
   compact = input<boolean>(false);
   hideTitle = input<boolean>(false);

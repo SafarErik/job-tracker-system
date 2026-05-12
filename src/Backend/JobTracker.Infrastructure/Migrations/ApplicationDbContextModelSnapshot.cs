@@ -391,6 +391,9 @@ namespace JobTracker.Infrastructure.Migrations
                     b.Property<decimal?>("EquityValue")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("FitReviewJson")
+                        .HasColumnType("text");
+
                     b.Property<string>("GeneratedCoverLetter")
                         .HasColumnType("text");
 

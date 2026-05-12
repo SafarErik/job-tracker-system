@@ -7,6 +7,7 @@ export class UiStateService {
     readonly isAddAppSheetOpen = signal(false);
     readonly isJobSettingsOpen = signal(false);
     readonly isProfileSettingsOpen = signal(false);
+    readonly isAiDrawerOpen = signal(false);
 
     openAddAppSheet() {
         this.isAddAppSheetOpen.set(true);
@@ -31,4 +32,17 @@ export class UiStateService {
     closeProfileSettings() {
         this.isProfileSettingsOpen.set(false);
     }
+
+    openAiDrawer() {
+        this.isAiDrawerOpen.set(true);
+    }
+
+    closeAiDrawer() {
+        this.isAiDrawerOpen.set(false);
+    }
+
+    toggleAiDrawer() {
+        this.isAiDrawerOpen.update((v) => !v);
+    }
 }
+

@@ -1,6 +1,6 @@
 <hlm-alert-dialog [state]="isVisible ? 'open' : 'closed'" (closed)="onDialogClosed()">
   <hlm-alert-dialog-content *brnAlertDialogContent="let ctx"
-    class="max-w-[440px] rounded-[2.5rem] p-0 overflow-hidden border border-border shadow-2xl bg-popover/95 backdrop-blur-3xl">
+    class="max-w-[440px] rounded-lg p-0 overflow-hidden border border-border shadow-2xl bg-popover/95 backdrop-blur-xl">
 
     <!-- Top Visual Accent -->
     <div class="h-1.5 w-full shrink-0 transition-all duration-700" [class.bg-destructive]="isDestructive"
@@ -10,20 +10,17 @@
       <div class="flex flex-col items-center text-center gap-6">
         <!-- Iconic Header with Pulse -->
         <div
-          class="h-20 w-20 rounded-[1.75rem] flex items-center justify-center transition-all duration-700 shadow-sm relative group"
+          class="h-16 w-16 rounded-lg flex items-center justify-center transition-all duration-300 shadow-sm relative group"
           [class]="{ 'bg-destructive/10': isDestructive, 'bg-primary/10': !isDestructive }">
 
           <!-- Subtle Glow -->
-          <div class="absolute inset-0 rounded-[1.75rem] blur-xl opacity-20 group-hover:opacity-40 transition-opacity"
-            [class.bg-destructive]="isDestructive" [class.bg-primary]="!isDestructive"></div>
-
           <ng-icon [name]="isDestructive ? 'lucideAlertTriangle' : 'lucideInfo'" class="text-4xl relative z-10"
             [class.text-destructive]="isDestructive" [class.text-primary]="!isDestructive">
           </ng-icon>
         </div>
 
         <div class="space-y-3">
-          <h2 hlmAlertDialogTitle class="text-[1.5rem] font-black tracking-tight leading-tight text-foreground">
+          <h2 hlmAlertDialogTitle class="text-xl font-semibold tracking-tight leading-tight text-foreground">
             {{ title }}
           </h2>
           <p hlmAlertDialogDescription class="text-sm font-medium text-muted-foreground leading-relaxed px-2">
@@ -35,7 +32,7 @@
       <div class="flex flex-col gap-3 pt-2">
         <!-- Confirm Action (Top Priority) -->
         <button hlmBtn
-          class="w-full rounded-2xl font-black py-7 text-xs uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all border-none relative overflow-hidden group"
+          class="w-full rounded-lg font-semibold py-6 text-sm shadow-lg active:scale-[0.99] transition-all border-none relative overflow-hidden group"
           [class.bg-destructive]="isDestructive" [class.text-white]="isDestructive"
           [class.hover:bg-destructive/90]="isDestructive" [class.bg-primary]="!isDestructive"
           [class.text-primary-foreground]="!isDestructive" [class.hover:bg-primary/90]="!isDestructive"
@@ -47,9 +44,8 @@
 
         <!-- Cancel (Secondary with Animation) -->
         <button hlmBtn variant="ghost"
-          class="w-full rounded-2xl font-bold py-7 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-all hover:bg-muted/50 group"
+          class="w-full rounded-lg font-semibold py-6 text-sm text-muted-foreground hover:text-foreground transition-all hover:bg-muted/50 group"
           (click)="cancel(ctx)">
-          <span class="inline-block transition-transform group-hover:-translate-x-1 group-hover:opacity-70">←</span>
           <span class="mx-2">{{ cancelText }}</span>
         </button>
       </div>

@@ -10,3 +10,6 @@ export * from './notification.service';
 export * from './theme.service';
 export * from './ui-state.service';
 export * from './breadcrumb.service';
+export * from './loading.service';
+export * from './intelligence.service';
+export * from '../i18n';

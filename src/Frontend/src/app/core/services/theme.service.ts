@@ -7,6 +7,8 @@ export type Theme = 'light' | 'dark' | 'system';
 export class ThemeService {
   private readonly _document = inject(DOCUMENT);
   private readonly _platformId = inject(PLATFORM_ID);
+  private _themeSwitchRafOne: number | null = null;
+  private _themeSwitchRafTwo: number | null = null;
 
   // The raw setting stored (light, dark, or system)
   readonly themeSetting = signal<Theme>(this.getInitialTheme());
@@ -23,24 +25,28 @@ export class ThemeService {
     return setting === 'dark';
   });
 
+  readonly resolvedTheme = computed<'light' | 'dark'>(() =>
+    this.isDark() ? 'dark' : 'light',
+  );
+
   constructor() {
     // Initialize system preference
     if (isPlatformBrowser(this._platformId)) {
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      this.systemPrefersDark.set(mediaQuery.matches);
+      const mediaQuery = this._document.defaultView?.matchMedia?.('(prefers-color-scheme: dark)');
 
-      // Listen for OS-level changes
-      mediaQuery.addEventListener('change', (e) => {
-        this.systemPrefersDark.set(e.matches);
-        if (this.themeSetting() === 'system') {
-          this.syncTheme('system');
-        }
-      });
+      if (mediaQuery) {
+        this.systemPrefersDark.set(mediaQuery.matches);
+
+        // Listen for OS-level changes
+        mediaQuery.addEventListener('change', (e) => {
+          this.systemPrefersDark.set(e.matches);
+        });
+      }
     }
 
-    // Whenever the setting or system preference changes, update the DOM (effect checks dependencies)
+    // Keep DOM theme state in sync with the active setting and system preference.
     effect(() => {
-      this.syncTheme(this.themeSetting());
+      this.syncTheme(this.themeSetting(), this.resolvedTheme());
     });
   }
 
@@ -51,40 +57,54 @@ export class ThemeService {
     return 'system';
   }
 
-  /**
-   * The "Sync" core logic. 
-   * Updates the HTML class and the color-scheme meta tag.
-   */
-  private syncTheme(theme: Theme) {
+  private syncTheme(theme: Theme, resolvedTheme: 'light' | 'dark') {
     if (!isPlatformBrowser(this._platformId)) return;
 
     const html = this._document.documentElement;
-    const effectiveIsDark =
-      theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const nextIsDark = resolvedTheme === 'dark';
+    const currentIsDark = html.classList.contains('dark');
+    const isVisualThemeChange = currentIsDark !== nextIsDark;
 
-    if (effectiveIsDark) {
-      html.classList.add('dark');
-      html.style.colorScheme = 'dark';
-    } else {
-      html.classList.remove('dark');
-      html.style.colorScheme = 'light';
+    if (isVisualThemeChange) {
+      this.startThemeSwitch();
     }
+
+    html.dataset['theme'] = theme;
+    html.classList.toggle('dark', nextIsDark);
+    html.style.colorScheme = resolvedTheme;
 
     localStorage.setItem('theme', theme);
   }
 
-  toggle() {
-    // Check if the browser supports View Transitions
-    if (!(this._document as any).startViewTransition) {
-      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
-      return;
+  private startThemeSwitch(): void {
+    const html = this._document.documentElement;
+    const win = this._document.defaultView;
+
+    if (!win) return;
+
+    html.classList.add('theme-switching');
+
+    if (this._themeSwitchRafOne !== null) {
+      win.cancelAnimationFrame(this._themeSwitchRafOne);
+      this._themeSwitchRafOne = null;
     }
 
-    // Cinematic fade transition
-    (this._document as any).startViewTransition(() => {
-      this.themeSetting.update(t => t === 'dark' ? 'light' : 'dark');
+    if (this._themeSwitchRafTwo !== null) {
+      win.cancelAnimationFrame(this._themeSwitchRafTwo);
+      this._themeSwitchRafTwo = null;
+    }
+
+    this._themeSwitchRafOne = win.requestAnimationFrame(() => {
+      this._themeSwitchRafTwo = win.requestAnimationFrame(() => {
+        html.classList.remove('theme-switching');
+        this._themeSwitchRafOne = null;
+        this._themeSwitchRafTwo = null;
+      });
     });
+  }
+
+  toggle() {
+    this.setTheme(this.isDark() ? 'light' : 'dark');
   }
 
   setTheme(theme: Theme) {

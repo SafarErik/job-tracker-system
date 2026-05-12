@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Models
@@ -37,17 +37,18 @@ interface CalendarDay {
   selector: 'app-calendar-view',
   imports: [CommonModule, ...HlmButtonImports, ...HlmCardImports],
   templateUrl: './calendar-view.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarViewComponent implements OnChanges {
+export class CalendarViewComponent {
   /**
    * Input: All job applications to display
    */
-  @Input() applications: JobApplication[] = [];
+  applications = input<JobApplication[]>([]);
 
   /**
    * Current month being displayed
    */
-  currentDate = new Date();
+  currentDate = signal(new Date());
 
   /**
    * Calendar days for the current view (including previous/next month overflow)
@@ -72,18 +73,21 @@ export class CalendarViewComponent implements OnChanges {
   /**
    * React to input changes
    */
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['applications']) {
+  constructor() {
+    effect(() => {
+      this.applications();
+      this.currentDate();
       this.generateCalendar();
-    }
+    });
   }
 
   /**
    * Generate calendar grid for the current month
    */
   private generateCalendar(): void {
-    const year = this.currentDate.getFullYear();
-    const month = this.currentDate.getMonth();
+    const currentDate = this.currentDate();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
 
     // First day of the month
     const firstDay = new Date(year, month, 1);
@@ -106,7 +110,7 @@ export class CalendarViewComponent implements OnChanges {
 
     while (currentDateIter <= endDate) {
       const dateStr = this.formatDateForComparison(currentDateIter);
-      const dayApplications = this.applications.filter((app) => {
+      const dayApplications = this.applications().filter((app) => {
         const appDate = this.formatDateForComparison(new Date(app.appliedAt));
         return appDate === dateStr;
       });
@@ -118,7 +122,7 @@ export class CalendarViewComponent implements OnChanges {
         applications: dayApplications,
       });
 
-      currentDateIter.setUTCDate(currentDateIter.getUTCDate() + 1);
+      currentDateIter.setDate(currentDateIter.getDate() + 1);
     }
   }
 
@@ -126,9 +130,9 @@ export class CalendarViewComponent implements OnChanges {
    * Format date for comparison (YYYY-MM-DD)
    */
   private formatDateForComparison(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
@@ -136,8 +140,8 @@ export class CalendarViewComponent implements OnChanges {
    * Navigate to previous month
    */
   previousMonth(): void {
-    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
-    this.generateCalendar();
+    const current = this.currentDate();
+    this.currentDate.set(new Date(current.getFullYear(), current.getMonth() - 1, 1));
     this.selectedDay = null;
   }
 
@@ -145,8 +149,8 @@ export class CalendarViewComponent implements OnChanges {
    * Navigate to next month
    */
   nextMonth(): void {
-    this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
-    this.generateCalendar();
+    const current = this.currentDate();
+    this.currentDate.set(new Date(current.getFullYear(), current.getMonth() + 1, 1));
     this.selectedDay = null;
   }
 
@@ -154,8 +158,7 @@ export class CalendarViewComponent implements OnChanges {
    * Navigate to current month
    */
   goToToday(): void {
-    this.currentDate = new Date();
-    this.generateCalendar();
+    this.currentDate.set(new Date());
     this.selectedDay = null;
   }
 
@@ -163,7 +166,7 @@ export class CalendarViewComponent implements OnChanges {
    * Get month and year string for header
    */
   getMonthYearString(): string {
-    return this.currentDate.toLocaleDateString('en-US', {
+    return this.currentDate().toLocaleDateString('en-US', {
       month: 'long',
       year: 'numeric',
     });

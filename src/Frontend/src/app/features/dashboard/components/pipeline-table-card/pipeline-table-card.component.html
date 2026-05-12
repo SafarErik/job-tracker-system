@@ -1,0 +1,142 @@
+<article class="bento-card flex h-full flex-col p-5">
+  @if (loading()) {
+    <div class="flex flex-col gap-4">
+      <div hlmSkeleton class="h-4 w-48 rounded-md"></div>
+      <div class="space-y-3">
+        @for (i of skeletonRows; track i) {
+          <div hlmSkeleton class="h-8 w-full rounded-lg"></div>
+        }
+      </div>
+      <div hlmSkeleton class="h-px w-full"></div>
+      <div class="space-y-3">
+        @for (i of skeletonRows; track i) {
+          <div class="flex items-center gap-3">
+            <div hlmSkeleton class="h-7 w-7 rounded-md"></div>
+            <div hlmSkeleton class="h-3 w-32 rounded-md"></div>
+            <div hlmSkeleton class="ml-auto h-3 w-16 rounded-md"></div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    @if (showFunnel()) {
+      <app-pipeline-chart [stages]="stages()"></app-pipeline-chart>
+      <div hlmSeparator class="my-4"></div>
+      <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+        {{ 'dashboard.workQueue.title' | transloco }}
+      </h3>
+    } @else {
+      <div class="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-[0.16em] text-foreground">
+            {{ title() || ('dashboard.workQueue.title' | transloco) }}
+          </h3>
+          <p class="mt-1 text-xs text-muted-foreground">
+            {{ subtitle() || ('dashboard.workQueue.subtitle' | transloco) }}
+          </p>
+        </div>
+        <span class="text-xs text-muted-foreground">
+          {{ 'dashboard.workQueue.itemCount' | transloco: { count: recentApps().length } }}
+        </span>
+      </div>
+    }
+
+    @if (recentApps().length > 0) {
+      <div class="table-scroll overflow-x-auto overflow-y-auto">
+        <table class="min-w-full text-sm text-foreground">
+          <thead>
+            <tr
+              class="border-b border-border text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.opportunity' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.signal' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.nextAction' | transloco }}</th>
+              <th class="pb-3 text-left font-medium">{{ 'dashboard.workQueue.columns.age' | transloco }}</th>
+              <th class="pb-3 text-right font-medium">{{ 'dashboard.workQueue.columns.fit' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (app of recentApps(); track trackByApp($index, app)) {
+              <tr class="queue-row group border-b border-border/60">
+                <td class="py-3 pr-4">
+                  <div class="flex items-center gap-3">
+                    @if (getCompanyLogo(app); as logo) {
+                      <img
+                        [src]="logo"
+                        alt=""
+                        class="h-8 w-8 rounded-lg border border-border object-cover"
+                      />
+                    } @else {
+                      <div
+                        class="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-[10px] font-semibold text-foreground"
+                      >
+                        {{ getCompanyInitials(getCompanyName(app)) }}
+                      </div>
+                    }
+                    <div class="min-w-0">
+                      <a
+                        [routerLink]="['/applications', app.id]"
+                        class="block max-w-[12rem] truncate text-sm font-semibold text-foreground hover:text-primary"
+                      >
+                        {{ getCompanyName(app) }}
+                      </a>
+                      <p class="mt-0.5 max-w-[13rem] truncate text-xs text-muted-foreground">
+                        {{ app.position }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td class="py-3 pr-4">
+                  <span
+                    class="inline-flex rounded-full border px-2 py-1 text-[10px] font-semibold"
+                    [ngClass]="getAttentionClass(app)"
+                  >
+                    {{ getAttentionLabel(app) }}
+                  </span>
+                  <p class="mt-1 text-[11px] text-muted-foreground">{{ getStatusLabel(app.status) }}</p>
+                </td>
+                <td class="py-3 pr-4">
+                  <p class="max-w-[12rem] text-xs font-semibold" [ngClass]="getNextActionClass(app)">
+                    {{ getNextAction(app) }}
+                  </p>
+                  <p class="mt-1 text-[11px]" [ngClass]="getPriorityClass(app.priority)">
+                    {{ getPriorityLabel(app.priority) }} {{ 'dashboard.workQueue.priority.label' | transloco }}
+                  </p>
+                </td>
+                <td class="py-3 pr-4 text-xs text-muted-foreground">
+                  <span class="metric-mono">{{ getAgeDays(app) }}d</span>
+                  <p class="mt-1 text-[11px]">{{ app.appliedAt | date: 'MMM d' }}</p>
+                </td>
+                <td class="py-3 text-right">
+                  <span class="metric-mono text-xs text-muted-foreground">
+                    {{ app.matchScore != null ? app.matchScore + '%' : '-' }}
+                  </span>
+                  <a
+                    [routerLink]="['/applications', app.id]"
+                    class="mt-1 block text-[11px] font-semibold text-primary opacity-0 transition-opacity group-hover:opacity-100"
+                  >
+                    {{ 'common.actions.open' | transloco }}
+                  </a>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="rounded-lg border border-dashed border-border bg-muted/20 px-5 py-8 text-center">
+        <p class="text-sm font-semibold text-foreground">{{ 'dashboard.workQueue.empty.title' | transloco }}</p>
+        <p class="mx-auto mt-2 max-w-sm text-xs leading-5 text-muted-foreground">
+          {{ 'dashboard.workQueue.empty.body' | transloco }}
+        </p>
+        <button
+          type="button"
+          class="mt-4 inline-flex border-0 bg-transparent p-0 text-xs font-semibold text-primary"
+          (click)="addApplication.emit()"
+        >
+          {{ 'dashboard.workQueue.empty.cta' | transloco }}
+        </button>
+      </div>
+    }
+  }
+</article>

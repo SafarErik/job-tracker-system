@@ -5,7 +5,11 @@ using JobTracker.Core.Entities;
 using JobTracker.Core.Interfaces;
 using JobTracker.Application.Interfaces;
 using JobTracker.Core.Enums;
+using JobTracker.Core.Models;
 using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 
 namespace JobTracker.Application.Services;
 
@@ -24,6 +28,12 @@ public class JobApplicationService : IJobApplicationService
     private readonly ILogger<JobApplicationService> _logger;
 
     private const string MissingAiInputsMessage = "Please upload a Master Resume and add skills to your profile first.";
+    private static readonly JsonSerializerOptions FitReviewJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = false
+    };
 
     public JobApplicationService(
         IJobApplicationRepository jobRepository,
@@ -99,7 +109,11 @@ public class JobApplicationService : IJobApplicationService
         if (dto.Position != null) existing.Position = dto.Position;
         if (dto.CompanyId.HasValue) existing.CompanyId = dto.CompanyId.Value;
         if (dto.JobUrl != null) existing.JobUrl = dto.JobUrl;
-        if (dto.Description != null) existing.Description = dto.Description;
+        if (dto.Description != null && dto.Description != existing.Description)
+        {
+            existing.Description = dto.Description;
+            existing.FitReviewJson = null;
+        }
         if (dto.Status.HasValue) existing.Status = dto.Status.Value;
         if (dto.JobType.HasValue) existing.JobType = dto.JobType.Value;
         if (dto.WorkplaceType.HasValue) existing.WorkplaceType = dto.WorkplaceType.Value;
@@ -136,6 +150,35 @@ public class JobApplicationService : IJobApplicationService
 
         await _jobRepository.DeleteAsync(id);
         return true;
+    }
+
+    public async Task<RefinedJobBriefDto> RefineJobBriefAsync(Guid jobId, string userId, string description)
+    {
+        var application = await _jobRepository.GetByIdAsync(jobId);
+        if (application == null || application.UserId != userId)
+        {
+            throw new KeyNotFoundException($"Job application {jobId} not found");
+        }
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new InvalidOperationException("A job description is required before it can be refined.");
+        }
+
+        var companyName = application.Company?.Name ?? "the hiring company";
+        var result = await _aiService.RefineJobBriefAsync(description, companyName, application.Position);
+
+        if (!result.Success)
+        {
+            throw new InvalidOperationException(result.ErrorMessage ?? "Job brief refinement failed");
+        }
+
+        return new RefinedJobBriefDto
+        {
+            Description = result.Description,
+            RoleBrief = result.RoleBrief,
+            Changes = result.Changes
+        };
     }
 
     public async Task<string> GenerateCoverLetterAsync(Guid jobId, string userId)
@@ -214,7 +257,7 @@ public class JobApplicationService : IJobApplicationService
             var analysisResult = await _aiService.AnalyzeJobAsync(jobDescription, skillsList, resumeText);
 
             // 3. Apply Logic
-            ApplyAnalysisResult(application, analysisResult);
+        ApplyAnalysisResult(application, analysisResult, jobDescription);
 
             // 4. Save
             await _jobRepository.UpdateAsync(application);
@@ -254,7 +297,7 @@ public class JobApplicationService : IJobApplicationService
             throw new InvalidOperationException(analysisResult.ErrorMessage ?? "AI generation failed");
         }
 
-        ApplyAnalysisResult(application, analysisResult);
+            ApplyAnalysisResult(application, analysisResult, jobDescription);
         await _jobRepository.UpdateAsync(application);
 
         return new AiGeneratedAssetsDto
@@ -264,6 +307,7 @@ public class JobApplicationService : IJobApplicationService
             Gaps = analysisResult.Gaps,
             Advice = analysisResult.Advice,
             AiFeedback = application.AiFeedback ?? string.Empty,
+            FitReview = DeserializeFitReview(application.FitReviewJson),
             TailoredResume = analysisResult.TailoredResume ?? string.Empty,
             TailoredCoverLetter = analysisResult.TailoredCoverLetter ?? string.Empty
         };
@@ -279,6 +323,7 @@ public class JobApplicationService : IJobApplicationService
 
         existing.AiFeedback = feedbackMessage;
         existing.MatchScore = 0;
+        existing.ConcurrencyToken = Guid.NewGuid();
         await _jobRepository.UpdateAsync(existing);
 
         return MapToDto(existing);
@@ -383,12 +428,16 @@ public class JobApplicationService : IJobApplicationService
         return feedbackBuilder.ToString().Trim();
     }
 
-    private static void ApplyAnalysisResult(JobApplication application, AiAnalysisResult analysisResult)
+    private static void ApplyAnalysisResult(JobApplication application, AiAnalysisResult analysisResult, string jobDescription)
     {
         if (analysisResult.Success)
         {
             application.MatchScore = analysisResult.MatchScore;
             application.AiFeedback = BuildAiFeedback(analysisResult);
+            application.FitReviewJson = SerializeFitReview(
+                NormalizeFitReview(analysisResult, jobDescription)
+            );
+            application.ConcurrencyToken = Guid.NewGuid();
 
             if (!string.IsNullOrWhiteSpace(analysisResult.TailoredCoverLetter))
             {
@@ -400,6 +449,139 @@ public class JobApplicationService : IJobApplicationService
             application.AiFeedback = $"Analysis failed: {analysisResult.ErrorMessage}";
         }
     }
+
+    private static FitReview NormalizeFitReview(AiAnalysisResult analysisResult, string jobDescription)
+    {
+        var review = analysisResult.FitReview ?? CreateFallbackFitReview(analysisResult, jobDescription);
+
+        review.GeneratedAt = DateTimeOffset.UtcNow.ToString("O");
+        review.SourceHash = ComputeSourceHash(jobDescription);
+        review.MatchScore = Math.Clamp(review.MatchScore == 0 ? analysisResult.MatchScore : review.MatchScore, 0, 100);
+
+        review.ExecutiveSummary = DefaultIfEmpty(review.ExecutiveSummary, analysisResult.StrategicAdvice);
+        review.FullReviewMarkdown = DefaultIfEmpty(review.FullReviewMarkdown, BuildAiFeedback(analysisResult));
+        review.RoleBrief ??= new RoleBrief();
+        review.KeySignals ??= new List<FitKeySignal>();
+        review.Gaps ??= new List<FitGap>();
+        review.NextActions ??= new List<string>();
+
+        foreach (var gap in review.Gaps)
+        {
+            gap.Id = DefaultIfEmpty(gap.Id, CreateStableGapId(gap.Skill));
+            gap.Priority = NormalizePriority(gap.Priority);
+            gap.EstimatedScoreGain = Math.Clamp(gap.EstimatedScoreGain, 0, 25);
+            gap.LearningPlan ??= new FitLearningPlan();
+        }
+
+        return review;
+    }
+
+    private static FitReview CreateFallbackFitReview(AiAnalysisResult analysisResult, string jobDescription)
+    {
+        var missingSkills = analysisResult.MissingSkills.Count > 0
+            ? analysisResult.MissingSkills
+            : analysisResult.Gaps;
+
+        return new FitReview
+        {
+            MatchScore = analysisResult.MatchScore,
+            ExecutiveSummary = DefaultIfEmpty(analysisResult.StrategicAdvice, analysisResult.GapAnalysis),
+            RoleBrief = BuildFallbackRoleBrief(jobDescription, analysisResult),
+            KeySignals = analysisResult.GoodPoints.Select(point => new FitKeySignal
+            {
+                Label = point,
+                Evidence = point,
+                Type = FitSignalTypes.Strength
+            }).ToList(),
+            Gaps = missingSkills.Take(5).Select((gap, index) => new FitGap
+            {
+                Id = CreateStableGapId(gap),
+                Skill = gap,
+                WhyItMatters = gap,
+                CurrentEvidence = analysisResult.Advice.ElementAtOrDefault(index) ?? "No direct evidence found yet.",
+                Priority = index == 0 ? FitGapPriorities.High : FitGapPriorities.Medium,
+                EstimatedScoreGain = index == 0 ? 10 : 6,
+                LearningPlan = new FitLearningPlan
+                {
+                    Topics = new List<string> { gap },
+                    PracticeTasks = new List<string> { $"Build one small project or interview answer that demonstrates {gap}." },
+                    SearchQueries = new List<string> { $"{gap} tutorial", $"{gap} interview practice" }
+                }
+            }).ToList(),
+            NextActions = analysisResult.Advice.Count > 0
+                ? analysisResult.Advice.Take(4).ToList()
+                : new List<string> { "Refresh the resume angle around the strongest role requirements." },
+            FullReviewMarkdown = BuildAiFeedback(analysisResult)
+        };
+    }
+
+    private static RoleBrief BuildFallbackRoleBrief(string jobDescription, AiAnalysisResult analysisResult)
+    {
+        var lines = jobDescription
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Trim().TrimStart('-', '*', '•').Trim())
+            .Where(line => line.Length > 0)
+            .Take(10)
+            .ToList();
+
+        return new RoleBrief
+        {
+            Overview = lines.Take(3).ToList(),
+            Responsibilities = lines.Skip(3).Take(4).ToList(),
+            Requirements = analysisResult.MissingSkills.Take(6).ToList(),
+            Keywords = analysisResult.MissingSkills
+                .Concat(analysisResult.GoodPoints)
+                .SelectMany(value => value.Split(new[] { ' ', ',', '.', ';', '/', '(', ')' }, StringSplitOptions.RemoveEmptyEntries))
+                .Where(value => value.Length > 3)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Take(10)
+                .ToList()
+        };
+    }
+
+    private static string SerializeFitReview(FitReview review) =>
+        JsonSerializer.Serialize(review, FitReviewJsonOptions);
+
+    private static FitReview? DeserializeFitReview(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return null;
+
+        try
+        {
+            return JsonSerializer.Deserialize<FitReview>(json, FitReviewJsonOptions);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static string ComputeSourceHash(string value)
+    {
+        var normalized = string.Join('\n', value.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(line => line.Trim())
+            .Where(line => line.Length > 0));
+
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(normalized));
+        return Convert.ToHexString(hash).ToLowerInvariant();
+    }
+
+    private static string CreateStableGapId(string value)
+    {
+        var hash = SHA256.HashData(Encoding.UTF8.GetBytes(value.Trim().ToLowerInvariant()));
+        return Convert.ToHexString(hash)[..12].ToLowerInvariant();
+    }
+
+    private static string NormalizePriority(string? priority) =>
+        priority?.ToLowerInvariant() switch
+        {
+            FitGapPriorities.High => FitGapPriorities.High,
+            FitGapPriorities.Low => FitGapPriorities.Low,
+            _ => FitGapPriorities.Medium
+        };
+
+    private static string DefaultIfEmpty(string? value, string fallback) =>
+        string.IsNullOrWhiteSpace(value) ? fallback : value.Trim();
 
     private static JobApplicationDto MapToDto(JobApplication app)
     {

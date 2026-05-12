@@ -92,7 +92,7 @@ public class JobApplicationsController(
     /// Only the owner of the application can update it.
     /// </summary>
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(Guid id, UpdateJobApplicationDto updateDto)
+    public async Task<ActionResult<JobApplicationDto>> Update(Guid id, UpdateJobApplicationDto updateDto)
     {
         var userId = GetUserId();
         if (userId is null) return Unauthorized(UserIdNotFoundMessage);
@@ -104,10 +104,13 @@ public class JobApplicationsController(
         if (existingApp.UserId != userId) return Forbid();
 
         JobApplicationMapper.ApplyUpdate(updateDto, existingApp);
+        _repository.SetOriginalConcurrencyToken(existingApp, updateDto.ConcurrencyToken);
+        existingApp.ConcurrencyToken = Guid.NewGuid();
 
         await _repository.UpdateAsync(existingApp);
 
-        return NoContent();
+        var updatedApp = await _repository.GetByIdAsync(id);
+        return Ok(JobApplicationMapper.MapToDto(updatedApp ?? existingApp));
     }
 
     // DELETE: api/jobapplications/5
@@ -144,6 +147,17 @@ public class JobApplicationsController(
 
         // Exceptions handled by GlobalExceptionMiddleware
         var result = await _jobApplicationService.TriggerAIAnalysisAsync(id, userId);
+        return Ok(result);
+    }
+
+    // POST: api/jobapplications/{id}/brief/refine
+    [HttpPost("{id}/brief/refine")]
+    public async Task<ActionResult<RefinedJobBriefDto>> RefineJobBrief(Guid id, RefineJobBriefRequestDto request)
+    {
+        var userId = GetUserId();
+        if (userId is null) return Unauthorized(UserIdNotFoundMessage);
+
+        var result = await _jobApplicationService.RefineJobBriefAsync(id, userId, request.Description);
         return Ok(result);
     }
 

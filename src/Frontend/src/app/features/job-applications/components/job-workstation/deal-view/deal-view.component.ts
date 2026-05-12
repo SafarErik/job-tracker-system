@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
@@ -16,18 +16,26 @@ import {
 } from '@ng-icons/lucide';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 interface PlaybookScript {
     id: string;
-    type: 'aggressive' | 'collaborative' | 'defensive';
-    label: string;
-    script: string;
-    impact: string;
+    labelKey: string;
+    scriptKey: string;
+    impactKey: string;
+    typeKey: string;
+}
+
+interface CompensationSegment {
+    labelKey: string;
+    value: number;
+    colorClass: string;
+    textClass: string;
 }
 
 @Component({
     selector: 'app-deal-view',
-    imports: [CommonModule, NgIcon, ...HlmButtonImports],
+    imports: [CommonModule, NgIcon, TranslocoPipe, ...HlmButtonImports],
     providers: [
         provideIcons({
             lucideUploadCloud,
@@ -49,37 +57,63 @@ interface PlaybookScript {
 })
 export class DealViewComponent {
     private readonly notificationService = inject(NotificationService);
+    private readonly transloco = inject(TranslocoService);
 
     isAnalyzing = signal(false);
     isOfferUploaded = signal(false);
 
     analysisResults = signal({
-        salaryRating: 'Above Average',
-        equityComplexity: 'High (4-year vest)',
-        redFlags: ['Variable bonus not guaranteed', 'Non-compete clause'],
+        salaryRatingKey: 'workstation.offer.snapshot.salaryRatingValue',
+        equityComplexityKey: 'workstation.offer.snapshot.equityComplexityValue',
+        redFlagKeys: [
+            'workstation.offer.risks.variableBonus',
+            'workstation.offer.risks.nonCompete'
+        ],
         score: 88
     });
 
-    compBreakdown = signal([
-        { label: 'Base', value: 70, color: '#10b981' }, // Emerald-500
-        { label: 'Equity', value: 20, color: '#3b82f6' }, // Blue-500
-        { label: 'Bonus', value: 10, color: '#f59e0b' }  // Amber-500
+    compBreakdown = signal<CompensationSegment[]>([
+        {
+            labelKey: 'workstation.offer.compensation.base',
+            value: 70,
+            colorClass: 'bg-primary',
+            textClass: 'text-primary'
+        },
+        {
+            labelKey: 'workstation.offer.compensation.equity',
+            value: 20,
+            colorClass: 'bg-info',
+            textClass: 'text-info'
+        },
+        {
+            labelKey: 'workstation.offer.compensation.bonus',
+            value: 10,
+            colorClass: 'bg-warning',
+            textClass: 'text-warning'
+        }
     ]);
 
     playbook = signal<PlaybookScript[]>([
         {
             id: '1',
-            type: 'collaborative',
-            label: 'The Value Alignment',
-            script: "I'm very excited about the mission. Based on my impact at [Previous], I'd like to discuss aligning the base with the top percentile...",
-            impact: 'Best for: High Match/Strong Culture'
+            labelKey: 'workstation.offer.playbook.valueAlignment.title',
+            typeKey: 'workstation.offer.playbook.valueAlignment.type',
+            scriptKey: 'workstation.offer.playbook.valueAlignment.script',
+            impactKey: 'workstation.offer.playbook.valueAlignment.impact'
         },
         {
             id: '2',
-            type: 'aggressive',
-            label: 'The Market Multiplier',
-            script: "Currently, several offers are at [X]. Given my specialized skills in [Tech], a base adjustment of 15% would make this an immediate yes...",
-            impact: 'Best for: Multiple Offers/High Demand'
+            labelKey: 'workstation.offer.playbook.marketEvidence.title',
+            typeKey: 'workstation.offer.playbook.marketEvidence.type',
+            scriptKey: 'workstation.offer.playbook.marketEvidence.script',
+            impactKey: 'workstation.offer.playbook.marketEvidence.impact'
+        },
+        {
+            id: '3',
+            labelKey: 'workstation.offer.playbook.riskClarification.title',
+            typeKey: 'workstation.offer.playbook.riskClarification.type',
+            scriptKey: 'workstation.offer.playbook.riskClarification.script',
+            impactKey: 'workstation.offer.playbook.riskClarification.impact'
         }
     ]);
 
@@ -88,14 +122,23 @@ export class DealViewComponent {
         setTimeout(() => {
             this.isAnalyzing.set(false);
             this.isOfferUploaded.set(true);
-            this.notificationService.success('Offer Letter Analyzed!', 'AI Scan');
+            this.notificationService.success(
+                this.transloco.translate('workstation.offer.notifications.analyzed.body'),
+                this.transloco.translate('workstation.offer.notifications.analyzed.title')
+            );
         }, 2500);
     }
 
     generateCounterOffer() {
-        this.notificationService.info('Generating high-stakes counter-offer email...', 'AI Strategy');
+        this.notificationService.info(
+            this.transloco.translate('workstation.offer.notifications.generating.body'),
+            this.transloco.translate('workstation.offer.notifications.generating.title')
+        );
         setTimeout(() => {
-            this.notificationService.success('Counter-offer ready in clipboard!', 'Success');
+            this.notificationService.success(
+                this.transloco.translate('workstation.offer.notifications.ready.body'),
+                this.transloco.translate('workstation.offer.notifications.ready.title')
+            );
         }, 1500);
     }
 }

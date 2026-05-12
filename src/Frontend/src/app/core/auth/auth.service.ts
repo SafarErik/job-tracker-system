@@ -149,7 +149,7 @@ export class AuthService {
   handleGoogleCallback(token: string): void {
     if (!token) {
       this._handleAuthError('No token received from Google authentication');
-      this._router.navigate(['/login']);
+      this._router.navigate(['/auth/login']);
       return;
     }
 
@@ -165,7 +165,7 @@ export class AuthService {
       error: null,
     });
 
-    this._router.navigate(['/']);
+    this._router.navigate(['/dashboard']);
   }
 
   // --- Logic Helpers ---

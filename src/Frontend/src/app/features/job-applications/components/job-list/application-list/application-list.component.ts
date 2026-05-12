@@ -6,12 +6,14 @@ import { JobApplicationStatus } from '../../../models/application-status.enum';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { ApplicationRowComponent } from '../application-row/application-row.component';
 import autoAnimate from '@formkit/auto-animate';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
     selector: 'app-application-list',
     imports: [
         CommonModule,
-        ApplicationRowComponent
+        ApplicationRowComponent,
+        TranslocoPipe
     ],
     templateUrl: './application-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush

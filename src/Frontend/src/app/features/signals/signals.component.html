@@ -271,7 +271,7 @@
               </div>
             </div>
 
-            <!-- Bottom Section: Action -->
+            <!-- Lower action section -->
             <div class="p-4 bg-muted/50 border-t border-border">
               <button
                 hlmBtn
@@ -288,10 +288,10 @@
     }
   }
 
-  <!-- Signal Guidance FAB -->
+  <!-- Vadis Guidance FAB -->
   <button
     (click)="toggleChat()"
-    aria-label="Open Signal Guidance"
+    aria-label="Open Vadis Guidance"
     class="fixed bottom-8 right-8 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-r from-primary to-accent text-white shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 group hover:scale-110 hover:shadow-[0_0_50px_hsl(var(--primary)/0.7)]"
   >
     <ng-icon
@@ -303,7 +303,7 @@
     ></span>
   </button>
 
-  <!-- Signal Guidance Chat Overlay -->
+  <!-- Vadis Guidance Chat Overlay -->
   @if (isChatOpen()) {
     <div
       class="fixed inset-0 z-50 flex items-end justify-end p-4 sm:p-8 pointer-events-none"
@@ -322,7 +322,7 @@
               <ng-icon name="lucideZap" class="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 class="font-bold text-foreground">Signal Guidance</h3>
+              <h3 class="font-bold text-foreground">Vadis Guidance</h3>
               <p class="text-xs text-emerald-400 font-mono flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 READY
@@ -362,7 +362,7 @@
                 {{ msg.text }}
               </div>
               <span class="text-[10px] text-muted-foreground opacity-50">{{
-              msg.sender === 'user' ? 'You' : 'Signal'
+              msg.sender === 'user' ? 'You' : 'Vadis'
               }}</span>
             </div>
           }

@@ -75,7 +75,7 @@ interface ChatMessage {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AiCommandWidgetComponent {
-  title = input('Signal Guidance');
+  title = input('Vadis Guidance');
   insightCards = input.required<AiInsightCard[]>();
   placeholder = input('Ask anything about your career or companies...');
   context = input.required<AiCopilotContext>();

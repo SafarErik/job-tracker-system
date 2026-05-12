@@ -16,8 +16,8 @@ import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
         <svg viewBox="0 0 120 70" class="h-28 w-28" aria-hidden="true">
           <defs>
             <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" [attr.stop-color]="'hsl(var(--brand-aurora))'" />
-              <stop offset="100%" [attr.stop-color]="'hsl(var(--brand-electric))'" />
+              <stop offset="0%" [attr.stop-color]="'hsl(var(--accent))'" />
+              <stop offset="100%" [attr.stop-color]="'hsl(var(--primary))'" />
             </linearGradient>
           </defs>
 

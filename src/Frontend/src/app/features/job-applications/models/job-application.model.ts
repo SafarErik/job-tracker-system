@@ -18,7 +18,7 @@ export interface JobApplication {
   jobUrl?: string;
   description?: string;
 
-  // Signal-generated fields
+  // Vadis-generated fields
   generatedCoverLetter?: string;
   aiFeedback?: string;
   fitReview?: FitReview | null;

@@ -269,7 +269,7 @@ export class JobApplicationStore {
 
     return this.applicationService.refineJobBrief(id, description).pipe(
       tap(() => {
-        this.notificationService.success('Job brief refined.', 'Signal Guidance');
+        this.notificationService.success('Job brief refined.', 'Vadis Guidance');
       }),
       catchError((err) => {
         console.error('Failed to refine job brief', err);
@@ -338,14 +338,14 @@ export class JobApplicationStore {
         if (updatedApp.matchScore > 0) {
           this.notificationService.success(
             `Analysis complete! Match score: ${updatedApp.matchScore}%`,
-            'Signal Analysis',
+            'Vadis Analysis',
           );
         } else if (updatedApp.aiFeedback?.includes('Please upload a Master Resume')) {
           this.notificationService.error(updatedApp.aiFeedback, 'Analysis Failed');
         } else {
           this.notificationService.info(
-            'Analysis complete. Check Signal Guidance for details.',
-            'Signal Analysis',
+            'Analysis complete. Check Vadis Guidance for details.',
+            'Vadis Analysis',
           );
         }
       },
@@ -393,7 +393,7 @@ export class JobApplicationStore {
         this._tailoredResume.set(res.tailoredResume);
         this._isGeneratingAsset.set(false);
         this._isProcessing.set(false);
-        this.notificationService.success('Documents generated.', 'Signal Guidance');
+        this.notificationService.success('Documents generated.', 'Vadis Guidance');
       },
       error: (err) => {
         console.error('Failed to generate assets', err);
@@ -427,7 +427,7 @@ export class JobApplicationStore {
         }
 
         this._tailoredResume.set(content);
-        this.notificationService.success('Resume draft generated.', 'Signal Guidance');
+        this.notificationService.success('Resume draft generated.', 'Vadis Guidance');
       }),
       catchError((err) => {
         console.error('Failed to generate resume draft', err);
@@ -463,7 +463,7 @@ export class JobApplicationStore {
           this._currentJob.set({ ...current, generatedCoverLetter: content });
         }
 
-        this.notificationService.success('Cover letter draft generated.', 'Signal Guidance');
+        this.notificationService.success('Cover letter draft generated.', 'Vadis Guidance');
       }),
       catchError((err) => {
         console.error('Failed to generate cover letter draft', err);

@@ -5,7 +5,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideAlertCircle,
-  lucideBot,
   lucideBriefcaseBusiness,
   lucideCheck,
   lucideCopy,
@@ -96,7 +95,6 @@ type DraftState = Record<DocumentDraftMode, CvDocumentDraft | null>;
   providers: [
     provideIcons({
       lucideAlertCircle,
-      lucideBot,
       lucideBriefcaseBusiness,
       lucideCheck,
       lucideCopy,

@@ -48,7 +48,7 @@ Use the following brand architecture:
 - **Aptelion**: the main product and platform brand.
 - **Aptelion Core**: the open-source foundation.
 - **Aptelion Cloud**: the hosted commercial SaaS product.
-- **Aptelion Signal**: the private AI guidance and decision-support layer.
+- **Aptelion Vadis**: the private AI guidance and decision-support layer.
 - **Aptelion Studio**: the workspace experience for documents, applications, interviews, and offers.
 
 ### 3.1 Aptelion Core
@@ -94,21 +94,24 @@ Aptelion Cloud may include:
 
 Aptelion Cloud is private and proprietary.
 
-### 3.3 Aptelion Signal
+### 3.3 Aptelion Vadis
 
-Aptelion Signal is the private AI guidance layer inside Aptelion.
+Aptelion Vadis is the private AI guidance layer that helps users understand fit, identify gaps, prepare with focus, and choose their clearest next move.
 
-Use **Signal** when referring to intelligent recommendations, fit analysis, contextual guidance, and next-step suggestions.
+Vadis should not be presented as a generic chatbot. It should feel like a precise, calm decision-support layer inside Aptelion.
+
+Use **Vadis** when referring to intelligent recommendations, fit analysis, contextual guidance, and next-step suggestions.
 
 Examples:
 
-- "Signal found 3 gaps in this application."
-- "Signal recommends improving your CV before applying."
-- "Signal prepared a focused interview path for this role."
-- "Signal identified a missing keyword pattern in this job description."
-- "Signal suggests following up on this application today."
+- "Vadis found 3 gaps in this application."
+- "Vadis recommends improving your CV before applying."
+- "Vadis prepared a focused interview path for this role."
+- "Vadis identified a missing keyword pattern in this job description."
+- "Vadis suggests following up on this application today."
+- "Vadis shows why this role may be a strong fit."
 
-Aptelion Signal may include:
+Aptelion Vadis may include:
 
 - fit scoring
 - role-to-profile analysis
@@ -121,7 +124,7 @@ Aptelion Signal may include:
 - ranking and prioritization models
 - career progress insights
 
-Aptelion Signal is private and proprietary.
+Aptelion Vadis is private and proprietary.
 
 ### 3.4 Aptelion Studio
 
@@ -268,7 +271,7 @@ These concept images are the current base visual direction for Aptelion. Use the
 Core palette:
 
 - Aptelion Navy: `#0B1020`
-- Deep Signal: `#16213E`
+- Deep Vadis: `#16213E`
 - Slate: `#5E6B82`
 - Soft Surface: `#F5F8FC`
 - Line Gray: `#D7DFEA`
@@ -276,7 +279,7 @@ Core palette:
 Brand accents:
 
 - Aptelion Cyan: `#4FC3E8`
-- Signal Blue: `#2E7CF6`
+- Vadis Blue: `#2E7CF6`
 - Clear Mist: `#DDF6FF`
 
 Semantic colors:
@@ -296,7 +299,7 @@ Accent colors should be used selectively for:
 - active navigation
 - guidance states
 - focus states
-- Signal recommendations
+- Vadis recommendations
 - important product feedback
 - meaningful progress indicators
 
@@ -306,12 +309,12 @@ Do not use accent colors as decoration. Every strong color should communicate st
 
 Use brand colors consistently across modules:
 
-- Fit: Signal Blue
+- Fit: Vadis Blue
 - Documents: Aptelion Cyan
 - Interview: subtle violet may be used sparingly
 - Offer: warm amber may be used sparingly
-- Timeline: Deep Signal or Slate
-- Signal guidance: Signal Blue or Aptelion Cyan
+- Timeline: Deep Vadis or Slate
+- Vadis guidance: Vadis Blue or Aptelion Cyan
 
 Violet should not become the main brand color. It may appear only as a subtle secondary accent, especially in Interview-related surfaces.
 
@@ -365,6 +368,7 @@ Prefer:
 - Offer
 - Timeline
 - Guidance
+- Vadis Guidance
 - Next best move
 - Momentum
 - Application Queue
@@ -382,8 +386,8 @@ Avoid:
 
 - Tactical
 - Combat
-- Arsenal
-- Dojo
+- Weaponized career language
+- Practice-room labels that feel gamer-like
 - Weaponry
 - Mission Intel
 - Deploy
@@ -394,8 +398,8 @@ Avoid:
 - Kwd Deficiency Detected
 - Initiate
 - Synchronizing Intel
-- Autopilot Engaged
-- Magic AI
+- Hands-off automation promises
+- Magic-style AI language
 - Supercharged career hacking
 
 ## 10. Main Product Areas
@@ -540,7 +544,7 @@ Preferred dashboard sections:
 - Today’s Focus
 - Momentum
 - Application Queue
-- Signal Guidance
+- Vadis Guidance
 - Recent Work
 - Follow-ups
 - At Risk
@@ -639,9 +643,9 @@ Correct:
 - Aptelion
 - Aptelion Core
 - Aptelion Cloud
-- Aptelion Signal
+- Aptelion Vadis
 - Aptelion Studio
-- Signal Guidance
+- Vadis Guidance
 - Document Studio
 - Interview Studio
 - Fit Overview
@@ -650,14 +654,12 @@ Correct:
 Avoid:
 
 - Horizon
-- Polaris
-- Aptelion AI Assistant
-- Aptelion Bot
-- Career Bot
-- Magic AI
-- Tactical AI
-- Career Weapon
-- Career Arsenal
+- Legacy guidance-layer names
+- Generic chatbot labels
+- Magic-style AI labels
+- Tactical language labels
+- Weaponized career labels
+- Weaponized career framing
 
 Do not overuse the word AI in the interface. The product should feel intelligent through its behavior, not through repeated AI labeling.
 
@@ -685,11 +687,11 @@ Good examples:
 Bad examples:
 
 - "Let’s crush this application."
-- "Your career arsenal is ready."
+- "Your career tools are ready for battle."
 - "AI has detected a tactical weakness."
 - "Deploy your elite CV."
-- "Autopilot engaged."
-- "Magic AI will supercharge your future."
+- "The product will handle your career for you."
+- "A magic assistant will supercharge your future."
 
 ## 17. Product Experience Principles
 
@@ -717,6 +719,6 @@ Aptelion Core provides the open foundation.
 
 Aptelion Cloud provides the managed commercial SaaS experience.
 
-Aptelion Signal provides private, intelligent decision support.
+Aptelion Vadis provides private, intelligent decision support.
 
 Aptelion Studio provides the focused workspace where career progress happens.

@@ -47,11 +47,11 @@
       "applications": "Applications",
       "companies": "Companies",
       "insights": "Insights",
-      "signals": "Signal",
+      "signals": "Vadis",
       "documents": "Documents"
     },
     "header": {
-      "searchPlaceholder": "Search Aptelion Studio or ask Signal...",
+      "searchPlaceholder": "Search Aptelion Studio or ask Vadis...",
       "openSearch": "Open command menu",
       "profile": "Profile",
       "settings": "Settings",
@@ -76,7 +76,7 @@
         "applications": "Track the Application Queue and keep each opportunity moving.",
         "companies": "Manage company research and outreach context.",
         "insights": "Review trends, charts, and progress signals.",
-        "signals": "Open Signal Guidance for recommendations and next moves.",
+        "signals": "Open Vadis Guidance for recommendations and next moves.",
         "documents": "Keep CVs, cover letters, and tailored documents ready.",
         "profile": "Manage your career profile and preferences.",
         "newApplication": "Capture the opportunity basics, pipeline stage, materials, and readiness.",
@@ -86,12 +86,12 @@
       "commands": {
         "workspace": "Workspace",
         "actions": "Actions",
-        "assistant": "Signal",
+        "assistant": "Vadis",
         "openDashboard": "Open dashboard",
         "openApplications": "Open applications",
         "openCompanies": "Open companies",
         "addApplication": "Add application",
-        "openAssistant": "Open Signal",
+        "openAssistant": "Open Vadis",
         "pipelineSummary": "Application Queue summary",
         "nextBestAction": "Next best move"
       }
@@ -134,7 +134,7 @@
     },
     "proof": {
       "guidance": "A calm workspace for applications, companies, documents, and decisions.",
-      "documents": "Signal-guided CV, cover letter, and role-specific document preparation.",
+      "documents": "Vadis-guided CV, cover letter, and role-specific document preparation.",
       "practice": "Interview practice and follow-up planning tied to real opportunities."
     },
     "pillars": {
@@ -157,7 +157,7 @@
     "workspace": {
       "eyebrow": "One career surface",
       "title": "Everything around an opportunity lives in one guided flow.",
-      "body": "Aptelion connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The Signal guidance supports the workflow without turning the product into a noisy chat screen.",
+      "body": "Aptelion connects the work candidates already do: research, tracking, CV editing, cover letters, interview preparation, and offer thinking. The Vadis guidance supports the workflow without turning the product into a noisy chat screen.",
       "previewTitle": "Application workstation",
       "previewSubtitle": "Role context, documents, practice, and next actions",
       "previewBadge": "Guided",
@@ -174,7 +174,7 @@
       },
       "documents": {
         "title": "Documents",
-        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled Signal guidance."
+        "body": "Create and revise CVs, cover letters, and role-specific notes with controlled Vadis guidance."
       },
       "applications": {
         "title": "Applications",
@@ -188,14 +188,14 @@
     "pricing": {
       "eyebrow": "A product people can grow into",
       "title": "Start simple, pay for serious career leverage.",
-      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and Signal Guidance that understands the user’s whole career context.",
+      "body": "The first paid layer should earn its place: stronger document generation, deeper role research, interview coaching, and Vadis Guidance that understands the user’s whole career context.",
       "planTitle": "Aptelion Cloud",
       "planBody": "For active job seekers and ambitious professionals who want structure, better decisions, and less manual work.",
       "benefits": {
         "tracker": "Unlimited applications and company research spaces.",
         "documents": "CV and cover letter generation with role-specific revision guidance.",
         "interview": "Interview practice plans, answer feedback, and follow-up suggestions.",
-        "guide": "Signal Guidance context across applications, documents, and goals."
+        "guide": "Vadis Guidance context across applications, documents, and goals."
       },
       "cta": "Create your workspace"
     },
@@ -236,8 +236,8 @@
     },
     "momentum": {
       "title": "Momentum",
-      "badge": "Guidance",
-      "recommendation": "Recommendation",
+      "badge": "Vadis Guidance",
+      "recommendation": "Recommended next action",
       "states": {
         "noSignal": {
           "label": "No momentum yet",
@@ -254,10 +254,10 @@
           "label": "Applications need attention",
           "body": "You have applications in motion, but no active interview yet.",
           "recommendation": "Review fit and follow up on the strongest opportunities before adding more.",
-          "cta": "Review pipeline"
+          "cta": "Review Application Queue"
         },
         "thinFunnel": {
-          "label": "Pipeline is thin",
+          "label": "Application Queue is thin",
           "body": "Momentum is low because there are not enough targeted opportunities in motion.",
           "recommendation": "Add two well-matched opportunities this week, then update materials for the strongest one."
         },
@@ -279,7 +279,7 @@
       }
     },
     "pipeline": {
-      "title": "Pipeline Strategy",
+      "title": "Momentum",
       "state": {
         "strong": "Ready",
         "watch": "Review",
@@ -313,7 +313,7 @@
       },
       "insights": {
         "empty": {
-          "label": "No pipeline yet",
+          "label": "No Application Queue yet",
           "body": "Start with one opportunity. Aptelion will turn it into a guided workflow.",
           "recommendation": "Add one opportunity with a real job description.",
           "target": "Week target: 3 quality opportunities"
@@ -325,7 +325,7 @@
           "target": "Target: one clean response path"
         },
         "topHeavy": {
-          "label": "Pipeline needs attention",
+          "label": "Application Queue needs attention",
           "body": "Applications are not turning into conversations yet.",
           "recommendation": "Review fit, strengthen the CV angle, and follow up on the strongest opportunities.",
           "target": "Target: 1 recruiter conversation"
@@ -343,8 +343,8 @@
           "target": "Target: one prepared interview"
         },
         "forming": {
-          "label": "Pipeline is taking shape",
-          "body": "Your pipeline has activity, but no clear priority yet.",
+          "label": "Application Queue is taking shape",
+          "body": "Your queue has activity, but no clear priority yet.",
           "recommendation": "Keep one follow-up and one new opportunity moving each week.",
           "target": "Target: steady weekly cadence"
         }
@@ -363,7 +363,7 @@
         "cta": "Review"
       },
       "followUp": {
-        "eyebrow": "Follow-up",
+        "eyebrow": "Follow-up due",
         "meta": "Follow up before this opportunity goes stale",
         "cta": "Follow up"
       },
@@ -376,17 +376,17 @@
         },
         "documents": {
           "eyebrow": "Readiness",
-          "title": "Update your materials",
+          "title": "Improve material",
           "meta": "Keep your CV ready for the strongest opportunities",
-          "cta": "Update materials"
+          "cta": "Improve material"
         }
       }
     },
     "readiness": {
-      "title": "Readiness",
+      "title": "Ready to Improve",
       "heading": "Prepared for the next step",
       "body": "Keep documents and practice tied to the opportunities that matter.",
-      "openDocuments": "Update materials",
+      "openDocuments": "Improve material",
       "items": {
         "documents": {
           "label": "Documents",
@@ -413,8 +413,8 @@
       "itemCount": "{{count}} items",
       "columns": {
         "opportunity": "Opportunity",
-        "signal": "Attention",
-        "nextAction": "Next action",
+        "signal": "Vadis",
+        "nextAction": "Next best move",
         "age": "Age",
         "fit": "Fit"
       },
@@ -448,7 +448,7 @@
         "phoneScreen": "Practice for screen",
         "followUp": "Follow up",
         "applied": "Review fit",
-        "updateMaterials": "Update materials",
+        "updateMaterials": "Improve material",
         "reengage": "Re-engage",
         "reengageOrArchive": "Re-engage or archive",
         "archive": "Archive",
@@ -583,7 +583,7 @@
     "card": {
       "fit": "Fit estimate",
       "matchTooltip": "Aptelion fit estimate based on the role, your profile, and available materials.",
-      "insightLabel": "Signal",
+      "insightLabel": "Vadis",
       "nextActionLabel": "Next action",
       "jobType": {
         "fullTime": "Full-time",
@@ -873,7 +873,7 @@
       "deleteContactBody": "This removes the contact from this company profile."
     },
     "fit": {
-      "eyebrow": "Signal fit context",
+      "eyebrow": "Vadis fit context",
       "title": "Role relevance, risks, and interview angles",
       "body": "Use this as the bridge between company research and application preparation. Raw tech context stays as evidence, not the main story.",
       "strengths": "Strengths",
@@ -888,7 +888,7 @@
     "command": {
       "label": "Company command palette",
       "placeholderShort": "Search company actions...",
-      "placeholder": "Search company actions or ask Signal Guidance...",
+      "placeholder": "Search company actions or ask Vadis Guidance...",
       "quickActions": "Quick actions",
       "noResults": "No matching actions",
       "actions": {
@@ -990,9 +990,9 @@
   },
   "ai": {
     "drawer": {
-      "title": "Signal Guidance",
-      "ariaLabel": "Signal Guidance",
-      "close": "Close Signal Guidance",
+      "title": "Vadis Guidance",
+      "ariaLabel": "Vadis Guidance",
+      "close": "Close Vadis Guidance",
       "modeFast": "Fast",
       "modeDeep": "Deep reason",
       "placeholder": "Ask anything about your career workflow...",
@@ -1003,7 +1003,7 @@
         "followUps": "follow-ups",
         "interviewPrep": "interview prep"
       },
-      "welcomeTitle": "Welcome to Signal Guidance",
+      "welcomeTitle": "Welcome to Vadis Guidance",
       "welcomeBody": "I can help with pipeline summaries, follow-up strategy, and interview preparation. Try asking for a next best action.",
       "responses": {
         "summaryTitle": "Pipeline summary",
@@ -1023,12 +1023,12 @@
   },
   "workstation": {
     "command": {
-      "searchPlaceholder": "Ask Signal or search...",
-      "searchLabel": "Search or ask Signal",
-      "placeholder": "Ask Signal about this application...",
+      "searchPlaceholder": "Ask Vadis or search...",
+      "searchLabel": "Search or ask Vadis",
+      "placeholder": "Ask Vadis about this application...",
       "quickActions": "Quick actions",
-      "guideLabel": "Signal Guidance",
-      "openGuide": "Open Signal Guidance",
+      "guideLabel": "Vadis Guidance",
+      "openGuide": "Open Vadis Guidance",
       "navigate": "Navigate",
       "select": "Select",
       "noResults": "No matching command.",
@@ -1039,11 +1039,11 @@
         },
         "improveBrief": {
           "label": "Improve job brief",
-          "description": "Clean pasted role text with Signal Guidance."
+          "description": "Clean pasted role text with Vadis Guidance."
         },
         "openReview": {
           "label": "Open fit review",
-          "description": "Read the full Signal-generated role review."
+          "description": "Read the full Vadis-generated role review."
         },
         "simulateTopGap": {
           "label": "Simulate top gap",
@@ -1174,7 +1174,7 @@
       "refresh": "Refresh analysis",
       "simulate": "Simulate improvement",
       "simulationActive": "Simulation active for {{gap}}.",
-      "insights": "Signal Guidance",
+      "insights": "Vadis Guidance",
       "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
       "review": {
         "title": "Fit review",
@@ -1209,10 +1209,10 @@
         "title": "Edit job description",
         "body": "Paste the role description here. Aptelion uses this source for fit, documents, and interview guidance.",
         "placeholder": "Paste the job description, responsibilities, requirements, and useful context...",
-        "improve": "Improve with Signal",
+        "improve": "Improve with Vadis",
         "refining": "Refining...",
-        "previewTitle": "Signal cleanup preview",
-        "previewEmpty": "Paste the posting, then run Signal cleanup to see the structured brief before saving.",
+        "previewTitle": "Vadis cleanup preview",
+        "previewEmpty": "Paste the posting, then run Vadis cleanup to see the structured brief before saving.",
         "changes": "Changes",
         "applyRefined": "Apply and save"
       },
@@ -1239,11 +1239,11 @@
       "masterProtected": "The original source content is protected. Aptelion uses it as the base for targeted generation.",
       "awaiting": "Awaiting document generation",
       "awaitingBody": "Use \"Generate documents\" to create a tailored CV and cover letter.",
-      "suggestions": "Signal suggestions",
+      "suggestions": "Vadis suggestions",
       "coverLetter": "Tailored cover letter",
       "noCoverTitle": "No cover letter yet",
       "noCoverBody": "Let Aptelion draft a professional, position-aware cover letter for you.",
-      "draftCover": "Draft with Signal Guidance",
+      "draftCover": "Draft with Vadis Guidance",
       "drafting": "Drafting...",
       "studioEyebrow": "Document Studio",
       "studioTitle": "Prepare role-specific documents",
@@ -1367,7 +1367,7 @@
         "generating": "Generating..."
       },
       "guide": {
-        "title": "Signal Guidance",
+        "title": "Vadis Guidance",
         "subtitle": "Focused editing prompts",
         "results": {
           "label": "Make it more results-oriented",
@@ -1388,13 +1388,13 @@
       },
       "v2": {
         "title": "Block editing planned",
-        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level Signal edits are live."
+        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level Vadis edits are live."
       }
     },
     "interview": {
       "title": "Interview practice",
       "readyTitle": "Ready to practice?",
-      "readyBody": "Choose an interview simulation to begin your session with Signal Guidance.",
+      "readyBody": "Choose an interview simulation to begin your session with Vadis Guidance.",
       "listening": "Listening...",
       "endSession": "End session",
       "performance": "Performance",

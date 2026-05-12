@@ -17,7 +17,7 @@ Use the current Aptelion brand architecture:
 - **Aptelion**: the main product and platform brand.
 - **Aptelion Core**: the open-source foundation.
 - **Aptelion Cloud**: the hosted commercial SaaS product.
-- **Aptelion Signal**: the private AI guidance and decision-support layer.
+- **Aptelion Vadis**: the private AI guidance and decision-support layer.
 - **Aptelion Studio**: the workspace experience for documents, applications, interviews, offers, and timelines.
 
 Some internal technical names may still use legacy `JobTracker` naming during the transition. Do not rename projects, namespaces, folders, deployment paths, or package names unless explicitly requested.
@@ -42,13 +42,13 @@ Prefer product language such as:
 - Interview Studio
 - Offer Overview
 - Timeline
-- Signal Guidance
+- Vadis Guidance
 - Next best move
 - Momentum
 - Application Queue
 - Recommended next action
 
-Avoid tactical, combat, weapon, magic AI, bot, or hype-heavy language in product surfaces.
+Avoid tactical, combat, weapon, generic chatbot, magic-style AI, or hype-heavy language in product surfaces.
 
 ## Current Technical Stack
 
@@ -162,7 +162,7 @@ Preferred direction:
 Core palette:
 
 - Aptelion Navy: `#0B1020`
-- Deep Signal: `#16213E`
+- Deep Vadis: `#16213E`
 - Slate: `#5E6B82`
 - Soft Surface: `#F5F8FC`
 - Line Gray: `#D7DFEA`
@@ -170,7 +170,7 @@ Core palette:
 Brand accents:
 
 - Aptelion Cyan: `#4FC3E8`
-- Signal Blue: `#2E7CF6`
+- Vadis Blue: `#2E7CF6`
 - Clear Mist: `#DDF6FF`
 
 Semantic colors:
@@ -196,7 +196,7 @@ Use the following workspace structure:
 
 ## Open-Core Boundaries
 
-Design the codebase so that Aptelion Core remains useful and open, while Aptelion Cloud, Aptelion Signal, and advanced Aptelion Studio features can remain private.
+Design the codebase so that Aptelion Core remains useful and open, while Aptelion Cloud, Aptelion Vadis, and advanced Aptelion Studio features can remain private.
 
 Aptelion Core may include:
 

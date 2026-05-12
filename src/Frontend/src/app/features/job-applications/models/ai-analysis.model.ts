@@ -7,7 +7,7 @@
 import { FitReview } from '../../../core/models/fit-review.model';
 
 /**
- * Result of Signal analysis on a job description
+ * Result of Vadis analysis on a job description
  */
 export interface AiAnalysisResult {
     matchScore: number; // 0-100
@@ -19,7 +19,7 @@ export interface AiAnalysisResult {
 }
 
 /**
- * Signal-generated tailored assets
+ * Vadis-generated tailored assets
  */
 export interface AiGeneratedAssets {
     matchScore: number;

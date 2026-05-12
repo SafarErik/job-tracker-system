@@ -211,7 +211,7 @@ export class CompanyIntelligenceService {
                 {
                     id: 'signal-product',
                     title: `${company.name} is likely prioritizing sharper product execution`,
-                    source: 'Signal research model',
+                    source: 'Vadis research model',
                     date: signalDate(4),
                     summary: `The company profile suggests that product clarity, delivery cadence, and customer impact should be treated as core interview context for ${industry}.`,
                     whyItMatters: 'This gives you a safer way to connect your experience to business outcomes instead of only discussing responsibilities.',

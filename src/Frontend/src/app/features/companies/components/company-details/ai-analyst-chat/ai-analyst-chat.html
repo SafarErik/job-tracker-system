@@ -6,12 +6,12 @@
             <div class="h-8 w-8 rounded-lg border border-border flex items-center justify-center shrink-0"
                 [class.bg-primary/10]="msg.role === 'analyst'" [class.text-primary]="msg.role === 'analyst'"
                 [class.bg-muted]="msg.role === 'user'" [class.text-muted-foreground]="msg.role === 'user'">
-                <ng-icon [name]="msg.role === 'analyst' ? 'lucideBot' : 'lucideHistory'" class="h-4 w-4"></ng-icon>
+                <ng-icon [name]="msg.role === 'analyst' ? 'lucideMicroscope' : 'lucideHistory'" class="h-4 w-4"></ng-icon>
             </div>
             <div class="max-w-[80%] space-y-1">
                 <p class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground"
                     [class.text-right]="msg.role === 'user'">
-                    {{ msg.role === 'analyst' ? 'Signal Guidance' : 'You' }}
+                    {{ msg.role === 'analyst' ? 'Vadis Guidance' : 'You' }}
                 </p>
                 <div class="p-4 rounded-lg border text-xs leading-relaxed" [class.bg-muted/50]="msg.role === 'analyst'"
                     [class.border-border]="msg.role === 'analyst'" [class.bg-primary]="msg.role === 'user'"
@@ -40,7 +40,7 @@
                 <div class="w-1 h-1 rounded-full bg-success"></div> Company context
             </span>
             <span class="flex items-center gap-1.5">
-                <div class="w-1 h-1 rounded-full bg-primary"></div> Signal Guidance
+                <div class="w-1 h-1 rounded-full bg-primary"></div> Vadis Guidance
             </span>
         </div>
     </div>

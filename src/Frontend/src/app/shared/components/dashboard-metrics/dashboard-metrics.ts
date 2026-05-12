@@ -17,14 +17,14 @@ export interface DashboardMetric {
  * Displays a row of 7 "Heads-Up" stat cards for quick overview:
  * - Total, Active, Interview, Offers, Rejected, Response %, Success %
  *
- * Design: Premium, minimal, horizontal scrollable row.
+ * Design: Premium, minimal, scrollable metric row.
  */
 @Component({
   selector: 'app-dashboard-metrics',
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <!-- Horizontal Scroll Container for Responsive Layout -->
+    <!-- Scroll container for responsive layout -->
     <div class="w-full overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar">
       <div class="flex gap-4 min-w-max">
         @for (metric of metrics(); track metric.label) {

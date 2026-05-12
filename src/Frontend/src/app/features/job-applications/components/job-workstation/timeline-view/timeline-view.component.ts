@@ -175,7 +175,7 @@ export class TimelineViewComponent {
         return this.transloco.translate('workstation.timeline.time.hoursLeft', { hours });
     }
 
-    openPrepDojo() {
+    openInterviewPrep() {
         this.prepRequested.emit();
     }
 }

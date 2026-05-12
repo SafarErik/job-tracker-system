@@ -19,6 +19,12 @@ import {
 import { JobApplication } from '../../../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../../../job-applications/models/application-status.enum';
 import { JobPriority } from '../../../job-applications/models/job-priority.enum';
+import {
+  AptelionEmptyStateComponent,
+  AptelionSectionHeaderComponent,
+  StatusBadgeComponent,
+  StatusBadgeTone,
+} from '../../../../shared/components';
 
 @Component({
   selector: 'app-pipeline-table-card',
@@ -27,6 +33,9 @@ import { JobPriority } from '../../../job-applications/models/job-priority.enum'
     RouterLink,
     TranslocoPipe,
     PipelineChartComponent,
+    AptelionEmptyStateComponent,
+    AptelionSectionHeaderComponent,
+    StatusBadgeComponent,
     ...HlmSkeletonImports,
     ...HlmSeparatorImports,
   ],
@@ -62,7 +71,7 @@ import { JobPriority } from '../../../job-applications/models/job-priority.enum'
     }
 
     .queue-row:hover {
-      background: hsl(var(--brand-mist) / 0.28);
+      background: hsl(var(--muted) / 0.42);
     }
   `,
 })
@@ -106,24 +115,6 @@ export class PipelineTableCardComponent {
 
   getCompanyLogo(app: JobApplication): string | undefined {
     return this.companyMap().get(app.companyId)?.logoUrl;
-  }
-
-  getStatusBadgeClass(status: JobApplicationStatus): string {
-    switch (status) {
-      case JobApplicationStatus.Offer:
-        return 'border-success/40 bg-success/10 text-success';
-      case JobApplicationStatus.Interviewing:
-        return 'border-primary/40 bg-primary/10 text-primary';
-      case JobApplicationStatus.PhoneScreen:
-      case JobApplicationStatus.TechnicalTask:
-        return 'border-info/40 bg-info/10 text-info';
-      case JobApplicationStatus.Rejected:
-      case JobApplicationStatus.Ghosted:
-        return 'border-destructive/40 bg-destructive/10 text-destructive';
-      case JobApplicationStatus.Applied:
-      default:
-        return 'border-border bg-muted/70 text-foreground';
-    }
   }
 
   getStatusLabel(status: JobApplicationStatus | string): string {
@@ -186,14 +177,15 @@ export class PipelineTableCardComponent {
     return this.t('dashboard.workQueue.attention.nextStep');
   }
 
-  getAttentionClass(app: JobApplication): string {
-    if (app.status === JobApplicationStatus.Offer) return 'border-[hsl(var(--brand-electric)/0.38)] bg-[hsl(var(--brand-electric)/0.08)] text-[hsl(var(--brand-electric))]';
-    if (app.status === JobApplicationStatus.Interviewing) return 'border-[hsl(var(--brand-aurora)/0.42)] bg-[hsl(var(--brand-mist)/0.62)] text-[hsl(var(--brand-midnight))]';
-    if (this.isStale(app)) return 'border-[hsl(var(--brand-electric)/0.32)] bg-[hsl(var(--brand-electric)/0.07)] text-[hsl(var(--brand-electric))]';
+  getAttentionTone(app: JobApplication): StatusBadgeTone {
+    if (app.status === JobApplicationStatus.Offer) return 'warning';
+    if (app.status === JobApplicationStatus.Interviewing) return 'primary';
+    if (this.isStale(app)) return 'warning';
+    if ((app.matchScore ?? 0) >= 75) return 'success';
     if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {
-      return 'border-destructive/30 bg-destructive/5 text-destructive';
+      return 'muted';
     }
-    return 'border-border bg-muted/60 text-muted-foreground';
+    return 'muted';
   }
 
   getNextAction(app: JobApplication): string {
@@ -230,7 +222,7 @@ export class PipelineTableCardComponent {
   }
 
   getPriorityClass(priority: JobPriority): string {
-    if (priority === JobPriority.High) return 'text-[hsl(var(--brand-electric))]';
+    if (priority === JobPriority.High) return 'text-primary';
     if (priority === JobPriority.Medium) return 'text-foreground';
     return 'text-muted-foreground';
   }
@@ -243,7 +235,7 @@ export class PipelineTableCardComponent {
       app.status === JobApplicationStatus.TechnicalTask ||
       this.isStale(app)
     ) {
-      return 'text-[hsl(var(--brand-electric))]';
+      return 'text-primary';
     }
 
     if (app.status === JobApplicationStatus.Rejected || app.status === JobApplicationStatus.Ghosted) {

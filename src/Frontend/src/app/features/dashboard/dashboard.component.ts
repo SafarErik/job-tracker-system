@@ -24,6 +24,11 @@ import {
 import { PipelineTableCardComponent } from './components/pipeline-table-card/pipeline-table-card.component';
 import { PipelineStage } from './components/pipeline-chart/pipeline-chart.component';
 import { buildFootprintLocations } from './data/footprint-locations';
+import {
+  AptelionSectionHeaderComponent,
+  StatusBadgeComponent,
+  StatusBadgeTone,
+} from '../../shared/components';
 
 interface BriefingItem {
   text: string;
@@ -80,6 +85,8 @@ interface ReadinessItem {
     MomentumGaugeComponent,
     GlobalFootprintComponent,
     PipelineTableCardComponent,
+    AptelionSectionHeaderComponent,
+    StatusBadgeComponent,
     ...HlmSkeletonImports,
   ],
   templateUrl: './dashboard.component.html',
@@ -581,6 +588,12 @@ export class DashboardComponent implements OnInit {
     if (state === 'strong') return 'pipeline-stage--strong';
     if (state === 'watch') return 'pipeline-stage--watch';
     return 'pipeline-stage--quiet';
+  }
+
+  getStageStateTone(state: PipelineStageSummary['state']): StatusBadgeTone {
+    if (state === 'strong') return 'success';
+    if (state === 'watch') return 'warning';
+    return 'muted';
   }
 
   getReadinessClass(state: ReadinessItem['state']): string {

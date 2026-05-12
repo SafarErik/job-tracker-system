@@ -47,11 +47,11 @@
       "applications": "Jelentkezések",
       "companies": "Cégek",
       "insights": "Elemzések",
-      "signals": "Lehetőségek",
+      "signals": "Vadis",
       "documents": "Dokumentumok"
     },
     "header": {
-      "searchPlaceholder": "Keress a folyamatban vagy kérdezd a Aptelion segítőt...",
+      "searchPlaceholder": "Keress a folyamatban vagy kérdezd Vadist...",
       "openSearch": "Parancsmenü megnyitása",
       "profile": "Profil",
       "settings": "Beállítások",
@@ -86,12 +86,12 @@
       "commands": {
         "workspace": "Munkaterület",
         "actions": "Műveletek",
-        "assistant": "Aptelion segítő",
+        "assistant": "Vadis",
         "openDashboard": "Áttekintés megnyitása",
         "openApplications": "Jelentkezések megnyitása",
         "openCompanies": "Cégek megnyitása",
         "addApplication": "Lehetőség hozzáadása",
-        "openAssistant": "Aptelion segítő megnyitása",
+        "openAssistant": "Vadis megnyitása",
         "pipelineSummary": "Folyamat összegzése",
         "nextBestAction": "Következő legjobb lépés"
       }
@@ -157,7 +157,7 @@
     "workspace": {
       "eyebrow": "Egy karrierfelület",
       "title": "Minden, ami egy lehetőséghez tartozik, egy vezetett folyamatban él.",
-      "body": "A Aptelion összekapcsolja azt a munkát, amit a jelöltek amúgy is végeznek: kutatás, követés, CV-szerkesztés, motivációs levél, interjúfelkészülés és ajánlati gondolkodás. Az AI segítő támogatja a folyamatot anélkül, hogy a termék zajos chatfelületté válna.",
+      "body": "A Aptelion összekapcsolja azt a munkát, amit a jelöltek amúgy is végeznek: kutatás, követés, CV-szerkesztés, motivációs levél, interjúfelkészülés és ajánlati gondolkodás. Vadis támogatja a folyamatot anélkül, hogy a termék zajos chatfelületté válna.",
       "previewTitle": "Jelentkezési munkaterület",
       "previewSubtitle": "Szerepkör-kontekstus, dokumentumok, gyakorlás és következő lépések",
       "previewBadge": "Vezetett",
@@ -188,14 +188,14 @@
     "pricing": {
       "eyebrow": "Termék, amibe bele lehet nőni",
       "title": "Kezdj egyszerűen, fizess valódi karrierelőnyért.",
-      "body": "Az első fizetős rétegnek ki kell érdemelnie a helyét: erősebb dokumentumgenerálás, mélyebb szerepkörkutatás, interjú-coaching és egy Aptelion segítő, amely érti a felhasználó teljes karrierkörnyezetét.",
+      "body": "Az első fizetős rétegnek ki kell érdemelnie a helyét: erősebb dokumentumgenerálás, mélyebb szerepkörkutatás, interjú-coaching és Vadis, amely érti a felhasználó teljes karrierkörnyezetét.",
       "planTitle": "Aptelion Pro",
       "planBody": "Aktív álláskeresőknek és ambiciózus szakembereknek, akik struktúrát, jobb döntéseket és kevesebb kézi munkát szeretnének.",
       "benefits": {
         "tracker": "Korlátlan jelentkezési és cégkutatási munkaterület.",
         "documents": "CV- és motivációslevél-generálás szerepkörhöz igazított javítási útmutatással.",
         "interview": "Interjúgyakorlási tervek, válasz-visszajelzés és utánkövetési javaslatok.",
-        "guide": "Aptelion segítő kontextussal a jelentkezések, dokumentumok és célok között."
+        "guide": "Vadis-kontekstus a jelentkezések, dokumentumok és célok között."
       },
       "cta": "Munkaterület létrehozása"
     },
@@ -990,9 +990,9 @@
   },
   "ai": {
     "drawer": {
-      "title": "Aptelion segítő",
-      "ariaLabel": "Aptelion segítő",
-      "close": "Aptelion segítő bezárása",
+      "title": "Vadis",
+      "ariaLabel": "Vadis",
+      "close": "Vadis bezárása",
       "modeFast": "Gyors",
       "modeDeep": "Mélyebb elemzés",
       "placeholder": "Kérdezz bármit a karrierfolyamatodról...",
@@ -1003,7 +1003,7 @@
         "followUps": "utánkövetés",
         "interviewPrep": "interjúfelkészülés"
       },
-      "welcomeTitle": "Üdv a Aptelion segítőben",
+      "welcomeTitle": "Üdv Vadisban",
       "welcomeBody": "Segítek a folyamat összegzésében, az utánkövetési stratégiában és az interjúfelkészülésben. Próbáld megkérdezni a következő legjobb lépést.",
       "responses": {
         "summaryTitle": "Folyamat összegzése",
@@ -1027,8 +1027,8 @@
       "searchLabel": "Keresés vagy AI-kérdés",
       "placeholder": "Kérdezz bármit erről a jelentkezésről...",
       "quickActions": "Gyors műveletek",
-      "guideLabel": "Aptelion segítő",
-      "openGuide": "Aptelion segítő megnyitása",
+      "guideLabel": "Vadis",
+      "openGuide": "Vadis megnyitása",
       "navigate": "Navigálás",
       "select": "Kiválasztás",
       "noResults": "Nincs ilyen parancs.",
@@ -1232,7 +1232,7 @@
       }
     },
     "assets": {
-      "assistant": "AI dokumentumsegítő",
+      "assistant": "Vadis dokumentumútmutató",
       "resume": "CV",
       "source": "Forrásdokumentum",
       "output": "Személyre szabott kimenet",
@@ -1243,7 +1243,7 @@
       "coverLetter": "Személyre szabott motivációs levél",
       "noCoverTitle": "Még nincs motivációs levél",
       "noCoverBody": "A Aptelion elkészít egy professzionális, pozícióhoz igazított motivációs levelet.",
-      "draftCover": "Piszkozat a Aptelion segítővel",
+      "draftCover": "Piszkozat Vadisszal",
       "drafting": "Piszkozat készül...",
       "studioEyebrow": "Document Studio",
       "studioTitle": "Szerepkörhöz igazított dokumentumok",
@@ -1367,7 +1367,7 @@
         "generating": "Generálás..."
       },
       "guide": {
-        "title": "Aptelion segítő",
+        "title": "Vadis",
         "subtitle": "Fókuszált szerkesztési irányok",
         "results": {
           "label": "Legyen eredményorientáltabb",
@@ -1394,7 +1394,7 @@
     "interview": {
       "title": "Interjúgyakorlás",
       "readyTitle": "Készen állsz gyakorolni?",
-      "readyBody": "Válassz interjúszimulációt, és kezdd el a gyakorlást a Aptelion segítővel.",
+      "readyBody": "Válassz interjúszimulációt, és kezdd el a gyakorlást Vadisszal.",
       "listening": "Hallgatás...",
       "endSession": "Gyakorlás befejezése",
       "performance": "Teljesítmény",

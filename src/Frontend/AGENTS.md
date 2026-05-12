@@ -35,7 +35,7 @@ Every important screen should have:
 - responsive layout;
 - accessible controls;
 - clear primary action;
-- Aptelion and Signal language;
+- Aptelion and Vadis language;
 - polished, production-like feel.
 
 Avoid:
@@ -130,9 +130,9 @@ Use the Aptelion brand system.
 Preferred:
 
 - Aptelion Navy;
-- Deep Signal;
+- Deep Vadis;
 - Aptelion Cyan;
-- Signal Blue;
+- Vadis Blue;
 - Clear Mist;
 - Soft Surface;
 - Line Gray;
@@ -147,7 +147,7 @@ Avoid:
 - cyberpunk visuals;
 - crypto-style glow;
 - military dashboard styling;
-- generic AI assistant visuals;
+- generic chatbot visuals;
 - aggressive dark-mode-only aesthetics.
 
 ## Product Language
@@ -159,7 +159,7 @@ Prefer:
 - `Today's Focus`
 - `Momentum`
 - `Application Queue`
-- `Signal Guidance`
+- `Vadis Guidance`
 - `Next best move`
 - `Fit Overview`
 - `Analyze fit`
@@ -177,14 +177,14 @@ Avoid:
 
 - `Tactical`
 - `Combat`
-- `Arsenal`
-- `Dojo`
+- `Weaponized career language`
+- `Gamer-like practice-room labels`
 - `Weaponry`
 - `Mission Intel`
 - `Deploy`
 - `Operative`
-- `Autopilot Engaged`
-- `Magic AI`
+- `Hands-off automation promises`
+- `Magic-style AI labels`
 - `Kwd Deficiency Detected`
 - `Synchronizing Intel`
 - `Career hacking`
@@ -198,7 +198,7 @@ Prioritize:
 - Today's Focus;
 - Momentum;
 - Application Queue;
-- Signal Guidance;
+- Vadis Guidance;
 - Recent Work;
 - Follow-ups;
 - At Risk;

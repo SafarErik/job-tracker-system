@@ -357,7 +357,7 @@ export class JobCardComponent {
             return { text: this.t('applications.card.insights.strongFit'), classes: 'text-emerald-400', icon: 'lucideStar' };
         }
 
-        // 5. Signal feedback snippet
+        // 5. Vadis feedback snippet
         if (feedback) {
             const firstSentence = feedback.split(/[.!?]/)[0];
             const snippet = firstSentence.length > 35 ? firstSentence.substring(0, 32) + '...' : firstSentence;

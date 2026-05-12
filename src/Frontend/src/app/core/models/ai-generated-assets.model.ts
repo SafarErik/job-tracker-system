@@ -1,5 +1,5 @@
 /**
- * Signal-generated tailored assets (resume + cover letter) and analysis summaries.
+ * Vadis-generated tailored assets (resume + cover letter) and analysis summaries.
  * Exactly mirrors AiGeneratedAssetsDto from the backend.
  */
 import { FitReview } from './fit-review.model';

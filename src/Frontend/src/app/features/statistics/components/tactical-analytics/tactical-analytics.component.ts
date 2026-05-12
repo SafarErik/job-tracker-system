@@ -101,6 +101,6 @@ export class TacticalAnalyticsComponent {
     }
 
     startDeepAudit(): void {
-        // Future implementation: trigger Signal analysis session
+        // Future implementation: trigger Vadis analysis session
     }
 }

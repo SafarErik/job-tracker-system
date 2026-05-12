@@ -91,7 +91,7 @@ Avoid:
 - leaking EF Core `DbContext` into application services unless this is already the established pattern;
 - returning tracked entities to the API layer;
 - mixing HTTP concepts into application services;
-- placing subscription, premium, Signal, or Cloud logic randomly across services.
+- placing subscription, premium, Vadis, or Cloud logic randomly across services.
 
 ## Domain/Core Rules
 
@@ -173,7 +173,7 @@ Do:
 - validate ownership of user-owned resources;
 - do not trust client-supplied user IDs when authenticated user context is available;
 - avoid exposing data across users;
-- keep admin, Cloud, Signal, premium, and internal operations protected.
+- keep admin, Cloud, Vadis, premium, and internal operations protected.
 
 Never:
 
@@ -237,14 +237,14 @@ When handling documents or user career data:
 
 - treat uploaded files and generated documents as sensitive;
 - avoid unnecessary logging of document contents;
-- avoid storing derived Signal prompts/responses without clear intent;
+- avoid storing derived Vadis prompts/responses without clear intent;
 - validate file type and size according to existing project rules.
 
 ## Open-Core Boundaries
 
 Aptelion follows an open-core strategy.
 
-Aptelion Core should remain credible, useful, and open. Aptelion Cloud, Aptelion Signal, and advanced Aptelion Studio functionality may remain proprietary.
+Aptelion Core should remain credible, useful, and open. Aptelion Cloud, Aptelion Vadis, and advanced Aptelion Studio functionality may remain proprietary.
 
 Aptelion Core may include:
 
@@ -261,7 +261,7 @@ Aptelion Core may include:
 Private/proprietary layers may include:
 
 - Aptelion Cloud hosting and SaaS infrastructure;
-- Aptelion Signal scoring and recommendation logic;
+- Aptelion Vadis scoring and recommendation logic;
 - proprietary prompts and evaluation models;
 - document generation logic;
 - advanced fit analysis;
@@ -279,11 +279,11 @@ Rules:
 - Keep open-source and premium boundaries explicit.
 - Do not move existing open-core functionality behind premium gates without explicit instruction.
 - Do not introduce artificial limits into the open core unless explicitly requested.
-- Keep Signal-specific proprietary logic behind replaceable interfaces.
+- Keep Vadis-specific proprietary logic behind replaceable interfaces.
 
-## Signal Integration Rules
+## Vadis Integration Rules
 
-Aptelion Signal is the private guidance layer.
+Aptelion Vadis is the private guidance layer.
 
 Public/core code may define:
 
@@ -292,7 +292,7 @@ Public/core code may define:
 - basic placeholder implementations;
 - simple rule-based or local-only foundations.
 
-Private Signal code may implement:
+Private Vadis code may implement:
 
 - advanced scoring;
 - role-to-profile analysis;
@@ -302,7 +302,7 @@ Private Signal code may implement:
 - proprietary prompts;
 - evaluation models.
 
-Do not leak proprietary Signal prompts, scoring weights, ranking logic, or private datasets into Aptelion Core.
+Do not leak proprietary Vadis prompts, scoring weights, ranking logic, or private datasets into Aptelion Core.
 
 ## API Contract Rules
 
@@ -394,5 +394,5 @@ When finishing backend work, report:
 - build/test results;
 - migration impact, if any;
 - security/auth impact, if any;
-- open-core/Signal boundary impact, if any;
+- open-core/Vadis boundary impact, if any;
 - known limitations or recommended next step.

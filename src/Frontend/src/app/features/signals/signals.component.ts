@@ -93,7 +93,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
   readonly chatMessages = signal<{ sender: 'user' | 'agent'; text: string }[]>([
     {
       sender: 'agent',
-      text: 'Signal Guidance is ready. Monitoring relevant career and market signals.',
+      text: 'Vadis Guidance is ready. Monitoring relevant career and market signals.',
     },
   ]);
   readonly isScanning = signal(false);
@@ -191,7 +191,7 @@ export class SignalsComponent implements OnInit, OnDestroy {
     this.selectedItem.set(item);
     this.startTypewriter(
       item.summary ||
-        'Signal analysis in progress. Connecting market context to your career direction...',
+        'Vadis analysis in progress. Connecting market context to your career direction...',
     );
   }
 

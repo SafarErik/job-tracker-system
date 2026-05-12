@@ -18,21 +18,16 @@
       </article>
     } @else {
       <article class="dashboard-focus md:col-span-4">
-        <div class="dashboard-focus__topline">
-          <div>
-            <p class="dashboard-eyebrow">{{ 'dashboard.focus.eyebrow' | transloco }}</p>
-            <h1 class="mt-2 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-              {{ 'dashboard.focus.title' | transloco }}
-            </h1>
-            <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-              {{ stateSummary() }} {{ 'dashboard.focus.updated' | transloco: { date: currentDateLabel() } }}
-            </p>
-          </div>
-
-          <button type="button" class="dashboard-primary-cta" (click)="uiService.openAddAppSheet()">
+        <app-aptelion-section-header
+          [eyebrow]="'dashboard.focus.eyebrow' | transloco"
+          [title]="'dashboard.focus.title' | transloco"
+          [description]="stateSummary() + ' ' + ('dashboard.focus.updated' | transloco: { date: currentDateLabel() })"
+          level="page"
+        >
+          <button section-actions type="button" class="dashboard-primary-cta" (click)="uiService.openAddAppSheet()">
             {{ 'dashboard.actions.addOpportunity' | transloco }}
           </button>
-        </div>
+        </app-aptelion-section-header>
 
         <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
           <div>
@@ -105,15 +100,11 @@
 
     <article class="dashboard-pipeline md:col-span-4">
       <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-        <div>
-          <p class="dashboard-eyebrow">{{ 'dashboard.pipeline.title' | transloco }}</p>
-          <h2 class="mt-2 font-display text-xl font-semibold tracking-tight text-foreground">
-            {{ pipelineInsight().label }}
-          </h2>
-          <p class="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-            {{ pipelineInsight().body }}
-          </p>
-        </div>
+        <app-aptelion-section-header
+          [eyebrow]="'dashboard.pipeline.title' | transloco"
+          [title]="pipelineInsight().label"
+          [description]="pipelineInsight().body"
+        ></app-aptelion-section-header>
 
         <div class="pipeline-insight">
           <p class="pipeline-insight__target">{{ pipelineInsight().target }}</p>
@@ -127,7 +118,10 @@
             <p class="pipeline-stage__label">{{ stage.label }}</p>
             <div class="mt-4 flex items-end justify-between gap-3">
               <p class="pipeline-stage__count dashboard-mono">{{ stage.count }}</p>
-              <span class="pipeline-stage__state">{{ stage.stateLabel }}</span>
+              <app-status-badge
+                [label]="stage.stateLabel"
+                [tone]="getStageStateTone(stage.state)"
+              ></app-status-badge>
             </div>
             <p class="pipeline-stage__helper">{{ stage.helper }}</p>
             <p class="pipeline-stage__action">{{ stage.action }}</p>
@@ -149,13 +143,11 @@
     ></app-pipeline-table-card>
 
     <article class="readiness-panel md:col-span-1">
-      <p class="dashboard-eyebrow">{{ 'dashboard.readiness.title' | transloco }}</p>
-      <h2 class="mt-2 text-lg font-semibold text-foreground">
-        {{ 'dashboard.readiness.heading' | transloco }}
-      </h2>
-      <p class="mt-2 text-sm leading-6 text-muted-foreground">
-        {{ 'dashboard.readiness.body' | transloco }}
-      </p>
+      <app-aptelion-section-header
+        [eyebrow]="'dashboard.readiness.title' | transloco"
+        [title]="'dashboard.readiness.heading' | transloco"
+        [description]="'dashboard.readiness.body' | transloco"
+      ></app-aptelion-section-header>
 
       <div class="mt-5 space-y-3">
         @for (item of readinessItems(); track item.label) {

@@ -163,7 +163,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'intelligence') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-display font-semibold">Signal Guidance</h4>
+                    <h4 class="text-xl font-display font-semibold">Vadis Guidance</h4>
                     <p class="text-xs text-muted-foreground">
                       Tune how Aptelion supports research, documents, and next actions.
                     </p>
@@ -261,7 +261,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
               @if (activeSection() === 'connectivity') {
                 <div class="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                   <header class="space-y-1">
-                    <h4 class="text-xl font-heading font-bold">Signal Bridges</h4>
+                    <h4 class="text-xl font-heading font-bold">Vadis Bridges</h4>
                     <p class="text-xs text-muted-foreground">
                       Manage external connections and data ingestion pipelines.
                     </p>

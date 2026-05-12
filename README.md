@@ -28,7 +28,7 @@ Aptelion follows an open-core model.
 
 - **Aptelion Core** is the open-source foundation in this repository. It contains the reusable application structure, public contracts, core UI/API foundations, and self-hostable career workspace basics.
 - **Aptelion Cloud** is the future hosted proprietary SaaS product, including managed hosting, accounts, synchronization, billing, premium integrations, and production SaaS operations.
-- **Aptelion Signal** is the private AI guidance and decision-support layer for fit analysis, recommendations, prioritization, document guidance, interview preparation, and next-best-action logic.
+- **Aptelion Vadis** is the private AI guidance and decision-support layer for fit analysis, recommendations, prioritization, document guidance, interview preparation, and next-best-action logic.
 - **Aptelion Studio** is the workspace experience for applications, documents, interviews, offers, and timelines. Aptelion Core may include Studio essentials; advanced Studio workflows may live in Aptelion Cloud.
 
 Aptelion Core should remain useful, credible, and extensible on its own. Proprietary prompts, scoring weights, recommendation models, hosted SaaS infrastructure, billing, and commercial automation are intentionally outside the open-source core.
@@ -195,7 +195,7 @@ General expectations:
 
 - preserve existing behavior unless a change is explicitly requested;
 - keep backend controllers thin and domain/application logic out of HTTP endpoints;
-- keep Aptelion Signal-specific proprietary logic behind replaceable interfaces;
+- keep Aptelion Vadis-specific proprietary logic behind replaceable interfaces;
 - keep Aptelion Core useful without private SaaS features;
 - use typed DTOs and models instead of unstructured objects;
 - keep frontend components focused, accessible, and consistent with Spartan UI and Tailwind conventions;
@@ -211,7 +211,7 @@ Apache-2.0 applies to the open-source software portions of Aptelion Core unless 
 
 ## Trademark And Brand
 
-Aptelion, Aptelion Core, Aptelion Cloud, Aptelion Signal, Aptelion Studio, logos, visual identity, and brand assets are not licensed under Apache-2.0.
+Aptelion, Aptelion Core, Aptelion Cloud, Aptelion Vadis, Aptelion Studio, logos, visual identity, and brand assets are not licensed under Apache-2.0.
 
 Brand assets, including files under `docs/brand`, are provided as project reference material. They may not be used to operate a competing service, imply endorsement, suggest affiliation, or present another product or service as Aptelion without explicit permission.
 
@@ -223,7 +223,7 @@ Planned direction includes:
 
 - refine Aptelion Core as a self-hostable career workspace foundation;
 - strengthen application, document, interview, offer, and timeline primitives;
-- define clear extension points for private Aptelion Signal implementations;
+- define clear extension points for private Aptelion Vadis implementations;
 - improve Aptelion Studio essentials in the open core;
 - separate hosted Aptelion Cloud concerns from reusable open-source foundations;
 - clean up remaining legacy `JobTracker` technical names in a later dedicated refactor.

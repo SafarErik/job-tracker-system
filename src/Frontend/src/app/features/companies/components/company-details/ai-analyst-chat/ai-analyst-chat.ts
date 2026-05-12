@@ -1,14 +1,14 @@
 import { Component, input, output, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideSend, lucideHistory, lucideMicroscope, lucideBot } from '@ng-icons/lucide';
+import { lucideSend, lucideHistory, lucideMicroscope } from '@ng-icons/lucide';
 import { FormsModule } from '@angular/forms';
 import { HlmInputImports } from '../../../../../../../libs/ui/input';
 
 @Component({
   selector: 'app-ai-analyst-chat',
   imports: [CommonModule, FormsModule, ...HlmInputImports, NgIcon],
-  providers: [provideIcons({ lucideSend, lucideHistory, lucideMicroscope, lucideBot })],
+  providers: [provideIcons({ lucideSend, lucideHistory, lucideMicroscope })],
   templateUrl: './ai-analyst-chat.html',
   styleUrls: ['./ai-analyst-chat.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,7 +19,7 @@ export class AiAnalystChatComponent {
 
 
   messages = signal([
-    { role: 'analyst', content: 'Signal Guidance is ready. I can summarize company context, identify interview angles, and connect this research to your pipeline.' }
+    { role: 'analyst', content: 'Vadis Guidance is ready. I can summarize company context, identify interview angles, and connect this research to your pipeline.' }
   ]);
 
   currentInput = signal('');

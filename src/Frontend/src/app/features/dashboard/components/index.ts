@@ -10,4 +10,3 @@ export * from './skill-radar/skill-radar.component';
 export * from './global-footprint/global-footprint.component';
 export * from './activity-feed/activity-feed.component';
 export * from './pipeline-table-card/pipeline-table-card.component';
-export * from './tactical-priority/tactical-priority.component';

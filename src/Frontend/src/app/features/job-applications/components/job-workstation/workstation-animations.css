@@ -23,7 +23,7 @@
     perspective: 1000px;
 }
 
-/* Signal highlight for interactive keywords */
+/* Vadis highlight for interactive keywords */
 .keyword-highlight {
     @apply relative cursor-pointer px-1 rounded transition-all duration-300;
     background: linear-gradient(to right, hsl(var(--primary) / 0.10), hsl(var(--accent) / 0.06));

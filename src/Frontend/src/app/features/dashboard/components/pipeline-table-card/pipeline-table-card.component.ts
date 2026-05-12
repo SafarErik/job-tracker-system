@@ -51,7 +51,8 @@ import { JobPriority } from '../../../job-applications/models/job-priority.enum'
     }
 
     .metric-mono {
-      font-family: 'Geist Mono', 'Inter', monospace;
+      font-family: var(--font-sans);
+      font-variant-numeric: tabular-nums;
     }
 
     .queue-row {

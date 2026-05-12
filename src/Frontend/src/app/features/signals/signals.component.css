@@ -109,8 +109,8 @@
 }
 
 /* Text Gradients */
-.text-gradient-violet {
-    background: linear-gradient(to right, #7c3aed, #4f46e5);
+.text-gradient-signal {
+    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

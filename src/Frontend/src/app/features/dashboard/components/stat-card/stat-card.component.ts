@@ -25,7 +25,7 @@ export type StatCardVariant = 'default' | 'glow' | 'highlight';
 
         <p
           class="text-3xl font-semibold text-foreground"
-          style="font-family: 'Geist Mono', 'Inter', monospace"
+          style="font-family: var(--font-sans); font-variant-numeric: tabular-nums"
         >
           {{ value() }}
         </p>

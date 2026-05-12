@@ -26,6 +26,7 @@
 }
 
 .metric-value {
-  font-family: 'Geist Mono', 'Inter', monospace;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   color: hsl(var(--foreground));
 }

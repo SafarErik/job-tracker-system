@@ -80,7 +80,7 @@ const RADIUS = 100;
               opacity="0.5"
             />
 
-            <!-- User score polygon (violet fill) -->
+            <!-- User score polygon -->
             <polygon
               [attr.points]="userPolygon()"
               fill="hsl(var(--primary) / 0.15)"

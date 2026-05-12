@@ -47,7 +47,7 @@ import { HlmSkeletonImports } from '@spartan-ng/helm/skeleton';
             x="60" y="55"
             text-anchor="middle"
             class="fill-foreground text-2xl font-semibold"
-            style="font-family: 'Geist Mono', 'Inter', monospace; font-size: 22px;"
+            style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 22px;"
           >
             {{ clampedScore() }}
           </text>

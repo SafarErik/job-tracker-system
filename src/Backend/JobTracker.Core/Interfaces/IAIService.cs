@@ -9,6 +9,16 @@ namespace JobTracker.Core.Interfaces;
 public interface IAIService
 {
     /// <summary>
+    /// Whether this provider can execute guidance operations in the current environment.
+    /// </summary>
+    bool IsConfigured { get; }
+
+    /// <summary>
+    /// Human-readable provider name for diagnostics and unavailable-state messaging.
+    /// </summary>
+    string ProviderName { get; }
+
+    /// <summary>
     /// Analyzes a job description against a resume to determine compatibility.
     /// </summary>
     /// <param name="jobDescription">The full text of the job posting</param>

@@ -2,296 +2,278 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  inject,
-  OnDestroy,
   OnInit,
-  signal,
   computed,
+  inject,
+  signal,
 } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProfileStore } from '../profile/services/profile.store';
+import { finalize } from 'rxjs';
+import { provideIcons, NgIcon } from '@ng-icons/core';
 import {
-  IntelligenceService,
-  GlobalSignal,
+  lucideBriefcase,
+  lucideBuilding2,
+  lucideCheckCircle2,
+  lucideChevronDown,
+  lucideChevronUp,
+  lucideClock,
+  lucideExternalLink,
+  lucideFilter,
+  lucideMapPin,
+  lucidePlus,
+  lucideRadio,
+  lucideTrendingUp,
+  lucideX,
+} from '@ng-icons/lucide';
+import { HlmButtonImports } from '@spartan-ng/helm/button';
+import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
+import { NotificationService } from '../../core/services/notification.service';
+import {
   CareerOpportunity,
+  GlobalSignal,
+  IntelligenceService,
 } from '../../core/services/intelligence.service';
+import { ProfileStore } from '../profile/services/profile.store';
 import { ApplicationService } from '../job-applications/services/application.service';
 import { CreateJobApplication } from '../job-applications/models/job-application.model';
 import { JobApplicationStatus } from '../job-applications/models/application-status.enum';
 import { CompanyStore } from '../companies/services/company.store';
 import { CompanyPriority } from '../companies/models/company-priority.enum';
 
-// Icons
-import { provideIcons, NgIcon } from '@ng-icons/core';
-import {
-  lucideGlobe,
-  lucideTrendingUp,
-  lucideZap,
-  lucideLayers,
-  lucideSearch,
-  lucideRadio,
-  lucideClock,
-  lucideMessageSquare,
-  lucideX,
-  lucideSend,
-  lucideBriefcase,
-  lucideMapPin,
-  lucideBuilding2,
-  lucideExternalLink,
-} from '@ng-icons/lucide';
-
-import { HlmButtonImports } from '@spartan-ng/helm/button';
-import { HlmSkeleton } from '../../../../libs/ui/skeleton/src/lib/hlm-skeleton';
+type VadisTab = 'signals' | 'opportunities';
 
 @Component({
   selector: 'app-signals',
-  imports: [CommonModule, FormsModule, NgIcon, DatePipe, TranslocoPipe, HlmButtonImports, HlmSkeleton],
+  imports: [CommonModule, DatePipe, NgIcon, HlmSkeleton, ...HlmButtonImports],
   templateUrl: './signals.component.html',
   styleUrls: ['./signals.component.css'],
   providers: [
     provideIcons({
-      lucideGlobe,
-      lucideTrendingUp,
-      lucideZap,
-      lucideLayers,
-      lucideSearch,
-      lucideRadio,
-      lucideClock,
-      lucideMessageSquare,
-      lucideX,
-      lucideSend,
       lucideBriefcase,
-      lucideMapPin,
       lucideBuilding2,
+      lucideCheckCircle2,
+      lucideChevronDown,
+      lucideChevronUp,
+      lucideClock,
       lucideExternalLink,
+      lucideFilter,
+      lucideMapPin,
+      lucidePlus,
+      lucideRadio,
+      lucideTrendingUp,
+      lucideX,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SignalsComponent implements OnInit, OnDestroy {
+export class SignalsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly profileStore = inject(ProfileStore);
   private readonly intelligenceService = inject(IntelligenceService);
-  private readonly jobApplicationService = inject(ApplicationService);
+  private readonly applicationService = inject(ApplicationService);
   private readonly companyStore = inject(CompanyStore);
+  private readonly notificationService = inject(NotificationService);
 
-  // Profile data
   readonly profile = this.profileStore.profile;
   readonly userSkills = this.profileStore.userSkills;
+  readonly activeTab = signal<VadisTab>('signals');
+  readonly selectedFilter = signal('All');
+  readonly selectedSignal = signal<GlobalSignal | null>(null);
+  readonly expandedOpportunityId = signal<string | null>(null);
+  readonly savingOpportunityId = signal<string | null>(null);
 
-  readonly activeTab = signal<'intelligence' | 'careers'>('intelligence');
-  readonly signals = signal<GlobalSignal[]>([]);
-  readonly opportunities = signal<CareerOpportunity[]>([]);
-  readonly isLoading = signal<boolean>(true);
-  readonly selectedFilter = signal<string>('All');
+  private readonly signals = signal<GlobalSignal[]>([]);
+  private readonly opportunities = signal<CareerOpportunity[]>([]);
+  private readonly isSignalsLoading = signal(true);
+  private readonly isOpportunitiesLoading = signal(true);
 
-  // Chat state
-  readonly isChatOpen = signal(false);
-  readonly chatMessages = signal<{ sender: 'user' | 'agent'; text: string }[]>([
-    {
-      sender: 'agent',
-      text: 'Vadis Guidance is ready. Monitoring relevant career and market signals.',
-    },
-  ]);
-  readonly isScanning = signal(false);
+  readonly isLoading = computed(() =>
+    this.activeTab() === 'signals' ? this.isSignalsLoading() : this.isOpportunitiesLoading(),
+  );
 
-  // Overlay state
-  readonly selectedItem = signal<GlobalSignal | null>(null);
-  readonly displayedSummary = signal('');
-  private typeInterval: ReturnType<typeof setInterval> | null = null;
-
-  // Derived state for skills
   readonly skillChips = computed(() => {
-    const skills = this.userSkills();
-    return ['All', ...skills.map((s) => s.name)];
+    const values = new Set<string>(['All']);
+    for (const skill of this.userSkills()) values.add(skill.name);
+    for (const signalItem of this.signals()) {
+      values.add(signalItem.category);
+      signalItem.tags.forEach((tag) => values.add(tag));
+    }
+    return Array.from(values).slice(0, 10);
   });
 
   readonly filteredSignals = computed(() => {
     const filter = this.selectedFilter();
-    const allSignals = this.signals();
+    const items = this.signals();
+    if (filter === 'All') return items;
 
-    if (filter === 'All') return allSignals;
-
-    return allSignals.filter(
-      (s) =>
-        s.tags.some((t) => t.toLowerCase() === filter.toLowerCase()) ||
-        s.category.toLowerCase() === filter.toLowerCase(),
+    return items.filter(
+      (item) =>
+        item.category.toLowerCase() === filter.toLowerCase() ||
+        item.tags.some((tag) => tag.toLowerCase() === filter.toLowerCase()),
     );
   });
 
-  // Lifecycle
+  readonly visibleOpportunities = computed(() => this.opportunities());
+
+  readonly workspaceSummary = computed(() => {
+    const title = this.profile()?.currentJobTitle?.trim();
+    const skills = this.userSkills().slice(0, 3).map((skill) => skill.name);
+    if (title && skills.length) return `${title} profile with ${skills.join(', ')}`;
+    if (title) return `${title} profile`;
+    if (skills.length) return `${skills.join(', ')} profile`;
+    return 'Core preview profile';
+  });
+
   ngOnInit(): void {
-    this.loadData();
+    this.companyStore.loadAll();
+    this.loadSignals();
+    this.loadOpportunities();
   }
 
-  ngOnDestroy(): void {
-    if (this.typeInterval) {
-      clearInterval(this.typeInterval);
-      this.typeInterval = null;
-    }
-  }
-
-  /**
-   * Load signals and career opportunities with proper subscription cleanup
-   */
-  private loadData(): void {
-    const skills = this.userSkills().map((s) => s.name);
-    const jobTitle = this.profile()?.currentJobTitle || '';
-
-    this.isLoading.set(true);
-
-    // Load signals with cleanup
-    this.intelligenceService
-      .getGlobalSignals(skills, jobTitle)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.signals.set(data);
-          if (this.activeTab() === 'intelligence') this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
-
-    // Load opportunities with cleanup
-    this.intelligenceService
-      .getCareerOpportunities()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.opportunities.set(data);
-          if (this.activeTab() === 'careers') this.isLoading.set(false);
-        },
-        error: () => this.isLoading.set(false),
-      });
-  }
-
-  setActiveTab(tab: 'intelligence' | 'careers') {
+  setActiveTab(tab: VadisTab): void {
     this.activeTab.set(tab);
   }
 
-  setFilter(filter: string) {
+  setFilter(filter: string): void {
     this.selectedFilter.set(filter);
   }
 
-  getImpactColor(score: number): string {
-    if (score >= 90) return 'text-rose-500';
-    if (score >= 80) return 'text-orange-500';
-    return 'text-amber-500';
+  openSignal(signalId: string): void {
+    const item = this.signals().find((signalItem) => signalItem.id === signalId);
+    if (item) this.selectedSignal.set(item);
   }
 
-  openIntelligenceReport(signalId: string) {
-    const item = this.signals().find((s) => s.id === signalId);
-    if (!item) return;
-
-    this.selectedItem.set(item);
-    this.startTypewriter(
-      item.summary ||
-        'Vadis analysis in progress. Connecting market context to your career direction...',
-    );
+  closeSignal(): void {
+    this.selectedSignal.set(null);
   }
 
-  closeReport() {
-    this.selectedItem.set(null);
-    if (this.typeInterval) {
-      clearInterval(this.typeInterval);
-      this.typeInterval = null;
-    }
-    this.displayedSummary.set('');
+  toggleOpportunity(id: string): void {
+    this.expandedOpportunityId.update((current) => (current === id ? null : id));
   }
 
-  // Career Actions
-  acquireTarget(opp: CareerOpportunity) {
-    const companyName = opp.company;
+  saveOpportunity(opportunity: CareerOpportunity): void {
+    if (this.savingOpportunityId()) return;
+
     const existingCompany = this.companyStore
       .companies()
-      .find((c) => c.name.toLowerCase() === companyName.toLowerCase());
+      .find((company) => company.name.toLowerCase() === opportunity.company.toLowerCase());
+
+    this.savingOpportunityId.set(opportunity.id);
 
     if (existingCompany) {
-      this.createSignalApplication(existingCompany.id, opp);
-    } else {
-      this.companyStore
-        .create({
-          name: companyName,
-          priority: CompanyPriority.MidTier,
-        })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (company) => {
-            this.createSignalApplication(company.id, opp);
-          },
-          error: () => {
-            alert('Failed to create company for this opportunity');
-          },
-        });
+      this.createApplication(existingCompany.id, opportunity);
+      return;
     }
-  }
 
-  private createSignalApplication(companyId: string, opp: CareerOpportunity) {
-    const newApp: CreateJobApplication = {
-      position: opp.roleTitle,
-      companyId: companyId,
-      status: JobApplicationStatus.Applied,
-      matchScore: opp.matchScore,
-      description: `Imported from Career Opportunity: ${opp.roleTitle} at ${opp.company}`,
-    };
-
-    this.jobApplicationService
-      .createApplication(newApp)
+    this.companyStore
+      .create({
+        name: opportunity.company,
+        hqLocation: opportunity.location,
+        description: opportunity.description,
+        priority: CompanyPriority.MidTier,
+      })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          alert(`Saved opportunity: ${opp.roleTitle}`);
+        next: (company) => this.createApplication(company.id, opportunity),
+        error: () => {
+          this.savingOpportunityId.set(null);
+          this.notificationService.error(
+            'The company could not be created for this opportunity.',
+            'Opportunity not saved',
+          );
         },
-        error: () => alert('Failed to save opportunity'),
       });
   }
 
-  // Chat Actions
-  toggleChat() {
-    this.isChatOpen.update((v) => !v);
+  getImpactTone(score: number): string {
+    if (score >= 85) return 'text-primary';
+    if (score >= 75) return 'text-warning';
+    return 'text-muted-foreground';
   }
 
-  sendMessage(message: string) {
-    if (!message.trim()) return;
+  companyInitials(company: string): string {
+    return company
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0])
+      .join('')
+      .toUpperCase();
+  }
 
-    this.chatMessages.update((msgs) => [...msgs, { sender: 'user', text: message }]);
-    this.isScanning.set(true);
+  private loadSignals(): void {
+    const skills = this.userSkills().map((skill) => skill.name);
+    const jobTitle = this.profile()?.currentJobTitle ?? '';
 
-    // Mock response
-    setTimeout(() => {
-      this.isScanning.set(false);
-      this.chatMessages.update((msgs) => [
-        ...msgs,
-        {
-          sender: 'agent',
-          text: `I found the request for "${message}". I will connect relevant market signals to your current profile.`,
+    this.isSignalsLoading.set(true);
+    this.intelligenceService
+      .getGlobalSignals(skills, jobTitle)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isSignalsLoading.set(false)),
+      )
+      .subscribe({
+        next: (signals) => this.signals.set(signals),
+        error: () => {
+          this.signals.set([]);
+          this.notificationService.error('Could not load Vadis preview signals.', 'Vadis Guidance');
         },
-      ]);
-    }, 2000);
+      });
   }
 
-  private startTypewriter(text: string) {
-    this.displayedSummary.set('');
-    let i = 0;
-    if (this.typeInterval) {
-      clearInterval(this.typeInterval);
-    }
+  private loadOpportunities(): void {
+    this.isOpportunitiesLoading.set(true);
+    this.intelligenceService
+      .getCareerOpportunities()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isOpportunitiesLoading.set(false)),
+      )
+      .subscribe({
+        next: (opportunities) => this.opportunities.set(opportunities),
+        error: () => {
+          this.opportunities.set([]);
+          this.notificationService.error('Could not load career opportunities.', 'Vadis Guidance');
+        },
+      });
+  }
 
-    this.typeInterval = setInterval(() => {
-      if (i < text.length) {
-        this.displayedSummary.update((current) => current + text.charAt(i));
-        i++;
-      } else {
-        if (this.typeInterval) {
-          clearInterval(this.typeInterval);
-          this.typeInterval = null;
-        }
-      }
-    }, 15);
+  private createApplication(companyId: string, opportunity: CareerOpportunity): void {
+    const application: CreateJobApplication = {
+      position: opportunity.roleTitle,
+      companyId,
+      status: JobApplicationStatus.Applied,
+      matchScore: opportunity.matchScore,
+      description: [
+        opportunity.description,
+        '',
+        'Fit reasons:',
+        ...opportunity.fitReasons.map((reason) => `- ${reason}`),
+        '',
+        `Recommended next action: ${opportunity.nextStep}`,
+      ].join('\n'),
+    };
+
+    this.applicationService
+      .createApplication(application)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.savingOpportunityId.set(null)),
+      )
+      .subscribe({
+        next: () => {
+          this.notificationService.success(
+            `${opportunity.roleTitle} at ${opportunity.company} was added to Applications.`,
+            'Opportunity saved',
+          );
+        },
+        error: () => {
+          this.notificationService.error(
+            'The application could not be created from this opportunity.',
+            'Opportunity not saved',
+          );
+        },
+      });
   }
 }

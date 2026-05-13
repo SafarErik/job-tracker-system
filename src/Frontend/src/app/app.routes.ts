@@ -191,8 +191,8 @@ export const routes: Routes = [
         path: 'statistics',
         loadChildren: () =>
           import('./features/statistics/statistics.routes').then((m) => m.STATISTICS_ROUTES),
-        title: 'Vadis Analytics - Aptelion',
-        data: { breadcrumb: 'Intelligence' },
+        title: 'Progress Insights - Aptelion',
+        data: { breadcrumb: 'Progress Insights' },
       },
 
       // Global market signals
@@ -201,8 +201,8 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/signals/signals.component').then((m) => m.SignalsComponent),
 
-        title: 'Global Feed - Aptelion',
-        data: { breadcrumb: 'Global Signals' },
+        title: 'Vadis Guidance - Aptelion',
+        data: { breadcrumb: 'Vadis Guidance' },
       },
 
     ],

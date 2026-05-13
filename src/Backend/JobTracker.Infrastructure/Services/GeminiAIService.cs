@@ -42,6 +42,10 @@ public partial class GeminiAIService : IAIService
         _logger = logger;
     }
 
+    public bool IsConfigured => true;
+
+    public string ProviderName => "Google Gemini";
+
     public async Task<AiAnalysisResult> AnalyzeJobAsync(string jobDescription, string skillsList, string resumeText)
     {
         try

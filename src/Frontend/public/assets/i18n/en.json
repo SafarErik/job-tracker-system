@@ -46,8 +46,8 @@
       "dashboard": "Dashboard",
       "applications": "Applications",
       "companies": "Companies",
-      "insights": "Insights",
-      "signals": "Vadis",
+      "insights": "Progress Insights",
+      "signals": "Vadis Guidance",
       "documents": "Documents"
     },
     "header": {
@@ -75,8 +75,8 @@
         "dashboard": "Review Today's Focus, Momentum, and the next best move.",
         "applications": "Track the Application Queue and keep each opportunity moving.",
         "companies": "Manage company research and outreach context.",
-        "insights": "Review trends, charts, and progress signals.",
-        "signals": "Open Vadis Guidance for recommendations and next moves.",
+        "insights": "Review pipeline progress, readiness, and next actions.",
+        "signals": "Preview Vadis Guidance with local signals and opportunity recommendations.",
         "documents": "Keep CVs, cover letters, and tailored documents ready.",
         "profile": "Manage your career profile and preferences.",
         "newApplication": "Capture the opportunity basics, pipeline stage, materials, and readiness.",
@@ -91,7 +91,7 @@
         "openApplications": "Open applications",
         "openCompanies": "Open companies",
         "addApplication": "Add application",
-        "openAssistant": "Open Vadis",
+        "openAssistant": "Open Vadis Guidance",
         "pipelineSummary": "Application Queue summary",
         "nextBestAction": "Next best move"
       }

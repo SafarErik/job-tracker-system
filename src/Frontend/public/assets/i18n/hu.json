@@ -46,8 +46,8 @@
       "dashboard": "Áttekintés",
       "applications": "Jelentkezések",
       "companies": "Cégek",
-      "insights": "Elemzések",
-      "signals": "Vadis",
+      "insights": "Haladási elemzések",
+      "signals": "Vadis útmutatás",
       "documents": "Dokumentumok"
     },
     "header": {
@@ -75,8 +75,8 @@
         "dashboard": "Lásd, mi számít most, és hol érdemes lépned.",
         "applications": "Kövesd az aktív jelentkezéseket és reagálj gyorsan.",
         "companies": "Kezeld a cégkutatást és a kapcsolatfelvételi kontextust.",
-        "insights": "Tekintsd át a trendeket, grafikonokat és teljesítményjeleket.",
-        "signals": "Találj lehetőségeket és hasznos piaci jeleket.",
+        "insights": "Tekintsd át a folyamat haladását, felkészültségét és a következő lépéseket.",
+        "signals": "Nézd meg a Vadis helyi előnézetét piaci jelekkel és lehetőségajánlásokkal.",
         "documents": "Tartsd készen a CV-ket és álláskeresési dokumentumokat.",
         "profile": "Kezeld a karrierprofilodat és preferenciáidat.",
         "newApplication": "Rögzítsd a lehetőség alapjait, státuszát, anyagait és felkészültségét.",
@@ -91,7 +91,7 @@
         "openApplications": "Jelentkezések megnyitása",
         "openCompanies": "Cégek megnyitása",
         "addApplication": "Lehetőség hozzáadása",
-        "openAssistant": "Vadis megnyitása",
+        "openAssistant": "Vadis útmutatás megnyitása",
         "pipelineSummary": "Folyamat összegzése",
         "nextBestAction": "Következő legjobb lépés"
       }

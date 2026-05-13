@@ -1,496 +1,322 @@
-<div class="p-6 max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-  <!-- Header Section -->
-  <header class="space-y-2">
-    <div class="flex items-center gap-3">
-      <div class="p-2 bg-primary/10 rounded-lg">
-        <ng-icon name="lucideRadio" class="w-6 h-6 text-primary animate-pulse" />
+<section class="app-page max-w-[1500px] space-y-6">
+  <div class="surface-card p-4 sm:p-5">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <ng-icon name="lucideRadio" class="h-3.5 w-3.5"></ng-icon>
+            Vadis Guidance preview
+          </span>
+          <span class="rounded-full border border-border bg-muted/45 px-3 py-1 text-xs font-medium text-muted-foreground">
+            Aptelion Core local data
+          </span>
+        </div>
+        <p class="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+          This Core preview shows how market signals and opportunity recommendations can support your workflow without connecting to private Vadis services.
+          Tailored for <span class="font-semibold text-foreground">{{ workspaceSummary() }}</span>.
+        </p>
       </div>
-      <h1 class="text-4xl font-heading tracking-tight text-foreground">
-        Market Intelligence <span class="text-muted-foreground/40 font-light">//</span> Global Feed
-      </h1>
-    </div>
-    <p class="text-muted-foreground text-lg">
-      Tailored for your profile as a
-      <span class="text-foreground font-medium">{{ profile()?.currentJobTitle || 'Member' }}</span>
-    </p>
-  </header>
 
-  <!-- Tabs / Navigation -->
-  <div class="flex items-center gap-6 border-b border-border pb-4">
-    <button
-      (click)="setActiveTab('intelligence')"
-      class="pb-2 text-sm font-bold uppercase tracking-widest transition-colors relative"
-      [class.text-primary]="activeTab() === 'intelligence'"
-      [class.text-muted-foreground]="activeTab() !== 'intelligence'"
-    >
-      Market Intelligence
-      @if (activeTab() === 'intelligence') {
-        <span
-          class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary shadow-[0_0_10px_var(--primary)]"
-        ></span>
-      }
-    </button>
-
-    <button
-      (click)="setActiveTab('careers')"
-      class="pb-2 text-sm font-bold uppercase tracking-widest transition-colors relative"
-      [class.text-primary]="activeTab() === 'careers'"
-      [class.text-muted-foreground]="activeTab() !== 'careers'"
-    >
-      Career Opportunities
-      @if (activeTab() === 'careers') {
-        <span
-          class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary shadow-[0_0_10px_var(--primary)]"
-        ></span>
-      }
-    </button>
-
-    <!-- Live Feed Indicator -->
-    <div class="ml-auto flex items-center gap-2">
-      <span class="relative flex h-2 w-2">
-        <span
-          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"
-        ></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-      </span>
-      <span class="text-[10px] font-mono text-muted-foreground/60 uppercase">Live Feed Active</span>
+      <div class="grid min-w-64 grid-cols-2 gap-2 text-sm">
+        <div class="rounded-lg border border-border bg-muted/25 p-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Signals</p>
+          <p class="mt-1 text-2xl font-semibold text-foreground">{{ filteredSignals().length }}</p>
+        </div>
+        <div class="rounded-lg border border-border bg-muted/25 p-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Opportunities</p>
+          <p class="mt-1 text-2xl font-semibold text-foreground">{{ visibleOpportunities().length }}</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Skill Filters (Only for Intelligence Tab) -->
-  @if (activeTab() === 'intelligence') {
-    <section class="relative">
-      <div class="flex overflow-x-auto gap-2 pb-2 no-scrollbar mask-fade-right">
+  <div class="flex flex-col gap-3 border-b border-border pb-3 sm:flex-row sm:items-center sm:justify-between">
+    <div class="inline-flex w-full rounded-lg border border-border bg-muted/35 p-1 sm:w-auto">
+      <button
+        type="button"
+        class="flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none"
+        [class.bg-background]="activeTab() === 'signals'"
+        [class.text-foreground]="activeTab() === 'signals'"
+        [class.shadow-sm]="activeTab() === 'signals'"
+        [class.text-muted-foreground]="activeTab() !== 'signals'"
+        (click)="setActiveTab('signals')"
+      >
+        Market Signals
+      </button>
+      <button
+        type="button"
+        class="flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none"
+        [class.bg-background]="activeTab() === 'opportunities'"
+        [class.text-foreground]="activeTab() === 'opportunities'"
+        [class.shadow-sm]="activeTab() === 'opportunities'"
+        [class.text-muted-foreground]="activeTab() !== 'opportunities'"
+        (click)="setActiveTab('opportunities')"
+      >
+        Career Opportunities
+      </button>
+    </div>
+
+    @if (activeTab() === 'signals') {
+      <div class="flex min-w-0 items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <ng-icon name="lucideFilter" class="h-4 w-4 shrink-0 text-muted-foreground"></ng-icon>
         @for (chip of skillChips(); track chip) {
           <button
             hlmBtn
+            type="button"
             [variant]="selectedFilter() === chip ? 'default' : 'outline'"
+            class="h-8 whitespace-nowrap rounded-full px-3 text-xs"
             (click)="setFilter(chip)"
-            class="rounded-full px-4 h-9 whitespace-nowrap transition-all"
-            [class.border-primary/50]="selectedFilter() === chip"
           >
             {{ chip }}
           </button>
         }
       </div>
-    </section>
-  }
+    }
+  </div>
 
-  <!-- Loading State -->
   @if (isLoading()) {
-    <div class="space-y-12">
-      <div class="flex flex-col items-center justify-center py-20 space-y-4">
-        <div class="relative w-24 h-24">
-          <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
-          <div
-            class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"
-          ></div>
-          <div class="absolute inset-4 bg-primary/10 rounded-full flex items-center justify-center">
-            <ng-icon name="lucideGlobe" class="w-8 h-8 text-primary animate-pulse" />
-          </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+        <div class="rounded-lg border border-border bg-card p-5">
+          <hlm-skeleton class="h-5 w-28 rounded-md"></hlm-skeleton>
+          <hlm-skeleton class="mt-5 h-7 w-4/5 rounded-md"></hlm-skeleton>
+          <hlm-skeleton class="mt-4 h-16 w-full rounded-md"></hlm-skeleton>
+          <hlm-skeleton class="mt-5 h-9 w-32 rounded-md"></hlm-skeleton>
         </div>
-        <p class="text-xl font-heading tracking-widest uppercase text-muted-foreground animate-pulse">
-          Checking relevant market signals...
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-          <div class="h-64 rounded-3xl bg-card border border-border p-6 space-y-4">
-            <hlm-skeleton class="h-8 w-3/4 rounded-lg" />
-            <hlm-skeleton class="h-20 w-full rounded-lg" />
-            <div class="flex justify-between items-center pt-4">
-              <hlm-skeleton class="h-6 w-20 rounded-full" />
-              <hlm-skeleton class="h-8 w-8 rounded-full" />
-            </div>
-          </div>
-        }
-      </div>
+      }
     </div>
-  } @else {
-    <!-- Tab Content -->
-    @if (activeTab() === 'intelligence') {
-      <!-- The Feed (Bento Grid) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-        @for (item of filteredSignals(); track item.id; let i = $index) {
-          <div
-            (click)="openIntelligenceReport(item.id)"
-            class="group relative overflow-hidden rounded-3xl transition-all duration-500 hover:scale-[1.02] cursor-pointer bg-card border border-border hover:border-primary/30 p-8 flex flex-col justify-between min-h-[320px] backdrop-blur-sm shadow-sm"
-            [class.lg:col-span-4]="i % 2 === 0"
-            [class.lg:col-span-2]="i % 2 !== 0"
-          >
-            <!-- Impact Overlay -->
-            <div class="absolute top-0 right-0 p-6">
-              <div class="flex flex-col items-end">
-                <span class="text-xs font-bold uppercase tracking-tighter text-muted-foreground/60"
-                  >Impact</span
-                >
-                <span
-                  class="text-2xl font-heading font-bold"
-                  [class]="getImpactColor(item.impactScore)"
-                >
+  } @else if (activeTab() === 'signals') {
+    @if (filteredSignals().length === 0) {
+      <div class="surface-card p-10 text-center">
+        <h2 class="text-lg font-semibold text-foreground">No matching signals</h2>
+        <p class="mt-2 text-sm text-muted-foreground">Clear the filter to review all available Core preview signals.</p>
+      </div>
+    } @else {
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div class="grid gap-4 md:grid-cols-2">
+          @for (item of filteredSignals(); track item.id) {
+            <article
+              class="group flex min-h-72 cursor-pointer flex-col rounded-lg border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md"
+              (click)="openSignal(item.id)"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                    {{ item.category }}
+                  </span>
+                  <span class="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <ng-icon name="lucideClock" class="h-3.5 w-3.5"></ng-icon>
+                    {{ item.timestamp | date: 'shortTime' }}
+                  </span>
+                </div>
+                <span class="text-xl font-semibold" [class]="getImpactTone(item.impactScore)">
                   {{ item.impactScore }}%
                 </span>
               </div>
-            </div>
 
-            <!-- Content -->
-            <div class="space-y-6">
-              <div class="flex items-center gap-2">
-                <span
-                  class="px-3 py-1 bg-muted border border-border rounded-full text-[10px] font-bold uppercase tracking-widest text-primary"
-                >
-                  {{ item.category }}
-                </span>
-                <span
-                  class="text-[10px] text-muted-foreground flex items-center gap-1 uppercase font-medium"
-                >
-                  <ng-icon name="lucideClock" class="w-3 h-3" />
-                  {{ item.timestamp | date: 'shortTime' }}
-                </span>
-              </div>
-
-              <h2
-                class="text-2xl font-heading leading-tight group-hover:text-primary transition-colors line-clamp-2"
-              >
+              <h2 class="mt-5 text-xl font-semibold leading-7 text-foreground transition group-hover:text-primary">
                 {{ item.headline }}
               </h2>
+              <p class="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">{{ item.summary }}</p>
 
-              <p class="text-muted-foreground/80 text-sm leading-relaxed line-clamp-3">
-                {{ item.summary }}
-              </p>
-            </div>
-
-            <!-- Source Dock -->
-            <div class="mt-8 pt-6 border-t border-border flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-8 h-8 rounded-lg bg-muted flex items-center justify-center overflow-hidden border border-border"
-                >
-                  <img
-                    [src]="item.sourceFavicon"
-                    [alt]="item.source"
-                    class="w-5 h-5 object-contain"
-                  />
-                </div>
-                <span
-                  class="text-xs font-semibold text-muted-foreground/60 uppercase tracking-widest"
-                  >{{ item.source }}</span
-                >
+              <div class="mt-5 flex flex-wrap gap-2">
+                @for (tag of item.tags; track tag) {
+                  <span class="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">{{ tag }}</span>
+                }
               </div>
 
-              <button
-                class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0"
-              >
-                <ng-icon name="lucideZap" class="w-5 h-5" />
-              </button>
-            </div>
+              <div class="mt-auto flex items-center justify-between border-t border-border pt-4">
+                <span class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{{ item.source }}</span>
+                <span class="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                  Open report
+                  <ng-icon name="lucideExternalLink" class="h-4 w-4"></ng-icon>
+                </span>
+              </div>
+            </article>
+          }
+        </div>
 
-            <!-- Decorative Gradient -->
-            <div
-              class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-            ></div>
+        <aside class="surface-card h-fit p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary">How to use signals</p>
+          <h2 class="mt-3 text-lg font-semibold text-foreground">Turn context into one next move</h2>
+          <p class="mt-2 text-sm leading-6 text-muted-foreground">
+            Each signal is a prompt for a concrete action: improve a CV bullet, update an application, prepare an interview angle, or clarify compensation data.
+          </p>
+          <div class="mt-5 space-y-3">
+            <div class="rounded-lg border border-border bg-muted/25 p-3">
+              <p class="text-sm font-semibold text-foreground">Core boundary</p>
+              <p class="mt-1 text-xs leading-5 text-muted-foreground">These are local examples. Private Vadis implementations can replace the source later.</p>
+            </div>
+            <div class="rounded-lg border border-border bg-muted/25 p-3">
+              <p class="text-sm font-semibold text-foreground">Best use</p>
+              <p class="mt-1 text-xs leading-5 text-muted-foreground">Open one report and apply the recommended action to a real application.</p>
+            </div>
           </div>
-        }
+        </aside>
       </div>
     }
-
-    @if (activeTab() === 'careers') {
-      <!-- Career Opportunities Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (opp of opportunities(); track opp.id) {
-          <div
-            class="group relative overflow-hidden rounded-3xl bg-card border border-border hover:border-primary/30 p-0 transition-all duration-500 hover:-translate-y-1 shadow-sm"
-          >
-            <!-- Top Section: Header -->
-            <div class="p-6 space-y-4">
-              <div class="flex justify-between items-start">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-1">
-                    <img
-                      [src]="opp.logoUrl || 'assets/default-company.png'"
-                      class="w-full h-full object-contain rounded-lg"
-                    />
+  } @else {
+    @if (visibleOpportunities().length === 0) {
+      <div class="surface-card p-10 text-center">
+        <h2 class="text-lg font-semibold text-foreground">No opportunities available</h2>
+        <p class="mt-2 text-sm text-muted-foreground">Core preview opportunities will appear here when local data is available.</p>
+      </div>
+    } @else {
+      <div class="grid gap-4 lg:grid-cols-3">
+        @for (opportunity of visibleOpportunities(); track opportunity.id) {
+          <article class="flex flex-col rounded-lg border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
+            <div class="p-5">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex min-w-0 items-center gap-3">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-sm font-bold text-primary">
+                    {{ companyInitials(opportunity.company) }}
                   </div>
-                  <div>
-                    <h3 class="text-lg font-bold text-foreground leading-tight">
-                      {{ opp.company }}
-                    </h3>
-                    <div class="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                      <ng-icon name="lucideMapPin" class="w-3 h-3" />
-                      {{ opp.location }}
-                    </div>
+                  <div class="min-w-0">
+                    <h2 class="truncate text-base font-semibold text-foreground">{{ opportunity.company }}</h2>
+                    <p class="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                      <ng-icon name="lucideMapPin" class="h-3.5 w-3.5"></ng-icon>
+                      {{ opportunity.location }} · {{ opportunity.workplace }}
+                    </p>
                   </div>
                 </div>
-                <!-- Circular Badge -->
-                <div class="relative w-12 h-12 flex items-center justify-center">
-                  <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      class="text-zinc-800"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3"
-                    />
-                    <path
-                      class="text-primary"
-                      [attr.stroke-dasharray]="opp.matchScore + ', 100'"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="3"
-                    />
-                  </svg>
-                  <span class="absolute text-[10px] font-bold">{{ opp.matchScore }}%</span>
+                <div class="rounded-lg border border-primary/25 bg-primary/10 px-2.5 py-2 text-center">
+                  <p class="text-lg font-semibold text-primary">{{ opportunity.matchScore }}%</p>
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">Fit</p>
                 </div>
               </div>
 
-              <h2
-                class="text-xl font-heading font-medium text-foreground group-hover:text-primary transition-colors"
-              >
-                {{ opp.roleTitle }}
-              </h2>
+              <h3 class="mt-5 text-xl font-semibold leading-7 text-foreground">{{ opportunity.roleTitle }}</h3>
+              <p class="mt-2 text-sm leading-6 text-muted-foreground">{{ opportunity.description }}</p>
 
-              <!-- Info Grid -->
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="bg-muted rounded-lg p-2.5 flex flex-col gap-1">
-                  <span class="text-muted-foreground uppercase tracking-wider text-[9px]"
-                    >Compensation</span
-                  >
-                  <span class="text-emerald-500 font-mono font-bold">{{ opp.salaryRange }}</span>
+              <div class="mt-4 grid grid-cols-2 gap-2 text-xs">
+                <div class="rounded-lg bg-muted/50 p-3">
+                  <p class="font-semibold uppercase tracking-[0.12em] text-muted-foreground">Compensation</p>
+                  <p class="mt-1 font-semibold text-success">{{ opportunity.salaryRange }}</p>
                 </div>
-                <div class="bg-muted rounded-lg p-2.5 flex flex-col gap-1">
-                  <span class="text-muted-foreground uppercase tracking-wider text-[9px]"
-                    >Source</span
-                  >
-                  <div class="flex items-center gap-1.5 text-foreground font-medium">
-                    <ng-icon name="lucideGlobe" class="w-3 h-3" />
-                    {{ opp.source }}
-                  </div>
+                <div class="rounded-lg bg-muted/50 p-3">
+                  <p class="font-semibold uppercase tracking-[0.12em] text-muted-foreground">Source</p>
+                  <p class="mt-1 font-semibold text-foreground">{{ opportunity.source }}</p>
                 </div>
               </div>
+
+              <div class="mt-4 space-y-2">
+                @for (reason of opportunity.fitReasons.slice(0, 2); track reason) {
+                  <p class="flex gap-2 text-sm text-muted-foreground">
+                    <ng-icon name="lucideCheckCircle2" class="mt-0.5 h-4 w-4 shrink-0 text-primary"></ng-icon>
+                    <span>{{ reason }}</span>
+                  </p>
+                }
+              </div>
+
+              @if (expandedOpportunityId() === opportunity.id) {
+                <div class="mt-5 rounded-lg border border-border bg-muted/25 p-4">
+                  <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Role signals</p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    @for (signal of opportunity.roleSignals; track signal) {
+                      <span class="rounded-md bg-background px-2 py-1 text-xs font-medium text-muted-foreground">{{ signal }}</span>
+                    }
+                  </div>
+                  <p class="mt-4 text-sm leading-6 text-foreground">{{ opportunity.nextStep }}</p>
+                </div>
+              }
             </div>
 
-            <!-- Lower action section -->
-            <div class="p-4 bg-muted/50 border-t border-border">
+            <div class="mt-auto flex gap-2 border-t border-border bg-muted/25 p-4">
+              <button hlmBtn variant="outline" type="button" class="flex-1 gap-2 rounded-lg" (click)="toggleOpportunity(opportunity.id)">
+                @if (expandedOpportunityId() === opportunity.id) {
+                  <ng-icon name="lucideChevronUp" class="h-4 w-4"></ng-icon>
+                  Less info
+                } @else {
+                  <ng-icon name="lucideChevronDown" class="h-4 w-4"></ng-icon>
+                  More info
+                }
+              </button>
               <button
                 hlmBtn
-                (click)="acquireTarget(opp)"
-                class="w-full border-0 bg-linear-to-r from-primary to-accent text-white shadow-lg shadow-primary/20 hover:from-primary/90 hover:to-accent/90"
+                type="button"
+                class="flex-1 gap-2 rounded-lg"
+                [disabled]="savingOpportunityId() === opportunity.id"
+                (click)="saveOpportunity(opportunity)"
               >
-                <ng-icon name="lucideZap" class="mr-2 w-4 h-4" />
-                {{ 'opportunities.save' | transloco }}
+                <ng-icon name="lucidePlus" class="h-4 w-4"></ng-icon>
+                {{ savingOpportunityId() === opportunity.id ? 'Saving...' : 'Save opportunity' }}
               </button>
             </div>
-          </div>
+          </article>
         }
       </div>
     }
   }
 
-  <!-- Vadis Guidance FAB -->
-  <button
-    (click)="toggleChat()"
-    aria-label="Open Vadis Guidance"
-    class="fixed bottom-8 right-8 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-r from-primary to-accent text-white shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 group hover:scale-110 hover:shadow-[0_0_50px_hsl(var(--primary)/0.7)]"
-  >
-    <ng-icon
-      name="lucideMessageSquare"
-      class="w-8 h-8 group-hover:rotate-12 transition-transform"
-    />
-    <span
-      class="absolute top-0 right-0 h-4 w-4 rounded-full border-2 border-background bg-emerald-500"
-    ></span>
-  </button>
-
-  <!-- Vadis Guidance Chat Overlay -->
-  @if (isChatOpen()) {
-    <div
-      class="fixed inset-0 z-50 flex items-end justify-end p-4 sm:p-8 pointer-events-none"
-      (keydown.escape)="toggleChat()"
-      tabindex="-1"
-    >
-      <div
-        class="pointer-events-auto w-full max-w-md bg-card/90 backdrop-blur-2xl border border-border rounded-3xl shadow-2xl animate-in slide-in-from-bottom-10 fade-in duration-300 flex flex-col overflow-hidden h-[600px]"
-      >
-        <!-- Header -->
-        <div class="p-4 border-b border-border flex items-center justify-between bg-muted/30">
-          <div class="flex items-center gap-3">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-primary to-accent shadow-lg shadow-primary/20"
-            >
-              <ng-icon name="lucideZap" class="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 class="font-bold text-foreground">Vadis Guidance</h3>
-              <p class="text-xs text-emerald-400 font-mono flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                READY
-              </p>
-            </div>
-          </div>
-          <button
-            (click)="toggleChat()"
-            class="p-2 hover:bg-white/10 rounded-full transition-colors text-muted-foreground"
-          >
-            <ng-icon name="lucideX" class="w-5 h-5" />
-          </button>
-        </div>
-
-        <!-- Chat Area -->
-        <div
-          class="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm relative text-foreground"
-        >
-          <!-- Background Grid Effect -->
-          <div
-            class="absolute inset-0 bg-[linear-gradient(rgba(var(--foreground),0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--foreground),0.02)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"
-          ></div>
-
-          @for (msg of chatMessages(); track msg) {
-            <div
-              [class.items-end]="msg.sender === 'user'"
-              [class.items-start]="msg.sender === 'agent'"
-              class="flex flex-col gap-1 relative z-10"
-            >
-              <div
-                [class.bg-primary/20]="msg.sender === 'user'"
-                [class.border-primary/30]="msg.sender === 'user'"
-                [class.bg-muted]="msg.sender === 'agent'"
-                [class.border-border]="msg.sender === 'agent'"
-                class="max-w-[85%] p-3 rounded-2xl border text-foreground/90 leading-relaxed shadow-sm"
-              >
-                {{ msg.text }}
-              </div>
-              <span class="text-[10px] text-muted-foreground opacity-50">{{
-              msg.sender === 'user' ? 'You' : 'Vadis'
-              }}</span>
-            </div>
-          }
-
-          @if (isScanning()) {
-            <div class="flex items-center gap-2 pl-2 text-xs text-primary animate-pulse">
-              <ng-icon name="lucideRadio" class="w-3 h-3 animate-spin" />
-              Reviewing market signals...
-            </div>
-          }
-        </div>
-
-        <!-- Input Area -->
-        <div class="p-4 border-t border-border bg-muted/30">
-          <div class="relative">
-            <input
-              #chatInput
-              type="text"
-              (keyup.enter)="sendMessage(chatInput.value); chatInput.value = ''"
-              aria-label="Chat message input"
-              placeholder="Ask about roles, markets, or next moves..."
-              class="w-full rounded-xl border border-border bg-background px-4 py-3 pr-12 text-sm text-foreground transition-all font-mono placeholder:text-muted-foreground/50 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/50"
-            />
-
-            <button
-              (click)="sendMessage(chatInput.value); chatInput.value = ''"
-              class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-primary p-1.5 text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary/90"
-            >
-              <ng-icon name="lucideSend" class="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Intelligence Report Overlay -->
-  @if (selectedItem(); as item) {
+  @if (selectedSignal(); as item) {
     <div
       class="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="intelligence-report-title"
-      (keydown.escape)="closeReport()"
+      aria-labelledby="vadis-signal-title"
       tabindex="-1"
+      (keydown.escape)="closeSignal()"
     >
-      <!-- Backdrop -->
-      <div
-        class="absolute inset-0 bg-black/60 backdrop-blur-xl animate-in fade-in duration-300"
-        (click)="closeReport()"
-      ></div>
+      <button class="absolute inset-0 bg-foreground/60 backdrop-blur-sm" type="button" aria-label="Close report" (click)="closeSignal()"></button>
 
-      <!-- Report Content -->
-      <div
-        class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-card border border-border rounded-3xl shadow-2xl animate-in zoom-in-95 duration-300 flex flex-col"
-      >
-        <!-- Close Button -->
-        <button
-          (click)="closeReport()"
-          class="absolute top-4 right-4 z-10 p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 rounded-full transition-colors border border-border"
-        >
-          <ng-icon name="lucideX" class="w-4 h-4"></ng-icon>
-        </button>
+      <article class="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-xl border border-border bg-card shadow-2xl">
+        <div class="flex items-start justify-between gap-4 border-b border-border p-5">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{{ item.category }} signal</p>
+            <h2 id="vadis-signal-title" class="mt-2 text-2xl font-semibold leading-8 text-foreground">{{ item.headline }}</h2>
+          </div>
+          <button hlmBtn variant="ghost" size="icon" type="button" class="rounded-lg" aria-label="Close report" (click)="closeSignal()">
+            <ng-icon name="lucideX" class="h-4 w-4"></ng-icon>
+          </button>
+        </div>
 
-        <!-- Header Decoration -->
-        <div
-          class="h-32 bg-linear-to-r from-primary/20 via-card to-background shrink-0 border-b border-border"
-        ></div>
+        <div class="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_16rem]">
+          <div class="space-y-5">
+            <section class="rounded-lg border border-border bg-muted/20 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Summary</p>
+              <p class="mt-2 text-sm leading-6 text-foreground">{{ item.summary }}</p>
+            </section>
 
-        <div class="p-8 -mt-12 relative z-10">
-          <!-- Category Badge -->
-          <div
-            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest mb-4 shadow-lg shadow-primary/20"
-          >
-            <ng-icon name="lucideZap" class="w-3 h-3 fill-current"></ng-icon>
-            Market Signal
+            <section class="rounded-lg border border-border bg-muted/20 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Why it matters</p>
+              <p class="mt-2 text-sm leading-6 text-foreground">{{ item.whyItMatters }}</p>
+            </section>
+
+            <section class="rounded-lg border border-primary/25 bg-primary/10 p-4">
+              <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                <ng-icon name="lucideTrendingUp" class="h-4 w-4"></ng-icon>
+                Recommended next action
+              </p>
+              <p class="mt-2 text-sm leading-6 text-foreground">{{ item.recommendedAction }}</p>
+            </section>
           </div>
 
-          <h2
-            id="intelligence-report-title"
-            class="text-2xl md:text-3xl font-heading font-bold text-foreground leading-tight mb-6"
-          >
-            {{ item.headline }}
-          </h2>
-
-          <div class="space-y-8">
-            <!-- Typewriter Body -->
-            <div class="prose prose-sm prose-invert text-muted-foreground leading-loose">
-              <div
-                class="min-h-[100px] p-6 rounded-2xl bg-muted border border-border font-mono text-muted-foreground text-sm leading-relaxed"
-              >
-                <span class="text-primary font-bold mr-2">SIGNAL GUIDANCE ></span>
-                {{ displayedSummary() }}<span class="animate-pulse text-primary">_</span>
+          <aside class="space-y-3">
+            <div class="rounded-lg border border-border bg-muted/20 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Relevance</p>
+              <p class="mt-2 text-sm leading-6 text-foreground">{{ item.relevance }}</p>
+            </div>
+            <div class="rounded-lg border border-border bg-muted/20 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Related skills</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                @for (tag of item.tags; track tag) {
+                  <span class="rounded-md bg-background px-2 py-1 text-xs font-medium text-muted-foreground">{{ tag }}</span>
+                }
               </div>
             </div>
-
-            <!-- Strategic Impact -->
-            <div class="bg-primary/10 border-l-4 border-primary p-6 rounded-r-2xl">
-              <h4
-                class="text-xs font-black uppercase tracking-widest text-primary mb-2 flex items-center gap-2"
-              >
-                <ng-icon name="lucideTrendingUp" class="w-3 h-3"></ng-icon>
-                Recommended next action
-              </h4>
-              <p class="text-sm font-medium text-foreground">
-                This signal correlates with your expertise in
-                <span class="text-primary">{{ item.tags[0] || 'N/A' }}</span
-                >. Consider monitoring <span class="text-foreground">{{ item.source }}</span> for
-                follow-up context.
-              </p>
+            <div class="rounded-lg border border-border bg-muted/20 p-4">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Source</p>
+              <p class="mt-2 text-sm font-semibold text-foreground">{{ item.source }}</p>
+              @if (item.sourceUrl) {
+                <a hlmBtn variant="outline" class="mt-3 w-full gap-2 rounded-lg" [href]="item.sourceUrl" target="_blank" rel="noopener noreferrer">
+                  <ng-icon name="lucideExternalLink" class="h-4 w-4"></ng-icon>
+                  View source
+                </a>
+              }
             </div>
-
-            <!-- Actions -->
-            <div class="pt-6 border-t border-border flex gap-4">
-              <button
-                hlmBtn
-                variant="outline"
-                class="flex-1 gap-2 rounded-xl"
-                disabled
-                title="Source URL not available"
-              >
-                <ng-icon name="lucideExternalLink" class="w-4 h-4"></ng-icon>
-                View Original
-              </button>
-            </div>
-          </div>
+          </aside>
         </div>
-      </div>
+      </article>
     </div>
   }
-</div>
+</section>

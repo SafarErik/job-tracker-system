@@ -36,7 +36,15 @@ public static class ServiceExtensions
 
         // Application & Infrastructure Services
         services.AddScoped<IDocumentTextExtractor, DocumentTextExtractor>();
-        services.AddScoped<IAIService, GeminiAIService>();
+        var geminiApiKey = configuration["AI:GeminiApiKey"];
+        if (string.IsNullOrWhiteSpace(geminiApiKey))
+        {
+            services.AddScoped<IAIService, UnavailableAIService>();
+        }
+        else
+        {
+            services.AddScoped<IAIService, GeminiAIService>();
+        }
         services.AddScoped<IJobApplicationService, JobApplicationService>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IAuthService, AuthService>();

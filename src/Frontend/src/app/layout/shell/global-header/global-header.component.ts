@@ -124,9 +124,11 @@ export class GlobalHeaderComponent {
         return 'shell.nav.companies';
       case 'Insights':
       case 'Intelligence':
+      case 'Progress Insights':
         return 'shell.nav.insights';
       case 'Signals':
       case 'Global Signals':
+      case 'Vadis Guidance':
         return 'shell.nav.signals';
       case 'Documents':
         return 'shell.nav.documents';
@@ -152,9 +154,11 @@ export class GlobalHeaderComponent {
         return 'shell.header.descriptions.companies';
       case 'Insights':
       case 'Intelligence':
+      case 'Progress Insights':
         return 'shell.header.descriptions.insights';
       case 'Signals':
       case 'Global Signals':
+      case 'Vadis Guidance':
         return 'shell.header.descriptions.signals';
       case 'Documents':
         return 'shell.header.descriptions.documents';

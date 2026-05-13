@@ -10,13 +10,15 @@ import {
     lucidePlus,
     lucideRefreshCw,
     lucideExternalLink,
-    lucideZap,
+    lucideMic2,
     lucideTrash2,
     lucideEdit3
 } from '@ng-icons/lucide';
 import { FormsModule } from '@angular/forms';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { AptelionEmptyStateComponent } from '../../../../../shared/components/aptelion-empty-state/aptelion-empty-state.component';
+import { AptelionSectionHeaderComponent } from '../../../../../shared/components/aptelion-section-header/aptelion-section-header.component';
 
 interface TimelineEvent {
     id: string;
@@ -30,7 +32,14 @@ interface TimelineEvent {
 
 @Component({
     selector: 'app-timeline-view',
-    imports: [CommonModule, NgIcon, FormsModule, TranslocoPipe],
+    imports: [
+        CommonModule,
+        NgIcon,
+        FormsModule,
+        TranslocoPipe,
+        AptelionEmptyStateComponent,
+        AptelionSectionHeaderComponent,
+    ],
     providers: [
         provideIcons({
             lucideCalendar,
@@ -41,7 +50,7 @@ interface TimelineEvent {
             lucidePlus,
             lucideRefreshCw,
             lucideExternalLink,
-            lucideZap,
+            lucideMic2,
             lucideTrash2,
             lucideEdit3
         })
@@ -61,8 +70,8 @@ export class TimelineViewComponent {
         {
             id: '1',
             type: 'interview',
-            title: 'Round 1: System Design',
-            description: 'Focus on scalability and data consistency.',
+            title: 'Round 1: System design',
+            description: 'Prepare scalability and data consistency examples.',
             date: new Date(Date.now() + 1000 * 60 * 30), // 30 mins from now
             link: 'https://zoom.us/j/123456',
             isOngoing: true
@@ -70,15 +79,15 @@ export class TimelineViewComponent {
         {
             id: '2',
             type: 'technical',
-            title: 'At-Home Assignment',
-            description: 'Implement a distributed rate limiter.',
+            title: 'Technical task due',
+            description: 'Complete the take-home task and note implementation tradeoffs.',
             date: new Date(Date.now() + 1000 * 60 * 60 * 48), // 2 days from now
         },
         {
             id: '3',
             type: 'deadline',
-            title: 'Offer Acceptance Deadline',
-            description: 'Final decision needed for Vanguard proposal.',
+            title: 'Offer decision deadline',
+            description: 'Final decision needed for this offer.',
             date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 3), // 3 days from now
         }
     ]);

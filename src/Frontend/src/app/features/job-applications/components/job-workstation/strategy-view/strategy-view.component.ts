@@ -12,14 +12,16 @@ import {
   lucideGraduationCap,
   lucideListChecks,
   lucideLink,
+  lucideLightbulb,
   lucideLoader2,
   lucideMaximize2,
   lucideMic2,
-  lucideSparkles,
   lucideTarget,
-  lucideWand2,
   lucideX,
 } from '@ng-icons/lucide';
+import { AptelionEmptyStateComponent } from '../../../../../shared/components/aptelion-empty-state/aptelion-empty-state.component';
+import { AptelionSectionHeaderComponent } from '../../../../../shared/components/aptelion-section-header/aptelion-section-header.component';
+import { StatusBadgeComponent, StatusBadgeTone } from '../../../../../shared/components/status-badge/status-badge.component';
 import { JobApplication } from '../../../models/job-application.model';
 import {
   FitGap,
@@ -43,7 +45,15 @@ export interface ParsedJobBrief {
 
 @Component({
   selector: 'app-strategy-view',
-  imports: [CommonModule, FormsModule, TranslocoPipe, NgIcon],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslocoPipe,
+    NgIcon,
+    AptelionEmptyStateComponent,
+    AptelionSectionHeaderComponent,
+    StatusBadgeComponent,
+  ],
   providers: [
     provideIcons({
       lucideAlertCircle,
@@ -54,12 +64,11 @@ export interface ParsedJobBrief {
       lucideGraduationCap,
       lucideListChecks,
       lucideLink,
+      lucideLightbulb,
       lucideLoader2,
       lucideMaximize2,
       lucideMic2,
-      lucideSparkles,
       lucideTarget,
-      lucideWand2,
       lucideX,
     }),
   ],
@@ -174,10 +183,10 @@ export class StrategyViewComponent {
     return 'border-border bg-background text-muted-foreground';
   }
 
-  gapPriorityClasses(priority: string): string {
-    if (priority === 'high') return 'border-destructive/20 bg-destructive/10 text-destructive';
-    if (priority === 'low') return 'border-muted bg-muted text-muted-foreground';
-    return 'border-primary/20 bg-primary/10 text-primary';
+  gapPriorityTone(priority: string): StatusBadgeTone {
+    if (priority === 'high') return 'destructive';
+    if (priority === 'low') return 'muted';
+    return 'primary';
   }
 
   private parseJobBrief(description: string): ParsedJobBrief {

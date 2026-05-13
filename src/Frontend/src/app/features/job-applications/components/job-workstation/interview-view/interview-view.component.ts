@@ -5,7 +5,6 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideMic,
   lucideKeyboard,
-  lucideSparkles,
   lucideTerminal,
   lucideUsers,
   lucideCircleDollarSign,
@@ -13,11 +12,12 @@ import {
   lucideMessageSquare,
   lucideActivity,
   lucideShieldCheck,
-  lucideZap,
   lucideMaximize2,
   lucideMinimize2,
+  lucideSend,
 } from '@ng-icons/lucide';
 import { FormsModule } from '@angular/forms';
+import { AptelionSectionHeaderComponent } from '../../../../../shared/components/aptelion-section-header/aptelion-section-header.component';
 
 export interface InterviewSessionMessage {
   id: string;
@@ -38,12 +38,11 @@ export interface InterviewScenario {
 
 @Component({
   selector: 'app-interview-view',
-  imports: [CommonModule, TranslocoPipe, NgIcon, FormsModule],
+  imports: [CommonModule, TranslocoPipe, NgIcon, FormsModule, AptelionSectionHeaderComponent],
   providers: [
     provideIcons({
       lucideMic,
       lucideKeyboard,
-      lucideSparkles,
       lucideTerminal,
       lucideUsers,
       lucideCircleDollarSign,
@@ -51,9 +50,9 @@ export interface InterviewScenario {
       lucideMessageSquare,
       lucideActivity,
       lucideShieldCheck,
-      lucideZap,
       lucideMaximize2,
       lucideMinimize2,
+      lucideSend,
     }),
   ],
   templateUrl: './interview-view.component.html',
@@ -159,7 +158,7 @@ export class InterviewViewComponent implements OnDestroy {
           );
           this.isRecording.set(false);
 
-          // Simulate AI response
+          // Simulate Vadis response.
           const timeout2 = setTimeout(() => {
             this.addMessage(
               'ai',
@@ -184,10 +183,10 @@ export class InterviewViewComponent implements OnDestroy {
     this.addMessage('user', text);
     this.responseText.set('');
 
-    // Clear any existing AI response timeouts
+    // Clear any existing Vadis response timeouts.
     this.pendingTimeouts.forEach((t) => clearTimeout(t));
 
-    // Simulate AI response
+    // Simulate Vadis response.
     const timeout = setTimeout(() => {
       this.addMessage(
         'ai',
@@ -237,7 +236,7 @@ export class InterviewViewComponent implements OnDestroy {
       },
     ]);
 
-    // Mock metric updates
+    // Mock local metric updates.
     if (sender === 'user') {
       this.metrics.update((m) => ({
         clarity: Math.max(0, Math.min(100, m.clarity + (Math.random() * 5 - 2))),

@@ -1035,31 +1035,31 @@
       "actions": {
         "analyzeFit": {
           "label": "Analyze fit",
-          "description": "Create role-specific gaps and next actions."
+          "description": "Create role-specific strengths, gaps, and next actions."
         },
         "improveBrief": {
           "label": "Improve job brief",
-          "description": "Clean pasted role text with Vadis Guidance."
+          "description": "Clean pasted role text into a structured brief."
         },
         "openReview": {
-          "label": "Open fit review",
-          "description": "Read the full Vadis-generated role review."
+          "label": "Open Fit Overview",
+          "description": "Review Vadis notes on fit, strengths, gaps, and next actions."
         },
         "simulateTopGap": {
-          "label": "Simulate top gap",
-          "description": "Preview the score lift from the highest-priority gap."
+          "label": "Preview top improvement",
+          "description": "See how resolving the highest-priority gap could affect fit."
         },
         "generateResume": {
-          "label": "Generate resume draft",
-          "description": "Open Documents and draft a tailored CV."
+          "label": "Create tailored CV",
+          "description": "Open Document Studio and draft a role-specific CV."
         },
         "openDocuments": {
-          "label": "Open Documents",
+          "label": "Open Document Studio",
           "description": "Review resume and cover letter drafts."
         },
         "practiceInterview": {
-          "label": "Practice interview",
-          "description": "Start a focused interview session."
+          "label": "Open Interview Studio",
+          "description": "Start a focused interview practice session."
         },
         "addTimeline": {
           "label": "Add timeline event",
@@ -1080,13 +1080,13 @@
     },
     "actions": {
       "analyze": "Analyze fit",
-      "analyzing": "Analyzing...",
+      "analyzing": "Analyzing role fit...",
       "prepareInterview": "Prepare for interview",
-      "generateDocuments": "Generate documents",
-      "generateResumeDraft": "Generate resume draft",
-      "generateCoverLetter": "Generate cover letter",
+      "generateDocuments": "Create tailored documents",
+      "generateResumeDraft": "Create tailored CV",
+      "generateCoverLetter": "Create cover letter",
       "refreshAnalysis": "Refresh analysis",
-      "simulateTopGap": "Simulate top gap",
+      "simulateTopGap": "Preview top improvement",
       "analyzeOffer": "Analyze offer",
       "syncCalendar": "Sync calendar",
       "focusMode": "Focus mode",
@@ -1158,32 +1158,32 @@
       }
     },
     "strategy": {
-      "jobContext": "Job context",
+      "jobContext": "Fit Overview",
       "editDescription": "Edit description",
       "noDescriptionTitle": "No job description yet",
       "noDescriptionBody": "Add the role requirements to unlock tailored fit analysis and next-step guidance.",
       "pasteManually": "Paste text manually",
       "jobUrl": "Paste job URL...",
-      "autoFill": "Auto-fill from URL",
-      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Aptelion clean it up.",
-      "overview": "Role overview",
+      "autoFill": "Import role details",
+      "autoFillOutOfScope": "URL import is not enabled in this version. Paste the posting text and let Vadis structure it.",
+      "overview": "Fit Overview",
       "priority": "Priority",
       "matchScore": "Match score",
       "type": "Type",
-      "gapAnalysis": "Gap analysis",
+      "gapAnalysis": "Strengths and gaps",
       "refresh": "Refresh analysis",
-      "simulate": "Simulate improvement",
-      "simulationActive": "Simulation active for {{gap}}.",
+      "simulate": "Preview impact",
+      "simulationActive": "Previewing impact for {{gap}}.",
       "insights": "Vadis Guidance",
-      "insightsEmpty": "Analyze fit to get role-specific gaps and next actions.",
+      "insightsEmpty": "Analyze fit to get role-specific strengths, gaps, and a recommended next action.",
       "review": {
-        "title": "Fit review",
+        "title": "Fit Overview",
         "summary": "Review summary",
-        "signals": "Key signals",
-        "open": "Open full review",
-        "ariaLabel": "Fit review",
+        "signals": "Evidence found",
+        "open": "Open full overview",
+        "ariaLabel": "Fit Overview",
         "generated": "Generated {{date}}",
-        "fullReview": "Full review",
+        "fullReview": "Full overview",
         "nextActions": "Next actions",
         "addCheckpoint": "Add learning checkpoint",
         "copy": "Copy review",
@@ -1211,8 +1211,8 @@
         "placeholder": "Paste the job description, responsibilities, requirements, and useful context...",
         "improve": "Improve with Vadis",
         "refining": "Refining...",
-        "previewTitle": "Vadis cleanup preview",
-        "previewEmpty": "Paste the posting, then run Vadis cleanup to see the structured brief before saving.",
+        "previewTitle": "Vadis brief preview",
+        "previewEmpty": "Paste the posting, then let Vadis structure the brief before saving.",
         "changes": "Changes",
         "applyRefined": "Apply and save"
       },
@@ -1221,45 +1221,45 @@
         "workable": "Workable fit",
         "needsWork": "Needs positioning",
         "notAnalyzed": "Not analyzed",
-        "body": "The score becomes more useful after Aptelion compares the role against your resume and profile."
+        "body": "The score becomes more useful after Vadis compares the role against your resume and profile."
       },
       "notifications": {
         "descriptionSaved": "Job description updated.",
         "simulation": {
-          "title": "Simulation active",
-          "body": "Simulating {{skill}}. Match score would increase to {{score}}%."
+          "title": "Impact preview",
+          "body": "Resolving {{skill}} could move the match score to {{score}}%."
         }
       }
     },
     "assets": {
-      "assistant": "Document Studio guide",
+      "assistant": "Vadis Guidance",
       "resume": "Resume",
       "source": "Source document",
       "output": "Tailored output",
       "masterProtected": "The original source content is protected. Aptelion uses it as the base for targeted generation.",
       "awaiting": "Awaiting document generation",
-      "awaitingBody": "Use \"Generate documents\" to create a tailored CV and cover letter.",
-      "suggestions": "Vadis suggestions",
+      "awaitingBody": "Use \"Create tailored documents\" to prepare a role-specific CV and cover letter.",
+      "suggestions": "Vadis recommends",
       "coverLetter": "Tailored cover letter",
       "noCoverTitle": "No cover letter yet",
-      "noCoverBody": "Let Aptelion draft a professional, position-aware cover letter for you.",
-      "draftCover": "Draft with Vadis Guidance",
+      "noCoverBody": "Let Vadis draft a professional, position-aware cover letter for review.",
+      "draftCover": "Draft with Vadis",
       "drafting": "Drafting...",
       "studioEyebrow": "Document Studio",
       "studioTitle": "Prepare role-specific documents",
-      "studioBody": "Generate a strong starting point, then edit the draft directly before copying or exporting it.",
+      "studioBody": "Create a strong starting point, then edit the draft directly before copying or exporting it.",
       "resumeDraft": "Resume draft",
       "resumeDraftBody": "Tailor the resume angle for this opportunity. Keep the draft concise, specific, and aligned with the role.",
       "coverLetterBody": "Shape a focused cover letter that connects your experience to the company and role.",
       "unsavedSession": "Edited in this session",
       "missingInputs": "Aptelion needs a master resume, job description, and profile skills before generating reliable drafts.",
-      "editorPlaceholder": "Generate a draft or start writing here...",
+      "editorPlaceholder": "Create a draft or start writing here...",
       "wordCount": "{{count}} words",
       "sessionOnly": "Manual edits are kept in this workstation session. Copy or export the draft before refreshing.",
       "visual": {
-        "title": "Visual CV editor",
-        "body": "Work from a structured CV preview instead of a raw text box. Select a block, give Aptelion a clear instruction, then copy or export the session draft.",
-        "v1Badge": "Visual block V1",
+        "title": "Document Studio",
+        "body": "Work from structured CV and cover letter blocks. Select a section, give Vadis a clear instruction, then copy or export the session draft.",
+        "v1Badge": "Block editor",
         "profileImage": "Profile image placeholder",
         "basics": {
           "subtitle": "Tailored for {{role}} at {{company}}"
@@ -1288,24 +1288,24 @@
           "fitLine": "clarified for stronger role fit."
         },
         "empty": {
-          "title": "Generate the first visual draft",
-          "body": "Aptelion will map the generated text into editable CV blocks so you can refine the document like a real application asset.",
-          "cta": "Generate draft"
+          "title": "Create the first tailored draft",
+          "body": "Aptelion maps the draft into editable CV blocks so you can refine the document like a real application asset.",
+          "cta": "Create draft"
         },
         "agent": {
-          "title": "Document Studio Guide",
-          "subtitle": "Block-level guidance for this draft",
+          "title": "Vadis Guidance",
+          "subtitle": "Block-level document guidance",
           "selectedBlock": "Selected block",
           "noBlockContent": "This block is ready for your instruction.",
           "noSelectionTitle": "Select a CV block",
           "noSelectionBody": "Click a section in the document preview to focus Aptelion on the exact part you want to improve.",
           "emptyTitle": "Guide the next edit",
-          "emptyBody": "Use a quick prompt or write an instruction. V1 updates the structured preview locally and keeps the draft plaintext-safe.",
-          "thinking": "Aptelion is refining the selected block...",
-          "inputLabel": "Instruction for Document Studio Guide",
+          "emptyBody": "Use a quick prompt or write an instruction. This updates the structured preview locally and keeps the draft editable.",
+          "thinking": "Vadis is refining the selected block...",
+          "inputLabel": "Instruction for Vadis Guidance",
           "placeholder": "Example: Make this summary more specific to the job description",
           "send": "Send instruction",
-          "updatedResponse": "Updated the selected block in this session. Review the wording before copying or exporting.",
+          "updatedResponse": "Vadis updated the selected block in this session. Review the wording before copying or exporting.",
           "editedBadge": "Edited"
         },
         "quick": {
@@ -1363,8 +1363,8 @@
         "resetDraft": "Reset",
         "copyDraft": "Copy",
         "exportText": "Export .txt",
-        "generateCurrent": "Generate draft",
-        "generating": "Generating..."
+        "generateCurrent": "Create draft",
+        "generating": "Creating..."
       },
       "guide": {
         "title": "Vadis Guidance",
@@ -1379,7 +1379,7 @@
         },
         "align": {
           "label": "Align with job description",
-          "body": "Regenerate the resume draft using the current job description, master resume, and profile skills."
+          "body": "Create a fresh resume draft using the current job description, master resume, and profile skills."
         },
         "coverTone": {
           "label": "Make the cover letter more direct",
@@ -1387,28 +1387,29 @@
         }
       },
       "v2": {
-        "title": "Block editing planned",
-        "body": "The next step is structured CV block editing with a chat response and updated JSON. This V1 keeps generated text safe and editable without pretending that block-level Vadis edits are live."
+        "title": "Structured editing planned",
+        "body": "The next step is deeper CV block editing with guided responses and updated structured data. This pass keeps draft text editable without overstating live Vadis editing."
       }
     },
     "interview": {
-      "title": "Interview practice",
+      "title": "Interview Studio",
       "readyTitle": "Ready to practice?",
-      "readyBody": "Choose an interview simulation to begin your session with Vadis Guidance.",
-      "listening": "Listening...",
+      "readyBody": "Choose a practice path to begin a focused session with Vadis Guidance.",
+      "listening": "Recording...",
       "endSession": "End session",
-      "performance": "Performance",
+      "performance": "Answer review",
       "inputPlaceholder": "Type your response...",
       "textMode": "Text response mode",
       "stopRecording": "Stop recording",
       "startRecording": "Start recording",
       "send": "Send response",
+      "you": "You",
       "session": {
         "title": "Session",
         "noPrompt": "No prompt yet. Choose a practice scenario to begin.",
         "noScenario": "No active scenario",
-        "nextTitle": "Next recommended prompt",
-        "nextEmpty": "Choose a scenario and Aptelion will guide the next prompt."
+        "nextTitle": "Next best prompt",
+        "nextEmpty": "Choose a scenario and Vadis will guide the next prompt."
       },
       "metrics": {
         "clarity": "Clarity",
@@ -1417,7 +1418,7 @@
       },
       "scenarios": {
         "technical": {
-          "title": "Mock technical interview",
+          "title": "Technical practice",
           "description": "Practice architecture, tradeoffs, and problem solving.",
           "opening": "Let's start with a technical scenario. Walk me through how you would design a scalable system for this role.",
           "next": "Good. Now explain the main tradeoff you made and what you would monitor in production."
@@ -1441,17 +1442,17 @@
       }
     },
     "offer": {
-      "title": "Offer workspace",
+      "title": "Offer Overview",
       "upload": {
         "title": "Upload offer letter",
-        "body": "Start a simulated V1 analysis to structure compensation, risks, and response strategy. No legal advice is provided.",
+        "body": "Prepare a first-pass structure for compensation, risks, and reply options. No legal advice is provided.",
         "cta": "Upload offer letter",
         "analyzing": "Reading offer..."
       },
       "snapshot": {
-        "title": "Offer snapshot",
+        "title": "Offer Overview",
         "body": "Review the compensation structure, risk items, and response angle before drafting your reply.",
-        "salaryRating": "Salary signal",
+        "salaryRating": "Salary fit",
         "salaryRatingValue": "Above market for this stage",
         "equityComplexity": "Equity complexity",
         "equityComplexityValue": "High: 4-year vesting"
@@ -1477,32 +1478,32 @@
         "restrictions": "Restrictions and notice period are understood."
       },
       "playbook": {
-        "title": "Negotiation playbook",
-        "body": "Use these calmer response angles to prepare a clear, evidence-led reply.",
-        "draftCta": "Draft response",
+        "title": "Offer response options",
+        "body": "Use these calm response angles to prepare a clear, evidence-led reply.",
+        "draftCta": "Draft reply",
         "valueAlignment": {
           "title": "Value alignment",
-          "type": "Evidence-led angle",
+          "type": "Evidence-led reply",
           "script": "I am excited about the role. Based on the scope we discussed and the impact I can bring, I would like to align the base closer to the upper range.",
           "impact": "Best when the match is strong and you want to keep the tone constructive."
         },
         "marketEvidence": {
           "title": "Market evidence",
-          "type": "Compensation angle",
+          "type": "Compensation context",
           "script": "For roles with this scope and skill mix, I am seeing stronger base ranges. A revised base would make this much easier to accept quickly.",
           "impact": "Best when you have comparable data or competing process momentum."
         },
         "riskClarification": {
           "title": "Risk clarification",
-          "type": "Decision clarity angle",
+          "type": "Decision clarity note",
           "script": "Before I can make a final decision, I would like to clarify the bonus conditions, equity terms, and restrictions in writing.",
           "impact": "Best when the offer has unclear terms or legal/compensation risk."
         }
       },
       "notifications": {
         "analyzed": {
-          "title": "Offer analysis",
-          "body": "Offer snapshot prepared."
+          "title": "Offer Overview",
+          "body": "Offer overview prepared."
         },
         "generating": {
           "title": "Draft response",
@@ -1516,7 +1517,7 @@
     },
     "timeline": {
       "title": "Timeline",
-      "body": "Scheduling and key milestones for this application.",
+      "body": "Milestones, follow-ups, and deadlines that keep this application moving.",
       "nextMilestone": "Next milestone",
       "calendarStatus": "Calendar status",
       "disconnected": "Disconnected",

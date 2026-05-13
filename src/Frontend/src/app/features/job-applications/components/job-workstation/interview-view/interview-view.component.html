@@ -15,16 +15,12 @@
     <header class="flex items-center justify-between border-b border-border bg-background/70 px-5 py-4">
       <div class="flex items-center gap-3">
         <div class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <ng-icon name="lucideSparkles" class="text-base"></ng-icon>
+          <ng-icon name="lucideMic" class="text-base"></ng-icon>
         </div>
-        <div>
-          <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-            {{ 'workstation.interview.title' | transloco }}
-          </p>
-          <h2 class="text-lg font-semibold text-foreground">
-            {{ currentScenarioTitleKey() | transloco }}
-          </h2>
-        </div>
+        <app-aptelion-section-header
+          [eyebrow]="'workstation.interview.title' | transloco"
+          [title]="currentScenarioTitleKey() | transloco"
+        ></app-aptelion-section-header>
       </div>
 
       @if (messages().length > 0) {
@@ -99,9 +95,9 @@
                   class="flex size-9 shrink-0 items-center justify-center rounded-lg border"
                 >
                   @if (msg.sender === 'ai') {
-                    <ng-icon name="lucideSparkles" class="text-base"></ng-icon>
+                    <ng-icon name="lucideMessageSquare" class="text-base"></ng-icon>
                   } @else {
-                    <span class="text-[10px] font-semibold uppercase">ME</span>
+                    <span class="text-[10px] font-semibold uppercase">{{ 'workstation.interview.you' | transloco }}</span>
                   }
                 </div>
 
@@ -187,7 +183,7 @@
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-primary"
                 [attr.aria-label]="'workstation.interview.send' | transloco"
               >
-                <ng-icon name="lucideZap" class="text-lg"></ng-icon>
+                <ng-icon name="lucideSend" class="text-lg"></ng-icon>
               </button>
             </div>
           </div>

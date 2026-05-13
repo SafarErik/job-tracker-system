@@ -2,16 +2,13 @@
   class="grid min-h-[calc(100vh-220px)] grid-cols-1 gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500 xl:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)]"
 >
   <section class="flex min-h-0 flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-    <div class="flex items-center justify-between border-b border-border bg-background/70 px-5 py-4">
-      <div>
-        <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
-          {{ 'workstation.strategy.jobContext' | transloco }}
-        </p>
-        <h2 class="mt-1 text-lg font-semibold text-foreground">
-          {{ 'workstation.strategy.brief.title' | transloco }}
-        </h2>
-      </div>
-      <div class="flex items-center gap-2">
+    <div class="flex flex-col justify-between gap-4 border-b border-border bg-background/70 px-5 py-4 sm:flex-row sm:items-center">
+      <app-aptelion-section-header
+        [eyebrow]="'workstation.strategy.overview' | transloco"
+        [title]="'workstation.strategy.brief.title' | transloco"
+      >
+      </app-aptelion-section-header>
+      <div class="flex flex-wrap items-center gap-2">
         @if (hasReview()) {
           <button
             type="button"
@@ -28,7 +25,7 @@
             (click)="startManualPaste.emit()"
             class="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
           >
-            <ng-icon name="lucideWand2" class="text-sm"></ng-icon>
+            <ng-icon name="lucideFileText" class="text-sm"></ng-icon>
             {{ 'workstation.strategy.editDescription' | transloco }}
           </button>
         }
@@ -71,7 +68,7 @@
                   <ng-icon name="lucideLoader2" class="animate-spin text-base"></ng-icon>
                   {{ 'workstation.strategy.editor.refining' | transloco }}
                 } @else {
-                  <ng-icon name="lucideWand2" class="text-base"></ng-icon>
+                  <ng-icon name="lucideLightbulb" class="text-base"></ng-icon>
                   {{ 'workstation.strategy.editor.improve' | transloco }}
                 }
               </button>
@@ -88,7 +85,7 @@
 
           <aside class="rounded-lg border border-border bg-card p-5 shadow-sm">
             <div class="flex items-center gap-2">
-              <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+              <ng-icon name="lucideLightbulb" class="text-primary"></ng-icon>
               <h3 class="text-sm font-semibold text-foreground">
                 {{ 'workstation.strategy.editor.previewTitle' | transloco }}
               </h3>
@@ -160,7 +157,7 @@
           <div class="rounded-lg border border-border bg-card p-5">
             <div class="flex items-start gap-3">
               <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <ng-icon name="lucideFileText" class="text-lg"></ng-icon>
+              <ng-icon name="lucideFileText" class="text-lg"></ng-icon>
               </div>
               <div>
                 <h3 class="text-sm font-semibold text-foreground">
@@ -223,7 +220,7 @@
 
           <div class="rounded-lg border border-border bg-card p-5">
             <div class="flex items-center gap-2">
-              <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+              <ng-icon name="lucideListChecks" class="text-primary"></ng-icon>
               <h3 class="text-sm font-semibold text-foreground">
                 {{ 'workstation.strategy.brief.keywords' | transloco }}
               </h3>
@@ -242,32 +239,25 @@
           </div>
         </div>
       } @else {
-        <div class="flex min-h-[620px] items-center justify-center rounded-lg border border-dashed border-border bg-card p-8 text-center">
-          <div class="max-w-md">
-            <div class="mx-auto flex size-14 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <ng-icon name="lucideFileText" class="text-3xl"></ng-icon>
-            </div>
-            <h4 class="mt-5 text-xl font-semibold text-foreground">
-              {{ 'workstation.strategy.noDescriptionTitle' | transloco }}
-            </h4>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {{ 'workstation.strategy.noDescriptionBody' | transloco }}
-            </p>
-
-            <div class="mt-6 space-y-3">
+        <div class="flex min-h-[620px] items-center justify-center">
+          <app-aptelion-empty-state
+            [title]="'workstation.strategy.noDescriptionTitle' | transloco"
+            [body]="'workstation.strategy.noDescriptionBody' | transloco"
+          >
+            <div class="space-y-3">
               <button
                 type="button"
                 (click)="startManualPaste.emit()"
                 class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
-                <ng-icon name="lucideWand2" class="text-base"></ng-icon>
+                <ng-icon name="lucideFileText" class="text-base"></ng-icon>
                 {{ 'workstation.strategy.pasteManually' | transloco }}
               </button>
               <p class="text-xs leading-relaxed text-muted-foreground">
                 {{ 'workstation.strategy.autoFillOutOfScope' | transloco }}
               </p>
             </div>
-          </div>
+          </app-aptelion-empty-state>
         </div>
       }
     </div>
@@ -334,7 +324,7 @@
       <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-2">
-            <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+            <ng-icon name="lucideLightbulb" class="text-primary"></ng-icon>
             <h3 class="text-sm font-semibold text-foreground">
               {{ 'workstation.strategy.review.signals' | transloco }}
             </h3>
@@ -373,12 +363,7 @@
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
                     <h4 class="text-sm font-semibold text-foreground">{{ gap.skill }}</h4>
-                    <span
-                      class="rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase"
-                      [ngClass]="gapPriorityClasses(gap.priority)"
-                    >
-                      {{ gap.priority }}
-                    </span>
+                    <app-status-badge [label]="gap.priority" [tone]="gapPriorityTone(gap.priority)" />
                   </div>
                   <p class="mt-2 text-xs leading-5 text-muted-foreground">{{ gap.whyItMatters }}</p>
                 </div>
@@ -423,7 +408,7 @@
     } @else {
       <section class="rounded-lg border border-border bg-card p-5 shadow-sm">
         <div class="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <ng-icon name="lucideSparkles" class="text-primary"></ng-icon>
+          <ng-icon name="lucideLightbulb" class="text-primary"></ng-icon>
           {{ 'workstation.strategy.insights' | transloco }}
         </div>
         <p class="mt-2 text-sm leading-relaxed text-muted-foreground">

@@ -1,16 +1,11 @@
 <div class="flex flex-col gap-5 animate-in fade-in slide-in-from-bottom-4 duration-500">
   <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-    <div>
-      <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-        {{ 'workstation.assets.studioEyebrow' | transloco }}
-      </p>
-      <h2 class="mt-1 text-2xl font-semibold text-foreground">
-        {{ 'workstation.assets.visual.title' | transloco }}
-      </h2>
-      <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
-        {{ 'workstation.assets.visual.body' | transloco }}
-      </p>
-    </div>
+    <app-aptelion-section-header
+      [eyebrow]="'workstation.assets.studioEyebrow' | transloco"
+      [title]="'workstation.assets.visual.title' | transloco"
+      [description]="'workstation.assets.visual.body' | transloco"
+      level="page"
+    ></app-aptelion-section-header>
 
     <div class="flex w-full rounded-lg border border-border bg-muted/60 p-1 md:w-auto">
       <button
@@ -49,7 +44,7 @@
       <div class="border-b border-border p-4">
         <div class="flex items-center gap-3">
           <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <ng-icon name="lucideSparkles" class="text-xl"></ng-icon>
+            <ng-icon name="lucideLightbulb" class="text-xl"></ng-icon>
           </div>
           <div>
             <h3 class="text-sm font-semibold text-foreground">
@@ -144,7 +139,7 @@
             >
               @if (message.role === 'agent') {
                 <div class="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <ng-icon name="lucideSparkles" class="text-sm"></ng-icon>
+                  <ng-icon name="lucideLightbulb" class="text-sm"></ng-icon>
                 </div>
               }
               <div
@@ -213,13 +208,9 @@
             <h3 class="text-lg font-semibold text-foreground">
               {{ activeModeLabelKey() | transloco }}
             </h3>
-            <span class="rounded-full bg-primary/10 px-2 py-1 text-[11px] font-semibold text-primary">
-              {{ 'workstation.assets.visual.v1Badge' | transloco }}
-            </span>
+            <app-status-badge [label]="'workstation.assets.visual.v1Badge' | transloco" tone="primary" />
             @if (isCurrentDraftDirty()) {
-              <span class="rounded-full bg-primary/10 px-2 py-1 text-[11px] font-semibold text-primary">
-                {{ 'workstation.assets.unsavedSession' | transloco }}
-              </span>
+              <app-status-badge [label]="'workstation.assets.unsavedSession' | transloco" tone="accent" />
             }
           </div>
           <p class="mt-1 max-w-2xl text-sm text-muted-foreground">
@@ -265,7 +256,7 @@
               <ng-icon name="lucideLoader2" class="animate-spin text-sm"></ng-icon>
               {{ 'workstation.assets.actions.generating' | transloco }}
             } @else {
-              <ng-icon name="lucideSparkles" class="text-sm"></ng-icon>
+              <ng-icon name="lucideFileText" class="text-sm"></ng-icon>
               {{ 'workstation.assets.actions.generateCurrent' | transloco }}
             }
           </button>
@@ -274,17 +265,11 @@
 
       <div class="flex-1 overflow-y-auto bg-muted/60 p-4 md:p-8">
         @if (!hasDocumentContent()) {
-          <div class="flex min-h-[560px] items-center justify-center rounded-lg border border-dashed border-border bg-background/80 p-8 text-center">
-            <div class="max-w-md">
-              <div class="mx-auto flex size-14 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <ng-icon name="lucideFileText" class="text-3xl"></ng-icon>
-              </div>
-              <h4 class="mt-5 text-xl font-semibold text-foreground">
-                {{ 'workstation.assets.visual.empty.title' | transloco }}
-              </h4>
-              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {{ 'workstation.assets.visual.empty.body' | transloco }}
-              </p>
+          <div class="flex min-h-[560px] items-center justify-center">
+            <app-aptelion-empty-state
+              [title]="'workstation.assets.visual.empty.title' | transloco"
+              [body]="'workstation.assets.visual.empty.body' | transloco"
+            >
               @if (!canGenerateDocuments()) {
                 <p class="mt-4 rounded-lg bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
                   {{ 'workstation.assets.missingInputs' | transloco }}
@@ -296,10 +281,10 @@
                 [disabled]="store.isProcessing() || !canGenerateDocuments()"
                 class="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                <ng-icon name="lucideSparkles" class="text-base"></ng-icon>
+                <ng-icon name="lucideFileText" class="text-base"></ng-icon>
                 {{ 'workstation.assets.visual.empty.cta' | transloco }}
               </button>
-            </div>
+            </app-aptelion-empty-state>
           </div>
         } @else if (currentDocument(); as document) {
           <div class="mx-auto flex w-full max-w-5xl justify-center">

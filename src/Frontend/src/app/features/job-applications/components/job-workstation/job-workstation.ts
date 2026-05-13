@@ -49,10 +49,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   lucideLayoutDashboard,
   lucideFileSearch,
-  lucideSparkles,
   lucideFolderKanban,
   lucideMic2,
-  lucideSwords,
   lucideCalendar,
   lucideMapPin,
   lucideChevronRight,
@@ -80,7 +78,6 @@ import {
   lucideGavel,
   lucideMaximize2,
   lucideTrendingUp,
-  lucideWand2,
 } from '@ng-icons/lucide';
 
 type WorkstationPhase = 'strategy' | 'assets' | 'interview' | 'deal' | 'timeline';
@@ -124,10 +121,8 @@ export interface WorkstationCommandAction {
     provideIcons({
       lucideLayoutDashboard,
       lucideFileSearch,
-      lucideSparkles,
       lucideFolderKanban,
       lucideMic2,
-      lucideSwords,
       lucideCalendar,
       lucideMapPin,
       lucideChevronRight,
@@ -155,7 +150,6 @@ export interface WorkstationCommandAction {
       lucideGavel,
       lucideMaximize2,
       lucideTrendingUp,
-      lucideWand2,
     }),
   ],
   styleUrls: ['./workstation-animations.css'],
@@ -234,7 +228,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
 
   // Phase Configuration
   phases = [
-    { id: 'strategy' as const, labelKey: 'workstation.nav.strategy', icon: 'lucideSwords' },
+    { id: 'strategy' as const, labelKey: 'workstation.nav.strategy', icon: 'lucideTarget' },
     { id: 'assets' as const, labelKey: 'workstation.nav.assets', icon: 'lucideFileText' },
     { id: 'interview' as const, labelKey: 'workstation.nav.interview', icon: 'lucideMic2' },
     { id: 'deal' as const, labelKey: 'workstation.nav.deal', icon: 'lucideGavel' },
@@ -246,7 +240,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       id: 'improve-job-brief',
       labelKey: 'workstation.command.actions.improveBrief.label',
       descriptionKey: 'workstation.command.actions.improveBrief.description',
-      icon: 'lucideWand2',
+      icon: 'lucideFileText',
       phase: this.Phase.Strategy,
       disabled: () => this.service.isProcessing(),
       run: () => {
@@ -295,7 +289,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
       id: 'generate-resume',
       labelKey: 'workstation.command.actions.generateResume.label',
       descriptionKey: 'workstation.command.actions.generateResume.description',
-      icon: 'lucideSparkles',
+      icon: 'lucideFileText',
       phase: this.Phase.Assets,
       disabled: () => this.service.isProcessing(),
       run: () => {
@@ -397,7 +391,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Clear current application state to free memory (especially large AI responses)
+    // Clear current application state to free memory, especially large review responses.
     this.store.clearCurrentApplication();
   }
 
@@ -544,7 +538,7 @@ export class JobWorkstationComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Trigger AI analysis for the current job application.
+   * Trigger fit analysis for the current job application.
    * Analyzes the job description against the user's master resume.
    */
   triggerAnalysis(): void {

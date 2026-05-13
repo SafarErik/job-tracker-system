@@ -12,11 +12,12 @@ import {
     lucideShieldCheck,
     lucideInfo,
     lucideLoader2,
-    lucideSparkles
+    lucideLightbulb
 } from '@ng-icons/lucide';
 import { NotificationService } from '../../../../../core/services/notification.service';
 import { HlmButtonImports } from '@spartan-ng/helm/button';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { AptelionSectionHeaderComponent } from '../../../../../shared/components/aptelion-section-header/aptelion-section-header.component';
 
 interface PlaybookScript {
     id: string;
@@ -35,7 +36,7 @@ interface CompensationSegment {
 
 @Component({
     selector: 'app-deal-view',
-    imports: [CommonModule, NgIcon, TranslocoPipe, ...HlmButtonImports],
+    imports: [CommonModule, NgIcon, TranslocoPipe, AptelionSectionHeaderComponent, ...HlmButtonImports],
     providers: [
         provideIcons({
             lucideUploadCloud,
@@ -48,7 +49,7 @@ interface CompensationSegment {
             lucideShieldCheck,
             lucideInfo,
             lucideLoader2,
-            lucideSparkles
+            lucideLightbulb
         })
     ],
     templateUrl: './deal-view.component.html',

@@ -11,16 +11,19 @@ import {
   lucideDownload,
   lucideFileText,
   lucideGraduationCap,
+  lucideLightbulb,
   lucideListChecks,
   lucideLoader2,
   lucideMail,
   lucideMessageSquareText,
   lucideRotateCcw,
   lucideSend,
-  lucideSparkles,
   lucideTarget,
   lucideUserRound,
 } from '@ng-icons/lucide';
+import { AptelionEmptyStateComponent } from '../../../../../shared/components/aptelion-empty-state/aptelion-empty-state.component';
+import { AptelionSectionHeaderComponent } from '../../../../../shared/components/aptelion-section-header/aptelion-section-header.component';
+import { StatusBadgeComponent } from '../../../../../shared/components/status-badge/status-badge.component';
 import { JobApplication } from '../../../models/job-application.model';
 import { JobApplicationStore } from '../../../services/job-application.store';
 import { DocumentStore } from '../../../../documents/services/document.store';
@@ -91,7 +94,15 @@ type DraftState = Record<DocumentDraftMode, CvDocumentDraft | null>;
 
 @Component({
   selector: 'app-assets-view',
-  imports: [CommonModule, FormsModule, TranslocoPipe, NgIcon],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TranslocoPipe,
+    NgIcon,
+    AptelionEmptyStateComponent,
+    AptelionSectionHeaderComponent,
+    StatusBadgeComponent,
+  ],
   providers: [
     provideIcons({
       lucideAlertCircle,
@@ -101,13 +112,13 @@ type DraftState = Record<DocumentDraftMode, CvDocumentDraft | null>;
       lucideDownload,
       lucideFileText,
       lucideGraduationCap,
+      lucideLightbulb,
       lucideListChecks,
       lucideLoader2,
       lucideMail,
       lucideMessageSquareText,
       lucideRotateCcw,
       lucideSend,
-      lucideSparkles,
       lucideTarget,
       lucideUserRound,
     }),
